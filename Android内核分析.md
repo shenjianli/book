@@ -93,7 +93,60 @@ public interface ServiceConnection{
 
 ## 保证包裹内参数顺序aidl工具的使用
 aidl 可以把aidl文件转化为一个Java类文件，这个文件同时重载了transact和onTransact()方法，统一了存入包裹和读取包裹参数
-110
+
+## 系统服务中的Binder对象
+getSystemService方法获取一个系统服务时，是如何得到Binder引用的呢？
+ServiceManager是一个独立进程，其作用是管理各种系统服务
+ServiceManager本身也是一个Service，Framework提供一个函数BinderInteranl.getContextObject()来获取ServiceManager，然后通过ServiceManager的提供的方法获取其他系统Service的Binder引用！
+
+系统中仅暴露一个全局的Binder引用，那就是ServiceManager，而其他系统服务则可以隐藏起来，从而有助于系统服务的扩展，以及调用系统服务的安全检查。
+
+Service001
+
+## FrameWork
+Android程序的入口在那里？
+框架中包含三个主要部分，分别为服务端，客户端，linux驱动
+
+### 服务端
+主要包含两个重要类，WindowManagerService(WmS)和ActivityManagerService(Ams)，Ams主要是用来管理所有应用程序中的Activity
+
+### 客户端
+AcitvityThread,这个是应用程序的主线程类，所有的apk程序有且仅有一个ActivityThread类
+Activity,为apk程序中一个最小运行单元
+PhoneWindow类，继承于Window类，内部包含一个DecorView对象，DecorView的父类是FrameLayout
+Window类，提供一组通用的窗口（window）操作api，Wms所管理的并不是Window类，而是一个View或者ViewGroup类
+DecorView类，是FrameLayout的子类，并且是PhoneWindow中的一个内部类，DecorView主要是对FrameLayout进行了一定的修饰，如添加Title bar，并响应特定的热键消息
+ViewRoot类：Wms管理客户端窗口，继承于Handler，其作用主要是把Wms的IPC调用转化为本地的一个异步调用！
+W类，继承于Binder并且是ViewRoot的一个内部类
+
+## APK程序运行过程：
+1.ActivityThread从main()函数中开始执行，调用prepareMainLooper()为UI线程创建一个消息队列（MessageQueue）
+2.创建一个ActivityThread对象，在AtcitityThread的初始化代码中会创建一个H(Handler)对象和一个ApplicationThread(Binder)对象，其中Binder负责接收远程Ams的IPC调用，接收到调用后，则通过Handler把消息发送到消息队列，UI主线程会异步地从消息队列中读取并执行相应操作，如，start,stop,pause
+3.UI线程调用Looper.loop()方法进入消息循环，不断的取消息，处理消息
+4.当ActivityThread接收到Ams发送的start某个Activity后，就会创建指定的对象。Activity又会创建PhoneWindow类---->DecorView类--->创建相应的View或者ViewGroup;创建完成后activity需要把创建好的界面显示到屏幕上，于是调用WindowManager类---->创建一个ViewRoot对象和W类--->WindowManager再调用Wms提供的远程接口完成添加一个窗口并且显示到屏幕
+5.接下来用户在程序界面上操作，KeyQ线程不断把用户消息存储到QueueEvent队列中，InputDispatcherThread线程逐个取出消息，然后调用Wms中的相应消息处理函数，当Wns发现该消息属于客户端某个窗口时，就会调用相应窗口的w接口。
+6.W类是一个Binder，负责接收Wms的IPC调用，并把调用消息传递给ViewRoot，ViewRoot再把消息传递给UI主线程ActivityThread,ActivityThread解析该消息并做相应的处理。在客户端程序中，首先处理消息的是DecorView，如果DecorView不想处理某个消息，则可以将消息传递给其内部包含的子View或者ViewGroup,如果还没有处理，则传递给PhoneWindow,最后再传递给Activity.
+
+## 客户端中的线程
+Android Apk程序中都有那些线程？
+什么是UI线程
+包含有Activity的客户端程序中至少包含三个线程，每个Binder对象都对应一个线程，Activity启动后会创建一个ViewRoot.W对象，同时ActivityThread会创建一个ApplicationThread对象，这两个Binder对象会启动两个线程，负责接收linux Binder驱动发送IPC调用，最后一个程序本身所在的线程，叫主线程，也称UI线程
+Thead002
+
+Wms所管理的窗口和Window类没有任何关系
+
+## Context
+一个Context意味着一个场景，一个场景就是用户和操作系统交互的一种过程
+一个Activity就是一个Context,一个Servcie也是一个Context
+
+Activity类的确是基于Context,而Service类也是基于Context。Activity除了基于Context类外，还实现了一些其他重要接口，从设计的角度来看，interface仅仅是某些功能，而extends才是类的本质。即Activity的本质是一个Context,其所实现的其他接口是是为扩充Context的功能而已，扩充后的类称这为一个Activity或者Service.
+
+## 创建应用窗口
+  1.每个应用类窗口都重发一个Activity对象，因此，创建应用类窗口首先需要创建一个Activity对象。当Ams决定启动某个Activity时，会通知客户端进程，而每个客户端进程都对应一个ActivityThread类，任何Activity都必须隶属于一个应用程序，因此启动Activity的任务最终由ActivityThread完成。
+  2.调用Activity对象的attach()方法
+  3.在attach方法内部，除了进行重要变量赋值处，另一件重要的事情就是为该Activity创建Window对象，这是通过调用PolicyManager的静态方法makeNewWindow()完成的。
+  4.创建好Window对象后，需要给Window对象中的mWindowManager变量赋值，该变量的类型是WindowManager类，
+  5.配置好了Activity和Window对象后，接下来就需要给该窗口中添加 真正的显示元素View或者ViewGroup.从performLaunchActivity()内部调用callActivityOnCreate()开始的，并会辗转调用Activity的onCreate（）方法中。
 
 
 
