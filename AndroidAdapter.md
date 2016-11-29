@@ -554,3 +554,6 @@ https://developer.android.com/training/best-ui.html
 
 
 https://developer.android.com/guide/practices/screens_support.html
+
+Android开发在路上：少去踩坑，多走捷径
+http://djt.qq.com/article/view/1193
