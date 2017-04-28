@@ -10,4 +10,12 @@ grammar_cjkRuby: true
 Google     shenjianli2007@163.com   2336****8662
 思维导图   https://coggle.it/  
 邮箱163   shenjianli2007@163.com		2336********2007
+邮箱163	cqtddt@163.com	2336****8662shen
 GMail邮箱  shenjianli2007@gmall.com   2336****8662
+轻量笔记  https://keep.google.com   Google帐户
+小众软件  http://love.appinn.com/
+印象笔记  http://love.appinn.com/  cqtddt@163.com 2336****8662
+
+
+搜索工具   everything 
+
