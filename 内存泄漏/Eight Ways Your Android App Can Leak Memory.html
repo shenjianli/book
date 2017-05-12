@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<!-- saved from url=(0056)http://blog.nimbledroid.com/2016/05/23/memory-leaks.html -->
+<html itemscope="" itemtype="http://schema.org/Article"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="image/x-icon" href="http://blog.nimbledroid.com/assets/images/favicon.ico">
+
+  <!--[if lt IE 9]>
+  <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <script async="" src="./Eight Ways Your Android App Can Leak Memory_files/analytics.js.下载"></script><script src="./Eight Ways Your Android App Can Leak Memory_files/jquery-1.12.0.min.js.下载"></script>
+
+  <link rel="stylesheet" id="ABdev_icon_font-css" href="./Eight Ways Your Android App Can Leak Memory_files/fonts.css" type="text/css" media="all">
+  <link rel="stylesheet" id="ABdev_shortcodes-css" href="./Eight Ways Your Android App Can Leak Memory_files/dnd-shortcodes.css" type="text/css" media="all">
+  <link rel="stylesheet" id="ABdev_core_icons-css" href="./Eight Ways Your Android App Can Leak Memory_files/core_style.css" type="text/css" media="all">
+  <link rel="stylesheet" id="main_css-css" href="./Eight Ways Your Android App Can Leak Memory_files/style.css" type="text/css" media="all">
+  <link rel="stylesheet" id="responsive_css-css" href="./Eight Ways Your Android App Can Leak Memory_files/main-responsive.css" type="text/css" media="all">
+  <link rel="stylesheet" type="text/css" href="./Eight Ways Your Android App Can Leak Memory_files/MyFontsWebfontsKit.css">
+
+  <!-- Place this data between the <head> tags of your website -->
+  <title>Eight Ways Your Android App Can Leak Memory</title>
+  <meta name="description" content="One advantage of a garbage-collecting-language like Java is that it removes the need for developers to explicitly manage allocated memory. This reduces the likelihood of a segmentation fault crashing the app or an unfreed memory allocation bloating the heap, thus creating safer code. Unfortunately, there are other ways that memory...">
+
+  <!-- Schema.org markup for Google+ -->
+  <meta itemprop="name" content="Eight Ways Your Android App Can Leak Memory">
+  <meta itemprop="description" content="One advantage of a garbage-collecting-language like Java is that it removes the need for developers to explicitly manage allocated memory. This reduces the likelihood of a segmentation fault crashing the app or an unfreed memory allocation bloating the heap, thus creating safer code. Unfortunately, there are other ways that memory...">
+  <meta itemprop="image" content="http://blog.nimbledroid.com/assets/postpic/memoryleak.jpg">
+
+  <!-- Twitter Card data -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@nimbledroid">
+  <meta name="twitter:title" content="Eight Ways Your Android App Can Leak Memory">
+  <meta name="twitter:description" content="One advantage of a garbage-collecting-language like Java is that it removes the need for developers to explicitly manage allocated memory. This reduces the likelihood of a segmentation fault crashing the app or an unfreed memory allocation bloating the heap, thus creating safer code. Unfortunately, there are other ways that memory...">
+  <meta name="twitter:creator" content="@nimbledroid">
+  <!-- Twitter summary card with large image must be at least 280x150px -->
+  <meta name="twitter:image:src" content="http://blog.nimbledroid.com/assets/postpic/memoryleak.jpg">
+
+  <!-- Open Graph data -->
+  <meta property="og:title" content="Eight Ways Your Android App Can Leak Memory">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="http://www.nimbledroid.com/">
+  <meta property="og:image" content="http://blog.nimbledroid.com/assets/postpic/memoryleak.jpg">
+  <meta property="og:description" content="One advantage of a garbage-collecting-language like Java is that it removes the need for developers to explicitly manage allocated memory. This reduces the likelihood of a segmentation fault crashing the app or an unfreed memory allocation bloating the heap, thus creating safer code. Unfortunately, there are other ways that memory...">
+  <meta property="og:site_name" content="NimbleDroid">
+  <meta property="article:published_time" content="May 23, 2016">
+  <meta property="article:section" content="Performance Tips">
+  <meta property="article:tag" content="Performance Tips">
+  <meta property="fb:admins" content="413350132099705">
+
+  
+<script type="text/javascript" async="" src="./Eight Ways Your Android App Can Leak Memory_files/embed.js.下载"></script></head>
+
+
+  <body>
+
+    
+<header id="ABdev_main_header" class="clearfix default">
+
+  <div id="logo_menu_bar">
+    <div class="container">
+      <div id="logo">
+        <a href="http://blog.nimbledroid.com/"><img src="./Eight Ways Your Android App Can Leak Memory_files/logo.png" alt="Nimbledroid"></a>
+      </div>
+
+      <nav>
+        <ul id="main_menu" class="">
+          <!--<li class=""><a href="https://www.nimbledroid.com/" class=""><span>Home</span></a></li>-->
+          <li class=""><a href="https://nimbledroid.com/" class=""><span>Return to nimbledroid.com</span></a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+
+  <div id="ABdev_menu_toggle">
+    <i class="ci_icon-menu"></i>
+  </div>
+
+</header>
+
+<div id="ABdev_header_spacer"></div>
+
+    <div class="page-content">
+      <div class="wrapper">
+        <section id="title_breadcrumbs_bar">
+    <div class="container clearfix">
+        <div class="floatleft">
+            <h1 class="SofiaProBold">Eight Ways Your Android App Can Leak Memory</h1>
+        </div>
+    </div>
+</section>
+
+<section class="gray-bg">
+    <div class="container">
+        <div class="row">
+            <div class="span9 content_with_right_sidebar">
+                <div class="post_content">
+                    <div class="SofiaProLight post post_main">
+                        
+                        <div class="postmeta-above clearfix">
+
+                            <span class="post_author SofiaProMedium">
+
+                                
+                                By <span>Tom Huzij<i class="ci_icon-moonfull"></i></span>
+                                
+
+                                <span class="post_date_inner">May 23, 2016</span>
+                            </span>
+                            <!--<p class="post_meta_comments">-->
+                                <!--<i class="ci_icon-comment"></i>4-->
+                            <!--</p>-->
+
+                            <div class="post_meta_comments">
+                                
+                                
+                                
+                                <ul>
+                                    
+                                    <li class="lang">
+                                        <a href="http://blog.nimbledroid.com/2016/05/23/memory-leaks.html" class="English">English  |  </a>
+                                    </li>
+                                    
+                                    <li class="lang">
+                                        <a href="http://blog.nimbledroid.com/2016/05/23/memory-leaks-zh.html" class="中文">中文  </a>
+                                    </li>
+                                    
+                                    
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="mainContaint">
+                            
+                                <p>One advantage of a garbage-collecting-language like Java is that it removes the need for developers to explicitly manage allocated memory. This reduces the likelihood of a segmentation fault crashing the app or an unfreed memory allocation bloating the heap, thus creating safer code. Unfortunately, there are other ways that memory can be leaked logically within Java. Ultimately, this means that your Android apps are still susceptible to wasting unnecessary memory and crashing as a result of out-of-memory (OOM) errors.</p>
+
+<p>Traditional memory leaks occur when you neglect to free allocated memory before all related references go out of scope. Logical memory leaks, on the other hand, are the result of forgetting to release references to objects that are no longer needed in your app. If a strong reference to an object still exists, the garbage collector cannot remove the object from memory. This is particularly problematic in Android development if you happen to leak a <a href="http://developer.android.com/reference/android/content/Context.html" target="_blank">Context</a>. This is because Contexts such as <a href="http://developer.android.com/reference/android/app/Activity.html" target="_blank">Activities</a> contain many references to large amounts of memory, i.e. view hierarchies and other resources. If you leak a Context, you are also leaking everything that it points to. Android mostly runs on mobile devices with limited memory capacity so it’s very likely for your app to run out of available memory if too many leaks take place.</p>
+
+<p>Detecting logical memory leaks would be a subjective matter if the useful lifespan of an object were not clearly defined. Thankfully, activities have very explicitly defined <a href="http://developer.android.com/reference/android/app/Activity.html#ActivityLifecycle" target="_blank">lifecycles</a> that reveal the point at which we can easily consider an instance of an Activity object to have been leaked.The <a href="http://developer.android.com/reference/android/app/Activity.html#onDestroy()" target="_blank">onDestroy()</a> method of an Activity is called at end-of-life and indicates that it is being destroyed either through programmer intention or because Android needs to recuperate some memory. If this method completes but the Activity instance can be reached by a chain of strong references from a heap root, then the garbage collector cannot mark it for removal from memory - despite the original intention to delete it. As a result, we can define a leaked Activity object as one that persists beyond its natural lifecycle.</p>
+
+<p>Activities are very hefty objects, so you should never choose to defy the Android framework’s handling of them. However, there are ways that an Activity instance can become unintentionally leaked. In Android, all of the pitfalls that lead to potential memory leaks revolve around two fundamental situations. The first memory-leak-category is caused by a process-global static object that exists regardless of the app’s state and maintains a chain of references to the Activity. The other category is caused when a thread that outlasts the Activity’s lifetime neglects to clear a strong reference chain to that Activity. Let’s examine a few different ways that you might come across these situations.</p>
+
+<h3 id="static-activities">1. Static Activities</h3>
+
+<p>The easiest way to leak an Activity is by defining a static variable inside the class definition of the Activity and then setting it to the running instance of that <a href="https://github.com/NimbleDroid/Memory-Leaks/blob/master/app/src/main/java/com/nimbledroid/memoryleaks/MainActivity.java#L110" target="_blank">Activity</a>. If this reference is not cleared before the Activity’s lifecycle completes, the Activity will be leaked. This is because the object representing the class of the Activity (i.e., MainActivity) is static and remains loaded in memory for the entire runtime of the app. If this class object holds a reference to your Activity instance, it therefore won’t be eligible for garbage collection.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kt">void</span> <span class="nf">setStaticActivity</span><span class="o">()</span> <span class="o">{</span>
+  <span class="n">activity</span> <span class="o">=</span> <span class="k">this</span><span class="o">;</span>
+<span class="o">}</span>
+
+<span class="n">View</span> <span class="n">saButton</span> <span class="o">=</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">sa_button</span><span class="o">);</span>
+<span class="n">saButton</span><span class="o">.</span><span class="na">setOnClickListener</span><span class="o">(</span><span class="k">new</span> <span class="n">View</span><span class="o">.</span><span class="na">OnClickListener</span><span class="o">()</span> <span class="o">{</span>
+  <span class="nd">@Override</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">(</span><span class="n">View</span> <span class="n">v</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">setStaticActivity</span><span class="o">();</span>
+    <span class="n">nextActivity</span><span class="o">();</span>
+  <span class="o">}</span>
+<span class="o">});</span></code></pre></figure>
+
+<figure style="max-width:none"><img src="./Eight Ways Your Android App Can Leak Memory_files/image07.png" alt="" style="margin: 0 auto"><figcaption style="text-align: center">Memory Leak 1 - Static Activity</figcaption></figure>
+
+<h3 id="static-views">2. Static Views</h3>
+<p>A similar situation would be implementing a singleton pattern where an activity might be visited often and it would be beneficial to keep the instance loaded in memory so that it can be restored quickly. However, for reasons stated before, defying the defined lifecycle of an Activity and persisting it in memory is an extremely dangerous and unnecessary practice - and should be avoided at all costs.</p>
+
+<p>But what if we have a particular View that takes a great deal of effort to instantiate but will remain unchanged across different lifetimes of the same Activity? Well then let’s make just that View static after instantiating it and attaching it to the View hierarchy, like we do <a href="https://github.com/NimbleDroid/Memory-Leaks/blob/master/app/src/main/java/com/nimbledroid/memoryleaks/MainActivity.java#L132" target="_blank">here</a>. Now if our Activity is destroyed, we should be able to release most of its memory.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kt">void</span> <span class="nf">setStaticView</span><span class="o">()</span> <span class="o">{</span>
+  <span class="n">view</span> <span class="o">=</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">sv_button</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="n">View</span> <span class="n">svButton</span> <span class="o">=</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">sv_button</span><span class="o">);</span>
+<span class="n">svButton</span><span class="o">.</span><span class="na">setOnClickListener</span><span class="o">(</span><span class="k">new</span> <span class="n">View</span><span class="o">.</span><span class="na">OnClickListener</span><span class="o">()</span> <span class="o">{</span>
+  <span class="nd">@Override</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">(</span><span class="n">View</span> <span class="n">v</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">setStaticView</span><span class="o">();</span>
+    <span class="n">nextActivity</span><span class="o">();</span>
+  <span class="o">}</span>
+<span class="o">});</span></code></pre></figure>
+
+<figure style="max-width:none"><img src="./Eight Ways Your Android App Can Leak Memory_files/image02.png" alt="" style="margin: 0 auto"><figcaption style="text-align: center">Memory Leak 2 - Static View</figcaption></figure>
+
+<p>Wait, what? Surely you knew that an attached View will maintain a reference to its Context, which, in this case, is our Activity. By making a static reference to the View, we’ve created a persistent reference chain to our Activity and leaked it. Don’t make attached Views static and if you must, at least <a href="http://developer.android.com/reference/android/view/ViewGroup.html#removeView(android.view.View)" target="_blank">detach</a> them from the View hierarchy at some point before the Activity completes.</p>
+
+<h3 id="inner-classes">3. Inner Classes</h3>
+<p>Moving on, let’s say we define a class inside the definition of our Activity’s class, known as an <a href="https://github.com/NimbleDroid/Memory-Leaks/blob/master/app/src/main/java/com/nimbledroid/memoryleaks/MainActivity.java#L126" target="_blank">Inner Class</a>. The programmer may choose to do this for a number of reasons including increasing readability and encapsulation. What if we create an instance of this Inner Class and maintain a static reference to it? At this point you might as well just guess that a memory leak is imminent.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kt">void</span> <span class="nf">createInnerClass</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">class</span> <span class="nc">InnerClass</span> <span class="o">{</span>
+    <span class="o">}</span>
+    <span class="n">inner</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InnerClass</span><span class="o">();</span>
+<span class="o">}</span>
+
+<span class="n">View</span> <span class="n">icButton</span> <span class="o">=</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">ic_button</span><span class="o">);</span>
+<span class="n">icButton</span><span class="o">.</span><span class="na">setOnClickListener</span><span class="o">(</span><span class="k">new</span> <span class="n">View</span><span class="o">.</span><span class="na">OnClickListener</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@Override</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">(</span><span class="n">View</span> <span class="n">v</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">createInnerClass</span><span class="o">();</span>
+        <span class="n">nextActivity</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">});</span></code></pre></figure>
+
+<figure style="max-width:none"><img src="./Eight Ways Your Android App Can Leak Memory_files/image03.png" alt="" style="margin: 0 auto"><figcaption style="text-align: center">Memory Leak 3 - Inner Class</figcaption></figure>
+
+<p>Unfortunately because one of the benefits of Inner Class instances is that they have access to their Outer Class’s variables, they must maintain a reference to the Outer Class’s instance which causes our Activity to be leaked.</p>
+
+<h3 id="anonymous-classes">4. Anonymous Classes</h3>
+<p>Similarly, Anonymous Classes will also maintain a reference to the class that they were declared inside. Therefore a leak can occur if you <a href="https://github.com/NimbleDroid/Memory-Leaks/blob/master/app/src/main/java/com/nimbledroid/memoryleaks/MainActivity.java#L102" target="_blank">declare and instantiate an AsyncTask anonymously inside your Activity</a>. If it continues to perform background work after the Activity has been destroyed, the reference to the Activity will persist and it won’t be garbage collected until after the background task completes.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kt">void</span> <span class="nf">startAsyncTask</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">new</span> <span class="n">AsyncTask</span><span class="o">&lt;</span><span class="n">Void</span><span class="o">,</span> <span class="n">Void</span><span class="o">,</span> <span class="n">Void</span><span class="o">&gt;()</span> <span class="o">{</span>
+        <span class="nd">@Override</span> <span class="kd">protected</span> <span class="n">Void</span> <span class="nf">doInBackground</span><span class="o">(</span><span class="n">Void</span><span class="o">...</span> <span class="n">params</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">while</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}.</span><span class="na">execute</span><span class="o">();</span>
+<span class="o">}</span>
+
+<span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
+<span class="n">setContentView</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">activity_main</span><span class="o">);</span>
+<span class="n">View</span> <span class="n">aicButton</span> <span class="o">=</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">at_button</span><span class="o">);</span>
+<span class="n">aicButton</span><span class="o">.</span><span class="na">setOnClickListener</span><span class="o">(</span><span class="k">new</span> <span class="n">View</span><span class="o">.</span><span class="na">OnClickListener</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@Override</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">(</span><span class="n">View</span> <span class="n">v</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">startAsyncTask</span><span class="o">();</span>
+        <span class="n">nextActivity</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">});</span></code></pre></figure>
+
+<figure style="max-width:none"><img src="./Eight Ways Your Android App Can Leak Memory_files/image04.png" alt="" style="margin: 0 auto"><figcaption style="text-align: center">Memory Leak 4 - AsyncTask</figcaption></figure>
+
+<h3 id="handlers">5. Handlers</h3>
+<p>The very same principle applies to background tasks <a href="https://github.com/NimbleDroid/Memory-Leaks/blob/master/app/src/main/java/com/nimbledroid/memoryleaks/MainActivity.java#L114" target="_blank">declared anonymously by a Runnable object and queued up for execution by a Handler object</a>. The Runnable object will implicitly reference the Activity it was declared in and will then be posted as a Message on the Handler’s MessageQueue. As long as the message hasn’t been handled before the Activity is destroyed, the chain of references will keep the Activity live in memory and will cause a leak.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kt">void</span> <span class="nf">createHandler</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">new</span> <span class="nf">Handler</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nd">@Override</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">handleMessage</span><span class="o">(</span><span class="n">Message</span> <span class="n">message</span><span class="o">)</span> <span class="o">{</span>
+            <span class="kd">super</span><span class="o">.</span><span class="na">handleMessage</span><span class="o">(</span><span class="n">message</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}.</span><span class="na">postDelayed</span><span class="o">(</span><span class="k">new</span> <span class="n">Runnable</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nd">@Override</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+            <span class="k">while</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">},</span> <span class="n">Long</span><span class="o">.</span><span class="na">MAX_VALUE</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="o">);</span>
+<span class="o">}</span>
+
+
+<span class="n">View</span> <span class="n">hButton</span> <span class="o">=</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">h_button</span><span class="o">);</span>
+<span class="n">hButton</span><span class="o">.</span><span class="na">setOnClickListener</span><span class="o">(</span><span class="k">new</span> <span class="n">View</span><span class="o">.</span><span class="na">OnClickListener</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@Override</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">(</span><span class="n">View</span> <span class="n">v</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">createHandler</span><span class="o">();</span>
+        <span class="n">nextActivity</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">});</span></code></pre></figure>
+
+<figure style="max-width:none"><img src="./Eight Ways Your Android App Can Leak Memory_files/image01.png" alt="" style="margin: 0 auto"><figcaption style="text-align: center">Memory Leak 5 - Handler</figcaption></figure>
+
+<h3 id="threads">6. Threads</h3>
+<p>We can repeat this same mistake again with both the <a href="https://github.com/NimbleDroid/Memory-Leaks/blob/master/app/src/main/java/com/nimbledroid/memoryleaks/MainActivity.java#L142" target="_blank">Thread</a> and <a href="https://github.com/NimbleDroid/Memory-Leaks/blob/master/app/src/main/java/com/nimbledroid/memoryleaks/MainActivity.java#L150" target="_blank">TimerTask</a> classes.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kt">void</span> <span class="nf">spawnThread</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">new</span> <span class="nf">Thread</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nd">@Override</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+            <span class="k">while</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}.</span><span class="na">start</span><span class="o">();</span>
+<span class="o">}</span>
+
+<span class="n">View</span> <span class="n">tButton</span> <span class="o">=</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">t_button</span><span class="o">);</span>
+<span class="n">tButton</span><span class="o">.</span><span class="na">setOnClickListener</span><span class="o">(</span><span class="k">new</span> <span class="n">View</span><span class="o">.</span><span class="na">OnClickListener</span><span class="o">()</span> <span class="o">{</span>
+  <span class="nd">@Override</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">(</span><span class="n">View</span> <span class="n">v</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">spawnThread</span><span class="o">();</span>
+      <span class="n">nextActivity</span><span class="o">();</span>
+  <span class="o">}</span>
+<span class="o">});</span></code></pre></figure>
+
+<figure style="max-width:none"><img src="./Eight Ways Your Android App Can Leak Memory_files/image06.png" alt="" style="margin: 0 auto"><figcaption style="text-align: center">Memory Leak 6 - Thread</figcaption></figure>
+
+<h3 id="timer-tasks">7. Timer Tasks</h3>
+<p>As long as they are declared and instantiated anonymously, despite the work occurring in a separate thread, they will persist a reference chain to the Activity after it has been destroyed and will yet again cause a leak.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kt">void</span> <span class="nf">scheduleTimer</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">new</span> <span class="nf">Timer</span><span class="o">().</span><span class="na">schedule</span><span class="o">(</span><span class="k">new</span> <span class="n">TimerTask</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+            <span class="k">while</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">},</span> <span class="n">Long</span><span class="o">.</span><span class="na">MAX_VALUE</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="n">View</span> <span class="n">ttButton</span> <span class="o">=</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">tt_button</span><span class="o">);</span>
+<span class="n">ttButton</span><span class="o">.</span><span class="na">setOnClickListener</span><span class="o">(</span><span class="k">new</span> <span class="n">View</span><span class="o">.</span><span class="na">OnClickListener</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@Override</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">(</span><span class="n">View</span> <span class="n">v</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">scheduleTimer</span><span class="o">();</span>
+        <span class="n">nextActivity</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">});</span></code></pre></figure>
+
+<figure style="max-width:none"><img src="./Eight Ways Your Android App Can Leak Memory_files/image06.png" alt="" style="margin: 0 auto"><figcaption style="text-align: center">Memory Leak 7 - TimerTask</figcaption></figure>
+
+<h3 id="sensor-manager">8. Sensor Manager</h3>
+<p>Finally, there are system services that can be retrieved by a Context with a call to <a href="http://developer.android.com/reference/android/content/Context.html#getSystemService(java.lang.String)" target="_blank">getSystemService</a>. These Services run in their own processes and assist applications by performing some sort of background work or interfacing to the device’s hardware capabilities. If the Context want to be notified every time an event occurs inside a Service, it needs to register itself as a <a href="https://github.com/NimbleDroid/Memory-Leaks/blob/master/app/src/main/java/com/nimbledroid/memoryleaks/MainActivity.java#L136" target="_blank">listener</a>. However, this will cause the Service to maintain a reference to the Activity, and if the programmer neglects to unregister the Activity as a listener before the Activity is destroyed it will be ineligible for garbage collection and leak will occur.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kt">void</span> <span class="nf">registerListener</span><span class="o">()</span> <span class="o">{</span>
+       <span class="n">SensorManager</span> <span class="n">sensorManager</span> <span class="o">=</span> <span class="o">(</span><span class="n">SensorManager</span><span class="o">)</span> <span class="n">getSystemService</span><span class="o">(</span><span class="n">SENSOR_SERVICE</span><span class="o">);</span>
+       <span class="n">Sensor</span> <span class="n">sensor</span> <span class="o">=</span> <span class="n">sensorManager</span><span class="o">.</span><span class="na">getDefaultSensor</span><span class="o">(</span><span class="n">Sensor</span><span class="o">.</span><span class="na">TYPE_ALL</span><span class="o">);</span>
+       <span class="n">sensorManager</span><span class="o">.</span><span class="na">registerListener</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">sensor</span><span class="o">,</span> <span class="n">SensorManager</span><span class="o">.</span><span class="na">SENSOR_DELAY_FASTEST</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="n">View</span> <span class="n">smButton</span> <span class="o">=</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">sm_button</span><span class="o">);</span>
+<span class="n">smButton</span><span class="o">.</span><span class="na">setOnClickListener</span><span class="o">(</span><span class="k">new</span> <span class="n">View</span><span class="o">.</span><span class="na">OnClickListener</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@Override</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">(</span><span class="n">View</span> <span class="n">v</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">registerListener</span><span class="o">();</span>
+        <span class="n">nextActivity</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">});</span></code></pre></figure>
+
+<figure style="max-width:none"><img src="./Eight Ways Your Android App Can Leak Memory_files/image00.png" alt="" style="margin: 0 auto"><figcaption style="text-align: center">Memory Leak 8 - Sensor Manager</figcaption></figure>
+
+<p>Now that you’ve seen an array of various memory leaks you can see just how easy it is to accidentally leak a massive amount of memory. Remember, although in the worst case this will cause your app to run out of memory and crash, it might not necessarily always do this. Instead, it can eat up a large but non-lethal amount of your app’s memory space. In this case, the app has less memory to allocate for other objects and thus your garbage collector will need to run more often to free up space for new objects. Garbage collection is a very expensive operation and will cause noticeable slowdown for the user. Stay aware of potential reference chains when instantiating objects in your Activities and test for memory leaks often!</p>
+
+<div class="caption">
+Correction: Due to an editing error, this article originally mistakenly referred to the Activity’s end-of-lifecycle method as onDelete(). The correct method is onDestroy(). Thanks to <a href="https://twitter.com/whoisgraham/status/734993947014115328" target="_blank" alt="https://twitter.com/whoisgraham/status/734993947014115328">@whoisgraham</a> for pointing that out.
+</div>
+
+<div class="full-width-btn-wrap">
+<a href="https://nimbledroid.com/">
+<button class="call-to-action"> Ensure that your app is leak-free now! </button>
+</a>
+</div>
+
+                            
+                        </div>
+
+                        <div class="postmeta-tags">
+                            <p class="post_meta_tags">
+                                <!--<i class="ci_icon-tags"></i>-->
+                                <!---->
+                                <!--<a href="/tags/Development" rel="tag">Development</a> ·-->
+                                <!---->
+                                <!--<a href="/tags/Technology" rel="tag">Technology</a> ·-->
+                                <!---->
+                                <!--<a href="/tags/Android" rel="tag">Android</a> ·-->
+                                <!---->
+                                <!--<a href="/tags/Optimization" rel="tag">Optimization</a> ·-->
+                                <!---->
+                                <!--<a href="/tags/Software" rel="tag">Software</a> ·-->
+                                <!---->
+                            </p>
+                        </div>
+                        <div class="postmeta-under clearfix">
+    <div class="postmeta-share">
+        <p class="post_meta_share">
+            <span class="SofiaProMediumCondensed">Like it ?  Share on</span>
+            <a class="post_share_twitter dnd_tooltip" href="https://twitter.com/intent/tweet?text=Eight%20Ways%20Your%20Android%20App%20Can%20Leak%20Memory&amp;url=http://blog.nimbledroid.com/2016/05/23/memory-leaks.html&amp;via=nimbledroid&amp;related=nimbledroid" rel="nofollow" target="_blank" title="Share on Twitter" data-gravity="s"><i class="ci_icon-twitter"></i></a>
+            <a class="post_share_facebook dnd_tooltip" href="https://facebook.com/sharer.php?u=http://blog.nimbledroid.com/2016/05/23/memory-leaks.html" rel="nofollow" target="_blank" title="Share on Facebook" data-gravity="s"><i class="ci_icon-facebook"></i></a>
+            <a class="post_share_googleplus dnd_tooltip" href="https://plus.google.com/share?url=http://blog.nimbledroid.com/2016/05/23/memory-leaks.html" rel="nofollow" target="_blank" title="Share on Google+" data-gravity="s"><i class="ci_icon-googleplus"></i></a>
+            <a class="post_share_linkedin dnd_tooltip" href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http://blog.nimbledroid.com/2016/05/23/memory-leaks.html&amp;title=Eight%20Ways%20Your%20Android%20App%20Can%20Leak%20Memory" rel="nofollow" target="_blank" title="Share on Linkedin" data-gravity="s"><i class="ci_icon-linkedin"></i></a>
+        </p>
+    </div>
+    <script>
+        /*var base_url = window.location.href;
+        base_url=base_url.replace("localhost:4000", "blog.nimbledroid.com")
+        var twitter_url = "https://cdn.api.twitter.com/1/urls/count.json?url=" + base_url + "&callback=?";
+        var fb_url = "http://graph.facebook.com/?id=" + base_url;
+        var linkedin_url = "http://www.linkedin.com/countserv/count/share?url=" + base_url + "&format=jsonp&callback=?";
+        $.getJSON(twitter_url, function(twit){
+            if (twit.count > 5) {
+                $("#twitter").append(twit.count);
+            }
+        });
+        $.getJSON(fb_url, function(fb){
+            $("#fb").append(fb.shares);
+        });
+        $.getJSON(linkedin_url, function(li){
+            if (li.count > 5){
+                $("#linkedin").append(li.count);
+            }
+        });*/
+    </script>
+</div>
+                    </div>
+
+                    <!-- Post Navigation
+                    ============================================= -->
+                    <div class="post-navigation SofiaProLight">
+                        
+                        <div class="previous_post">
+                            <a href="http://blog.nimbledroid.com/2016/05/16/nimbledroid-product-update-may-2016-zh.html" rel="prev"><span class="previous_post_icon"><i class="ci_icon-chevron-left"></i></span>Previous post</a>
+                        </div>
+                        
+                        
+                        <div class="next_post">
+                            <a href="http://blog.nimbledroid.com/2016/05/23/memory-leaks-zh.html" rel="next">Next post<span class="next_post_icon"><i class="ci_icon-chevron-right"></i></span></a>
+                        </div>
+                        
+                    </div>
+                    <!-- .post-navigation end -->
+
+                </div>
+
+
+
+
+                
+                <div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = 'nimbledroid';
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the &lt;a href="https://disqus.com/?ref_noscript" rel="nofollow"&gt;comments powered by Disqus.&lt;/a&gt;</noscript>
+
+                
+
+
+            </div>
+            <!-- end span9 main-content -->
+            <aside class="span3 sidebar sidebar_right">
+    <div id="about-3" class="widget widget_categories SofiaProLight">
+        <div class="sidebar-widget-heading">
+            <h3 class="SofiaProBold">About us</h3>
+        </div>
+        <p>
+            Nobody likes sluggish mobile apps. At NimbleDroid, we’re building cutting-edge tools to redefine how developers craft performant apps. Our product is based on patent-pending technology created at Columbia University. It provides automated, comprehensive performance analysis for every build of your app.  Located in New York City, our team includes academics and hackers of all stripes, from CS PhDs to developers with 2,000+ stars on GitHub.
+        </p>
+        <div class="learn-more-button-wrap">
+            <a href="https://nimbledroid.com/"><button class="learn-more-btn">Get Started With NimbleDroid</button></a>
+        </div>
+    </div>
+    <div id="categories-3" class="widget widget_categories SofiaProLight">
+        <div class="sidebar-widget-heading">
+            <h3 class="SofiaProBold">Categories</h3>
+        </div>
+        <ul>
+            
+            
+            <li class="cat-item cat-item-73"><a href="http://blog.nimbledroid.com/">All</a></li>
+            
+            
+            
+            <li class="cat-item cat-item-73"><a href="http://blog.nimbledroid.com/categories/Performance%20Tips">Performance Tips</a></li>
+            
+            
+            
+            <li class="cat-item cat-item-73"><a href="http://blog.nimbledroid.com/categories/NimbleDroid%20Insights">NimbleDroid Insights</a></li>
+            
+            
+            
+            <li class="cat-item cat-item-73"><a href="http://blog.nimbledroid.com/categories/Company">Company</a></li>
+            
+            
+        </ul>
+    </div>
+
+    
+    <div id="rpwe_widget-3" class="widget SofiaProLight">
+        <div class="sidebar-widget-heading">
+            <h3 class="SofiaProBold">You may also like</h3>
+        </div>
+        <div class="rpwe-block">
+            <ul class="rpwe-ul">
+                
+                
+                    
+                    
+                
+                
+                
+                
+                    
+                    
+                
+                
+                
+                
+                    
+                    
+                
+                
+                
+                
+                    
+                    
+                
+                
+                
+                
+                    
+                    
+                
+                
+                
+                
+                    
+                        <li class="rpwe-li rpwe-clearfix">
+                            
+                            <a href="http://blog.nimbledroid.com/2016/04/25/problems-with-libraries-and-sdks.html" rel="bookmark">
+                                <img class="rpwe-alignleft rpwe-thumb" src="./Eight Ways Your Android App Can Leak Memory_files/problemwithsdks.jpg" alt="article">
+                            </a>
+                            
+                            <h3 class="rpwe-title">
+                                <a href="http://blog.nimbledroid.com/2016/04/25/problems-with-libraries-and-sdks.html" title="" rel="bookmark">Performance Problems in Libraries and SDKs</a>
+                            </h3>
+                            <time datetime="25 Apr 2016" class="rpwe-time published">25 Apr 2016</time>
+                        </li>
+                    
+                    
+                
+                
+                
+                
+                    
+                    
+                
+                
+                
+                
+                    
+                    
+                
+                
+                
+                
+                    
+                    
+                
+                
+                
+                
+                    
+                    
+                
+                
+                
+                
+                    
+                    
+                
+                
+                
+                
+                    
+                    
+                
+                
+                
+                
+                    
+                    
+                
+                
+                
+                
+                
+                
+                    
+                    
+                
+                
+                
+                
+                    
+                    
+                
+                
+                
+                
+                    
+                    
+                
+                
+                
+                
+                    
+                    
+                
+                
+                
+                
+                
+                
+                    
+                    
+                
+
+            </ul>
+        </div>
+    </div>
+    
+
+    <!--<div id="tag_cloud-3" class="widget SofiaProLight">-->
+        <!--<div class="sidebar-widget-heading">-->
+            <!--<h3 class="SofiaProBold">Popular tags</h3>-->
+        <!--</div>-->
+        <!--<div class="tagcloud">-->
+            <!---->
+            <!--<a href='/tags/Development' style='font-size: 22pt;'>Development</a>-->
+            <!---->
+            <!--<a href='/tags/Technology' style='font-size: 22pt;'>Technology</a>-->
+            <!---->
+            <!--<a href='/tags/Android' style='font-size: 22pt;'>Android</a>-->
+            <!---->
+            <!--<a href='/tags/Optimization' style='font-size: 22pt;'>Optimization</a>-->
+            <!---->
+            <!--<a href='/tags/Software' style='font-size: 22pt;'>Software</a>-->
+            <!---->
+        <!--</div>-->
+    <!--</div>-->
+
+    
+    <div id="text-6" class="widget SofiaProLight">
+        <div class="sidebar-widget-heading">
+            <h3 class="SofiaProBold">Latest Tweets</h3>
+        </div>
+        <div class="textwidget">
+            <div class="ab-tweet-scroller " data-fx="fade" data-play="true" data-easing="linear" data-duration="1000" data-pauseonhover="immediate" data-timeoutduration="5000">
+                <ul class="ab-tweet-scroller-inner ">
+                    <li class="ab-tweet-item SofiaProLight">
+                        <a class="ab-tweet-username" href="https://twitter.com/nimbledroid" target="_blank">@Nimbledorid</a>
+                        <div class="ab-tweet-text SofiaProLight" id="autoTweetContent">
+                        </div>
+                    </li>
+                </ul>
+                <div class="ab-tweet-navigation">
+                    <a href="http://blog.nimbledroid.com/2016/05/23/memory-leaks.html#" class="ab-tweet-prev">&lt;</a><a href="http://blog.nimbledroid.com/2016/05/23/memory-leaks.html#" class="ab-tweet-next">&gt;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./Eight Ways Your Android App Can Leak Memory_files/twitterPostFetch.js.下载"></script>
+    <script>
+        var config1 = {
+            "id": '700436365893357572',
+            "domId": 'autoTweetContent',
+            "maxTweets": 1,
+            "enableLinks": true,
+            "showUser": false,
+            "showInteraction": false
+        };
+        twitterFetcher.fetch(config1);
+    </script>
+    
+</aside>
+
+            <!-- end span3 sidebar -->
+        </div>
+        <!-- end row -->
+    </div>
+</section>
+      </div>
+    </div>
+
+    <footer id="ABdev_main_footer">
+
+    <div id="footer_columns">
+        <div class="container">
+            <div class="row">
+                <div class="span4 clearfix">
+                    <div id="text-2" class="widget widget_text">
+                        <h3 class="footer-widget-heading">ABOUT US</h3>
+                        <div class="textwidget">
+                            Nobody likes sluggish mobile apps. At NimbleDroid, we’re building cutting-edge tools to redefine how developers craft performant apps. Our product is based on patent-pending technology created at Columbia University. It provides automated, comprehensive performance analysis for every build of your app.
+<br><br>
+                            <a href="https://www.nimbledroid.com/about" class="footer_text_readmore">Read more<i class="icon-chevron-right"></i></a>
+                        </div>
+                    </div>
+                    <div id="text-5" class="widget widget_text">
+
+                        <div class="textwidget">
+                            <div class="sidebar_social">
+                                <div class="dnd_follow_us">
+                                    <a class="dnd_socialicon_facebook" href="https://www.facebook.com/NimbleDroid" target="_blank"><i class="ci_icon-facebook"></i></a>
+                                    <a class="dnd_socialicon_twitter" href="https://twitter.com/nimbledroid" target="_blank"><i class="ci_icon-twitter"></i></a>
+                                    <a class="dnd_socialicon_googleplus" href="https://plus.google.com/109570463366564630073" target="_blank"><i class="ci_icon-googleplus"></i></a>
+                                    <a class="dnd_socialicon_linkedin" href="https://www.linkedin.com/company/nimbledroid" target="_blank"><i class="ci_icon-linkedin"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="span4 clearfix">
+                    <div id="rpwe_widget-4" class="widget rpwe_widget recent-posts-extended">
+                        <h3 class="footer-widget-heading">LATEST POSTS</h3>
+                        <div class="rpwe-block">
+                            <ul class="rpwe-ul">
+                                
+                                
+                                
+                                
+                                
+                                <li class="rpwe-li rpwe-clearfix">
+                                    
+                                    <a href="http://blog.nimbledroid.com/2016/09/06/stop-memory-leaks.html">
+                                        <img class="rpwe-alignleft rpwe-thumb" src="./Eight Ways Your Android App Can Leak Memory_files/memoryLeakCoverNot.jpg" alt="article">
+                                    </a>
+                                    
+                                    <h3 class="rpwe-title"><a href="http://blog.nimbledroid.com/2016/09/06/stop-memory-leaks.html">Eight Ways Your Android App Can STOP Leaking Memory</a></h3>
+                                    <time datetime="06 Sep 2016" class="rpwe-time">Sep 6, 2016
+                                    </time>
+                                </li>
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                <li class="rpwe-li rpwe-clearfix">
+                                    
+                                    <a href="http://blog.nimbledroid.com/2016/06/15/app-diets-not-a-fad.html">
+                                        <img class="rpwe-alignleft rpwe-thumb" src="./Eight Ways Your Android App Can Leak Memory_files/DietApp.jpg" alt="article">
+                                    </a>
+                                    
+                                    <h3 class="rpwe-title"><a href="http://blog.nimbledroid.com/2016/06/15/app-diets-not-a-fad.html">App Diets are not a Fad</a></h3>
+                                    <time datetime="15 Jun 2016" class="rpwe-time">Jun 15, 2016
+                                    </time>
+                                </li>
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                <li class="rpwe-li rpwe-clearfix">
+                                    
+                                    <a href="http://blog.nimbledroid.com/2016/05/23/memory-leaks.html">
+                                        <img class="rpwe-alignleft rpwe-thumb" src="./Eight Ways Your Android App Can Leak Memory_files/memoryleak.jpg" alt="article">
+                                    </a>
+                                    
+                                    <h3 class="rpwe-title"><a href="http://blog.nimbledroid.com/2016/05/23/memory-leaks.html">Eight Ways Your Android App Can Leak Memory</a></h3>
+                                    <time datetime="23 May 2016" class="rpwe-time">May 23, 2016
+                                    </time>
+                                </li>
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                  
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="span4 clearfix">
+                    <div id="contact-info-2" class="widget contact-info">
+                        <h3 class="footer-widget-heading">GET IN TOUCH</h3>
+                        <div class="contact_info_widget">
+                            <p><i class="ci_icon-envelope"></i><a href="mailto:contact@nimbledroid.com">contact@nimbledroid.com</a></p>
+                            <p><i class="ci_icon-home"></i>588 Broadway, Suite 503 <br> <br>New York, NY 10012</p>
+                        </div>
+                    </div>
+
+                    <div id="subscribeArea" class="widget widget_text mailchimp">
+                        <h3 class="footer-widget-heading">SUBSCRIBE</h3>
+                        <h4 class="subscription-success"></h4>
+                        <h4 class="subscription-error"></h4>
+                        <div class="textwidget text-center">
+                            <!--<input class="subscribeInput" type="email" placeholder="Your Email"/>-->
+                            <button class="subscribeButton" onclick="OpenPopupForm();">Subscribe</button>
+                        </div>
+
+                    </div>
+                    <a href="http://blog.nimbledroid.com/feed.xml"> Subscribe via RSS </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer_copyright">
+        <div class="container">
+            <div class="row">
+                <div class="span5 footer_copyright">
+                    © 2015 NimbleDroid, All rights reserved
+                </div>
+                <!--
+                <div id="footer_menu" class="span7 text-right">
+                    <ul id="footer_menu_inner" class="">
+                        <li class="menu-item "><a href="https://www.nimbledroid.com/">Home</a></li>
+                        <li class="menu-item "><a href="https://www.nimbledroid.com/play">Play Apps</a></li>
+                        <li class="menu-item "><a href="https://www.nimbledroid.com/pricing">Pricing</a></li>
+                        <li class="menu-item "><a href="https://www.nimbledroid.com/account">Account</a></li>
+                        <li class="menu-item "><a href="https://www.nimbledroid.com/help">Help</a></li>
+                        <li class="menu-item current-menu-item"><a href="http://blog.nimbledroid.com">Blog</a></li>
+                        <li class="menu-item "><a href="https://www.nimbledroid.com/about">About Us</a></li>
+                        <li class="menu-item "><a href="https://www.nimbledroid.com/privacy">Privacy & Terms</a></li>
+                    </ul>
+                </div>
+                -->
+            </div>
+        </div>
+    </div>
+    <script>
+        /*$('.mailchimp').ajaxChimp({
+            callback: mailchimpCallback,
+            url: "http://nimbledroid.us11.list-manage.com/subscribe/post?u=fac135320a546db168f0a255f&amp;id=4d88516529" // reference http://kb.mailchimp.com/lists/signup-forms/host-your-own-signup-forms
+        });
+
+        function mailchimpCallback(resp) {
+            if (resp.result === 'success') {
+                $('.subscription-success').html('<i class="icon_check_alt2"></i><br/>' + resp.msg).fadeIn(100);
+                $('.subscription-success').fadeOut(15500);
+
+            } else if (resp.result === 'error') {
+                $('.subscription-error').html('<i class="icon_close_alt2"></i><br/>' + resp.msg).fadeIn(1000);
+            }
+        }
+        function cleanDialog() {
+            $('.subscription-error').fadeOut(500);
+            $('.subscription-success').fadeOut(500);
+        }
+        $('.subscribeInput').on('change', cleanDialog);
+        $('.subscribeButton').on('click', cleanDialog);
+        $('.subscription-error').on('click', cleanDialog);
+        $('.subscription-success').on('click', cleanDialog);*/
+
+        // Menu Toggle
+        $('#ABdev_menu_toggle').on('click',function(){
+            $('#logo_menu_bar>.container>nav').toggle();
+        })
+    </script>
+    <script>
+ (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+ })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ ga('create', 'UA-64885510-1', 'auto');
+ ga('send', 'pageview');
+
+</script>
+
+</footer>
+<style>
+    .popupBackground {
+        position: fixed;
+        z-index: 10001;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        top:0;
+        display: none;
+    }
+
+    .popup.signupForm {
+        width: 80%;
+        background: white;
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+        border-radius: 10px;
+        margin: 50px auto;
+        overflow: hidden;
+        padding: 0 10px 20px;
+    }
+    .closePanel{
+        font-family: "SofiaProBold";
+        color: #666;
+        font-size: 16px;
+        width: 100%;
+        text-align: right;
+        margin-bottom: 0px;
+        padding: 20px 20px 0;
+    }
+    .closePanel a{
+        color: #666;
+    }
+    .closePanel a:hover{
+        color: #ff0000;
+        cursor: pointer;
+    }
+</style>
+
+<div class="popupBackground">
+    <div class="popup signupForm">
+        <div class="closePanel" "=""><a onclick="closePanel()">Close</a></div>
+        <div class="popContent">
+            <!-- Begin MailChimp Signup Form -->
+            <link href="./Eight Ways Your Android App Can Leak Memory_files/classic-10_7.css" rel="stylesheet" type="text/css">
+            <style type="text/css">
+                #mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
+                /* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
+                   We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
+            </style>
+            <div id="mc_embed_signup">
+                <form action="http://nimbledroid.us11.list-manage.com/subscribe/post?u=fac135320a546db168f0a255f&amp;id=4d88516529" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate="">
+                    <div id="mc_embed_signup_scroll">
+                        <h2>Subscribe to our mailing list</h2>
+                        <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
+                        <div class="mc-field-group">
+                            <label for="mce-EMAIL">Email Address  <span class="asterisk">*</span>
+                            </label>
+                            <input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
+                        </div>
+                        <div class="mc-field-group">
+                            <label for="mce-FNAME">First Name </label>
+                            <input type="text" value="" name="FNAME" class="" id="mce-FNAME">
+                        </div>
+                        <div class="mc-field-group">
+                            <label for="mce-LNAME">Last Name </label>
+                            <input type="text" value="" name="LNAME" class="" id="mce-LNAME">
+                        </div>
+                        <div class="mc-field-group input-group">
+                            <strong>I'm interested in receiving </strong>
+                            <ul><li><input type="checkbox" value="1" name="group[14769][1]" id="mce-group[14769]-14769-0"><label for="mce-group[14769]-14769-0">NimbleDroid Newsletters</label></li>
+                                <li><input type="checkbox" value="2" name="group[14769][2]" id="mce-group[14769]-14769-1"><label for="mce-group[14769]-14769-1">NimbleDroid Product Updates</label></li>
+                                <li><input type="checkbox" value="4" name="group[14769][4]" id="mce-group[14769]-14769-2"><label for="mce-group[14769]-14769-2">NimbleDroid Promotions</label></li>
+                            </ul>
+                        </div>
+                        <div id="mce-responses" class="clear">
+                            <div class="response" id="mce-error-response" style="display:none"></div>
+                            <div class="response" id="mce-success-response" style="display:none"></div>
+                        </div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+                        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_fac135320a546db168f0a255f_4d88516529" tabindex="-1" value=""></div>
+                        <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
+                    </div>
+                </form>
+            </div>
+            <script type="text/javascript" src="./Eight Ways Your Android App Can Leak Memory_files/mc-validate.js.下载"></script><script type="text/javascript">(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';fnames[1]='FNAME';ftypes[1]='text';fnames[2]='LNAME';ftypes[2]='text';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
+            <!--End mc_embed_signup-->
+        </div>
+    </div>
+</div>
+<script>
+    function OpenPopupForm(){
+        $('.popupBackground').show();
+    }
+    function closePanel(){
+        $('.popupBackground').hide();
+    }
+</script>
+
+
+  
+
+
+</body></html>

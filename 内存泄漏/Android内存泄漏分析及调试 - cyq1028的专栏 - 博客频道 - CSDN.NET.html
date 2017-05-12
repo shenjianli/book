@@ -1,0 +1,1536 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0053)http://blog.csdn.net/cyq1028/article/details/19980369 -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script type="text/javascript" async="" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/lclm"></script>  
+
+    
+
+   
+
+  
+ <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="http://blog.csdn.net/cyq1028/article/details/19980369#"><style type="text/css">
+:root .blog_ad,
+:root #header + #content > #left > #rlblock_left
+{ display: none !important; }</style>
+
+    <title>Android内存泄漏分析及调试 - cyq1028的专栏
+        - 博客频道 - CSDN.NET</title>
+    
+    <meta name="description" content="尊重原创作者，转载请注明出处：http://blog.csdn.net/gemmem/article/details/13017999此文承接我的另一篇文章：Android进程的内存管理分析 首先了解一下dalvik的Garbage Collection：如上图所示，GC会选择一些它了解还存活的对象作为内存遍历的根节点（GC Roots），比方说thread">
+    <script src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/jquery.js.下载" type="text/javascript"></script>
+      <script type="text/javascript" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/jquery-version.js.下载"></script>
+    
+        <!--new top-->
+       
+        <link rel="stylesheet" href="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/index.css">
+        <!--new top-->
+    
+      <!-- ad begin -->
+         <script language="javascript" type="text/javascript" src="http://ads.csdn.net/js/tracking.js"></script>
+    <!-- ad end-->
+
+    <link rel="Stylesheet" type="text/css" href="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/style.css">
+    <link id="RSSLink" title="RSS" type="application/rss+xml" rel="alternate" href="http://blog.csdn.net/cyq1028/rss/list">
+    <link rel="shortcut icon" href="http://c.csdnimg.cn/public/favicon.ico">
+    <link type="text/css" rel="stylesheet" href="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/default.css">
+ 
+
+
+
+<script src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/share.js.下载"></script><link rel="stylesheet" type="text/css" href="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/job_reco.css"><link href="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/bdsstyle.css" rel="stylesheet" type="text/css"><script src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/wxLogin.js.下载"></script><link rel="stylesheet" type="text/css" href="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/style(1).css"><link type="text/css" rel="stylesheet" href="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/style(2).css"><script src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/logger.js.下载"></script><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Hover_Arrow {position: absolute; width: 15px; height: 11px; cursor: pointer}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 2px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 2px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; color: #666666}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: 1em}
+.MathJax_MenuRadioCheck.RTL {right: 1em; left: auto}
+.MathJax_MenuLabel {padding: 2px 2em 4px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #CCCCCC; margin: 4px 1px 0px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: Highlight; color: HighlightText}
+.MathJax_Menu_Close {position: absolute; width: 31px; height: 31px; top: -15px; left: -15px}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><link rel="stylesheet" href="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/share_style0_16.css"></head>
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/o.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div><div id="MathJax_Message" style="display: none;"></div><iframe frameborder="0" style="display: none;" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/saved_resource.html"></iframe>
+       
+
+
+
+    <!-- 广告位开始 -->
+        
+    <!-- 广告位结束 -->
+
+    
+   
+      <!--new top-->
+    <script id="toolbar-tpl-scriptId" fixed="true" prod="blog" skin="black" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/html.js.下载" type="text/javascript"></script><div class="csdn-toolbar csdn-toolbar-skin-black ">        <div class="container row center-block ">          <div class="col-md-3 pull-left logo clearfix"><a href="http://www.csdn.net/?ref=toolbar" title="CSDN首页" target="_blank" class="icon"></a><a title="频道首页" href="http://blog.csdn.net/?ref=toolbar_logo" class="img blog-icon"></a></div>          <div class="pull-right login-wrap unlogin">            <ul class="btns">              <li class="loginlink"><a href="https://passport.csdn.net/account/login?ref=toolbar" target="_top">登录&nbsp;</a>|<a target="_top" href="http://passport.csdn.net/account/mobileregister?ref=toolbar&amp;action=mobileRegister">&nbsp;注册</a></li>              <li class="search">                <div class="icon on-search-icon">                  <div class="wrap">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <form action="http://so.csdn.net/search" method="get" target="_blank">                      <input type="hidden" value="toolbar" name="ref" accesskey="2">                      <div class="border">                        <input placeholder="搜索" type="text" value="" name="q" accesskey="2"><span class="icon-enter-sm"></span>                      </div>                    </form>                  </div>                </div>              </li>              <li class="favor">                <div class="icon on-favor-icon">                  <div class="wrap">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <div style="display:none;" class="favor-success"><span class="msg">收藏成功</span>                      <div class="btns"><span class="btn btn-primary ok">确定</span></div>                    </div>                    <div style="display:none;" class="favor-failed"><span class="icon-danger-lg"></span><span class="msg">收藏失败，请重新收藏</span>                      <div class="btns"><span class="btn btn-primary ok">确定</span></div>                    </div>                    <form role="form" class="form-horizontal favor-form">                      <div class="form-group">                        <div class="clearfix">                          <label for="input-title" class="col-sm-2 control-label"><span class="red_txt">*</span>标题</label>                          <div class="col-sm-10">                            <input id="inputTitle" type="text" placeholder="" class="title form-control">                          </div>                        </div>                        <div class="alert alert-danger"><strong></strong>标题不能为空</div>                      </div>                      <div class="form-group" style="display:none;">                        <label for="input-url" class="col-sm-2 control-label">网址</label>                        <div class="col-sm-10">                          <input id="input-url" type="text" placeholder="" class="url form-control">                        </div>                      </div>                      <div class="form-group">                        <label for="input-tag" class="col-sm-2 tag control-label">标签</label>                        <div class="col-sm-10">                          <input id="input-tag" type="text" class="form-control tag">                        </div>                      </div>                      <div class="form-group">                        <label for="input-description" class="description col-sm-2 control-label">位置</label>                        <div class="col-sm-10">                          <div class="my_lib_box">                            个人主页&nbsp;-&nbsp;<a href="http://my.csdn.net/" target="_blank">我的知识</a>                          </div>                          <div class="checkbox">                            <div class="pull-left">                              <label>                                <input type="checkbox" name="share" class="save_lib_map">同时保存至：                              </label>                            </div>                            <div class="pull-left">                              <div class="dropdown">                                <button id="toolbar_sele_map" type="button">                                  选择知识图谱                                  <i class="fa fa-chevron-down"></i>                                </button>                                <div class="top_arr"></div>                                <div class="outside">                                  <ul class="dropdown-menu" id="toolbar_Design_knowledge"></ul>                                </div>                              </div>                            </div>                            <div class="pull-left new_txt">                              <a href="http://lib.csdn.net/my/create/structure" target="_blank">新建？</a>                            </div>                          </div>                        </div>                      </div>                      <div class="form-group">                        <div class="col-sm-offset-2 col-sm-10 ft">                          <div class="col-sm-4 pull-left" style="display:none">                            <div class="checkbox">                              <label>                                <input type="checkbox" name="share" checked="checked" class="share">公开                              </label>                            </div>                          </div>                          <div class="col-sm-8 pull-right favor-btns">                            <button type="button" class="cancel btn btn-default">取消</button>                            <button type="submit" class="submit btn btn-primary">收藏</button>                          </div>                        </div>                      </div>                    </form>                  </div>                </div>              </li>              <li class="notify">                <div style="display:none" class="number"></div>                <div style="display:none" class="icon-hasnotes-sm"></div>                <div id="header_notice_num"></div>                <div class="icon on-notify-icon">                  <div class="wrap">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <div id="note1" class="csdn_note">                      <div class="box"></div>                    <iframe src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/saved_resource(1).html" frameborder="0" allowtransparency="true" style="z-index:-1;position:absolute;top:0;left:0;width:100%;height:100%;background:transparent"></iframe></div>                  </div>                </div>              </li>              <li class="ugc">                <div class="icon on-ugc-icon">                  <div class="wrap clearfix">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <dl>                      <dt><a href="http://geek.csdn.net/news/expert?ref=toolbar" target="_blank" class="p-news clearfix" style="display:none;"><em class="icon"></em><span>分享资讯</span></a></dt>                      <dt style="border: none;"><a href="http://u.download.csdn.net/upload?ref=toolbar" target="_blank" class="p-doc clearfix"><em class="icon"></em><span>传PPT/文档</span></a></dt>                      <dt><a href="http://bbs.csdn.net/topics/new?ref=toolbar" target="_blank" class="p-ask clearfix"><em class="icon"></em><span>提问题</span></a></dt>                      <dt><a href="http://write.blog.csdn.net/postedit?ref=toolbar" target="_blank" class="p-blog clearfix"><em class="icon"></em><span>写博客</span></a></dt>                      <dt><a href="http://u.download.csdn.net/upload?ref=toolbar" target="_blank" class="p-src clearfix"><em class="icon"></em><span>传资源</span></a></dt>                      <dt><a href="https://code.csdn.net/projects/new?ref=toolbar" target="_blank" class="c-obj clearfix"><em class="icon"></em><span>创建项目</span></a></dt>                      <dt><a href="https://code.csdn.net/snippets/new?ref=toolbar" target="_blank" class="c-code clearfix"><em class="icon"></em><span>创建代码片</span></a></dt>                    </dl>                  </div>                </div>              </li>              <li class="profile">                <div class="icon on-profile-icon"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/100x100.jpg" class="curr-icon-img">                  <div class="wrap clearfix">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <div class="bd">                      <dl class="clearfix">                        <dt class="pull-left img"><a target="_blank" href="http://my.csdn.net/?ref=toolbar" class="avatar"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/100x100.jpg"></a></dt>                        <dd class="info" style="border: none;"><a target="_blank" href="http://my.csdn.net/?ref=toolbar" class="nickname"></a><a class="set-nick" href="https://passport.csdn.net/account/profile">设置昵称<span class="write-icon"></span></a><span class="dec"><a class="fill-dec" href="http://my.csdn.net/" target="_blank">编辑自我介绍，让更多人了解你<span class="write-icon"></span></a></span></dd>                      </dl>                    </div>                    <div class="ft clearfix"><a target="_blank" href="http://my.csdn.net/my/account/changepwd?ref=toolbar" class="pull-left"><span class="icon-cog"></span>帐号设置</a><a href="https://passport.csdn.net/account/logout?ref=toolbar" target="_top" class="pull-left" style="margin-left:132px; width:18px; height:27px; white-space:nowrap; overflow:hidden;"><span class="icon-signout"></span><span class="out">退出</span></a></div>                  </div>                </div>              </li>              <li class="apps">                <div id="chasnew123" class="hasnew" style="display: none;"></div>                <div id="cappsarea123" class="icon on-apps-icon">                  <div class="wrap clearfix">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                  <div class="detail">                    <dl>                      <dt>                        <h5>社区</h5>                      </dt>                      <dd> <a href="http://blog.csdn.net/?ref=toolbar" target="_blank">博客</a></dd>                      <dd> <a href="http://bbs.csdn.net/?ref=toolbar" target="_blank">论坛</a></dd>                      <dd> <a href="http://download.csdn.net/?ref=toolbar" target="_blank">下载</a></dd>                      <dd> <a href="http://lib.csdn.net/?ref=toolbar" target="_blank">知识库</a></dd>                      <dd><a href="http://ask.csdn.net/?ref=toolbar" target="_blank">技术问答</a></dd>                      <dd><a href="http://geek.csdn.net/?ref=toolbar" target="_blank">极客头条</a></dd>                      <dd style="display:none"> <a href="http://hero.csdn.net/?ref=toolbar" target="_blank">英雄会</a></dd>                    </dl>                  </div>                  <div class="detail">                    <dl>                      <dt>                        <h5>服务</h5>                      </dt>                      <dd style="display:none"> <a href="http://job.csdn.net/?ref=toolbar" target="_blank">JOB<img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/new.gif" style="display: none; margin-top: -26px; width: 23px;"></a></dd>                      <dd> <a href="http://edu.csdn.net/?ref=toolbar" target="_blank">学院<img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/new.gif" style="display: none; margin-top: -26px; width: 23px;"></a></dd>                      <dd> <a href="https://code.csdn.net/?ref=toolbar" target="_blank">CODE</a></dd>                      <dd> <a href="http://huiyi.csdn.net/?ref=toolbar" target="_blank">活动</a></dd>                      <dd> <a href="http://www.csto.com/?ref=toolbar" target="_blank">CSTO</a></dd>                      <dd> <a href="http://mall.csdn.net/?ref=toolbar" target="_blank">C币兑换<img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/new.gif" style="display: none; margin-top: -26px; width: 23px;"></a></dd>                    </dl>                  </div>                  <div class="detail last">                    <dl>                      <dt>                        <h5>俱乐部</h5>                      </dt>                      <dd> <a href="http://cto.csdn.net/?ref=toolbar" target="_blank">CTO俱乐部</a></dd>                      <dd> <a href="http://student.csdn.net/?ref=toolbar" target="_blank">高校俱乐部</a></dd>                    </dl>                  </div>                </div>              </div>            </li>            </ul>          </div>        </div>    </div>
+     <!--new top-->
+    <div id="container">
+        <div id="header">
+    <div class="header">
+        <div id="blog_title">
+            <h2>
+                <a href="http://blog.csdn.net/cyq1028">cyq1028的专栏</a></h2>
+            <h3></h3>
+            <div class="clear">
+            </div>
+        </div>
+        <div class="clear">
+        </div>
+        
+     
+    </div>
+</div>
+<div id="navigator">
+    <div class="navigator_bg">
+    </div>
+    <div class="navigator">
+        <ul>           
+                <li id="btnContents"><a href="http://blog.csdn.net/cyq1028?viewmode=contents"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_mulu&#39;])">
+                    <img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/ico_list.gif">目录视图</span></a></li>
+                <li id="btnView"><a href="http://blog.csdn.net/cyq1028?viewmode=list"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_zhaiyao&#39;])">
+                    <img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/ico_summary.gif">摘要视图</span></a></li>
+                <li id="btnRss"><a href="http://blog.csdn.net/cyq1028/rss/list"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_RSS&#39;])">
+                    <img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/ico_rss.gif">订阅</span></a></li>                
+            
+
+            </ul>
+    </div>
+</div>
+<script type="text/javascript">
+    var username = "cyq1028";
+    var _blogger = username;
+    var blog_address = "http://blog.csdn.net/cyq1028";
+    var static_host = "http://static.blog.csdn.net";
+    var currentUserName = "";  
+</script>
+
+        <div id="body">
+            <div id="main">
+                <div class="main">
+                        <div class="ad_class">
+<div class="notice tracking-ad" data-mod="popu_3"> 
+
+
+<a href="http://blog.csdn.net/broadview2006/article/details/71128707">
+<font color="blue"><strong>【评论送书】机器学习、Spring MVC、Android</strong></font></a>
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="http://blog.csdn.net/blogdevteam/article/details/71512789">
+<font color="red">CSDN日报20170509 ——《互联网时代架构师的职责与思考》</font></a>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="http://edu.csdn.net/huiyiCourse/series_detail/35?ref=blog&amp;loc=r0">
+<font color="blue"><strong>CSDN技术直播：php实战微信公众号开发！
+</strong>
+</font></a>
+</div>                        </div>
+                        
+
+
+
+  
+<link href="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/comment1.css" type="text/css" rel="stylesheet">
+<link href="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/style1.css" type="text/css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/markdown_views.css">
+<link rel="stylesheet" href="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/category.css">
+
+<script type="text/javascript" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/category.js.下载"></script>
+
+  <script type="text/ecmascript">
+      window.quickReplyflag = true;
+           
+            var isBole = false;
+            
+      
+      var fasrc="http://my.csdn.net/my/favorite/miniadd?t=Android%e5%86%85%e5%ad%98%e6%b3%84%e6%bc%8f%e5%88%86%e6%9e%90%e5%8f%8a%e8%b0%83%e8%af%95&u=http://blog.csdn.net/cyq1028/article/details/19980369"
+
+    </script>
+<div id="article_details" class="details">
+    <div class="article_title">   
+         <span class="ico ico_type_Repost"></span>
+
+
+    <h1>
+        <span class="link_title"><a href="http://blog.csdn.net/cyq1028/article/details/19980369">
+        Android内存泄漏分析及调试            
+        </a></span>
+    </h1>
+</div>
+
+   
+
+        <div class="article_manage clearfix">
+        <div class="article_r">
+            <span class="link_postdate">2014-02-26 15:04</span>
+            <span class="link_view" title="阅读次数">40048人阅读</span>
+            <span class="link_comments" title="评论次数"> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#comments" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_pinglun&#39;])">评论</a>(6)</span>
+            <span class="link_collect tracking-ad" data-mod="popu_171"> <a href="javascript:void(0);" onclick="javascript:collectArticle(&#39;Android%e5%86%85%e5%ad%98%e6%b3%84%e6%bc%8f%e5%88%86%e6%9e%90%e5%8f%8a%e8%b0%83%e8%af%95&#39;,&#39;19980369&#39;);return false;" title="收藏">收藏</a></span>
+             <span class="link_report"> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#report" onclick="javascript:report(19980369,2);return false;" title="举报">举报</a></span>
+
+        </div>
+    </div>
+    <div class="embody" style="display:none" id="embody">
+        <span class="embody_t">本文章已收录于：</span>
+        <div class="embody_c" id="lib" value="{&quot;err&quot;:0,&quot;msg&quot;:&quot;ok&quot;,&quot;data&quot;:[]}"></div>
+    </div>
+    <style type="text/css">        
+            .embody{
+                padding:10px 10px 10px;
+                margin:0 -20px;
+                border-bottom:solid 1px #ededed;                
+            }
+            .embody_b{
+                margin:0 ;
+                padding:10px 0;
+            }
+            .embody .embody_t,.embody .embody_c{
+                display: inline-block;
+                margin-right:10px;
+            }
+            .embody_t{
+                font-size: 12px;
+                color:#999;
+            }
+            .embody_c{
+                font-size: 12px;
+            }
+            .embody_c img,.embody_c em{
+                display: inline-block;
+                vertical-align: middle;               
+            }
+             .embody_c img{               
+                width:30px;
+                height:30px;
+            }
+            .embody_c em{
+                margin: 0 20px 0 10px;
+                color:#333;
+                font-style: normal;
+            }
+    </style>
+    <script type="text/javascript">
+        $(function () {
+            try
+            {
+                var lib = eval("("+$("#lib").attr("value")+")");
+                var html = "";
+                if (lib.err == 0) {
+                    $.each(lib.data, function (i) {
+                        var obj = lib.data[i];
+                        //html += '<img src="' + obj.logo + '"/>' + obj.name + "&nbsp;&nbsp;";
+                        html += ' <a href="' + obj.url + '" target="_blank">';
+                        html += ' <img src="' + obj.logo + '">';
+                        html += ' <em><b>' + obj.name + '</b></em>';
+                        html += ' </a>';
+                    });
+                    if (html != "") {
+                        setTimeout(function () {
+                            $("#lib").html(html);                      
+                            $("#embody").show();
+                        }, 100);
+                    }
+                }      
+            } catch (err)
+            { }
+            
+        });
+    </script>
+
+  
+
+  
+  
+     
+
+<div id="article_content" class="article_content">
+
+<strong>尊重原创作者，转载请注明出处：</strong>
+<p align="left"><a target="_blank" href="http://write.blog.csdn.net/postedit/13017999"></a><a target="_blank" href="http://blog.csdn.net/gemmem/article/details/13017999"><strong>http://blog.csdn.net/gemmem/article/details/13017999</strong></a></p>
+<p align="left">此文承接我的另一篇文章：<a target="_blank" href="http://blog.csdn.net/gemmem/article/details/8920039">Android进程的内存管理分析</a></p>
+<p align="left"><strong>&nbsp;</strong><span style="font-weight:bold">首先了解一下dalvik的Garbage Collection：</span></p>
+<p align="left"><span style="font-weight:bold"><img alt="" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/20131025114957718"><br>
+</span></p>
+<p align="left"><span style="font-weight:bold"><br>
+</span></p>
+<p align="left"><span style="font-weight:bold"><br>
+</span></p>
+<p>如上图所示，GC会选择一些它了解还存活的对象作为内存遍历的根节点（GC Roots），比方说thread stack中的变量，JNI中的全局变量，zygote中的对象（class loader加载）等，然后开始对heap进行遍历。到最后，部分没有直接或者间接引用到GC Roots的就是需要回收的垃圾，会被GC回收掉。如下图蓝色部分。</p>
+<p><img alt="" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/20131025115331781"><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p align="left"></p>
+<p align="left"><span style="color:#333333"><a href="http://lib.csdn.net/base/javase" class="replace_word" title="Java SE知识库" target="_blank" style="color:#df3434; font-weight:bold;">Java</a></span><span style="color:#333333">内存泄漏指的是进程中某些对象（垃圾对象）已经没有使用价值了，但是它们却可以直接或间接地引用到gc roots</span>导致无法被GC回收。无用的对象占据着内存空间，使得实际可使用内存变小，形象地说法就是内存泄漏了。下面分析一些可能导致内存泄漏的情景。</p>
+<p align="left"><span style="color:#333333">&nbsp;</span></p>
+<p align="left"><strong>常见的内存泄漏</strong></p>
+<p align="left"><strong>&nbsp;</strong></p>
+<p align="left"><strong>&nbsp;1、非静态内部类的静态实例容易造成内存泄漏</strong></p>
+<p></p>
+<div class="dp-highlighter bg_java">
+<div class="bar">
+<div class="tools"><strong>[java]</strong> <a target="_blank" class="ViewSource" title="view plain" href="http://blog.csdn.net/gemmem/article/details/13017999#">
+view plain</a><a target="_blank" class="CopyToClipboard" title="copy" href="http://blog.csdn.net/gemmem/article/details/13017999#">copy</a><a target="_blank" class="PrintSource" title="print" href="http://blog.csdn.net/gemmem/article/details/13017999#">print</a><a target="_blank" class="About" title="?" href="http://blog.csdn.net/gemmem/article/details/13017999#">?</a><div style="position: absolute; left: 516px; top: 1634px; width: 18px; height: 18px; z-index: 99;"><embed id="ZeroClipboardMovie_1" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="18" height="18" name="ZeroClipboardMovie_1" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=1&amp;width=18&amp;height=18" wmode="transparent"></div></div>
+</div>
+<ol class="dp-j">
+<li class="alt"><span><span class="keyword">public</span><span>&nbsp;</span><span class="keyword">class</span><span>&nbsp;MainActivityextends&nbsp;Activity&nbsp;&nbsp;</span></span></li><li><span>{&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">static</span><span>&nbsp;Demo&nbsp;sInstance&nbsp;=&nbsp;</span><span class="keyword">null</span><span>;&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="annotation">@Override</span><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">public</span><span>&nbsp;</span><span class="keyword">void</span><span>&nbsp;onCreate(BundlesavedInstanceState)&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">super</span><span>.onCreate(savedInstanceState);&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setContentView(R.layout.activity_main);&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">if</span><span>&nbsp;(sInstance&nbsp;==&nbsp;</span><span class="keyword">null</span><span>)&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sInstance=&nbsp;</span><span class="keyword">new</span><span>&nbsp;Demo();&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">class</span><span>&nbsp;Demo&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;voiddoSomething()&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.print(</span><span class="string">"dosth."</span><span>);&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>}&nbsp;&nbsp;</span></li></ol>
+<div class="save_code tracking-ad" data-mod="popu_249" style="display: none;"><a href="javascript:;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/save_snippets.png"></a></div></div>
+<div class="dp-highlighter bg_java"><div class="bar"><div class="tools"><b>[java]</b> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="ViewSource" title="view plain" onclick="dp.sh.Toolbar.Command(&#39;ViewSource&#39;,this);return false;">view plain</a><span data-mod="popu_168"> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="CopyToClipboard" title="copy" onclick="dp.sh.Toolbar.Command(&#39;CopyToClipboard&#39;,this);return false;">copy</a><div style="position: absolute; left: 520px; top: 2081px; width: 18px; height: 18px; z-index: 99;"><embed id="ZeroClipboardMovie_2" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="18" height="18" name="ZeroClipboardMovie_2" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=2&amp;width=18&amp;height=18" wmode="transparent"></div></span><span data-mod="popu_169"> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="PrintSource" title="print" onclick="dp.sh.Toolbar.Command(&#39;PrintSource&#39;,this);return false;">print</a></span><a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="About" title="?" onclick="dp.sh.Toolbar.Command(&#39;About&#39;,this);return false;">?</a><span class="tracking-ad" data-mod="popu_167"><a href="https://code.csdn.net/snippets/205982" target="_blank" title="在CODE上查看代码片" style="text-indent:0;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/CODE_ico.png" width="12" height="12" alt="在CODE上查看代码片" style="position:relative;top:1px;left:2px;"></a></span><span class="tracking-ad" data-mod="popu_170"><a href="https://code.csdn.net/snippets/205982/fork" target="_blank" title="派生到我的代码片" style="text-indent:0;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/ico_fork.svg" width="12" height="12" alt="派生到我的代码片" style="position:relative;top:2px;left:2px;"></a></span></div></div><ol start="1" class="dp-j"><li class="alt"><span><span class="keyword">public</span><span>&nbsp;</span><span class="keyword">class</span><span>&nbsp;MainActivityextends&nbsp;Activity&nbsp;&nbsp;</span></span></li><li class=""><span>{&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">static</span><span>&nbsp;Demo&nbsp;sInstance&nbsp;=&nbsp;</span><span class="keyword">null</span><span>;&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="annotation">@Override</span><span>&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public</span><span>&nbsp;</span><span class="keyword">void</span><span>&nbsp;onCreate(BundlesavedInstanceState)&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;</span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">super</span><span>.onCreate(savedInstanceState);&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setContentView(R.layout.activity_main);&nbsp;&nbsp;</span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>&nbsp;(sInstance&nbsp;==&nbsp;</span><span class="keyword">null</span><span>)&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;</span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sInstance=&nbsp;<span class="keyword">new</span><span>&nbsp;Demo();&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">class</span><span>&nbsp;Demo&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;voiddoSomething()&nbsp;&nbsp;</span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.print(<span class="string">"dosth."</span><span>);&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li class=""><span>}&nbsp;&nbsp;</span></li></ol><div class="save_code tracking-ad" data-mod="popu_249" style="display: none;"><a href="javascript:;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/save_snippets.png"></a></div></div><pre code_snippet_id="205982" snippet_file_name="blog_20140226_1_5627227" style="DISPLAY: none" class="java" name="code">public class MainActivityextends Activity
+{
+         static Demo sInstance = null;
+        
+    @Override
+    public void onCreate(BundlesavedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        if (sInstance == null)
+        {
+           sInstance= new Demo();
+        }
+    }
+    class Demo
+    {
+    voiddoSomething()
+    {
+               System.out.print("dosth.");
+    }
+    }
+}</pre><br>
+<br>
+<p></p>
+<p>上面的代码中的sInstance实例类型为静态实例，在第一个MainActivity act1实例创建时，sInstance会获得并一直持有act1的引用。当MainAcitivity销毁后重建，因为sInstance持有act1的引用，所以act1是无法被GC回收的，进程中会存在2个MainActivity实例（act1和重建后的MainActivity实例），这个act1对象就是一个无用的但一直占用内存的对象，即无法回收的垃圾对象。所以，对于lauchMode不是singleInstance的Activity，
+ 应该避免在activity里面实例化其非静态内部类的静态实例。</p>
+<p>&nbsp;</p>
+<p><strong>2、activity使用静态成员</strong></p>
+<p></p>
+<div class="dp-highlighter bg_java">
+<div class="bar">
+<div class="tools"><strong>[java]</strong> <a target="_blank" class="ViewSource" title="view plain" href="http://blog.csdn.net/gemmem/article/details/13017999#">
+view plain</a><a target="_blank" class="CopyToClipboard" title="copy" href="http://blog.csdn.net/gemmem/article/details/13017999#">copy</a><a target="_blank" class="PrintSource" title="print" href="http://blog.csdn.net/gemmem/article/details/13017999#">print</a><a target="_blank" class="About" title="?" href="http://blog.csdn.net/gemmem/article/details/13017999#">?</a><div style="position: absolute; left: 516px; top: 2822px; width: 18px; height: 18px; z-index: 99;"><embed id="ZeroClipboardMovie_3" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="18" height="18" name="ZeroClipboardMovie_3" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=3&amp;width=18&amp;height=18" wmode="transparent"></div></div>
+</div>
+<ol class="dp-j">
+<li class="alt"><span><span class="keyword">private</span><span>&nbsp;</span><span class="keyword">static</span><span>&nbsp;Drawable&nbsp;sBackground;&nbsp;&nbsp;&nbsp;&nbsp;</span></span></li><li><span></span><span class="annotation">@Override</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li class="alt"><span></span><span class="keyword">protected</span><span>&nbsp;</span><span class="keyword">void</span><span>&nbsp;onCreate(Bundle&nbsp;state)&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">super</span><span>.onCreate(state);&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;TextView&nbsp;label&nbsp;=&nbsp;</span><span class="keyword">new</span><span>&nbsp;TextView(</span><span class="keyword">this</span><span>);&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;label.setText(</span><span class="string">"Leaks&nbsp;are&nbsp;bad"</span><span>);&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">if</span><span>&nbsp;(sBackground&nbsp;==&nbsp;</span><span class="keyword">null</span><span>)&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sBackground&nbsp;=&nbsp;getDrawable(R.drawable.large_bitmap);&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;label.setBackgroundDrawable(sBackground);&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;setContentView(label);&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li class="alt"><span>}&nbsp;&nbsp;&nbsp;</span></li></ol>
+<div class="save_code tracking-ad" data-mod="popu_249" style="display: none;"><a href="javascript:;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/save_snippets.png"></a></div></div>
+<div class="dp-highlighter bg_java"><div class="bar"><div class="tools"><b>[java]</b> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="ViewSource" title="view plain" onclick="dp.sh.Toolbar.Command(&#39;ViewSource&#39;,this);return false;">view plain</a><span data-mod="popu_168"> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="CopyToClipboard" title="copy" onclick="dp.sh.Toolbar.Command(&#39;CopyToClipboard&#39;,this);return false;">copy</a><div style="position: absolute; left: 520px; top: 3143px; width: 18px; height: 18px; z-index: 99;"><embed id="ZeroClipboardMovie_4" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="18" height="18" name="ZeroClipboardMovie_4" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=4&amp;width=18&amp;height=18" wmode="transparent"></div></span><span data-mod="popu_169"> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="PrintSource" title="print" onclick="dp.sh.Toolbar.Command(&#39;PrintSource&#39;,this);return false;">print</a></span><a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="About" title="?" onclick="dp.sh.Toolbar.Command(&#39;About&#39;,this);return false;">?</a><span class="tracking-ad" data-mod="popu_167"><a href="https://code.csdn.net/snippets/205982" target="_blank" title="在CODE上查看代码片" style="text-indent:0;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/CODE_ico.png" width="12" height="12" alt="在CODE上查看代码片" style="position:relative;top:1px;left:2px;"></a></span><span class="tracking-ad" data-mod="popu_170"><a href="https://code.csdn.net/snippets/205982/fork" target="_blank" title="派生到我的代码片" style="text-indent:0;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/ico_fork.svg" width="12" height="12" alt="派生到我的代码片" style="position:relative;top:2px;left:2px;"></a></span></div></div><ol start="1" class="dp-j"><li class="alt"><span><span class="keyword">private</span><span>&nbsp;</span><span class="keyword">static</span><span>&nbsp;Drawable&nbsp;sBackground;&nbsp;&nbsp;&nbsp;&nbsp;</span></span></li><li class=""><span><span class="annotation">@Override</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span></li><li class="alt"><span><span class="keyword">protected</span><span>&nbsp;</span><span class="keyword">void</span><span>&nbsp;onCreate(Bundle&nbsp;state)&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">super</span><span>.onCreate(state);&nbsp;&nbsp;&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;TextView&nbsp;label&nbsp;=&nbsp;<span class="keyword">new</span><span>&nbsp;TextView(</span><span class="keyword">this</span><span>);&nbsp;&nbsp;&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;label.setText(<span class="string">"Leaks&nbsp;are&nbsp;bad"</span><span>);&nbsp;&nbsp;&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>&nbsp;(sBackground&nbsp;==&nbsp;</span><span class="keyword">null</span><span>)&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sBackground&nbsp;=&nbsp;getDrawable(R.drawable.large_bitmap);&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;label.setBackgroundDrawable(sBackground);&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;setContentView(label);&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li class="alt"><span>}&nbsp;&nbsp;&nbsp;</span></li></ol><div class="save_code tracking-ad" data-mod="popu_249"><a href="javascript:;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/save_snippets.png"></a></div></div><pre code_snippet_id="205982" snippet_file_name="blog_20140226_2_545461" style="DISPLAY: none" class="java" name="code">private static Drawable sBackground;  
+@Override  
+protected void onCreate(Bundle state) {  
+    super.onCreate(state);  
+  
+    TextView label = new TextView(this);  
+    label.setText("Leaks are bad");  
+  
+    if (sBackground == null) {  
+        sBackground = getDrawable(R.drawable.large_bitmap);  
+    }  
+    label.setBackgroundDrawable(sBackground);  
+  
+    setContentView(label);  
+} </pre><br>
+<br>
+<p></p>
+<p>由于用静态成员sBackground&nbsp;缓存了drawable对象，所以activity加载速度会加快，但是这样做是错误的。因为在<a href="http://lib.csdn.net/base/android" class="replace_word" title="Android知识库" target="_blank" style="color:#df3434; font-weight:bold;">Android</a> 2.3系统上，它会导致activity销毁后无法被系统回收。</p>
+<p>label .setBackgroundDrawable函数调用会将label赋值给sBackground的成员变量mCallback。</p>
+<p>上面代码意味着：sBackground（GC Root）会持有TextView对象，而TextView持有Activity对象。所以导致Activity对象无法被系统回收。</p>
+<p>下面看看android4.0为了避免上述问题所做的改进。</p>
+<p>先看看android 2.3的Drawable.Java对setCallback的实现：</p>
+<p>&nbsp;&nbsp;&nbsp; public final void setCallback(Callback cb){</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mCallback = cb;</p>
+<p>}</p>
+<p>再看看android 4.0的Drawable.Java对setCallback的实现：</p>
+<p>&nbsp;&nbsp;&nbsp; public final void setCallback(Callback cb){</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mCallback = newWeakReference&lt;Callback&gt; (cb);</p>
+<p>}</p>
+<p>在android 2.3中要避免内存泄漏也是可以做到的, 在activity的onDestroy时调用</p>
+<p>sBackgroundDrawable.setCallback(null)。</p>
+<p>&nbsp;</p>
+<p>以上2个例子的内存泄漏都是因为Activity的引用的生命周期超越了activity对象的生命周期。也就是常说的Context泄漏，因为activity就是context。</p>
+<p>&nbsp;</p>
+<p align="left">想要避免context相关的内存泄漏，需要注意以下几点：</p>
+<p align="left">·不要对activity的context长期引用(一个activity的引用的生存周期应该和activity的生命周期相同)</p>
+<p align="left">·如果可以的话，尽量使用关于application的context来替代和activity相关的context</p>
+<p align="left">·如果一个acitivity的非静态内部类的生命周期不受控制，那么避免使用它；正确的方法是使用一个静态的内部类，并且对它的外部类有一WeakReference，就像在ViewRootImpl中内部类W所做的那样。</p>
+<p align="left"><strong>3、使用handler时的内存问题</strong></p>
+<p align="left"><strong><span style="color:#333333">&nbsp;</span></strong></p>
+<p>我们知道，Handler通过发送Message与主线程交互，Message发出之后是存储在MessageQueue中的，有些Message也不是马上就被处理的。在Message中存在一个 target，是Handler的一个引用，如果Message在Queue中存在的时间越长，就会导致Handler无法被回收。如果Handler是非静态的，则会导致Activity或者Service不会被回收。 所以正确处理Handler等之类的内部类，应该将自己的Handler定义为静态内部类。</p>
+<p>&nbsp;</p>
+<p>HandlerThread的使用也需要注意：</p>
+<p align="left">&nbsp; 当我们在activity里面创建了一个HandlerThread，代码如下：</p>
+<p></p>
+<div class="dp-highlighter bg_java">
+<div class="bar">
+<div class="tools"><strong>[java]</strong> <a target="_blank" class="ViewSource" title="view plain" href="http://blog.csdn.net/gemmem/article/details/13017999#">
+view plain</a><a target="_blank" class="CopyToClipboard" title="copy" href="http://blog.csdn.net/gemmem/article/details/13017999#">copy</a><a target="_blank" class="PrintSource" title="print" href="http://blog.csdn.net/gemmem/article/details/13017999#">print</a><a target="_blank" class="About" title="?" href="http://blog.csdn.net/gemmem/article/details/13017999#">?</a><div style="position: absolute; left: 516px; top: 4796px; width: 18px; height: 18px; z-index: 99;"><embed id="ZeroClipboardMovie_5" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="18" height="18" name="ZeroClipboardMovie_5" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=5&amp;width=18&amp;height=18" wmode="transparent"></div></div>
+</div>
+<ol class="dp-j">
+<li class="alt"><span><span class="keyword">public</span><span>&nbsp;classMainActivity&nbsp;</span><span class="keyword">extends</span><span>&nbsp;Activity&nbsp;&nbsp;</span></span></li><li><span>{&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="annotation">@Override</span><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">public</span><span>&nbsp;</span><span class="keyword">void</span><span>&nbsp;onCreate(BundlesavedInstanceState)&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">super</span><span>.onCreate(savedInstanceState);&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setContentView(R.layout.activity_main);&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thread&nbsp;mThread&nbsp;=&nbsp;newHandlerThread(</span><span class="string">"demo"</span><span>,&nbsp;Process.THREAD_PRIORITY_BACKGROUND);&nbsp;&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mThread.start();&nbsp;&nbsp;</span></li><li><span>MyHandler&nbsp;mHandler&nbsp;=&nbsp;</span><span class="keyword">new</span><span>&nbsp;MyHandler(&nbsp;mThread.getLooper(&nbsp;)&nbsp;);&nbsp;&nbsp;</span></li><li class="alt"><span>…….&nbsp;&nbsp;</span></li><li><span>…….&nbsp;&nbsp;</span></li><li class="alt"><span>…….&nbsp;&nbsp;</span></li><li><span>}&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="annotation">@Override</span><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">public</span><span>&nbsp;</span><span class="keyword">void</span><span>&nbsp;onDestroy()&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">super</span><span>.onDestroy();&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>}&nbsp;&nbsp;</span></li></ol>
+<div class="save_code tracking-ad" data-mod="popu_249"><a href="javascript:;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/save_snippets.png"></a></div></div>
+<div class="dp-highlighter bg_java"><div class="bar"><div class="tools"><b>[java]</b> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="ViewSource" title="view plain" onclick="dp.sh.Toolbar.Command(&#39;ViewSource&#39;,this);return false;">view plain</a><span data-mod="popu_168"> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="CopyToClipboard" title="copy" onclick="dp.sh.Toolbar.Command(&#39;CopyToClipboard&#39;,this);return false;">copy</a><div style="position: absolute; left: 520px; top: 5207px; width: 18px; height: 18px; z-index: 99;"><embed id="ZeroClipboardMovie_6" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="18" height="18" name="ZeroClipboardMovie_6" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=6&amp;width=18&amp;height=18" wmode="transparent"></div></span><span data-mod="popu_169"> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="PrintSource" title="print" onclick="dp.sh.Toolbar.Command(&#39;PrintSource&#39;,this);return false;">print</a></span><a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="About" title="?" onclick="dp.sh.Toolbar.Command(&#39;About&#39;,this);return false;">?</a><span class="tracking-ad" data-mod="popu_167"><a href="https://code.csdn.net/snippets/205982" target="_blank" title="在CODE上查看代码片" style="text-indent:0;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/CODE_ico.png" width="12" height="12" alt="在CODE上查看代码片" style="position:relative;top:1px;left:2px;"></a></span><span class="tracking-ad" data-mod="popu_170"><a href="https://code.csdn.net/snippets/205982/fork" target="_blank" title="派生到我的代码片" style="text-indent:0;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/ico_fork.svg" width="12" height="12" alt="派生到我的代码片" style="position:relative;top:2px;left:2px;"></a></span></div></div><ol start="1" class="dp-j"><li class="alt"><span><span class="keyword">public</span><span>&nbsp;classMainActivity&nbsp;</span><span class="keyword">extends</span><span>&nbsp;Activity&nbsp;&nbsp;</span></span></li><li class=""><span>{&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="annotation">@Override</span><span>&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public</span><span>&nbsp;</span><span class="keyword">void</span><span>&nbsp;onCreate(BundlesavedInstanceState)&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;</span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">super</span><span>.onCreate(savedInstanceState);&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setContentView(R.layout.activity_main);&nbsp;&nbsp;</span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thread&nbsp;mThread&nbsp;=&nbsp;newHandlerThread(<span class="string">"demo"</span><span>,&nbsp;Process.THREAD_PRIORITY_BACKGROUND);&nbsp;&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mThread.start();&nbsp;&nbsp;</span></li><li class=""><span>MyHandler&nbsp;mHandler&nbsp;=&nbsp;<span class="keyword">new</span><span>&nbsp;MyHandler(&nbsp;mThread.getLooper(&nbsp;)&nbsp;);&nbsp;&nbsp;</span></span></li><li class="alt"><span>…….&nbsp;&nbsp;</span></li><li class=""><span>…….&nbsp;&nbsp;</span></li><li class="alt"><span>…….&nbsp;&nbsp;</span></li><li class=""><span>}&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="annotation">@Override</span><span>&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public</span><span>&nbsp;</span><span class="keyword">void</span><span>&nbsp;onDestroy()&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;</span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">super</span><span>.onDestroy();&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li class=""><span>}&nbsp;&nbsp;</span></li></ol><div class="save_code tracking-ad" data-mod="popu_249" style="display: none;"><a href="javascript:;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/save_snippets.png"></a></div></div><pre code_snippet_id="205982" snippet_file_name="blog_20140226_3_8353632" style="DISPLAY: none" class="java" name="code">public classMainActivity extends Activity
+{
+    @Override
+    public void onCreate(BundlesavedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Thread mThread = newHandlerThread("demo", Process.THREAD_PRIORITY_BACKGROUND); 
+        mThread.start();
+MyHandler mHandler = new MyHandler( mThread.getLooper( ) );
+…….
+…….
+…….
+}
+    @Override
+    public void onDestroy()
+    {
+    super.onDestroy();
+    }
+}</pre><br>
+<br>
+<p></p>
+<p>这个代码存在泄漏问题，因为HandlerThread的run方法是一个死循环，它不会自己结束，线程的生命周期超过了activity生命周期，当横竖屏切换，HandlerThread线程的数量会随着activity重建次数的增加而增加。</p>
+<p>应该在onDestroy时将线程停止掉：<strong><span style="color:#333333">mThread.getLooper().quit();</span></strong></p>
+<p><strong><span style="color:#333333">另外，对于不是HandlerThread</span>的线程，也应该确保activity消耗后，线程已经终止，可以这样做：</strong>在onDestroy时调用<strong><span style="color:#333333">mThread.join();</span></strong></p>
+<p>&nbsp;</p>
+<p><strong>4、注册某个对象后未反注册</strong></p>
+<p>注册广播接收器、注册观察者等等，比如：</p>
+<p>假设我们希望在锁屏界面(LockScreen)中，监听系统中的电话服务以获取一些信息(如信号强度等)，则可以在LockScreen中定义一个PhoneStateListener的对象，同时将它注册到TelephonyManager服务中。对于LockScreen对象，当需要显示锁屏界面的时候就会创建一个LockScreen对象，而当锁屏界面消失的时候LockScreen对象就会被释放掉。</p>
+<p>　　但是如果在释放LockScreen对象的时候忘记取消我们之前注册的PhoneStateListener对象，则会导致LockScreen无法被GC回收。如果不断的使锁屏界面显示和消失，则最终会由于大量的LockScreen对象没有办法被回收而引起OutOfMemory,使得system_process进程挂掉。</p>
+<p>虽然有些系统程序，它本身好像是可以自动取消注册的(当然不及时)，但是我们还是应该在我们的程序中明确的取消注册，程序结束时应该把所有的注册都取消掉。</p>
+<p><strong>5、集合中对象没清理造成的内存泄露</strong></p>
+<p>　　我们通常把一些对象的引用加入到了集合中，当我们不需要该对象时，如果没有把它的引用从集合中清理掉，这样这个集合就会越来越大。如果这个集合是static的话，那情况就更严重了。</p>
+<p>&nbsp;</p>
+<p>比如某公司的ROM的锁屏曾经就存在内存泄漏问题：</p>
+<p>这个泄漏是因为LockScreen每次显示时会注册几个callback，它们保存在KeyguardUpdateMonitor的ArrayList&lt;InfoCallback&gt;、ArrayList&lt;SimStateCallback&gt;等ArrayList实例中。但是在LockScreen解锁后，这些callback没有被remove掉，导致ArrayList不断增大， callback对象不断增多。这些callback对象的size并不大，heap增长比较缓慢，需要长时间地使用手机才能出现OOM，由于锁屏是驻留在system_server进程里，所以导致结果是手机重启。</p>
+<p><strong>6、资源对象没关闭造成的内存泄露</strong></p>
+<p>　　资源性对象比如(Cursor，File文件等)往往都用了一些缓冲，我们在不使用的时候，应该及时关闭它们，以便它们的缓冲及时回收内存。它们的缓冲不仅存在于Java虚拟机内，还存在于Java虚拟机外。如果我们仅仅是把它的引用设置为null,而不关闭它们，往往会造成内存泄露。因为有些资源性对象，比如SQLiteCursor(在析构函数finalize(),如果我们没有关闭它，它自己会调close()关闭)，如果我们没有关闭它，系统在回收它时也会关闭它，但是这样的效率太低了。因此对于资源性对象在不使用的时候，应该立即调用它的close()函数，将其关闭掉，然后再置为null.在我们的程序退出时一定要确保我们的资源性对象已经关闭。</p>
+<p>　　程序中经常会进行查询<a href="http://lib.csdn.net/base/mysql" class="replace_word" title="MySQL知识库" target="_blank" style="color:#df3434; font-weight:bold;">数据库</a>的操作，但是经常会有使用完毕Cursor后没有关闭的情况。如果我们的查询结果集比较小，对内存的消耗不容易被发现，只有在长时间大量操作的情况下才会复现内存问题，这样就会给以后的<a href="http://lib.csdn.net/base/softwaretest" class="replace_word" title="软件测试知识库" target="_blank" style="color:#df3434; font-weight:bold;">测试</a>和问题排查带来困难和风险。</p>
+<p><strong>7、一些不良代码成内存压力</strong></p>
+<p>有些代码并不造成内存泄露，但是它们或是对没使用的内存没进行有效及时的释放，或是没有有效的利用已有的对象而是频繁的申请新内存，对内存的回收和分配造成很大影响的，容易迫使虚拟机不得不给该应用进程分配更多的内存，增加vm的负担，造成不必要的内存开支。</p>
+<p>7.1，Bitmap使用不当</p>
+<p>&nbsp;&nbsp; &nbsp;第一、及时的销毁。</p>
+<p>&nbsp;&nbsp;&nbsp; 虽然，系统能够确认Bitmap分配的内存最终会被销毁，但是由于它占用的内存过多，所以很可能会超过Java堆的限制。因此，在用完Bitmap时，要及时的recycle掉。recycle并不能确定立即就会将Bitmap释放掉，但是会给虚拟机一个暗示：“该图片可以释放了”。</p>
+<p><br>
+&nbsp;&nbsp;&nbsp; 第二、设置一定的采样率。</p>
+<p>&nbsp;&nbsp;&nbsp; 有时候，我们要显示的区域很小，没有必要将整个图片都加载出来，而只需要记载一个缩小过的图片，这时候可以设置一定的采样率，那么就可以大大减小占用的内存。如下面的代码：</p>
+<p></p>
+<div class="dp-highlighter bg_java">
+<div class="bar">
+<div class="tools"><strong>[java]</strong> <a target="_blank" class="ViewSource" title="view plain" href="http://blog.csdn.net/gemmem/article/details/13017999#">
+view plain</a><a target="_blank" class="CopyToClipboard" title="copy" href="http://blog.csdn.net/gemmem/article/details/13017999#">copy</a><a target="_blank" class="PrintSource" title="print" href="http://blog.csdn.net/gemmem/article/details/13017999#">print</a><a target="_blank" class="About" title="?" href="http://blog.csdn.net/gemmem/article/details/13017999#">?</a><div style="position: absolute; left: 516px; top: 7324px; width: 18px; height: 18px; z-index: 99;"><embed id="ZeroClipboardMovie_7" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="18" height="18" name="ZeroClipboardMovie_7" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=7&amp;width=18&amp;height=18" wmode="transparent"></div></div>
+</div>
+<ol class="dp-j">
+<li class="alt"><span><span class="keyword">private</span><span>&nbsp;ImageView&nbsp;preview;&nbsp;&nbsp;&nbsp;&nbsp;</span></span></li><li><span>BitmapFactory.Options&nbsp;options&nbsp;=&nbsp;newBitmapFactory.Options();&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li class="alt"><span>options.inSampleSize&nbsp;=&nbsp;</span><span class="number">2</span><span>;</span><span class="comment">//图片宽高都为原来的二分之一，即图片为原来的四分之一&nbsp;&nbsp;
+</span><span>&nbsp;&nbsp;</span></li><li><span>Bitmap&nbsp;bitmap&nbsp;=BitmapFactory.decodeStream(cr.openInputStream(uri),&nbsp;</span><span class="keyword">null</span><span>,&nbsp;options);&nbsp;preview.setImageBitmap(bitmap);&nbsp;&nbsp;&nbsp;</span></li></ol>
+<div class="save_code tracking-ad" data-mod="popu_249"><a href="javascript:;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/save_snippets.png"></a></div></div>
+<div class="dp-highlighter bg_java"><div class="bar"><div class="tools"><b>[java]</b> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="ViewSource" title="view plain" onclick="dp.sh.Toolbar.Command(&#39;ViewSource&#39;,this);return false;">view plain</a><span data-mod="popu_168"> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="CopyToClipboard" title="copy" onclick="dp.sh.Toolbar.Command(&#39;CopyToClipboard&#39;,this);return false;">copy</a><div style="position: absolute; left: 520px; top: 7464px; width: 18px; height: 18px; z-index: 99;"><embed id="ZeroClipboardMovie_8" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="18" height="18" name="ZeroClipboardMovie_8" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=8&amp;width=18&amp;height=18" wmode="transparent"></div></span><span data-mod="popu_169"> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="PrintSource" title="print" onclick="dp.sh.Toolbar.Command(&#39;PrintSource&#39;,this);return false;">print</a></span><a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="About" title="?" onclick="dp.sh.Toolbar.Command(&#39;About&#39;,this);return false;">?</a><span class="tracking-ad" data-mod="popu_167"><a href="https://code.csdn.net/snippets/205982" target="_blank" title="在CODE上查看代码片" style="text-indent:0;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/CODE_ico.png" width="12" height="12" alt="在CODE上查看代码片" style="position:relative;top:1px;left:2px;"></a></span><span class="tracking-ad" data-mod="popu_170"><a href="https://code.csdn.net/snippets/205982/fork" target="_blank" title="派生到我的代码片" style="text-indent:0;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/ico_fork.svg" width="12" height="12" alt="派生到我的代码片" style="position:relative;top:2px;left:2px;"></a></span></div></div><ol start="1" class="dp-j"><li class="alt"><span><span class="keyword">private</span><span>&nbsp;ImageView&nbsp;preview;&nbsp;&nbsp;&nbsp;&nbsp;</span></span></li><li class=""><span>BitmapFactory.Options&nbsp;options&nbsp;=&nbsp;newBitmapFactory.Options();&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li class="alt"><span>options.inSampleSize&nbsp;=&nbsp;<span class="number">2</span><span>;</span><span class="comment">//图片宽高都为原来的二分之一，即图片为原来的四分之一&nbsp;&nbsp;</span><span>&nbsp;&nbsp;</span></span></li><li class=""><span>Bitmap&nbsp;bitmap&nbsp;=BitmapFactory.decodeStream(cr.openInputStream(uri),&nbsp;<span class="keyword">null</span><span>,&nbsp;options);&nbsp;preview.setImageBitmap(bitmap);&nbsp;&nbsp;&nbsp;</span></span></li></ol><div class="save_code tracking-ad" data-mod="popu_249"><a href="javascript:;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/save_snippets.png"></a></div></div><pre code_snippet_id="205982" snippet_file_name="blog_20140226_4_2050367" style="DISPLAY: none" class="java" name="code">private ImageView preview;  
+BitmapFactory.Options options = newBitmapFactory.Options();  
+options.inSampleSize = 2;//图片宽高都为原来的二分之一，即图片为原来的四分之一  
+Bitmap bitmap =BitmapFactory.decodeStream(cr.openInputStream(uri), null, options); preview.setImageBitmap(bitmap); </pre><br>
+<br>
+<p></p>
+<p>&nbsp;</p>
+<p>第三、巧妙的运用软引用（SoftRefrence）</p>
+<p>有些时候，我们使用Bitmap后没有保留对它的引用，因此就无法调用Recycle函数。这时候巧妙的运用软引用，可以使Bitmap在内存快不足时得到有效的释放。如下：</p>
+<p></p>
+<div class="dp-highlighter bg_java">
+<div class="bar">
+<div class="tools"><strong>[java]</strong> <a target="_blank" class="ViewSource" title="view plain" href="http://blog.csdn.net/gemmem/article/details/13017999#">
+view plain</a><a target="_blank" class="CopyToClipboard" title="copy" href="http://blog.csdn.net/gemmem/article/details/13017999#">copy</a><a target="_blank" class="PrintSource" title="print" href="http://blog.csdn.net/gemmem/article/details/13017999#">print</a><a target="_blank" class="About" title="?" href="http://blog.csdn.net/gemmem/article/details/13017999#">?</a><div style="position: absolute; left: 516px; top: 7820px; width: 18px; height: 18px; z-index: 99;"><embed id="ZeroClipboardMovie_9" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="18" height="18" name="ZeroClipboardMovie_9" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=9&amp;width=18&amp;height=18" wmode="transparent"></div></div>
+</div>
+<ol class="dp-j">
+<li class="alt"><span><span>SoftReference&lt;Bitmap&gt;&nbsp;&nbsp;bitmap_ref&nbsp;&nbsp;=&nbsp;</span><span class="keyword">new</span><span>&nbsp;SoftReference&lt;Bitmap&gt;(BitmapFactory.decodeStream(inputstream));&nbsp;&nbsp;&nbsp;</span></span></li><li><span>……&nbsp;&nbsp;</span></li><li class="alt"><span>……&nbsp;&nbsp;</span></li><li><span></span><span class="keyword">if</span><span>&nbsp;(bitmap_ref&nbsp;.get()&nbsp;!=&nbsp;</span><span class="keyword">null</span><span>)&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bitmap_ref.get().recycle();&nbsp;&nbsp;</span></li></ol>
+<div class="save_code tracking-ad" data-mod="popu_249"><a href="javascript:;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/save_snippets.png"></a></div></div>
+<div class="dp-highlighter bg_java"><div class="bar"><div class="tools"><b>[java]</b> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="ViewSource" title="view plain" onclick="dp.sh.Toolbar.Command(&#39;ViewSource&#39;,this);return false;">view plain</a><span data-mod="popu_168"> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="CopyToClipboard" title="copy" onclick="dp.sh.Toolbar.Command(&#39;CopyToClipboard&#39;,this);return false;">copy</a><div style="position: absolute; left: 520px; top: 7979px; width: 18px; height: 18px; z-index: 99;"><embed id="ZeroClipboardMovie_10" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="18" height="18" name="ZeroClipboardMovie_10" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=10&amp;width=18&amp;height=18" wmode="transparent"></div></span><span data-mod="popu_169"> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="PrintSource" title="print" onclick="dp.sh.Toolbar.Command(&#39;PrintSource&#39;,this);return false;">print</a></span><a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="About" title="?" onclick="dp.sh.Toolbar.Command(&#39;About&#39;,this);return false;">?</a><span class="tracking-ad" data-mod="popu_167"><a href="https://code.csdn.net/snippets/205982" target="_blank" title="在CODE上查看代码片" style="text-indent:0;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/CODE_ico.png" width="12" height="12" alt="在CODE上查看代码片" style="position:relative;top:1px;left:2px;"></a></span><span class="tracking-ad" data-mod="popu_170"><a href="https://code.csdn.net/snippets/205982/fork" target="_blank" title="派生到我的代码片" style="text-indent:0;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/ico_fork.svg" width="12" height="12" alt="派生到我的代码片" style="position:relative;top:2px;left:2px;"></a></span></div></div><ol start="1" class="dp-j"><li class="alt"><span><span>SoftReference&lt;Bitmap&gt;&nbsp;&nbsp;bitmap_ref&nbsp;&nbsp;=&nbsp;</span><span class="keyword">new</span><span>&nbsp;SoftReference&lt;Bitmap&gt;(BitmapFactory.decodeStream(inputstream));&nbsp;&nbsp;&nbsp;</span></span></li><li class=""><span>……&nbsp;&nbsp;</span></li><li class="alt"><span>……&nbsp;&nbsp;</span></li><li class=""><span><span class="keyword">if</span><span>&nbsp;(bitmap_ref&nbsp;.get()&nbsp;!=&nbsp;</span><span class="keyword">null</span><span>)&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bitmap_ref.get().recycle();&nbsp;&nbsp;</span></li></ol><div class="save_code tracking-ad" data-mod="popu_249" style="display: none;"><a href="javascript:;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/save_snippets.png"></a></div></div><pre code_snippet_id="205982" snippet_file_name="blog_20140226_5_5987864" style="DISPLAY: none" class="java" name="code">SoftReference&lt;Bitmap&gt;  bitmap_ref  = new SoftReference&lt;Bitmap&gt;(BitmapFactory.decodeStream(inputstream)); 
+……
+……
+if (bitmap_ref .get() != null)
+          bitmap_ref.get().recycle();</pre><br>
+<br>
+<p></p>
+<p>7.2，构造Adapter时，没有使用缓存的 convertView</p>
+<p>　　以构造ListView的BaseAdapter为例，在BaseAdapter中提共了方法：</p>
+<p>　　public View getView(intposition, View convertView, ViewGroup parent)</p>
+<p>　　来向ListView提供每一个item所需要的view对象。初始时ListView会从BaseAdapter中根据当前的屏幕布局实例化一定数量的view对象，同时ListView会将这些view对象缓存起来。当向上滚动ListView时，原先位于最上面的list item的view对象会被回收，然后被用来构造新出现的最下面的list item。这个构造过程就是由getView()方法完成的，getView()的第二个形参 View convertView就是被缓存起来的list item的view对象(初始化时缓存中没有view对象则convertView是null)。</p>
+<p>　　由此可以看出，如果我们不去使用convertView，而是每次都在getView()中重新实例化一个View对象的话，即浪费时间，也造成内存垃圾，给垃圾回收增加压力，如果垃圾回收来不及的话，虚拟机将不得不给该应用进程分配更多的内存，造成不必要的内存开支。ListView回收list item的view对象的过程可以查看:</p>
+<p>　　android.widget.AbsListView.Java--&gt; void addScrapView(View scrap) 方法。</p>
+<p>　　Java代码：</p>
+<p></p>
+<div class="dp-highlighter bg_java">
+<div class="bar">
+<div class="tools"><strong>[java]</strong> <a target="_blank" class="ViewSource" title="view plain" href="http://blog.csdn.net/gemmem/article/details/13017999#">
+view plain</a><a target="_blank" class="CopyToClipboard" title="copy" href="http://blog.csdn.net/gemmem/article/details/13017999#">copy</a><a target="_blank" class="PrintSource" title="print" href="http://blog.csdn.net/gemmem/article/details/13017999#">print</a><a target="_blank" class="About" title="?" href="http://blog.csdn.net/gemmem/article/details/13017999#">?</a><div style="position: absolute; left: 516px; top: 8644px; width: 18px; height: 18px; z-index: 99;"><embed id="ZeroClipboardMovie_11" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="18" height="18" name="ZeroClipboardMovie_11" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=11&amp;width=18&amp;height=18" wmode="transparent"></div></div>
+</div>
+<ol class="dp-j">
+<li class="alt"><span><span class="keyword">public</span><span>&nbsp;View&nbsp;getView(</span><span class="keyword">int</span><span>&nbsp;position,&nbsp;View&nbsp;convertView,&nbsp;ViewGroupparent)&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>　　View&nbsp;view&nbsp;=&nbsp;newXxx(...);&nbsp;&nbsp;</span></li><li class="alt"><span>　　</span><span class="keyword">return</span><span>&nbsp;view;&nbsp;&nbsp;</span></li><li><span>　　}&nbsp;&nbsp;</span></li></ol>
+<div class="save_code tracking-ad" data-mod="popu_249"><a href="javascript:;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/save_snippets.png"></a></div></div>
+<div class="dp-highlighter bg_java"><div class="bar"><div class="tools"><b>[java]</b> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="ViewSource" title="view plain" onclick="dp.sh.Toolbar.Command(&#39;ViewSource&#39;,this);return false;">view plain</a><span data-mod="popu_168"> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="CopyToClipboard" title="copy" onclick="dp.sh.Toolbar.Command(&#39;CopyToClipboard&#39;,this);return false;">copy</a><div style="position: absolute; left: 520px; top: 8767px; width: 18px; height: 18px; z-index: 99;"><embed id="ZeroClipboardMovie_12" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="18" height="18" name="ZeroClipboardMovie_12" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=12&amp;width=18&amp;height=18" wmode="transparent"></div></span><span data-mod="popu_169"> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="PrintSource" title="print" onclick="dp.sh.Toolbar.Command(&#39;PrintSource&#39;,this);return false;">print</a></span><a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="About" title="?" onclick="dp.sh.Toolbar.Command(&#39;About&#39;,this);return false;">?</a><span class="tracking-ad" data-mod="popu_167"><a href="https://code.csdn.net/snippets/205982" target="_blank" title="在CODE上查看代码片" style="text-indent:0;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/CODE_ico.png" width="12" height="12" alt="在CODE上查看代码片" style="position:relative;top:1px;left:2px;"></a></span><span class="tracking-ad" data-mod="popu_170"><a href="https://code.csdn.net/snippets/205982/fork" target="_blank" title="派生到我的代码片" style="text-indent:0;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/ico_fork.svg" width="12" height="12" alt="派生到我的代码片" style="position:relative;top:2px;left:2px;"></a></span></div></div><ol start="1" class="dp-j"><li class="alt"><span><span class="keyword">public</span><span>&nbsp;View&nbsp;getView(</span><span class="keyword">int</span><span>&nbsp;position,&nbsp;View&nbsp;convertView,&nbsp;ViewGroupparent)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>　　View&nbsp;view&nbsp;=&nbsp;newXxx(...);&nbsp;&nbsp;</span></li><li class="alt"><span>　　<span class="keyword">return</span><span>&nbsp;view;&nbsp;&nbsp;</span></span></li><li class=""><span>　　}&nbsp;&nbsp;</span></li></ol><div class="save_code tracking-ad" data-mod="popu_249" style="display: none;"><a href="javascript:;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/save_snippets.png"></a></div></div><pre code_snippet_id="205982" snippet_file_name="blog_20140226_6_6652956" style="DISPLAY: none" class="java" name="code">public View getView(int position, View convertView, ViewGroupparent) {
+　　View view = newXxx(...);
+　　return view;
+　　}</pre><br>
+<br>
+<p></p>
+<p>　　修正示例代码：</p>
+<p>　　Java代码：</p>
+<p></p>
+<div class="dp-highlighter bg_java">
+<div class="bar">
+<div class="tools"><strong>[java]</strong> <a target="_blank" class="ViewSource" title="view plain" href="http://blog.csdn.net/gemmem/article/details/13017999#">
+view plain</a><a target="_blank" class="CopyToClipboard" title="copy" href="http://blog.csdn.net/gemmem/article/details/13017999#">copy</a><a target="_blank" class="PrintSource" title="print" href="http://blog.csdn.net/gemmem/article/details/13017999#">print</a><a target="_blank" class="About" title="?" href="http://blog.csdn.net/gemmem/article/details/13017999#">?</a><div style="position: absolute; left: 516px; top: 9040px; width: 18px; height: 18px; z-index: 99;"><embed id="ZeroClipboardMovie_13" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="18" height="18" name="ZeroClipboardMovie_13" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=13&amp;width=18&amp;height=18" wmode="transparent"></div></div>
+</div>
+<ol class="dp-j">
+<li class="alt"><span><span>　　</span><span class="keyword">public</span><span>&nbsp;View&nbsp;getView(intposition,&nbsp;View&nbsp;convertView,&nbsp;ViewGroup&nbsp;parent)&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>　　View&nbsp;view&nbsp;=&nbsp;</span><span class="keyword">null</span><span>;&nbsp;&nbsp;</span></li><li class="alt"><span>　　</span><span class="keyword">if</span><span>&nbsp;(convertView&nbsp;!=&nbsp;</span><span class="keyword">null</span><span>){&nbsp;&nbsp;</span></li><li><span>　　view&nbsp;=&nbsp;convertView;&nbsp;&nbsp;</span></li><li class="alt"><span>　　populate(view,&nbsp;getItem(position));&nbsp;&nbsp;</span></li><li><span>　　}&nbsp;</span><span class="keyword">else</span><span>&nbsp;{&nbsp;&nbsp;</span></li><li class="alt"><span>　　view&nbsp;=&nbsp;</span><span class="keyword">new</span><span>&nbsp;Xxx(...);&nbsp;&nbsp;</span></li><li><span>　　}&nbsp;&nbsp;</span></li><li class="alt"><span>　　</span><span class="keyword">return</span><span>&nbsp;view;&nbsp;&nbsp;</span></li><li><span>　　}&nbsp;&nbsp;</span></li></ol>
+<div class="save_code tracking-ad" data-mod="popu_249" style="display: none;"><a href="javascript:;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/save_snippets.png"></a></div></div>
+<div class="dp-highlighter bg_java"><div class="bar"><div class="tools"><b>[java]</b> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="ViewSource" title="view plain" onclick="dp.sh.Toolbar.Command(&#39;ViewSource&#39;,this);return false;">view plain</a><span data-mod="popu_168"> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="CopyToClipboard" title="copy" onclick="dp.sh.Toolbar.Command(&#39;CopyToClipboard&#39;,this);return false;">copy</a><div style="position: absolute; left: 520px; top: 9271px; width: 18px; height: 18px; z-index: 99;"><embed id="ZeroClipboardMovie_14" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="18" height="18" name="ZeroClipboardMovie_14" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=14&amp;width=18&amp;height=18" wmode="transparent"></div></span><span data-mod="popu_169"> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="PrintSource" title="print" onclick="dp.sh.Toolbar.Command(&#39;PrintSource&#39;,this);return false;">print</a></span><a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="About" title="?" onclick="dp.sh.Toolbar.Command(&#39;About&#39;,this);return false;">?</a><span class="tracking-ad" data-mod="popu_167"><a href="https://code.csdn.net/snippets/205982" target="_blank" title="在CODE上查看代码片" style="text-indent:0;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/CODE_ico.png" width="12" height="12" alt="在CODE上查看代码片" style="position:relative;top:1px;left:2px;"></a></span><span class="tracking-ad" data-mod="popu_170"><a href="https://code.csdn.net/snippets/205982/fork" target="_blank" title="派生到我的代码片" style="text-indent:0;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/ico_fork.svg" width="12" height="12" alt="派生到我的代码片" style="position:relative;top:2px;left:2px;"></a></span></div></div><ol start="1" class="dp-j"><li class="alt"><span><span class="keyword">public</span><span>&nbsp;View&nbsp;getView(intposition,&nbsp;View&nbsp;convertView,&nbsp;ViewGroup&nbsp;parent)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>View&nbsp;view&nbsp;=&nbsp;<span class="keyword">null</span><span>;&nbsp;&nbsp;</span></span></li><li class="alt"><span><span class="keyword">if</span><span>&nbsp;(convertView&nbsp;!=&nbsp;</span><span class="keyword">null</span><span>){&nbsp;&nbsp;</span></span></li><li class=""><span>view&nbsp;=&nbsp;convertView;&nbsp;&nbsp;</span></li><li class="alt"><span>populate(view,&nbsp;getItem(position));&nbsp;&nbsp;</span></li><li class=""><span>}&nbsp;<span class="keyword">else</span><span>&nbsp;{&nbsp;&nbsp;</span></span></li><li class="alt"><span>view&nbsp;=&nbsp;<span class="keyword">new</span><span>&nbsp;Xxx(...);&nbsp;&nbsp;</span></span></li><li class=""><span>}&nbsp;&nbsp;</span></li><li class="alt"><span><span class="keyword">return</span><span>&nbsp;view;&nbsp;&nbsp;</span></span></li><li class=""><span>}&nbsp;&nbsp;</span></li></ol><div class="save_code tracking-ad" data-mod="popu_249"><a href="javascript:;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/save_snippets.png"></a></div></div><pre code_snippet_id="205982" snippet_file_name="blog_20140226_7_349691" style="DISPLAY: none" class="java" name="code">　　public View getView(intposition, View convertView, ViewGroup parent) {
+　　View view = null;
+　　if (convertView != null){
+　　view = convertView;
+　　populate(view, getItem(position));
+　　} else {
+　　view = new Xxx(...);
+　　}
+　　return view;
+　　}</pre><br>
+<br>
+<p></p>
+<p>7.3、不要在经常调用的方法中创建对象，尤其是忌讳在循环中创建对象。可以适当的使用 hashtable ， vector 创建一组对象容器，然后从容器中去取那些对象，而不用每次 new 之后又丢弃。</p>
+<p>&nbsp;</p>
+<p><strong>关于内存泄漏的调试</strong></p>
+<p>(1).内存监测工具 DDMS --&gt; Heap<br>
+&nbsp;无论怎么小心，想完全避免bad code是不可能的，此时就需要一些工具来帮助我们检查代码中是否存在会造成内存泄漏的地方。Android tools中的DDMS就带有一个很不错的内存监测工具Heap(这里我使用eclipse的ADT插件，并以真机为例，在模拟器中的情况类似)。用 Heap监测应用进程使用内存情况的步骤如下：<br>
+1. 启动eclipse后，切换到DDMS透视图，并确认Devices视图、Heap视图都是打开的；<br>
+2. 将手机通过USB链接至电脑，链接时需要确认手机是处于“USB调试”模式，而不是作为“MassStorage”；<br>
+3. 链接成功后，在DDMS的Devices视图中将会显示手机设备的序列号，以及设备中正在运行的部分进程信息；<br>
+4. 点击选中想要监测的进程，比如system_process进程；<br>
+5. 点击选中Devices视图界面中最上方一排图标中的“Update Heap”图标；<br>
+6. 点击Heap视图中的“Cause GC”按钮；<br>
+7. 此时在Heap视图中就会看到当前选中的进程的内存使用量的详细情况。<br>
+&nbsp;说明：<br>
+a) 点击“Cause GC”按钮相当于向虚拟机请求了一次gc操作；<br>
+b) 当内存使用信息第一次显示以后，无须再不断的点击“CauseGC”，Heap视图界面会定时刷新，在对应用的不断的操作过程中就可以看到内存使用的变化；<br>
+c) 内存使用信息的各项参数根据名称即可知道其意思，在此不再赘述。<br>
+&nbsp; 如何才能知道我们的程序是否有内存泄漏的可能性呢。这里需要注意一个值：Heap视图中部有一个Type叫做dataobject，即数据对象，也就是我们的程序中大量存在的类类型的对象。在data object一行中有一列是“Total Size”，其值就是当前进程中所有Java数据对象的内存总量，一般情况下，这个值的大小决定了是否会有内存泄漏。可以这样判断：<br>
+a) 不断的操作当前应用，同时注意观察data object的Total Size值；<br>
+b) 正常情况下Total Size值都会稳定在一个有限的范围内，也就是说由于程序中的的代码良好，没有造成对象不被垃圾回收的情况，所以说虽然我们不断的操作会不断的生成很多对象，而在虚拟机不断的进行GC的过程中，这些对象都被回收了，内存占用量会会落到一个稳定的水平；<br>
+c) 反之如果代码中存在没有释放对象引用的情况，则dataobject的Total Size值在每次GC后不会有明显的回落，随着操作次数的增多Total Size的值会越来越大，<br>
+&nbsp; 直到到达一个上限后导致进程OOM被kill掉。</p>
+<p>&nbsp;</p>
+<p>(2).内存分析工具 MAT(Memory Analyzer Tool)&nbsp;</p>
+<p>并不是所有的内存泄漏都可以用观察heap size的方法检测出来，因为有的程序只是泄漏了几个对象，而且泄漏的对象个数不会随着程序的运行而增加，这种内存泄漏不会直接导致OOM，但是无用对象无法回收，无疑是对内存的浪费，会影响到程序的性能，我们需要使用MAT工具才能发现这种比较隐蔽的内存泄漏。<br>
+<span style="color:#333333">使用MAT</span>之前有2个概念是要掌握的：Shallowheap和Retained heap。Shallow heap表示对象本身所占内存大小，一个内存大小100bytes的对象Shallow heap就是100bytes。Retained heap表示通过回收这一个对象总共能回收的内存，比方说一个100bytes的对象还直接或者间接地持有了另外3个100bytes的对象引用，回收这个对象的时候如果另外3个对象没有其他引用也能被回收掉的时候，Retained
+ heap就是400bytes。<br>
+<br>
+</p>
+<p align="left"><span style="color:#333333">MAT</span><span style="color:#333333">使用Dominator Tree</span>这样一种来自图形理论的概念。</p>
+<p align="left"><img alt="" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/20131025120105203"><br>
+</p>
+<p align="left"><span style="color:#333333">所谓Dominator</span>，就是Flow Graph中从源节点出发到某个节点的的必经节点。那么根据这个概念我们可以从上图左侧的Flow Graph构造出右侧的Dominator Tree。这样一来很容易就看出每个节点的Retained heap了。Shallow heap和Retained heap在MAT中是非常有用的概念，用于内存泄漏的分析。<br>
+<br>
+</p>
+<p align="left"><span style="color:#333333">我们做一个Demo</span>。在工程的MainActivity当中加入如下代码:</p>
+<p align="left"></p>
+<div class="dp-highlighter bg_java">
+<div class="bar">
+<div class="tools"><strong>[java]</strong> <a target="_blank" class="ViewSource" title="view plain" href="http://blog.csdn.net/gemmem/article/details/13017999#">
+view plain</a><a target="_blank" class="CopyToClipboard" title="copy" href="http://blog.csdn.net/gemmem/article/details/13017999#">copy</a><a target="_blank" class="PrintSource" title="print" href="http://blog.csdn.net/gemmem/article/details/13017999#">print</a><a target="_blank" class="About" title="?" href="http://blog.csdn.net/gemmem/article/details/13017999#">?</a><div style="position: absolute; left: 516px; top: 11216px; width: 18px; height: 18px; z-index: 99;"><embed id="ZeroClipboardMovie_15" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="18" height="18" name="ZeroClipboardMovie_15" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=15&amp;width=18&amp;height=18" wmode="transparent"></div></div>
+</div>
+<ol class="dp-j">
+<li class="alt"><span><span>publicclassMainActivityextends&nbsp;Activity{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">static</span><span>&nbsp;Leaky&nbsp;leak=</span><span class="keyword">null</span><span>;&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;classLeaky{&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;voiddoSomething(){&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println(</span><span class="string">"Wheee!!!"</span><span>);&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="annotation">@Override</span><span>&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;publicvoidonCreate(Bundle&nbsp;savedInstanceState){&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">super</span><span>.onCreate(savedInstanceState);&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">if</span><span>(leak==</span><span class="keyword">null</span><span>){&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;leak&nbsp;=</span><span class="keyword">new</span><span>&nbsp;Leaky();&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...&nbsp;&nbsp;</span></li></ol>
+<div class="save_code tracking-ad" data-mod="popu_249" style="display: none;"><a href="javascript:;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/save_snippets.png"></a></div></div>
+<div class="dp-highlighter bg_java"><div class="bar"><div class="tools"><b>[java]</b> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="ViewSource" title="view plain" onclick="dp.sh.Toolbar.Command(&#39;ViewSource&#39;,this);return false;">view plain</a><span data-mod="popu_168"> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="CopyToClipboard" title="copy" onclick="dp.sh.Toolbar.Command(&#39;CopyToClipboard&#39;,this);return false;">copy</a><div style="position: absolute; left: 520px; top: 11519px; width: 18px; height: 18px; z-index: 99;"><embed id="ZeroClipboardMovie_16" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="18" height="18" name="ZeroClipboardMovie_16" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=16&amp;width=18&amp;height=18" wmode="transparent"></div></span><span data-mod="popu_169"> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="PrintSource" title="print" onclick="dp.sh.Toolbar.Command(&#39;PrintSource&#39;,this);return false;">print</a></span><a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="About" title="?" onclick="dp.sh.Toolbar.Command(&#39;About&#39;,this);return false;">?</a><span class="tracking-ad" data-mod="popu_167"><a href="https://code.csdn.net/snippets/205982" target="_blank" title="在CODE上查看代码片" style="text-indent:0;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/CODE_ico.png" width="12" height="12" alt="在CODE上查看代码片" style="position:relative;top:1px;left:2px;"></a></span><span class="tracking-ad" data-mod="popu_170"><a href="https://code.csdn.net/snippets/205982/fork" target="_blank" title="派生到我的代码片" style="text-indent:0;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/ico_fork.svg" width="12" height="12" alt="派生到我的代码片" style="position:relative;top:2px;left:2px;"></a></span></div></div><ol start="1" class="dp-j"><li class="alt"><span><span>publicclassMainActivityextends&nbsp;Activity{&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">static</span><span>&nbsp;Leaky&nbsp;leak=</span><span class="keyword">null</span><span>;&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;classLeaky{&nbsp;&nbsp;</span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;voiddoSomething(){&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println(<span class="string">"Wheee!!!"</span><span>);&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="annotation">@Override</span><span>&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;publicvoidonCreate(Bundle&nbsp;savedInstanceState){&nbsp;&nbsp;</span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">super</span><span>.onCreate(savedInstanceState);&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>(leak==</span><span class="keyword">null</span><span>){&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;leak&nbsp;=<span class="keyword">new</span><span>&nbsp;Leaky();&nbsp;&nbsp;</span></span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...&nbsp;&nbsp;</span></li></ol><div class="save_code tracking-ad" data-mod="popu_249"><a href="javascript:;"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/save_snippets.png"></a></div></div><pre code_snippet_id="205982" snippet_file_name="blog_20140226_8_6239035" style="DISPLAY: none" class="java" name="code">publicclassMainActivityextends Activity{
+    static Leaky leak=null;
+    classLeaky{
+        voiddoSomething(){
+            System.out.println("Wheee!!!");
+        }
+    }
+    @Override
+    publicvoidonCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        if(leak==null){
+            leak =new Leaky();
+        }
+        ...</pre><br>
+<br>
+<p></p>
+<p align="left"><span style="color:#333333">上面这段代码，对Java</span>熟悉的同学都应该了解非静态内部类对象默认持有外部类对象引用，而leak作为静态变量在非空判断下只产生了一个对象，因此当旋转屏幕时生成新的Activity的时候旧的Activity的引用依然被持有，如下图：&nbsp;</p>
+<p align="left"><img alt="" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/20131025120204937"><br>
+</p>
+<p align="left"><br>
+</p>
+<p align="left"><br>
+</p>
+<p align="left"><span style="color:#333333">通过观察旋转屏幕前后Log</span>中GC的信息也能看出heap的data object分配往上涨了一点，并且在GC执行完heap的分配稳定之后并没有降下来，这就是内存泄漏的迹象。</p>
+<p align="left"><span style="color:#333333">我们通过MAT</span>来进行分析。先下载<a target="_blank" href="http://www.eclipse.org/mat/"><span style="color:#327bb9">MAT</span></a><span style="color:#333333">，可以作为Eclipse</span>插件下载，也可以作为RCP应用下载，本质上没有区别。DDMS中选中应用对应的进程名，点击Dump
+ HPROF file的按钮，等一小段时间生成HPROF文件，如果是Eclipse插件的话，Eclipse会为这个HPROF自动转化成标准的HPROF并自动打开MAT分析界面。如果是作为RCP应用的话，需要用sdk目录tools中的hprof-conv工具来进行转化，也就是上文提及的命令hprof-convorig.hprof converted.hprof，这种方式保存HPROF文件的位置选择更为自主，你也可以修改Eclipse的设置让Eclipse提示保存而不是自动打开，在Preferences -&gt; Android
+ -&gt; DDMS中的HPROFAction由Open in Eclipse改为Save todisk。打开MAT，选择转化好的HPROF文件，可以看到Overview的界面如下图：</p>
+<p align="left"><span style="color:#333333">&nbsp;<img alt="" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/20131025120259250"></span></p>
+<p align="left">&nbsp;</p>
+<p align="left"><span style="color:#333333">中间的饼状图就是根据我们上文所说的Retained heap</span>的概念得到的内存中一些Retained Size最大的对象。点击饼状图能看到这些对象类型，但对内存泄漏的分析还远远不够。再看下方Action中有Dominator Tree和Histogram的选项，这一般来说是最有用的工具。还记得我们上文说过的DominatorTree的概念吗，这就是我们用来跟踪内存泄漏的方式。点开Dominator Tree，会看到以Retained
+ heap排序的一系列对象，如下图：</p>
+<p align="left"><span style="color:#333333"><br>
+<img alt="" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/20131025120353093"><br>
+<br>
+</span></p>
+<p align="left"><span style="color:#333333">Resources</span><span style="color:#333333">类型对象由于一般是系统用于加载资源的，所以Retained heap</span>较大是个比较正常的情况。但我们注意到下面的Bitmap类型对象的Retained heap也很大，很有可能是由于内存泄漏造成的。所以我们右键点击这行，选择Path To GC Roots -&gt;exclude weak references，可以看到下图的情形：<br>
+<img alt="" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/20131025120457531"><br>
+</p>
+<p align="left"><br>
+</p>
+<p align="left">&nbsp;</p>
+<p align="left"><span style="color:#333333">Bitmap</span><span style="color:#333333">最终被leak</span>引用到，这应该是一种不正常的现象，内存泄漏很可能就在这里了。MAT不会告诉哪里是内存泄漏，需要你自行分析，由于这是Demo，是我们特意造成的内存泄漏，因此比较容易就能看出来，真实的应用场景可能需要你仔细的进行分析。<br>
+<br>
+</p>
+<p align="left"><span style="color:#333333">根据我们上文介绍的Dominator</span>的概念，leak对象是该Bitmap对象的Dominator，应该出现在Dominator Tree视图里面，但实际上却没有。这是由于MAT并没有对weak references做区别对待，这也是我们选择exclude weakreferences的原因。如果我们Path To GC Roots -&gt;with all references，我们可以看到下图的情形：</p>
+<p align="left">&nbsp;<img alt="" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/20131025120731703"></p>
+<p align="left">&nbsp;</p>
+<p align="left"><span style="color:#333333">可以看到还有另外一个对象在引用着这个Bitmap</span>对象，了解weak references的同学应该知道GC是如何处理weak references，因此在内存泄漏分析的时候我们可以把weak references排除掉。</p>
+<p align="left">&nbsp;</p>
+<p align="left"><span style="color:#333333">有些同学可能希望根据某种类型的对象个数来分析内存泄漏。我们在Overview</span>视图中选择Actions -&gt; Histogram，可以看到类似下图的情形：</p>
+<p align="left">&nbsp;<img alt="" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/20131025120850406"></p>
+<p align="left"><span style="color:#333333">上图展示了内存中各种类型的对象个数和Shallow heap</span>，我们看到byte[]占用Shallow heap最多，那是因为Honeycomb之后Bitmap Pixel Data的内存分配在Dalvik heap中。右键选中byte[]数组，选择List Objects -&gt; with incomingreferences，可以看到byte[]具体的对象列表：</p>
+<p align="left"><img alt="" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/20131025123513640"><br>
+</p>
+<p align="left"><br>
+</p>
+<p align="left"><span style="color:#333333"><img alt="" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/20131025123529984"><br>
+</span></p>
+<p align="left"><span style="color:#333333"><br>
+<br>
+<br>
+</span></p>
+<p align="left"><span style="color:#333333">我们发现第二个byte[]</span>的Retained heap较大，内存泄漏的可能性较大，因此右键选中这行，Path To GC Roots -&gt; exclude weak references，同样可以看到上文所提到的情况，我们的Bitmap对象被leak所引用到，这里存在着内存泄漏。</p>
+<p align="left"><span style="color:#333333"><br>
+<img alt="" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/20131025121635500"><br>
+<img alt="" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/20131025123529984"><br>
+</span></p>
+<p align="left"><span style="color:#333333">在Histogram</span>视图中第一行&lt;Regex&gt;中输入com.example.android.hcgallery，过滤出我们自己应用中的类型，如下图：</p>
+<p align="left"><span style="color:#333333"><img alt="" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/20131025121711500"><br>
+<br>
+</span></p>
+<p align="left"><span style="color:#333333">我们发现本应该只有一个MainActivity</span>现在却有两个，显然不正常。右键选择List Objects-&gt; with incoming references，可以看到这两个具体的MainActivity对象。右键选中Retained heap较大的MainActivity，Path To GC Roots -&gt; exclude weak references，再一次可疑对象又指向了leak对象。</p>
+<p align="left"><span style="color:#333333"><br>
+<img alt="" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/20131025121906984"><img alt="" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/20131025121917140"><img alt="" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/20131025121925796"><br>
+</span></p>
+<p align="left"><span style="color:#333333"><br>
+</span></p>
+<p align="left"><span style="color:#333333"><br>
+</span></p>
+<p align="left"><span style="color:#333333">以上是MAT</span>一些基本的用法，如果你感兴趣，可以自行深入的去了解MAT的其他功能</p>
+   
+</div>
+
+
+
+
+<!-- Baidu Button BEGIN -->
+
+
+
+
+<div class="bdsharebuttonbox tracking-ad bdshare-button-style0-16" style="float: right;" data-mod="popu_172" data-bd-bind="1494380184109">
+<a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="bds_more" data-cmd="more" style="background-position:0 0 !important; background-image: url(http://bdimg.share.baidu.com/static/api/img/share/icons_0_16.png?v=d754dcc0.png) !important"></a>
+<a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间" style="background-position:0 -52px !important"></a>
+<a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博" style="background-position:0 -104px !important"></a>
+<a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博" style="background-position:0 -260px !important"></a>
+<a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="bds_renren" data-cmd="renren" title="分享到人人网" style="background-position:0 -208px !important"></a>
+<a href="http://blog.csdn.net/cyq1028/article/details/19980369#" class="bds_weixin" data-cmd="weixin" title="分享到微信" style="background-position:0 -1612px !important"></a>
+</div>
+<script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "1", "bdMiniList": false, "bdPic": "", "bdStyle": "0", "bdSize": "16" }, "share": {} }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+<!-- Baidu Button END -->
+
+   <link rel="stylesheet" href="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/blog_detail.css">
+
+    
+<!--172.16.140.12-->
+
+<!-- Baidu Button BEGIN -->
+<script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=1536434" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/bds_s_v2.js.下载"></script>
+
+<script type="text/javascript">
+    document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+</script>
+<!-- Baidu Button END -->
+
+<script type="text/javascript">
+    var fromjs = $("#fromjs");
+    if (fromjs.length > 0) {
+            $("#fromjs .markdown_views pre").addClass("prettyprint");
+            prettyPrint();
+
+            $('pre.prettyprint code').each(function () {
+                var lines = $(this).text().split('\n').length;
+                var $numbering = $('<ul/>').addClass('pre-numbering').hide();
+                $(this).addClass('has-numbering').parent().append($numbering);
+                for (i = 1; i <= lines; i++) {
+                    $numbering.append($('<li/>').text(i));
+                };
+                $numbering.fadeIn(1700);
+            });
+
+            $('.pre-numbering li').css("color", "#999");
+        }
+
+    
+    $(".markdown_views a[target!='_blank']").attr("target", "_blank");
+
+    $(".toc a[target='_blank']").attr("target", "");
+
+</script>
+
+ 
+
+
+        <div id="digg" articleid="19980369">
+            <dl id="btnDigg" class="digg digg_disable" onclick="btndigga();">
+               
+                 <dt>顶</dt>
+                <dd>17</dd>
+            </dl>
+           
+              
+            <dl id="btnBury" class="digg digg_disable" onclick="btnburya();">
+              
+                  <dt>踩</dt>
+                <dd>0</dd>               
+            </dl>
+            
+        </div>
+     <div class="tracking-ad" data-mod="popu_222"><a href="javascript:void(0);">&nbsp;</a>   </div>
+    <div class="tracking-ad" data-mod="popu_223"> <a href="javascript:void(0);">&nbsp;</a></div>
+    <script type="text/javascript">
+                function btndigga() {
+                    $(".tracking-ad[data-mod='popu_222'] a").click();
+                }
+                function btnburya() {
+                    $(".tracking-ad[data-mod='popu_223'] a").click();
+                }
+            </script>
+
+   <ul class="article_next_prev">
+                <li class="prev_article"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_shangyipian&#39;]);location.href=&#39;/cyq1028/article/details/18664257&#39;;">上一篇</span><a href="http://blog.csdn.net/cyq1028/article/details/18664257" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_shangyipian&#39;])">android权限大全</a></li>
+                <li class="next_article"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_xiayipian&#39;]);location.href=&#39;/cyq1028/article/details/38306387&#39;;">下一篇</span><a href="http://blog.csdn.net/cyq1028/article/details/38306387" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_xiayipian&#39;])">Android 智能文件观察者 FileObserver</a></li>
+    </ul>
+
+    <div style="clear:both; height:10px;"></div>
+
+
+      
+</div>
+
+    <div>
+        
+
+        <script type="text/javascript">
+            /*博客内容页下方Banner1-728*90，创建于2016-12-13*/
+            var cpro_id = "u2843949";
+        </script>
+        <script type="text/javascript" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/c.js.下载"></script><div id="BAIDU_SSP__wrapper_u2843949_0"><iframe id="iframeu2843949_0" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/lclm.html" width="728" height="90" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0;vertical-align:bottom;margin:0;width:728px;height:90px" allowtransparency="true"></iframe></div>
+
+     </div>
+
+<div id="suggest">
+
+</div>
+         <script language="javascript" type="text/javascript">     
+             $(function(){
+                 $.get("/cyq1028/svc/GetSuggestContent/19980369",function(data){
+                     $("#suggest").html(data);
+                 });     
+             });             
+         </script>  
+
+
+<style>
+.blog-ass-articl dd {
+color: #369;
+width: 99%; /*修改行*/
+float: left;
+overflow: hidden;
+font: normal normal 12px/23px "SimSun";
+height: 23px;
+margin: 0;
+padding: 0 0 0 10px;
+margin-right: 30px;
+background: url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;
+}
+</style>
+
+ <link rel="stylesheet" href="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/replace.css">
+
+<div id="relate" data-mod="popu_218" class="tracking-ad" style="display: block;">
+        <div class="relate_t">
+            <h3><span>参考知识库</span></h3>
+        </div>
+        <div class="relate_c"><dl class="relate_list"><dt><a target="_blank" href="http://lib.csdn.net/base/android"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/1455589744328_328.jpg" alt="img"></a></dt><dd><h4><a target="_blank" href="http://lib.csdn.net/base/android">Android知识库</a></h4><p><label><span>33769</span><em>关注</em><i>|</i><span>2806</span><em>收录</em></label></p></dd></dl><dl class="relate_list"><dt><a target="_blank" href="http://lib.csdn.net/base/dotnet"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/1470876331285_285.jpg" alt="img"></a></dt><dd><h4><a target="_blank" href="http://lib.csdn.net/base/dotnet">.NET知识库</a></h4><p><label><span>3843</span><em>关注</em><i>|</i><span>839</span><em>收录</em></label></p></dd></dl><dl class="relate_list"><dt><a target="_blank" href="http://lib.csdn.net/base/softwaretest"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/1467193268346_346.jpg" alt="img"></a></dt><dd><h4><a target="_blank" href="http://lib.csdn.net/base/softwaretest">软件测试知识库</a></h4><p><label><span>4625</span><em>关注</em><i>|</i><span>318</span><em>收录</em></label></p></dd></dl><dl class="relate_list"><dt><a target="_blank" href="http://lib.csdn.net/base/javase"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/1453169124297_297.jpg" alt="img"></a></dt><dd><h4><a target="_blank" href="http://lib.csdn.net/base/javase">Java SE知识库</a></h4><p><label><span>26036</span><em>关注</em><i>|</i><span>527</span><em>收录</em></label></p></dd></dl><dl class="relate_list"><dt><a target="_blank" href="http://lib.csdn.net/base/mysql"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/1454051093684_684.jpg" alt="img"></a></dt><dd><h4><a target="_blank" href="http://lib.csdn.net/base/mysql">MySQL知识库</a></h4><p><label><span>22229</span><em>关注</em><i>|</i><span>1471</span><em>收录</em></label></p></dd></dl><dl class="relate_list"><dt><a target="_blank" href="http://lib.csdn.net/base/javaee"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/1456818035722_722.jpg" alt="img"></a></dt><dd><h4><a target="_blank" href="http://lib.csdn.net/base/javaee">Java EE知识库</a></h4><p><label><span>18067</span><em>关注</em><i>|</i><span>1334</span><em>收录</em></label></p></dd></dl><dl class="relate_list"><dt><a target="_blank" href="http://lib.csdn.net/base/java"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/1453701371636_636.jpg" alt="img"></a></dt><dd><h4><a target="_blank" href="http://lib.csdn.net/base/java">Java 知识库</a></h4><p><label><span>26401</span><em>关注</em><i>|</i><span>1457</span><em>收录</em></label></p></dd></dl></div>
+</div>
+ 
+
+<dl class="blog-ass-articl" id="res-relatived"> 
+    <div class="embody embody_b" id="libkeyparent" style="display:none">
+            <span class="embody_t">更多资料请参考：</span>
+            <div class="embody_c" id="libkey"></div>
+    </div>
+
+
+     <dt><span>猜你在找</span></dt>    
+
+
+   
+
+
+    <div id="adCollege" style="width: 42%;float: left;"> 
+        <script src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/job_reco.js.下载" type="text/javascript"></script> 
+        <script type="text/javascript">
+            csdn.position.showEdu({
+                sourceType: "blog",
+                searchType: "detail",
+                searchKey: "19980369",
+                username: "",
+                recordcount: "5",
+                containerId: "adCollege" //容器DIV的id。 
+            });
+            
+            setEduLoc();
+
+            function setEduLoc() {               
+                var edus = $("#adCollege div dd a");
+                if (edus.length == 0) {
+                    setTimeout(function () {
+                        setEduLoc();
+                    }, 500);
+                }
+                else {
+                    var eduLoc = "?ref=blog&loc=0";
+                    $.each(edus, function (index,item) {
+                        var href = $(this).attr("href") + eduLoc;
+                        $(this).attr("href", href);
+                    });
+                }
+            }
+
+        </script> 
+    <div class="tracking-ad" data-mod="popu_84"><dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;"><a href="http://edu.csdn.net/course/detail/4099?ref=blog&amp;loc=0" title="云服务助力Java 应用程序开发及部署" strategy="v4:content" target="_blank">云服务助力Java 应用程序开发及部署</a></dd><dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;"><a href="http://edu.csdn.net/course/detail/3871?ref=blog&amp;loc=0" title="Java 开发环境搭建(JDK、Eclipse、Tomcat、Mysql)" strategy="v4:content" target="_blank">Java 开发环境搭建(JDK、Eclipse、Tomcat、Mysql)</a></dd><dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;"><a href="http://edu.csdn.net/course/detail/4461?ref=blog&amp;loc=0" title="Android高级程序开发" strategy="v4:content" target="_blank">Android高级程序开发</a></dd><dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;"><a href="http://edu.csdn.net/course/detail/662?ref=blog&amp;loc=0" title="Java Swing、JDBC开发桌面级应用" strategy="v4:content" target="_blank">Java Swing、JDBC开发桌面级应用</a></dd><dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;"><a href="http://edu.csdn.net/course/detail/2898?ref=blog&amp;loc=0" title="Android App性能调优、内存泄露检测" strategy="v4:content" target="_blank">Android App性能调优、内存泄露检测</a></dd></div></div>  
+
+    
+     <div id="res" data-mod="popu_36" class="tracking-ad" style="width: 42%; float: left; margin-right: 30px; display: block;"><dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;"><a href="http://blog.csdn.net/zxx980782324/article/details/52013877" title="Android内存泄漏分析及调试" strategy="SearchAlgorithm">Android内存泄漏分析及调试</a></dd><dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;"><a href="http://blog.csdn.net/yaya1943/article/details/49026255" title="Android内存泄漏分析及调试" strategy="SearchAlgorithm">Android内存泄漏分析及调试</a></dd><dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;"><a href="http://blog.csdn.net/u011767040/article/details/49175771" title="Android内存泄漏分析及调试" strategy="SearchAlgorithm">Android内存泄漏分析及调试</a></dd><dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;"><a href="http://blog.csdn.net/aqiao58/article/details/8548237" title="Android内存泄漏调试" strategy="SearchAlgorithm">Android内存泄漏调试</a></dd><dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;"><a href="http://blog.csdn.net/wulongtiantang/article/details/7938226" title="Android 内存泄漏调试经验分享 二" strategy="SearchAlgorithm">Android 内存泄漏调试经验分享 二</a></dd></div>
+   
+</dl>
+
+
+
+
+
+    <div id="ad_cen">        
+                      <script type="text/javascript">
+                          /*博客内容页下方Banner-728*90，创建于2014-7-3*/
+                          var cpro_id = "u1607657";
+                                    </script>
+                      <script type="text/javascript" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/c.js.下载"></script><div id="BAIDU_SSP__wrapper_u1607657_0"><iframe id="iframeu1607657_0" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/lclm(1).html" width="728" height="90" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0;vertical-align:bottom;margin:0;width:728px;height:90px" allowtransparency="true"></iframe></div>
+    </div>  
+
+        <!-- 广告位开始 -->
+        <!-- 广告位结束 -->
+<div class="J_adv" data-view="true" data-mod="ad_popu_72" data-mtp="62" data-order="40" data-con="ad_content_2072">
+                 <script id="popuLayer_js_q" src="http://ads.csdn.net/js/popuLayer.js" defer="defer" type="text/javascript"></script>
+            <div id="layerd" style="position: fixed;bottom:0px;right:0px;line-height:0px;z-index:1000">
+    	            <div class="J_close layer_close" style="display:;background-color:#efefef;padding:0px;color:#333;font:12px/24px Helvetica,Tahoma,Arial,sans-serif;text-align:right;">关闭</div><!-- 广告占位容器 --><div id="cpro_u2895327"><iframe id="iframeu2895327_0" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/lclm(2).html" width="300" height="250" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0;vertical-align:bottom;margin:0;width:300px;height:250px" allowtransparency="true"></iframe></div></div>
+            <script>  document.getElementById("popuLayer_js_q").onload=function(){      var styObjd=styObj={width:"300px","height":parseInt(250)+28};window.CSDN.Layer.PopuLayer("#layerd",{storageName:"layerd",styleObj:styObjd,total:50,expoire:1000*60});  }</script><!-- 投放代码 --><script type="text/javascript">                /*服务器频道首页置顶Banner960*90，创建于2014-7-3*/    (window.cproArray = window.cproArray || []).push({        id: "u2895327"      });  </script>  <script src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/c.js.下载" type="text/javascript"></script>
+     
+</div>
+
+<div class="comment_class">
+    <div id="comment_title" class="panel_head">
+        <span class="see_comment">查看评论</span><a name="comments"></a></div>
+    <div id="comment_list"><dl class="comment_item comment_topic" id="comment_item_6034621"><dt class="comment_head" floor="5">5楼 <span class="user"><a class="username" href="http://blog.csdn.net/KevinsCSDN" target="_blank">梦想拒绝零风险</a> <span class="ptime">2016-05-12 17:11发表</span>  <a href="http://blog.csdn.net/cyq1028/article/details/19980369#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="6034621" username="KevinsCSDN"> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/KevinsCSDN" target="_blank"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/3_kevinscsdn.jpg" width="40" height="40"></a></dd><dd class="comment_body">楼主写的后面几个原因都不是内存泄漏了吧</dd><dl class="comment_item comment_reply" id="comment_item_6040210"><dt class="comment_head" floor="5">Re: <span class="user"><a class="username" href="http://blog.csdn.net/cyq1028" target="_blank">cyq1028</a> <span class="ptime">2016-05-17 18:20发表</span>  <a href="http://blog.csdn.net/cyq1028/article/details/19980369#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="6040210" username="cyq1028"> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/cyq1028" target="_blank"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/3_cyq1028.jpg" width="40" height="40"></a></dd><dd class="comment_body">回复梦想拒绝零风险：这是转的文章</dd></dl></dl><dl class="comment_item comment_topic" id="comment_item_5998214"><dt class="comment_head" floor="4">4楼 <span class="user"><a class="username" href="http://blog.csdn.net/YouGaoFei" target="_blank">YouGaoFei</a> <span class="ptime">2016-04-25 17:22发表</span>  <a href="http://blog.csdn.net/cyq1028/article/details/19980369#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="5998214" username="YouGaoFei"> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/YouGaoFei" target="_blank"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/3_yougaofei.jpg" width="40" height="40"></a></dd><dd class="comment_body">谢谢分享！</dd></dl><dl class="comment_item comment_topic" id="comment_item_5969438"><dt class="comment_head" floor="3">3楼 <span class="user"><a class="username" href="http://blog.csdn.net/c12366456" target="_blank">豪情不减嬉笑当年</a> <span class="ptime">2016-04-04 17:19发表</span>  <a href="http://blog.csdn.net/cyq1028/article/details/19980369#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="5969438" username="c12366456"> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/c12366456" target="_blank"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/3_c12366456.jpg" width="40" height="40"></a></dd><dd class="comment_body">不错，谢谢</dd></dl><dl class="comment_item comment_topic" id="comment_item_5160707"><dt class="comment_head" floor="2">2楼 <span class="user"><a class="username" href="http://blog.csdn.net/ApkCore" target="_blank">ApkCore</a> <span class="ptime">2015-06-25 10:25发表</span>  <a href="http://blog.csdn.net/cyq1028/article/details/19980369#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="5160707" username="ApkCore"> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/ApkCore" target="_blank"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/3_apkcore.jpg" width="40" height="40"></a></dd><dd class="comment_body">收藏</dd></dl><dl class="comment_item comment_topic" id="comment_item_5068671"><dt class="comment_head" floor="1">1楼 <span class="user"><a class="username" href="http://blog.csdn.net/Peter6359312" target="_blank">唐朝栗子工作室</a> <span class="ptime">2015-05-22 15:25发表</span>  <a href="http://blog.csdn.net/cyq1028/article/details/19980369#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="5068671" username="Peter6359312"> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/cyq1028/article/details/19980369#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/Peter6359312" target="_blank"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/3_peter6359312.jpg" width="40" height="40"></a></dd><dd class="comment_body">楼主真是大神，学习了</dd></dl><div class="clear"></div></div>
+    <div id="comment_bar" style="display: none;">
+    </div>
+    <div id="comment_form"><div class="guest_link">您还没有登录,请<a href="javascript:void(0);" onclick="javascript:loginbox();">[登录]</a>或<a href="http://passport.csdn.net/account/register?from=http%3A%2F%2Fblog.csdn.net%2Fcyq1028%2Farticle%2Fdetails%2F19980369">[注册]</a></div></div>
+    <div class="announce">
+        * 以上用户言论只代表其个人观点，不代表CSDN网站的观点或立场<a name="reply"></a><a name="quote"></a></div>
+</div>
+
+<script type="text/javascript">
+    var fileName = '19980369';
+    var commentscount = 6;
+    var islock = false
+</script>
+<script type="text/javascript" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/comment.js.下载"></script>
+    <div id="ad_bot">
+    </div>
+<div id="report_dialog">
+</div>
+
+<div id="d-top" style="bottom:60px;">
+
+        <a id="quick-reply" class="btn btn-top q-reply" title="快速回复" style="display:none;">
+            <img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/blog-icon-reply.png" alt="快速回复">
+        </a>    
+    <a id="d-top-a" class="btn btn-top backtop" style="display: none;" title="返回顶部" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_huidaodingbu&#39;])">         
+         <img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/top.png" alt="TOP">
+    </a>
+</div>
+<script type="text/javascript">
+    $(function ()
+    {
+        $("#ad_frm_0").height("90px");
+        
+        setTimeout(function(){
+            $("#ad_frm_2").height("200px");
+        },1000);    
+    });
+  
+</script>
+<style type="text/css">
+    .tag_list
+    {
+        background: none repeat scroll 0 0 #FFFFFF;
+        border: 1px solid #D7CBC1;
+        color: #000000;
+        font-size: 12px;
+        line-height: 20px;
+        list-style: none outside none;
+        margin: 10px 2% 0 1%;
+        padding: 1px;
+    }
+    .tag_list h5
+    {
+        background: none repeat scroll 0 0 #E0DBD3;
+        color: #47381C;
+        font-size: 12px;
+        height: 24px;
+        line-height: 24px;
+        padding: 0 5px;
+        margin: 0;
+    }
+    .tag_list h5 a
+    {
+        color: #47381C;
+    }
+    .classify
+    {
+        margin: 10px 0;
+        padding: 4px 12px 8px;
+    }
+    .classify a
+    {
+        margin-right: 20px;
+        white-space: nowrap;
+    }
+</style>
+
+
+<div class="tag_list" style="">
+
+    <h5>
+        <a href="http://www.csdn.net/tag/" target="_blank">核心技术类目</a></h5>
+    <div class="classify">
+<a title="全部主题" href="http://www.csdn.net/tag" target="_blank" onclick="LogClickCount(this,336);">全部主题</a>
+<a title="Hadoop" href="http://g.csdn.net/5272865" target="_blank" onclick="LogClickCount(this,336);">Hadoop</a>
+<a title="AWS" href="http://g.csdn.net/5272866" target="_blank" onclick="LogClickCount(this,336);">AWS</a>
+<a title="移动游戏" href="http://g.csdn.net/5272870" target="_blank" onclick="LogClickCount(this,336);">移动游戏</a>
+<a title="Java" href="http://g.csdn.net/5272871" target="_blank" onclick="LogClickCount(this,336);">Java</a>
+<a title="Android" href="http://g.csdn.net/5272872" target="_blank" onclick="LogClickCount(this,336);">Android</a>
+<a title="iOS" href="http://g.csdn.net/5272873" target="_blank" onclick="LogClickCount(this,336);">iOS</a>
+<a title="Swift" href="http://g.csdn.net/5272868" target="_blank" onclick="LogClickCount(this,336);">Swift</a>
+<a title="智能硬件" href="http://g.csdn.net/5272869" target="_blank" onclick="LogClickCount(this,336);">智能硬件</a>
+<a title="Docker" href="http://g.csdn.net/5272867" target="_blank" onclick="LogClickCount(this,336);">Docker</a>
+<a title="OpenStack" href="http://g.csdn.net/5272925" target="_blank" onclick="LogClickCount(this,336);">OpenStack</a>
+<a title="VPN" href="http://www.csdn.net/tag/vpn" target="_blank" onclick="LogClickCount(this,336);">VPN</a>
+<a title="Spark" href="http://g.csdn.net/5272924" target="_blank" onclick="LogClickCount(this,336);">Spark</a>
+<a title="ERP" href="http://www.csdn.net/tag/erp" target="_blank" onclick="LogClickCount(this,336);">ERP</a>
+<a title="IE10" href="http://www.csdn.net/tag/ie10" target="_blank" onclick="LogClickCount(this,336);">IE10</a>
+<a title="Eclipse" href="http://www.csdn.net/tag/eclipse" target="_blank" onclick="LogClickCount(this,336);">Eclipse</a>
+<a title="CRM" href="http://www.csdn.net/tag/crm" target="_blank" onclick="LogClickCount(this,336);">CRM</a>
+<a title="JavaScript" href="http://www.csdn.net/tag/javascript" target="_blank" onclick="LogClickCount(this,336);">JavaScript</a>
+<a title="数据库" href="http://www.csdn.net/tag/%E6%95%B0%E6%8D%AE%E5%BA%93" target="_blank" onclick="LogClickCount(this,336);">数据库</a>
+<a title="Ubuntu" href="http://www.csdn.net/tag/ubuntu" target="_blank" onclick="LogClickCount(this,336);">Ubuntu</a>
+<a title="NFC" href="http://www.csdn.net/tag/nfc" target="_blank" onclick="LogClickCount(this,336);">NFC</a>
+<a title="WAP" href="http://www.csdn.net/tag/wap" target="_blank" onclick="LogClickCount(this,336);">WAP</a>
+<a title="jQuery" href="http://www.csdn.net/tag/jquery" target="_blank" onclick="LogClickCount(this,336);">jQuery</a>
+<a title="BI" href="http://www.csdn.net/tag/bi" target="_blank" onclick="LogClickCount(this,336);">BI</a>
+<a title="HTML5" href="http://www.csdn.net/tag/html5" target="_blank" onclick="LogClickCount(this,336);">HTML5</a>
+<a title="Spring" href="http://www.csdn.net/tag/spring" target="_blank" onclick="LogClickCount(this,336);">Spring</a>
+<a title="Apache" href="http://www.csdn.net/tag/apache" target="_blank" onclick="LogClickCount(this,336);">Apache</a>
+<a title=".NET" href="http://www.csdn.net/tag/.net" target="_blank" onclick="LogClickCount(this,336);">.NET</a>
+<a title="API" href="http://www.csdn.net/tag/api" target="_blank" onclick="LogClickCount(this,336);">API</a>
+<a title="HTML" href="http://www.csdn.net/tag/html" target="_blank" onclick="LogClickCount(this,336);">HTML</a>
+<a title="SDK" href="http://www.csdn.net/tag/sdk" target="_blank" onclick="LogClickCount(this,336);">SDK</a>
+<a title="IIS" href="http://www.csdn.net/tag/iis" target="_blank" onclick="LogClickCount(this,336);">IIS</a>
+<a title="Fedora" href="http://www.csdn.net/tag/fedora" target="_blank" onclick="LogClickCount(this,336);">Fedora</a>
+<a title="XML" href="http://www.csdn.net/tag/xml" target="_blank" onclick="LogClickCount(this,336);">XML</a>
+<a title="LBS" href="http://www.csdn.net/tag/lbs" target="_blank" onclick="LogClickCount(this,336);">LBS</a>
+<a title="Unity" href="http://www.csdn.net/tag/unity" target="_blank" onclick="LogClickCount(this,336);">Unity</a>
+<a title="Splashtop" href="http://www.csdn.net/tag/splashtop" target="_blank" onclick="LogClickCount(this,336);">Splashtop</a>
+<a title="UML" href="http://www.csdn.net/tag/uml" target="_blank" onclick="LogClickCount(this,336);">UML</a>
+<a title="components" href="http://www.csdn.net/tag/components" target="_blank" onclick="LogClickCount(this,336);">components</a>
+<a title="Windows Mobile" href="http://www.csdn.net/tag/windowsmobile" target="_blank" onclick="LogClickCount(this,336);">Windows Mobile</a>
+<a title="Rails" href="http://www.csdn.net/tag/rails" target="_blank" onclick="LogClickCount(this,336);">Rails</a>
+<a title="QEMU" href="http://www.csdn.net/tag/qemu" target="_blank" onclick="LogClickCount(this,336);">QEMU</a>
+<a title="KDE" href="http://www.csdn.net/tag/kde" target="_blank" onclick="LogClickCount(this,336);">KDE</a>
+<a title="Cassandra" href="http://www.csdn.net/tag/cassandra" target="_blank" onclick="LogClickCount(this,336);">Cassandra</a>
+<a title="CloudStack" href="http://www.csdn.net/tag/cloudstack" target="_blank" onclick="LogClickCount(this,336);">CloudStack</a>
+<a title="FTC" href="http://www.csdn.net/tag/ftc" target="_blank" onclick="LogClickCount(this,336);">FTC</a>
+<a title="coremail" href="http://www.csdn.net/tag/coremail" target="_blank" onclick="LogClickCount(this,336);">coremail</a>
+<a title="OPhone " href="http://www.csdn.net/tag/ophone" target="_blank" onclick="LogClickCount(this,336);">OPhone </a>
+<a title="CouchBase" href="http://www.csdn.net/tag/couchbase" target="_blank" onclick="LogClickCount(this,336);">CouchBase</a>
+<a title="云计算" href="http://www.csdn.net/tag/%E4%BA%91%E8%AE%A1%E7%AE%97" target="_blank" onclick="LogClickCount(this,336);">云计算</a>
+<a title="iOS6" href="http://www.csdn.net/tag/iOS6" target="_blank" onclick="LogClickCount(this,336);">iOS6</a>
+<a title="Rackspace " href="http://www.csdn.net/tag/rackspace" target="_blank" onclick="LogClickCount(this,336);">Rackspace </a>
+<a title="Web App" href="http://www.csdn.net/tag/webapp" target="_blank" onclick="LogClickCount(this,336);">Web App</a>
+<a title="SpringSide" href="http://www.csdn.net/tag/springside" target="_blank" onclick="LogClickCount(this,336);">SpringSide</a>
+<a title="Maemo" href="http://www.csdn.net/tag/maemo" target="_blank" onclick="LogClickCount(this,336);">Maemo</a>
+<a title="Compuware" href="http://www.csdn.net/tag/compuware" target="_blank" onclick="LogClickCount(this,336);">Compuware</a>
+<a title="大数据" href="http://www.csdn.net/tag/%E5%A4%A7%E6%95%B0%E6%8D%AE" target="_blank" onclick="LogClickCount(this,336);">大数据</a>
+<a title="aptech" href="http://www.csdn.net/tag/aptech" target="_blank" onclick="LogClickCount(this,336);">aptech</a>
+<a title="Perl" href="http://www.csdn.net/tag/perl" target="_blank" onclick="LogClickCount(this,336);">Perl</a>
+<a title="Tornado" href="http://www.csdn.net/tag/tornado" target="_blank" onclick="LogClickCount(this,336);">Tornado</a>
+<a title="Ruby" href="http://www.csdn.net/tag/ruby" target="_blank" onclick="LogClickCount(this,336);">Ruby</a>
+<a title="Hibernate" href="http://www.csdn.net/tag/hibernate" target="_blank" onclick="LogClickCount(this,336);">Hibernate</a>
+<a title="ThinkPHP" href="http://www.csdn.net/tag/thinkphp" target="_blank" onclick="LogClickCount(this,336);">ThinkPHP</a>
+<a title="HBase" href="http://www.csdn.net/tag/hbase" target="_blank" onclick="LogClickCount(this,336);">HBase</a>
+<a title="Pure" href="http://www.csdn.net/tag/pure" target="_blank" onclick="LogClickCount(this,336);">Pure</a>
+<a title="Solr" href="http://www.csdn.net/tag/solr" target="_blank" onclick="LogClickCount(this,336);">Solr</a>
+<a title="Angular" href="http://www.csdn.net/tag/angular" target="_blank" onclick="LogClickCount(this,336);">Angular</a>
+<a title="Cloud Foundry" href="http://www.csdn.net/tag/cloudfoundry" target="_blank" onclick="LogClickCount(this,336);">Cloud Foundry</a>
+<a title="Redis" href="http://www.csdn.net/tag/redis" target="_blank" onclick="LogClickCount(this,336);">Redis</a>
+<a title="Scala" href="http://www.csdn.net/tag/scala" target="_blank" onclick="LogClickCount(this,336);">Scala</a>
+<a title="Django" href="http://www.csdn.net/tag/django" target="_blank" onclick="LogClickCount(this,336);">Django</a>
+<a title="Bootstrap" href="http://www.csdn.net/tag/bootstrap" target="_blank" onclick="LogClickCount(this,336);">Bootstrap</a>
+    </div>
+
+</div>
+  <script type="text/javascript">     
+      $(function(){
+              setTimeout(function(){
+                  $.get("/cyq1028/svc/GetTagContent",function(data){
+                      $(".tag_list").html(data).show();
+                  });     
+              });
+          },500);                       
+ </script> 
+
+
+<div id="pop_win" style="display:none ;position: absolute; z-index: 10000; border: 1px solid rgb(220, 220, 220); top: 222.5px; left: 630px; opacity: 1; background: none 0px 0px repeat scroll rgb(255, 255, 255);">
+    
+</div>
+<div id="popup_mask"></div>
+<style>
+    #popup_mask
+    {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        z-index: 9999;
+        left: 0px;
+        top: 0px;
+        opacity: 0.3;
+        filter: alpha(opacity=30);
+        display: none;
+    }
+
+</style>
+
+
+
+
+<script type="text/javascript">
+    $(function(){        
+        
+        setTimeout(function(){
+            $(".comment_body:contains('回复')").each(function(index,item){
+                var u=$(this).text().split('：')[0].toString().replace("回复","")
+                var thisComment=$(this);
+                if(u)
+                {
+                    $.getJSON("https://passport.csdn.net/get/nick?callback=?", {users: u}, function(a) {
+                        if(a!=null&&a.data!=null&&a.data.length>0)
+                        {
+                            nick=a.data[0].n; 
+                            if(u!=nick)
+                            {
+                                thisComment.text(thisComment.text().replace(u,nick));  
+                            }
+                        }       
+                    });  
+                }
+            });         
+
+        },200);  
+
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },5000);
+
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },10000);
+
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },15000);
+        
+        setTimeout(function(){
+            $("a img[src='http://js.tongji.linezing.com/stats.gif']").parent().css({"position":"absolute","left":"50%"});
+        },300);
+    });
+
+    function loginbox(){
+        var $logpop=$("#pop_win");
+        $logpop.html('<iframe src="https://passport.csdn.net/account/loginbox?service=http://static.blog.csdn.net/callback.htm" frameborder="0" height="600" width="400" scrolling="no"></iframe>');
+
+        $('#popup_mask').css({
+            opacity: 0.5,
+            width: $( document ).width() + 'px',
+            height:  $( document ).height() + 'px'
+        });
+        $('#popup_mask').css("display","block");
+ 
+        $logpop.css( {
+            top: ($( window ).height() - $logpop.height())/ 2  + $( window 
+       ).scrollTop() + 'px',
+            left:($( window ).width() - $logpop.width())/ 2
+        } );
+ 
+        setTimeout( function () {
+            $logpop.show();
+            $logpop.css( {
+                opacity: 1
+            } );
+        }, 200 );
+ 
+        $('#popup_mask').unbind("click");
+        $('#popup_mask').bind("click", function(){
+            $('#popup_mask').hide();
+            var $clopop = $("#pop_win");
+            $("#common_ask_div_sc").css("display","none");
+            $clopop.css( {
+                opacity: 0
+            } );
+            setTimeout( function () {
+                $clopop.hide();
+            }, 350 );
+            return false;
+        });
+    }   
+
+    var articletitle='Android内存泄漏分析及调试';
+
+</script>
+
+
+
+
+
+
+
+
+                        <div class="clear">
+                        </div>
+                    </div>                   
+                
+            </div>
+                   
+           <div id="side">
+               
+    <div class="side">
+<div id="panel_Profile" class="panel">
+<ul class="panel_head"><span>个人资料</span></ul>
+<ul class="panel_body profile">
+<div id="blog_userface">
+    <a href="http://my.csdn.net/cyq1028" target="_blank">
+    <img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/1_cyq1028.jpg" title="访问我的空间" style="max-width:90%">
+    </a>
+    <br>
+    <span><a href="http://my.csdn.net/cyq1028" class="user_name" target="_blank">cyq1028</a></span>
+</div>
+<div class="interact">
+
+    <a href="javascript:void(0);" class="attent" id="span_add_follow" title="[加关注]"></a>
+
+ <a href="javascript:void(0);" class="letter" title="[发私信]" onclick="window.open(&#39;http://msg.csdn.net/letters/model?receiver=cyq1028&#39;,&#39;_blank&#39;,&#39;height=350,width=700&#39;);_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_sixin&#39;])"></a>  
+</div>
+<div id="blog_medal">
+                <div id="bms_box">
+               </div>
+</div>
+<ul id="blog_rank">
+    <li>访问：<span>156080次</span></li>
+    <li>积分：<span>1271</span> </li>    
+    <li>等级： <span style="position:relative;display:inline-block;z-index:1">
+            <img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/blog4.png" alt="" style="vertical-align: middle;" id="leveImg">
+            <div id="smallTittle" style=" position: absolute;  left: -24px;  top: 25px;  text-align: center;  width: 101px;  height: 32px;  background-color: #fff;  line-height: 32px;  border: 2px #DDDDDD solid;  box-shadow: 0px 2px 2px rgba (0,0,0,0.1);  display: none;   z-index: 999;">
+            <div style="left: 42%;  top: -8px;  position: absolute;  width: 0;  height: 0;  border-left: 10px solid transparent;  border-right: 10px solid transparent;  border-bottom: 8px solid #EAEAEA;"></div>
+            积分：1271 </div>
+        </span>  </li>
+    <li>排名：<span>千里之外</span></li>
+</ul>
+<ul id="blog_statistics">
+    <li>原创：<span>29篇</span></li>
+    <li>转载：<span>9篇</span></li>
+    <li>译文：<span>0篇</span></li>
+    <li>评论：<span>34条</span></li>
+</ul>
+</ul>
+</div>
+
+
+<div class="panel" id="panel_Search">
+    <ul class="panel_head"><span>文章搜索</span></ul>
+    <ul class="panel_body">
+        <form id="frmSearch" action="http://so.csdn.net/search" class="form_search" target="_blank">
+        <span><input id="inputSearch" type="text" class="blogsearch" title="请输入关键字"></span>
+        <input id="btnSubmit" type="button" value="搜索" title="search in blog">
+        <input type="hidden" name="q" id="inputQ">
+        <input type="hidden" name="t" value="blog">
+        <a id="btnSearchBlog" target="_blank"></a>
+        </form>
+    </ul>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#btnSubmit").click(function () {           
+            search();
+        });
+
+        $("#frmSearch").submit(function () {
+            search();
+            return false;
+        });
+
+        function search()
+        {
+            var url = "http://so.csdn.net/so/search/s.do?q=" + encodeURIComponent($("#inputSearch").val()) + "&u=" + username + "&t=blog";
+            window.location.href = url;
+        }   
+    });
+</script><div id="panel_Archive" class="panel">
+<ul class="panel_head"><span>文章存档</span></ul>
+<ul class="panel_body">
+<div id="archive_list"><li><a href="http://blog.csdn.net/cyq1028/article/month/2016/02">2016年02月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/cyq1028/article/month/2014/07">2014年07月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/cyq1028/article/month/2014/02">2014年02月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/cyq1028/article/month/2014/01">2014年01月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/cyq1028/article/month/2013/12">2013年12月</a><span>(1)</span></li><span class="hidelist" style="display:none;"><li><a href="http://blog.csdn.net/cyq1028/article/month/2013/11">2013年11月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/cyq1028/article/month/2013/06">2013年06月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/cyq1028/article/month/2012/11">2012年11月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/cyq1028/article/month/2012/10">2012年10月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/cyq1028/article/month/2012/09">2012年09月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/cyq1028/article/month/2012/08">2012年08月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/cyq1028/article/month/2012/07">2012年07月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/cyq1028/article/month/2012/06">2012年06月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/cyq1028/article/month/2012/04">2012年04月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/cyq1028/article/month/2012/03">2012年03月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/cyq1028/article/month/2012/02">2012年02月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/cyq1028/article/month/2012/01">2012年01月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/cyq1028/article/month/2011/12">2011年12月</a><span>(4)</span></li><li><a href="http://blog.csdn.net/cyq1028/article/month/2011/11">2011年11月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/cyq1028/article/month/2011/10">2011年10月</a><span>(6)</span></li><li><a href="http://blog.csdn.net/cyq1028/article/month/2011/09">2011年09月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/cyq1028/article/month/2011/08">2011年08月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/cyq1028/article/month/2011/04">2011年04月</a><span>(2)</span></li></span><div id="archive_list_button" class="list_closed">展开</div></div>
+</ul>
+</div>
+<div id="hotarticls" class="panel">
+<ul class="panel_head">
+    <span>       
+阅读排行    </span>
+</ul>
+
+<ul class="panel_body itemlist">
+<li>
+<a href="http://blog.csdn.net/cyq1028/article/details/6879088" title="java多态简单例子 one">java多态简单例子 one</a><span>(47844)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/cyq1028/article/details/19980369" title="Android内存泄漏分析及调试">Android内存泄漏分析及调试</a><span>(39971)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/cyq1028/article/details/7390631" title="android 自定义View">android 自定义View</a><span>(11844)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/cyq1028/article/details/8081261" title="Looper、Handler应用---实现主线程向子线程发送消息">Looper、Handler应用---实现主线程向子线程发送消息</a><span>(8230)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/cyq1028/article/details/7229158" title="android jpeg库的简单使用">android jpeg库的简单使用</a><span>(7816)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/cyq1028/article/details/18559967" title="Android 命令：实现启动一个apk">Android 命令：实现启动一个apk</a><span>(4954)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/cyq1028/article/details/7302711" title="cryptsetup的使用">cryptsetup的使用</a><span>(2279)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/cyq1028/article/details/9055731" title="android framework中调用第三方的jar包">android framework中调用第三方的jar包</a><span>(2279)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/cyq1028/article/details/7220244" title="android wifi测试小程序">android wifi测试小程序</a><span>(2090)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/cyq1028/article/details/16344107" title="Android中一个服务的整体分析">Android中一个服务的整体分析</a><span>(1762)</span>
+</li>
+</ul>
+</div>
+<div id="hotarticls2" class="panel">
+<ul class="panel_head"><span>评论排行</span></ul>
+<ul class="panel_body itemlist">
+<li>
+<a href="http://blog.csdn.net/cyq1028/article/details/7390631" title="android 自定义View">android 自定义View</a><span>(8)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/cyq1028/article/details/19980369" title="Android内存泄漏分析及调试">Android内存泄漏分析及调试</a><span>(6)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/cyq1028/article/details/8081261" title="Looper、Handler应用---实现主线程向子线程发送消息">Looper、Handler应用---实现主线程向子线程发送消息</a><span>(5)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/cyq1028/article/details/6879088" title="java多态简单例子 one">java多态简单例子 one</a><span>(4)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/cyq1028/article/details/16344107" title="Android中一个服务的整体分析">Android中一个服务的整体分析</a><span>(3)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/cyq1028/article/details/7229158" title="android jpeg库的简单使用">android jpeg库的简单使用</a><span>(2)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/cyq1028/article/details/7230413" title="android 使用jpeg库截屏">android 使用jpeg库截屏</a><span>(2)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/cyq1028/article/details/6878098" title="java模板方法设计">java模板方法设计</a><span>(2)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/cyq1028/article/details/7095870" title="抓取uevent事件">抓取uevent事件</a><span>(1)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/cyq1028/article/details/18664257" title="android权限大全">android权限大全</a><span>(1)</span>
+</li>
+</ul>
+</div>
+<div id="homepageArticles" class="panel tracking-ad" data-mod="popu_4">
+<ul class="panel_head"><span>推荐文章</span></ul>
+<ul class="panel_body" id="ad_commend">
+<ul>
+<li><a href="http://blog.csdn.net/blogdevteam/article/details/71512789" target="_blank">* CSDN日报20170509 ——《互联网时代架构师的职责与思考》
+ </a></li>
+<li><a href="http://blog.csdn.net/wetest_tencent/article/details/71210272" target="_blank">* 程序员要拥抱变化，聊聊Android即将支持的Java 8</a></li>
+<li><a href="http://blog.csdn.net/liangklfang/article/details/71102002" target="_blank">* 彻底弄懂prepack与webpack的关系</a></li>
+<li><a href="http://blog.csdn.net/aliceyangxi1987/article/details/71055024" target="_blank">* 用 TensorFlow 做个聊天机器人</a></li>
+<li><a href="http://blog.csdn.net/horsefoot/article/details/71216267" target="_blank">* 分布式机器学习的集群方案介绍之HPC实现</a></li>
+<li><a href="http://blog.csdn.net/zyuanyun/article/details/60890534" target="_blank">* Android 音频系统：从 AudioTrack 到 AudioFlinger</a></li>
+
+</ul></ul>
+</div>
+
+
+<div id="newcomments" class="panel">
+<ul class="panel_head"><span>最新评论</span></ul>
+<ul class="panel_body itemlist">
+    <li>
+   
+         <a href="http://blog.csdn.net/cyq1028/article/details/6879088#comments">java多态简单例子 one</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/cyq1028" class="user_name">cyq1028</a>:
+@u010957746:是的，
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/cyq1028/article/details/7390631#comments">android 自定义View</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/qiaoliubang1" class="user_name">qiaoliubang1</a>:
+顶 顶 顶 顶 顶 顶 顶 顶
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/cyq1028/article/details/7390631#comments">java多态简单例子 one</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/u010957746" class="user_name">GEM丶Dragon</a>:
+本文为博主原创文章，未经博主允许不得转载。。。。。。这不是毕老师的东西么。。。
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/cyq1028/article/details/7390631#comments">java多态简单例子 one</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/JavaDerrick" class="user_name">JavaDerrick</a>:
+您好：请问这是什么工具
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/cyq1028/article/details/8081261#comments">Looper、Handler应用---实现主线程向子线程发送消息</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/nothingl3" class="user_name">nothingwxq</a>:
+会阻塞ui线程。
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/cyq1028/article/details/19980369#comments">Android内存泄漏分析及调试</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/cyq1028" class="user_name">cyq1028</a>:
+@KevinsCSDN:这是转的文章
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/cyq1028/article/details/19980369#comments">Android内存泄漏分析及调试</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/KevinsCSDN" class="user_name">梦想拒绝零风险</a>:
+楼主写的后面几个原因都不是内存泄漏了吧
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/cyq1028/article/details/19980369#comments">Android内存泄漏分析及调试</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/YouGaoFei" class="user_name">YouGaoFei</a>:
+谢谢分享！
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/cyq1028/article/details/19980369#comments">Android内存泄漏分析及调试</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/c12366456" class="user_name">豪情不减嬉笑当年</a>:
+不错，谢谢
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/cyq1028/article/details/19980369#comments">Looper、Handler应用---实现主线程向子线程发送消息</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/outdoorsmanm" class="user_name">outdoorsmanm</a>:
+好像是这样的，和looper关联的handler负责发送和接收数据，在主线程中发数据，子线程接收，但...
+    </p>
+    </li>
+</ul>
+</div>
+    </div>
+    <div class="clear">
+    </div>
+
+
+                   <!-- 广告位开始 -->                    <!-- 广告位结束 -->
+                   <div class="J_adv" data-view="true" data-mod="ad_popu_190" data-mtp="63" data-order="40" data-con="ad_content_1260" style="width: 200px; height: 200px;">
+                         <div id="nav_show_top_stop" style="width: 200px; height: 200px; z-index: 1000; position: fixed; top: 0px;"><div id="cpro_u2734128"><iframe id="iframeu2734128_0" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/lclm(3).html" width="200" height="200" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0;vertical-align:bottom;margin:0;width:200px;height:200px" allowtransparency="true"></iframe></div></div>
+                   </div>
+    <script type="text/javascript">    
+        setTimeout(function () {
+            var naviga_offsetTop = 0;
+            function naviga_stay_top() { var scrollTop = jQuery(document).scrollTop(); if (scrollTop > naviga_offsetTop) { jQuery("#nav_show_top_stop").css({ "position": "fixed" }); jQuery("#nav_show_top_stop").css({ "top": "0px" }); } else { jQuery("#nav_show_top_stop").css({ "position": "fixed" }); jQuery("#nav_show_top_stop").css({ "top": naviga_offsetTop - scrollTop + "px" }); } }
+            function onload_function() { naviga_offsetTop = jQuery("#nav_show_top_stop").position().top; jQuery(window).bind("scroll", naviga_stay_top); jQuery(window).bind("mousewheel", naviga_stay_top); jQuery(document).bind("scroll", naviga_stay_top); jQuery(document).bind("mousewheel", naviga_stay_top); } jQuery(document).ready(onload_function);
+               
+        }, 200);    
+    </script>
+<script type="text/javascript">(window.cproArray = window.cproArray || []).push({ id: "u2734128" });  </script> 
+                    <script src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/c.js.下载" type="text/javascript"></script> 
+
+           </div>   
+
+            <div class="clear">
+            </div>
+        </div>
+
+        
+
+<script type="text/javascript" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/cnick.js.下载"></script>
+<script type="text/javascript" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/newblog.min.js.下载"></script>
+
+
+<script type="text/javascript" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/showblogmedal.ashx"></script>
+<script type="text/javascript" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/JavaScript1.js.下载"></script><link rel="stylesheet" type="text/css" href="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/pub_footer_2014.css"><div class="pub_fo"><div id="pub_footerall" class="pub_footer_new"><dl><dt></dt> <dd class="foot_sub_menu"><a href="http://www.csdn.net/company/about.html" target="_blank">公司简介</a><span>|</span><a href="http://www.csdn.net/company/recruit.html" target="_blank">招贤纳士</a><span>|</span><a href="http://www.csdn.net/company/marketing.html" target="_blank">广告服务</a><span>|</span><a href="http://www.csdn.net/company/contact.html" target="_blank">联系方式</a><span>|</span><a href="http://www.csdn.net/company/statement.html" target="_blank">版权声明</a><span>|</span><a href="http://www.csdn.net/company/layer.html" target="_blank">法律顾问</a><span>|</span><a href="mailto:webmaster@csdn.net">问题报告</a><span>|</span><a target="_blank" href="http://www.csdn.net/friendlink.html">合作伙伴</a><span>|</span><a href="http://bbs.csdn.net/forums/Service" target="_blank">论坛反馈</a></dd><dd class="foot_contact"><a href="javascript:void(0);" target="_blank" class="qq">网站客服</a><a href="http://wpa.qq.com/msgrd?v=3&amp;uin=2251809102&amp;site=qq&amp;menu=yes" target="_blank" class="qq">杂志客服</a><a href="http://e.weibo.com/csdnsupport/profile" target="_blank" class="weibo">微博客服</a><a href="mailto:webmaster@csdn.net" class="email" title="联系邮箱">webmaster@csdn.net</a><span class="phone" title="服务热线">400-600-2320</span><span class="interval">|</span><span>北京创新乐知信息技术有限公司 版权所有</span><span class="interval">|</span><span>江苏知之为计算机有限公司</span><span class="interval">|</span><span>江苏乐知网络技术有限公司</span></dd><dd class="foot_copyright"><span>京&nbsp;ICP&nbsp;证&nbsp;09002463&nbsp;号</span><span class="interval">|</span><span>Copyright © 1999-2016, CSDN.NET, All Rights Reserved&nbsp;</span><a href="http://www.hd315.gov.cn/beian/view.asp?bianhao=010202001032100010" target="_blank"><img src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/gongshang_logos.gif" alt="GongshangLogo" title=""></a></dd></dl></div></div><div id="note1" class="csdn_note" style="display:none; position:absolute; z-index:9999; width:440px">  <span class="notice_top_arrow"><span class="inner"></span></span>  <div class="box"></div></div><div class="csdn_notice_tip" style="display:none; position:absolute; z-index:9990; width:170px">  <iframe src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/saved_resource(2).html" frameborder="0" scrolling="no" style="z-index:-1;position:absolute;top:0;left:0;width:100%;height:100%;background:transparent"></iframe>  <div class="tip_text">您有<strong>0</strong>条新通知</div>  <a href="javascript:void 0" class="close2"></a></div><script id="noticeScript" type="text/javascript" btnid="header_notice_num" wrapid="note1" count="5" subcount="5" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/notify.js.下载"></script>
+
+    <script type="text/javascript" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/login.js.下载"></script>
+<script type="text/javascript">
+    $(function () {
+        function __get_code_toolbar(snippet_id) {
+            return $("<span class='tracking-ad' data-mod='popu_167'><a href='https://code.csdn.net/snippets/"
+                    + snippet_id
+                    + "' target='_blank' title='在CODE上查看代码片'  style='text-indent:0;'><img src='https://code.csdn.net/assets/CODE_ico.png' width=12 height=12 alt='在CODE上查看代码片' style='position:relative;top:1px;left:2px;'/></a></span>"
+                    + "<span class='tracking-ad' data-mod='popu_170'><a href='https://code.csdn.net/snippets/"
+                    + snippet_id
+                    + "/fork' target='_blank' title='派生到我的代码片' style='text-indent:0;'><img src='https://code.csdn.net/assets/ico_fork.svg' width=12 height=12 alt='派生到我的代码片' style='position:relative;top:2px;left:2px;'/></a></span>");
+        }
+        
+        $("[code_snippet_id]").each(function () {
+            __s_id = $(this).attr("code_snippet_id");
+            if (__s_id != null && __s_id != "" && __s_id != 0 && parseInt(__s_id) > 70020) {
+                __code_tool = __get_code_toolbar(__s_id);
+                $(this).prev().find(".tools").append(__code_tool);
+            }
+        });
+
+        $(".bar").show();
+    });
+</script>
+
+
+
+
+
+    </div><input type="hidden" id="aa_g_data_ids">
+      <!--new top-->
+    
+
+    <script type="text/javascript" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/tracking.js.下载" charset="utf-8"></script>  
+
+   
+    <script id="csdn-toolbar-id" btnid="header_notice_num" wrapid="note1" count="5" subcount="5" type="text/javascript" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/toolbar.js.下载"></script>
+     <!--new top-->
+   
+    <link href="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/ask_float_block.css" type="text/css" rel="stylesheet">
+    <script language="JavaScript" type="text/javascript" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/wmd.js.下载"></script>
+    <script language="JavaScript" type="text/javascript" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/showdown.js.下载"></script>
+    <script language="JavaScript" type="text/javascript" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/prettify.js.下载"></script>
+    <script language="JavaScript" type="text/javascript" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/ask_float_block.js.下载"></script>
+   
+
+   
+
+
+        <script type="text/javascript" src="http://ads.csdn.net/js/async_new.js"></script>   
+        <script type="text/javascript" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/MathJax.js.下载"></script>
+        <link rel="stylesheet" href="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/prettify.css">
+        <script type="text/javascript" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/prettify.js(1).下载"></script>
+        <script type="text/javascript" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/main.js.下载"></script>
+        <script type="text/javascript">
+            $(function () {
+                setTimeout(function () {
+                    var searchtitletags = articletitle + ',' + $("#tags").html();
+                    searchService({
+                        index: 'blog',
+                        query: searchtitletags,
+                        from: 5,
+                        size: 5,
+                        appendTo: '#res',
+                        url: 'recommend',
+                        his: 2,
+                        client: "blog_cf_enhance",
+                        tmpl: '<dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;"><a href="#{ url }" title="#{ title }" strategy="#{ strategy }">#{ title }</a></dd>'
+                    });
+                }, 1000);
+            });
+
+         </script>     
+        <script type="text/javascript" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/web-storage-cache.min.js.下载"></script>
+        <script type="text/javascript" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/replace.min.js.下载"></script>
+    
+
+
+  <div id="a52b5334d" style="width: 1px; height: 1px; display: none;">
+                    <script id="adJs52b5334" src="http://ads.csdn.net/js/opt/52b5334.js?t=0.4457576825011318"></script>
+                    <script>document.getElementById("adJs52b5334").src = "http://ads.csdn.net/js/opt/52b5334.js?t=" + Math.random();</script>
+   </div>
+
+    <link rel="stylesheet" href="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/blog_code.css">
+    <script type="text/javascript" src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/saveToCode.js.下载"></script>
+      <script type="text/javascript" src="http://csdnimg.cn/rabbit/tracking-ad/main.js?75eacd8"></script>
+
+     <link rel="stylesheet" href="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/fa.css">
+          
+    <div class="pop_CA_cover" style="display:none"></div>
+    <div class="pop pop_CA" style="display:none">
+          <div class="CA_header">
+            收藏助手
+            <span class="cancel_icon" id="fapancle" onclick="$(&#39;.pop_CA&#39;).hide();$(&#39;.pop_CA_cover&#39;).hide();"></span>
+          </div>
+          <iframe src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/saved_resource(3).html" id="fa" frameborder="0" width="100%" height="360" scrolling="no"></iframe>
+    </div>
+
+
+   
+ <div id="tag-suggest-pop">
+  <div class="relative">
+    <div class="close"></div>
+    <div class="content"></div>
+  </div>
+</div><link rel="stylesheet" type="text/css" media="screen" href="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/ask_float_fonts_css-6b30a53970eb5c3a2a045e3df585b475.css"><div data-mod="popu_64" class="csdn-tracking-statistics" chg-blk="0"><a id="com-quick-reply" title="快速回复" style="top:266px"></a><a id="com-quick-collect" title="我要收藏" style="top:304px"></a><a id="com-d-top-a" style="top: 342px; display: inline;" title="返回顶部" onclick=""></a> </div><div class="pop_edit ask_second comm_ask_second"><h3>提问</h3><span class="ask_float_span">您的问题将会被发布在“<a class="ask_float_channel" href="http://ask.csdn.net/" target="_blank" style="cursor:pointer">技术问答</a>”频道</span><a href="http://blog.csdn.net/cyq1028/article/details/19980369#" nodetype="close" class="close">×</a><div class="context"><div class="err_div"><span class="err_ico"></span><span class="err_txt">该问题已存在，请勿重复提问</span></div><div class="input_div"><input id="askInputSecond" type="text" style="font-size:14px;" placeholder="问题标题"></div><div class="cm_box"><div class="cm_dialog"></div> <div class="pop_cm cm_add_link"><input type="text" placeholder="链接内容" id="af_cm_link_txt"><input type="text" placeholder="链接地址" id="af_cm_link_url"><input type="text" placeholder="链接提示" id="af_cm_link_tit"><div class="text-right"><span class="btn btn-default btn-sm" id="add_link_btn">插入链接</span> </div> </div><div class="pop_cm cm_add_img"><div class="nav-tabs"><a class="img_tab active" href="http://blog.csdn.net/cyq1028/article/details/19980369#tab_upload">本地上传</a><a class="img_tab" href="http://blog.csdn.net/cyq1028/article/details/19980369#tab_weburl">网络图片</a></div><div class="tab_panel active" id="tab_upload"><div class="set_img"><iframe src="./Android内存泄漏分析及调试 - cyq1028的专栏 - 博客频道 - CSDN.NET_files/upload.html"></iframe></div></div><div class="tab_panel" id="tab_weburl"><input type="text" placeholder="图片地址" id="af_cm_img_url"><input type="text" placeholder="图片说明" id="af_cm_img_alt"><div class="text-right"><span class="btn btn-default btn-sm" id="add_img_btn">插入图片</span> </div></div> </div></div> <textarea id="editor_all" rows="8" style="display: none;"></textarea><div class="editor-toolbar"><i class="separator">|</i><a class="icon-headline" title="标题一（Ctrl+Alt+1）"></a><a class="icon-heading" title="标题二（Ctrl+Alt+2）"></a><a class="icon-bold" title="粗体（Ctrl+B）"></a><a class="icon-italic" title="斜体（Ctrl+I）"></a><i class="separator">|</i><a class="icon-quote-left" title="引用（Ctrl+’）"></a><a class="icon-code" title="插入代码片（Ctrl+,）"></a><a class="icon-list-ul" title="无序列表（Ctrl+L）"></a><a class="icon-list-ol" title="有序列表（Ctrl+Alt+L）"></a><i class="separator">|</i><a class="icon-link" title="添加链接（Ctrl+K）"></a><a class="icon-picture" title="添加图片（Ctrl+Alt+I）"></a><i class="separator">|</i><a class="icon-reply" title="撤退（Ctrl+Z）"></a><a class="icon-share-alt" title="前进（Ctrl+Shift+Z）"></a><i class="separator">|</i><a class="icon-info" href="http://ask.csdn.net/pages/markdown" target="_blank" title="markdown语法参考"></a><a class="icon-preview" title="预览"></a><i class="separator">|</i></div><div class="CodeMirror cm-s-paper CodeMirror-focused"><div style="overflow: hidden; position: relative; width: 3px; height: 0px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none; font-size: 4px;" tabindex="0"></textarea></div><div class="CodeMirror-hscrollbar"><div style="height: 1px;"></div></div><div class="CodeMirror-vscrollbar"><div style="width: 1px;"></div></div><div class="CodeMirror-scrollbar-filler"></div><div class="CodeMirror-gutter-filler"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="min-width: 33px;"><div style="position: relative;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre>&nbsp;<span style="display: inline-block; width: 1px; margin-right: -1px;">&nbsp;</span></pre></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code"></div><div class="CodeMirror-cursor">&nbsp;</div><div class="CodeMirror-cursor CodeMirror-secondarycursor">&nbsp;</div></div></div></div></div><div style="position: absolute; height: 30px; width: 1px;"></div><div class="CodeMirror-gutters" style="display: none;"></div></div></div><div class="editor-statusbar"><span class="lines">0</span><span class="words">0</span><span class="cursor">0:0</span></div><div class="div_tags clearfix"><div id="divSearchTags" class="tags_con"><input type="text"></div><input type="hidden" name="txtSearchTags"></div><div id="ask2_tagRecomm_div" class="drt_tagRecomm tracking-ad" data-mod="popu_73"><span class="drt_tit">推荐标签：</span></div></div><div class="success"><div class="left_area"><input id="chk_cb" type="checkbox"><span class="wyxs">我要悬赏</span><input id="cb_num" class="cb_num" readonly="true"><span class="phib_rii"><span> 币</span></span></div><a href="http://blog.csdn.net/cyq1028/article/details/19980369#" nodetype="cancel" class="cancel">取消</a><a href="http://blog.csdn.net/cyq1028/article/details/19980369#" nodetype="ok" class="ok">发布</a></div></div><div id="common_ask_div_sc" class="searchContainer"><div class="sTitle">可能存在类似的问题：</div><div class="sFooter"><a class="sFirstNewAsk">我想提一个新问题</a></div></div><div id="mask_code"></div><div class="gist_edit"><div class="save_snippets clearfix"><div class="tit"><h3>保存代码片</h3><span>整理和分享保存的代码片，请访问<a href="https://code.csdn.net/snippets_manage" target="_blank">代码笔记</a></span></div><div class="con_form"><ul class="gist_edit_list clearfix"><li><span class="red">*</span><span class="txt">标题</span><input id="form_title" class="form-input" placeholder="Android内存泄漏分析及调试" type="text"></li><li><span class="red">*</span><span class="txt">描述</span><textarea id="form-textarea" class="form-textarea" placeholder="Android内存泄漏分析及调试： http://blog.csdn.net/cyq1028/article/details/19980369"></textarea></li><li><span class="red">&nbsp;</span><span class="txt">标签</span><div id="divSearchTags"><input id="insertTag" class="insertTag" placeholder="请输入标签，按Enter生成(最多5项)" type="text" value="" name="insertTag" maxlength="21" style="color: rgb(51, 51, 51);"><input id="OrganTag" class="OrganTag" type="hidden" name="OrganTag" value=""><input id="OldOrganTag" class="OldOrganTag" type="hidden" name="OldOrganTag" value=""><input type="hidden" name="txtSearchTags"></div></li></ul></div><div class="bottom-bar"><a href="javascript:;" class="btn-submit btn-cancel">取消</a><span class="tracking-ad" data-mod="popu_250"><a class="btn-submit btn-confirm" href="javascript:;">确定</a></span></div></div></div></body></html>
