@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<!-- saved from url=(0097)http://www.jianshu.com/p/aa8f47ea2a8a?hmsr=toutiao.io&utm_medium=toutiao.io&utm_source=toutiao.io -->
+<html class=" js flexbox flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg smil svgclippaths"><!--<![endif]--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<script type="text/javascript" src="./面试中所遇到的那些坑 - 简书_files/1255494d3a"></script><script src="./面试中所遇到的那些坑 - 简书_files/nr-998.min.js.下载"></script><script src="./面试中所遇到的那些坑 - 简书_files/push.js.下载"></script><script async="" src="./面试中所遇到的那些坑 - 简书_files/analytics.js.下载"></script><script type="text/javascript">window.NREUM||(NREUM={});NREUM.info={"beacon":"bam.nr-data.net","errorBeacon":"bam.nr-data.net","licenseKey":"1255494d3a","applicationID":"15702971","transactionName":"e1daR0JWVV9RER9ZWkxdRxxDUVZE","queueTime":24,"applicationTime":136,"agent":""}</script>
+<script type="text/javascript">window.NREUM||(NREUM={}),__nr_require=function(e,t,n){function r(n){if(!t[n]){var o=t[n]={exports:{}};e[n][0].call(o.exports,function(t){var o=e[n][1][t];return r(o||t)},o,o.exports)}return t[n].exports}if("function"==typeof __nr_require)return __nr_require;for(var o=0;o<n.length;o++)r(n[o]);return r}({1:[function(e,t,n){function r(){}function o(e,t,n){return function(){return i(e,[(new Date).getTime()].concat(u(arguments)),t?null:this,n),t?void 0:this}}var i=e("handle"),a=e(2),u=e(3),c=e("ee").get("tracer"),f=NREUM;"undefined"==typeof window.newrelic&&(newrelic=f);var s=["setPageViewName","setCustomAttribute","setErrorHandler","finished","addToTrace","inlineHit"],l="api-",p=l+"ixn-";a(s,function(e,t){f[t]=o(l+t,!0,"api")}),f.addPageAction=o(l+"addPageAction",!0),f.setCurrentRouteName=o(l+"routeName",!0),t.exports=newrelic,f.interaction=function(){return(new r).get()};var d=r.prototype={createTracer:function(e,t){var n={},r=this,o="function"==typeof t;return i(p+"tracer",[Date.now(),e,n],r),function(){if(c.emit((o?"":"no-")+"fn-start",[Date.now(),r,o],n),o)try{return t.apply(this,arguments)}finally{c.emit("fn-end",[Date.now()],n)}}}};a("setName,setAttribute,save,ignore,onEnd,getContext,end,get".split(","),function(e,t){d[t]=o(p+t)}),newrelic.noticeError=function(e){"string"==typeof e&&(e=new Error(e)),i("err",[e,(new Date).getTime()])}},{}],2:[function(e,t,n){function r(e,t){var n=[],r="",i=0;for(r in e)o.call(e,r)&&(n[i]=t(r,e[r]),i+=1);return n}var o=Object.prototype.hasOwnProperty;t.exports=r},{}],3:[function(e,t,n){function r(e,t,n){t||(t=0),"undefined"==typeof n&&(n=e?e.length:0);for(var r=-1,o=n-t||0,i=Array(o<0?0:o);++r<o;)i[r]=e[t+r];return i}t.exports=r},{}],ee:[function(e,t,n){function r(){}function o(e){function t(e){return e&&e instanceof r?e:e?c(e,u,i):i()}function n(n,r,o){if(!p.aborted){e&&e(n,r,o);for(var i=t(o),a=v(n),u=a.length,c=0;c<u;c++)a[c].apply(i,r);var f=s[w[n]];return f&&f.push([y,n,r,i]),i}}function d(e,t){b[e]=v(e).concat(t)}function v(e){return b[e]||[]}function g(e){return l[e]=l[e]||o(n)}function m(e,t){f(e,function(e,n){t=t||"feature",w[n]=t,t in s||(s[t]=[])})}var b={},w={},y={on:d,emit:n,get:g,listeners:v,context:t,buffer:m,abort:a,aborted:!1};return y}function i(){return new r}function a(){(s.api||s.feature)&&(p.aborted=!0,s=p.backlog={})}var u="nr@context",c=e("gos"),f=e(2),s={},l={},p=t.exports=o();p.backlog=s},{}],gos:[function(e,t,n){function r(e,t,n){if(o.call(e,t))return e[t];var r=n();if(Object.defineProperty&&Object.keys)try{return Object.defineProperty(e,t,{value:r,writable:!0,enumerable:!1}),r}catch(i){}return e[t]=r,r}var o=Object.prototype.hasOwnProperty;t.exports=r},{}],handle:[function(e,t,n){function r(e,t,n,r){o.buffer([e],r),o.emit(e,t,n)}var o=e("ee").get("handle");t.exports=r,r.ee=o},{}],id:[function(e,t,n){function r(e){var t=typeof e;return!e||"object"!==t&&"function"!==t?-1:e===window?0:a(e,i,function(){return o++})}var o=1,i="nr@id",a=e("gos");t.exports=r},{}],loader:[function(e,t,n){function r(){if(!h++){var e=y.info=NREUM.info,t=l.getElementsByTagName("script")[0];if(setTimeout(f.abort,3e4),!(e&&e.licenseKey&&e.applicationID&&t))return f.abort();c(b,function(t,n){e[t]||(e[t]=n)}),u("mark",["onload",a()],null,"api");var n=l.createElement("script");n.src="https://"+e.agent,t.parentNode.insertBefore(n,t)}}function o(){"complete"===l.readyState&&i()}function i(){u("mark",["domContent",a()],null,"api")}function a(){return(new Date).getTime()}var u=e("handle"),c=e(2),f=e("ee"),s=window,l=s.document,p="addEventListener",d="attachEvent",v=s.XMLHttpRequest,g=v&&v.prototype;NREUM.o={ST:setTimeout,CT:clearTimeout,XHR:v,REQ:s.Request,EV:s.Event,PR:s.Promise,MO:s.MutationObserver},e(1);var m=""+location,b={beacon:"bam.nr-data.net",errorBeacon:"bam.nr-data.net",agent:"js-agent.newrelic.com/nr-998.min.js"},w=v&&g&&g[p]&&!/CriOS/.test(navigator.userAgent),y=t.exports={offset:a(),origin:m,features:{},xhrWrappable:w};l[p]?(l[p]("DOMContentLoaded",i,!1),s[p]("load",r,!1)):(l[d]("onreadystatechange",o),s[d]("onload",r)),u("mark",["firstbyte",a()],null,"api");var h=0},{}]},{},["loader"]);</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="description" content="不是怎么喜欢写开发类的文章，始终认为这些东西不应该由程序员来写，更加倾向于写一些感受以及想法可是慢慢的发现有些东西，你不写是不行的，好吧，那我就跟随大局也来谈谈我的面试经验以及各方面的看法吧。 以下的面试经验主要针对于3年~5年左右android开发经验中所遇到的问题，这些是我自身面试中的经验以及所遇到的坑，可能下面的内容不适合于所有人，不过还是希望能给正在面试中的你有所启发吧。 背景介绍： 今年可能是互联网情形最差的一年（明年更加不好说），往年都有个习惯，每到年底都要出去试试，于是就跟往年一样出去试试，可惜结果并没有想象中的那么理想，告诫下所有从业者，如果是迫于无奈，一定要骑驴找马，现...">
+  <meta property="wb:webmaster" content="294ec9de89e7fadb">
+  <meta property="qc:admins" content="104102651453316562112116375">
+  <meta property="qc:admins" content="11635613706305617">
+  <meta property="qc:admins" content="1163561616621163056375">
+  <meta name="google-site-verification" content="cV4-qkUJZR6gmFeajx_UyPe47GW9vY6cnCrYtCHYNh4">
+  <meta name="google-site-verification" content="HF7lfF8YEGs1qtCE-kPml8Z469e2RHhGajy6JPVy5XI">
+  <meta http-equiv="mobile-agent" content="format=html5; url=http://www.jianshu.com/p/aa8f47ea2a8a?hmsr=toutiao.io&amp;utm_medium=toutiao.io&amp;utm_source=toutiao.io">
+    <!--  Meta for Smart App Banner -->
+  <meta name="apple-itunes-app" content="app-id=888237539, app-argument=jianshu://notes/7721445">
+  <!-- End -->
+
+  <!--  Meta for Twitter Card -->
+  <meta content="summary" property="twitter:card">
+  <meta content="@jianshucom" property="twitter:site">
+  <meta content="面试中所遇到的那些坑" property="twitter:title">
+  <meta content="不是怎么喜欢写开发类的文章，始终认为这些东西不应该由程序员来写，更加倾向于写一些感受以及想法可是慢慢的发现有些东西，你不写是不行的，好吧，那我就跟随大局也来谈谈我的面试经验以及各方面的看法吧。 以下的面试经验主要针对于3年~5年左右android开发经验中所遇到的问题，这些是我自身面试中的经验以及所遇到的坑，可能下面的内容不适合于所有人，不过还是希望能给正在面试中的你有所启发吧。 背景介绍： 今年可能是互联网情形最差的一年（明年更加不好说），往年都有个习惯，每到年底都要出去试试，于是就跟往年一样出去试试，可惜结果并没有想象中的那么理想，告诫下所有从业者，如果是迫于无奈，一定要骑驴找马，现..." property="twitter:description">
+  <meta content="http://www.jianshu.com/p/aa8f47ea2a8a" property="twitter:url">
+  <!-- End -->
+
+  <!--  Meta for OpenGraph -->
+  <meta property="fb:app_id" content="865829053512461">
+  <meta property="og:site_name" content="简书">
+  <meta property="og:title" content="面试中所遇到的那些坑">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="http://www.jianshu.com/p/aa8f47ea2a8a">
+  <meta property="og:description" content="不是怎么喜欢写开发类的文章，始终认为这些东西不应该由程序员来写，更加倾向于写一些感受以及想法可是慢慢的发现有些东西，你不写是不行的，好吧，那我就跟随大局也来谈谈我的面试经验以及各方面的看法吧。 ...">
+  <!-- End -->
+
+  <!--  Meta for Facebook Applinks -->
+  <meta property="al:ios:url" content="jianshu://notes/7721445">
+  <meta property="al:ios:app_store_id" content="888237539">
+  <meta property="al:ios:app_name" content="简书">
+
+  <meta property="al:android:url" content="jianshu://notes/7721445">
+  <meta property="al:android:package" content="com.jianshu.haruki">
+  <meta property="al:android:app_name" content="简书">
+  <!-- End -->
+
+  <title>面试中所遇到的那些坑 - 简书</title>
+  <meta name="csrf-param" content="authenticity_token">
+<meta name="csrf-token" content="/CSUTznldFdtlS5wR+h6GSfOLkM8EutfpaIenx00pQAJ6MtuS4PVo72Joyv/LqX2bchxzOiaJtSpBhkFLfuo7w==">
+  <!--[if lte IE 8]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <link rel="stylesheet" media="all" href="./面试中所遇到的那些坑 - 简书_files/base-00828532d00225531ad20ff45bf311ea.css">
+
+    <link rel="stylesheet" media="all" href="./面试中所遇到的那些坑 - 简书_files/reading-note-a4d1e4bd26d83f631d58a76778118af6.css">
+  <link rel="stylesheet" media="all" href="./面试中所遇到的那些坑 - 简书_files/base-read-mode-5f4051bc94fc595e8bc00821aae6c3e1.css">
+  <script src="./面试中所遇到的那些坑 - 简书_files/modernizr-613ea63b5aa2f0e2a1946e9c28c8eedb.js.下载"></script>
+  <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+  <!--[if IE 8]><link rel="stylesheet" media="all" href="http://cdn-qn0.jianshu.io/assets/scaffolding/for_ie-7f1c477ffedc13c11315103e8787dc6c.css" /><![endif]-->
+  <!--[if lt IE 9]><link rel="stylesheet" media="all" href="http://cdn-qn0.jianshu.io/assets/scaffolding/for_ie-7f1c477ffedc13c11315103e8787dc6c.css" /><![endif]-->
+  <link href="http://baijii-common.b0.upaiyun.com/icons/favicon.ico" rel="icon">
+      <link rel="apple-touch-icon-precomposed" href="http://cdn-qn0.jianshu.io/assets/apple-touch-icons/57-b426758a1fcfb30486f20fd073c3b8ec.png" sizes="57x57">
+      <link rel="apple-touch-icon-precomposed" href="http://cdn-qn0.jianshu.io/assets/apple-touch-icons/72-feca4b183b9d29fd188665785dc7a7f1.png" sizes="72x72">
+      <link rel="apple-touch-icon-precomposed" href="http://cdn-qn0.jianshu.io/assets/apple-touch-icons/76-ba757f1ad3421192ce7192170393d2b0.png" sizes="76x76">
+      <link rel="apple-touch-icon-precomposed" href="http://cdn-qn0.jianshu.io/assets/apple-touch-icons/114-8dae53b3bcea3f06bb139e329d1edab3.png" sizes="114x114">
+      <link rel="apple-touch-icon-precomposed" href="http://cdn-qn0.jianshu.io/assets/apple-touch-icons/120-fa315ee0177dba4c55d4f66d4129b47f.png" sizes="120x120">
+      <link rel="apple-touch-icon-precomposed" href="http://cdn-qn0.jianshu.io/assets/apple-touch-icons/152-052f5799bec8fb3aa624bdc72ef5bd1d.png" sizes="152x152">
+
+<style type="text/css"></style></head>
+
+<body class="post output zh cn win reader-day-mode reader-font2" data-js-module="note-show" data-locale="zh-CN">
+  
+  <div class="navbar navbar-jianshu shrink">
+  <div class="dropdown">
+    <a class="dropdown-toggle logo" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0)">
+      简
+    </a>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+      <li><a href="http://www.jianshu.com/"><i class="fa fa-home"></i> 首页</a></li>
+      <li><a href="http://www.jianshu.com/collections"><i class="fa fa-th"></i> 专题</a></li>
+    </ul>
+  </div>
+</div>
+<div class="navbar-user">
+    <a class="app-download-btn" href="http://www.jianshu.com/apps/download?utm_medium=top-sugg-down&amp;utm_source=web-other-page">App下载</a>
+    <a class="login" data-signup-link="true" data-toggle="modal" href="http://www.jianshu.com/sign_up">
+      <i class="fa fa-user"></i> 注册
+</a>    <a class="login" data-signin-link="true" data-toggle="modal" href="http://www.jianshu.com/sign_in">
+      <i class="fa fa-sign-in"></i> 登录
+</a>    <a class="daytime set-view-mode pull-right" href="javascript:void(0)"><i class="fa fa-moon-o"></i></a>
+</div>
+<div class="navbar navbar-jianshu expanded">
+  <div class="dropdown">
+      <a class="active logo" role="button" data-original-title="个人主页" data-container="div.expanded" href="http://www.jianshu.com/">
+        <b>简</b><i class="fa fa-home"></i><span class="title">首页</span>
+</a>      <a data-toggle="tooltip" data-placement="right" data-original-title="专题" data-container="div.expanded" href="http://www.jianshu.com/collections">
+        <i class="fa fa-th"></i><span class="title">专题</span>
+</a>    <a class="ad-selector" href="http://www.jianshu.com/apps">
+      <i class="fa fa-mobile"></i><span class="title">下载手机应用</span>
+</a>    <div class="ad-container ">
+      <div class="ad-pop">
+        <img class="ad-logo" src="./面试中所遇到的那些坑 - 简书_files/228-0765f118055a1d942fc286fb55f37773.png" alt="228">
+        <p class="ad-title">简书</p>
+        <p class="ad-subtitle">交流故事，沟通想法</p>
+        <img class="ad-qrcode" src="./面试中所遇到的那些坑 - 简书_files/download-app-qrcode-053849fa25f9b44573ef8dd3c118a20f.png" alt="Download app qrcode">
+        <div>
+          <a class="ad-link" href="https://itunes.apple.com/cn/app/jian-shu-hei-ye-ban-quan-xin/id1142989247?l=en&amp;mt=8">iOS</a>·
+          <a class="ad-link" href="http://downloads.jianshu.io/apps/haruki/JianShu-2.0.1.apk">Android</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="nav-user">
+      <a href="http://www.jianshu.com/p/aa8f47ea2a8a?hmsr=toutiao.io&amp;utm_medium=toutiao.io&amp;utm_source=toutiao.io#view-mode-modal" data-toggle="modal"><i class="fa fa-font"></i><span class="title">显示模式</span></a>
+
+      <a class="signin" data-signin-link="true" data-toggle="modal" data-placement="right" data-original-title="登录" data-container="div.expanded" href="http://www.jianshu.com/sign_in">
+        <i class="fa fa-sign-in"></i><span class="title">登录</span>
+</a>    </div>
+  </div>
+
+  
+      <div class="popover-wrap">
+       <div class="fixed-btn note-fixed-download" data-toggle="popover" data-placement="left" data-html="true" data-trigger="hover" data-content="&lt;img src=&quot;http://cdn-qn0.jianshu.io/assets/app-page/note-qrcode-599086b03613e4f65dce8698fe9bcc99.png&quot; alt=&quot;Note qrcode&quot; /&gt;" data-original-title="" title="">
+        <a class="qrcode" href="javascript:void(0)">
+          <img src="./面试中所遇到的那些坑 - 简书_files/icon_qrcode-1f27688ec77df5a8c6c6ea70aa181874.png" alt="Icon qrcode">
+          <div>简书手机版下载</div>
+</a>      </div>
+    </div>
+    <div class="fixed-btn">
+      <a class="go-top hide-go-top" href="http://www.jianshu.com/p/aa8f47ea2a8a?hmsr=toutiao.io&amp;utm_medium=toutiao.io&amp;utm_source=toutiao.io#"> <i class="fa fa-angle-up"></i></a>
+      <a class="writer" href="http://www.jianshu.com/writer#/" data-toggle="tooltip" data-placement="left" title="" data-original-title="写篇文章"><i class="fa fa-pencil"></i></a>
+    </div>
+
+
+  <div id="show-note-container">
+    
+<div class="post-bg" id="flag">
+  <div class="wrap-btn" style="top: -1px;">
+    <!-- Notebook and collections button upper left -->
+      <div class="article-related pull-left">
+          <a class="collection-menu-btn" data-toggle="modal" data-target="#collection-menu" href="javascript:void(null);">
+            <i class="fa fa-th"></i>
+</a>          <a class="notebooks-menu-btn" data-toggle="modal" data-target="#notebooks-menu" href="javascript:void(null);"><i class="fa fa-list-ul"></i></a>
+        <div class="related-avatar-group activities"></div>
+      </div>
+    <!-- ******* -->
+
+      <a class="app-download-btn" href="http://www.jianshu.com/apps/download?utm_medium=top-sugg-down&amp;utm_source=note-show">App下载</a>
+  <a class="login" data-signup-link="true" data-toggle="modal" href="http://www.jianshu.com/sign_up">
+    <i class="fa fa-user"></i> 注册
+</a>  <a class="login" data-signin-link="true" data-toggle="modal" href="http://www.jianshu.com/sign_in">
+    <i class="fa fa-sign-in"></i> 登录
+</a>
+
+    <!-- Buttons upper right -->
+    <!-- ******* -->
+  </div>
+
+  <div class="container">
+    <!-- Article activities for width under 768px -->
+    <div class="related-avatar-group activities"></div>
+      <div class="article">
+        <div class="preview">
+          <div class="author-info">
+              <div class="btn btn-small btn-success follow">
+    <a data-signin-link="true" data-toggle="modal" href="http://www.jianshu.com/sign_in"><i class="fa fa-plus"></i>  <span>添加关注</span></a>
+  </div>
+
+            <a class="avatar" href="http://www.jianshu.com/users/19dfccd6def0">
+              <img src="./面试中所遇到的那些坑 - 简书_files/7f89dafbd952.jpg" alt="100">
+</a>            <span class="label">
+                作者
+            </span>
+            <a class="author-name blue-link" href="http://www.jianshu.com/users/19dfccd6def0">
+              <span>PossibleZero</span>
+</a>              <span data-toggle="tooltip" data-original-title="最后编辑于 2016.12.19 23:15">2016.12.19 10:48*</span>
+            <div>
+              <span>写了2877字</span>，<span>被26人关注</span>，<span>获得了22个喜欢</span>
+            </div>
+          </div>
+          <h1 class="title">面试中所遇到的那些坑</h1>
+          <div class="meta-top">
+            <span class="wordage">字数2877</span>
+            <span class="views-count">阅读2271</span>
+            <span class="comments-count">评论6</span>
+            <span class="likes-count">喜欢22</span>
+          </div>
+
+          <!-- Collection/Bookmark/Share for width under 768px -->
+          <div class="article-share"><a class="bookmark" data-signin-link="true" data-toggle="modal" href="http://www.jianshu.com/sign_in"> <i class="fa fa-bookmark-o"></i><span>收藏文章</span></a><span> <a href="javascript:void(null)" data-toggle="dropdown"><i class="fa fa-share-square-o"></i> 分享</a> <ul class="dropdown-menu arrow-top"> <li> <a href="javascript:void((function(s,d,e,r,l,p,t,z,c){var%20f=&#39;http://v.t.sina.com.cn/share/share.php?appkey=1881139527&#39;,u=z||d.location,p=[&#39;&amp;url=&#39;,e(u),&#39;&amp;title=&#39;,e(t||d.title),&#39;&amp;source=&#39;,e(r),&#39;&amp;sourceUrl=&#39;,e(l),&#39;&amp;content=&#39;,c||&#39;gb2312&#39;,&#39;&amp;pic=&#39;,e(p||&#39;&#39;)].join(&#39;&#39;);function%20a(){if(!window.open([f,p].join(&#39;&#39;),&#39;mb&#39;,[&#39;toolbar=0,status=0,resizable=1,width=440,height=430,left=&#39;,(s.width-440)/2,&#39;,top=&#39;,(s.height-430)/2].join(&#39;&#39;)))u.href=[f,p].join(&#39;&#39;);};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();})(screen,document,encodeURIComponent,&#39;&#39;,&#39;&#39;,&#39;http://cwb.assets.jianshu.io/notes/images/7721445/weibo/image_6e14d56bfcbb.jpg&#39;, &#39;推荐 PossibleZero 的文章《面试中所遇到的那些坑》（ 分享自 @简书 ）&#39;,&#39;http://www.jianshu.com/p/aa8f47ea2a8a&#39;,&#39;页面编码gb2312|utf-8默认gb2312&#39;));"> <img src="./面试中所遇到的那些坑 - 简书_files/weibo.png"> </a> </li> <li> <a href="javascript:void(function(){var d=document,e=encodeURIComponent,s1=window.getSelection,s2=d.getSelection,s3=d.selection,s=s1?s1():s2?s2():s3?s3.createRange().text:&#39;&#39;,r=&#39;http://www.douban.com/recommend/?url=&#39;+e(&#39;http://www.jianshu.com/p/aa8f47ea2a8a&#39;)+&#39;&amp;title=&#39;+e(&#39;面试中所遇到的那些坑&#39;)+&#39;&amp;sel=&#39;+e(s)+&#39;&amp;v=1&#39;,x=function(){if(!window.open(r,&#39;douban&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330&#39;))location.href=r+&#39;&amp;r=1&#39;};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})()"> <img src="./面试中所遇到的那些坑 - 简书_files/douban.png"> </a> </li> <li> <a href="javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;url=&#39;+e(&#39;http://www.jianshu.com/p/aa8f47ea2a8a&#39;)+&#39;&amp;title=&#39;+e(&#39;推荐 PossibleZero 的文章《面试中所遇到的那些坑》（ 分享自 @jianshuio ）&#39;),x=function(){if(!window.open(r,&#39;tweibo&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=600,height=600&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();"> <img src="./面试中所遇到的那些坑 - 简书_files/tweibo.png"> </a> </li> <li> <a href="javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=&#39;+e(&#39;http://www.jianshu.com/p/aa8f47ea2a8a&#39;)+&#39;&amp;title=&#39;+e(&#39;推荐 PossibleZero 的文章《面试中所遇到的那些坑》&#39;),x=function(){if(!window.open(r,&#39;qzone&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=600,height=600&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();"> <img src="./面试中所遇到的那些坑 - 简书_files/qzone.png"> </a> </li> <li> <a href="javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;https://twitter.com/share?url=&#39;+e(&#39;http://www.jianshu.com/p/aa8f47ea2a8a&#39;)+&#39;&amp;text=&#39;+e(&#39;推荐 PossibleZero 的文章《面试中所遇到的那些坑》（ 分享自 @jianshucom ）&#39;)+&#39;&amp;related=&#39;+e(&#39;jianshucom&#39;),x=function(){if(!window.open(r,&#39;twitter&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=600,height=600&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();"> <img src="./面试中所遇到的那些坑 - 简书_files/twitter.png"> </a> </li> <li> <a href="javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;https://www.facebook.com/dialog/share?app_id=483126645039390&amp;display=popup&amp;href=http://www.jianshu.com/p/aa8f47ea2a8a&#39;,x=function(){if(!window.open(r,&#39;facebook&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();"> <img src="./面试中所遇到的那些坑 - 简书_files/facebook.png"> </a> </li> <li> <a href="javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;https://plus.google.com/share?url=&#39;+e(&#39;http://www.jianshu.com/p/aa8f47ea2a8a&#39;),x=function(){if(!window.open(r,&#39;google_plus&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();"> <img src="./面试中所遇到的那些坑 - 简书_files/google_plus.png"> </a> </li> <li> <a href="http://www.jianshu.com/p/aa8f47ea2a8a?hmsr=toutiao.io&amp;utm_medium=toutiao.io&amp;utm_source=toutiao.io"> <img src="./面试中所遇到的那些坑 - 简书_files/renren.png"> </a> </li> </ul></span></div>
+          <!-- -->
+
+          <div class="show-content"><blockquote><p>不是怎么喜欢写开发类的文章，始终认为这些东西不应该由程序员来写，更加倾向于写一些感受以及想法可是慢慢的发现有些东西，你不写是不行的，好吧，那我就跟随大局也来谈谈我的面试经验以及各方面的看法吧。</p></blockquote><p>以下的面试经验主要针对于3年~5年左右android开发经验中所遇到的问题，这些是我自身面试中的经验以及所遇到的坑，可能下面的内容不适合于所有人，不过还是希望能给正在面试中的你有所启发吧。<br></p><blockquote><p>背景介绍：</p></blockquote><p>今年可能是互联网情形最差的一年（明年更加不好说），往年都有个习惯，每到年底都要出去试试，于是就跟往年一样出去试试，可惜结果并没有想象中的那么理想，告诫下所有从业者，如果是迫于无奈，一定要骑驴找马，现在对于岗位的技能要求是越来越高，同样的能力薪资方面却给的的越来越低，公司更倾向于招一个更顶尖的人才。<br></p><blockquote><p>正文内容：</p></blockquote><p>好啦，开始讲正文了，大致描述下近期三段面试经历，一个是某度，一个是某医疗公司，一个是某 上市公司。</p><p>某度，去了以后才发现是做基于各类SDK的开发，用于行业国际化，后期拓展到整个产品线上的；能力方面：是想找一个架构能力非常强，或者源码分析能力非常强，或者coding能力非常强的一个工程师，第二家公司是想找一个资深架构师或者是项目leader；第三家，朋友所在的公司，同样也是想找个资深程序员......</p><blockquote><p>某度面试知识点整理，（以下只是整理个大致方向，具体内容请自己自行查找）：</p></blockquote><p>1、主要是对象创建，堆内存、栈内存，数据引用地址是否发生变化等问题。</p><p>2、以及Gc Root的相关概念，以及回收机制内存泄露的检测，考察了内存泄露的所有相关原理，里面包括，单例、内部类、匿名内部类，静态内部类，造成内存泄露的原因和解决方案；内存泄露的检测方案，主要是MAT，以及查看等，另外像图片、网络优化处理方面的优化问题等等；</p><p>3、同时还考察了有线程池的ThreadPoolExecutor，底层实现机制，以及在引用线程池，如何实现线程之间的调度机制。</p><p>4、java方面考察的比较多的还有hashmap，比如hash碰撞，产生碰撞的原因，如何避免hash碰撞；数组和链表之间的关系，如何实现存储等操作。</p><p>5、同时还考察的有Handler实现机制，不是简单的那些被市面问烂的轮询方面内容，包含贯穿整个生命周期的启动机制，至于复杂的内容，自行查找；</p><p>6、常用的设计模式，以及设计模式在实战中的应用也是少不了的。</p><p>7、另外还有动画的相关内容，主要是view动画以及属性动画的比较，以及动画所引起的泄露问题；还有事件分发机制在实际中的问题等；</p><p>8、多线程问题，线程同步问题，以及多线程直接的调度问题；进程直接的通讯方式。</p><p>9、项目的架构思路，以及分析解决机制。</p><p>10、另外还有常用的三方库，以及三方库的实现机制以及原理。</p><p>11、应用的启动机制，activitythread等...</p><blockquote><p>第一家公司</p></blockquote><p>因为个人时间紧急，申请不进行笔试答题，但是手写代码、思路等都是必不可少的，某度前前后后差不多面了两个半小时，除了ThreadPoolExecutor底层实现机制实在是想不起来其他都答出来了，整体来讲没有毛病，不过最后再攀谈的时候，如之前所说的那样，想要一个非常非常突出的人，而不是一个什么都懂，又什么都不精通的人，所以深度是非常的重要，毕竟是面一个高级研发做SDK方面的；一般的能力还是不符合，在面试过程中面试官反复问我你有什么非常擅长的领域没有，也足以看出是想多给我些机会，可惜自己没有把握住，而且这些只是一面，二轮面试是基于sdk架构层面的，更多的是牵涉到架构思路，整个项目的搭建思路、以及各类设计模式的运用方面了，这里就不再诉说了，有兴趣的自行研究下。</p><blockquote><p>第二家公司，回答的内容就比较有趣了，</p></blockquote><p>基本上可以这么说，我把我所能说的都说了，比如我用的最新的Rxjava，retrofit，okhttp，以及现在比较火的，Reactnative，databinding，性能优化，开源架构思路，以及各类开发的模式，mvp，mvc，mvvm等，比较实现等思路，而且自认为深度广度还好，只是在问道内存泄露问题上，关于内部类，静态内部类，匿名内部类造成的内存泄露忽略了；而且最后犯了一个比较重大的严重问题，算法一般的我竟然夸大海口说，算法就是找到规律、找出原理然后用代码表现出来，面试管当场出了一个算法，思考半天，给了一个解答思路，但是效果一般；而且还提问了一些关于gc回收的调度算法，没接触过只能作罢；最后感觉自身能力有限，后面要求再去面试，感觉自身驾驭不了，最后也就不了了之了。</p><blockquote><p>第三家公司</p></blockquote><p>哎，工作这么久，这是最被动的一次；怎么说呢，问的知识很多都是java基础，可能一直沉浸于android的世界，反而把一些基础性知识给忽略了，只知道有这个东西，具体原理都忘记了，而且在面试的时候还发现一个问题，就是一定一定要把你写的知识点一定要讲明白了，我们公司的消息部分是自己做的，但是这部分代码我并没有仔细看过，于是面试管问了消息部分的某个细节问题，当时猛然没有想出来，结果可想而知；还有就是你实现的功能，你单纯会做是不行的，一定要把原理性的内容说出来；</p><p>面试官有时候问的一些问题如果跟你的思路不太一样的话，一定要据理力争，不过前提是你要把功能和原理想明白了，保证能够实现的了才可以，不然最后坑爹的肯定是你自己。其中还问的有surfaceview实现机制，因为写过的代码间隔好久了，突然被问起来，竟然大脑短路了...面完后已经知道不行了，基本功不能丢，原理性的东西一定要勤于总结...</p><blockquote><p>综述</p></blockquote><p>上面所说的内容都只是一面，某度面了两个半小时，第二家一个半小时，第三家一个多小时；总的来说，某度的面试官技术实力确实最给力；现在的面试内容确实是比之前要难了好多，无论是架构能力，还是底层实现能力，甚至是基本能力，现在面试单纯知道原理是不太行的，一定要答得非常有深度，非常了解才行；而且基本功这东西可能在日常开发中感觉不出来，不过这些都是潜移默化影响着你，忘记的话一定要补习上来的，就像最后一个面试官问我，一些最常用的基础性的东西怎么可能忘记呢；事实证明当你在面的级别越高时，越是这种最最基本的东西要熟烂于心，与此同时一定要提升自己的深度以及广度，几次面试都是在没有怎么准备的情况进行的，其实，机会就那么多次，你不珍惜，只能怪你自己，要珍惜自己的每一次机会，不能太大意了，这年头你单纯会敲代码是不行的，需要你把原理性的东西，揉碎了，记在自己的脑海里才行。</p><p>有人可能会说，我要是面试管，我也能把对方问倒，确实是这样，不过现在你是一个普通的面试者，就不要想太多了。</p><blockquote><p>小建议</p></blockquote><p>最后几个建议，JNI/NDK，这个有兴趣的好好学习学习，好多公司已经开始重视这个，跳槽不要太频繁，通过好多猎头的了解，13年以后毕业的研发工程师，跳槽的频率不是一般的高，而且技术实力跟11年之前的相比，差了不是一两个数量级，还有一个是关于现在的React native，或者是react这只是一个小的方向，不会影响安卓原生大的趋势，就如同一个小语种一样，需要学会，不过不建议投入太大的精力；深度和广度两个都不能丢弃，基础更加是重中之重，设计模式，算法，数据结构也不能丢弃，android的路还很长，还需要好好努力.....</p><blockquote><p>回来复习的时候，猛然发现一个网站，无论是最新的开源技术，还是数据结构算法，已经最新的市场行情分析，都感觉蛮不错的，同时也有很多开源项目，对我后来的提升有很大帮助；好东西不敢私藏，在这里分享给大家。</p></blockquote><p>HOHO，上面是广告内容，具体地址在下面，不过拍胸脯保证，内容还是非常非常赞的。</p><p>好东西一：<a href="http://www.androidblog.cn/" target="_blank">Android Blog 周刊</a>&nbsp;</p><p>好东西二：<a href="http://www.androidblog.cn/index.php/Source/index/p/1" target="_blank">开源项目</a></p></div>
+        </div>
+      </div>
+
+      <div class="visitor_edit">
+        <!-- further readings -->
+        <div id="further-readings" data-user-slug="" data-user-nickname="">
+          <div id="further-reading-line" class="hide further-reading-line"></div>
+          <ul id="further-readings-list" class="reading-list unstyled"></ul>
+          <div id="further-reading-new" class="reading-edit">
+              <a data-signin-link="true" data-toggle="modal" href="http://www.jianshu.com/sign_in">
+                <i class="fa fa-plus-circle"></i> 推荐拓展阅读
+</a>            <div id="further-reading-form"></div>
+          </div>
+        </div>
+        <div class="pull-right">
+          <!-- copyright -->
+          <div class="author-copyright pull-right" data-toggle="tooltip" data-html="true" title="" data-original-title="转载请联系作者获得授权，并标注“简书作者”。">
+            <a><i class="fa fa-copyright"></i> 著作权归作者所有</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reward / Support Author -->
+        <div class="support-author">
+          <p>如果觉得我的文章对您有用，请随意打赏。您的支持将鼓励我继续创作！</p>
+            <a class="btn btn-pay" data-toggle="modal" href="http://www.jianshu.com/p/aa8f47ea2a8a?hmsr=toutiao.io&amp;utm_medium=toutiao.io&amp;utm_source=toutiao.io#pay-modal">¥ 打赏支持</a>
+          <div class="avatar-list"><a href="http://www.jianshu.com/users/54b5900965ea" class="avatar" data-nickname="向右奔跑" data-created-at="2016-12-20T10:30:47+08:00" data-original-title="" title=""> <img src="./面试中所遇到的那些坑 - 简书_files/a9b1aa2c94db"></a><a href="javascript:void(0)" class="avatar" data-nickname="一位没有留下痕迹的读者" data-created-at="2016-12-19T23:27:01+08:00" data-original-title="" title=""> <img src="./面试中所遇到的那些坑 - 简书_files/wechat-cef0da207ba92f00e0f06f833c9b5276.png"></a></div>
+        </div>
+
+      <!-- article meta bottom -->
+      <div class="meta-bottom clearfix">
+        <!--  Like Button -->
+        <div class="like ">
+            <div class="like-button">
+              <a id="like-note" class="like-content" data-signin-link="true" data-toggle="modal" href="http://www.jianshu.com/sign_in">
+                <i class="fa fa-heart-o"></i>  喜欢
+</a></div>          <span id="likes-count" data-toggle="tooltip" data-placement="right" title="" data-original-title="查看所有喜欢的用户">22</span>        </div>
+        <!--  share group -->
+        <div class="share-group pull-right">
+          <a href="javascript:void((function(s,d,e,r,l,p,t,z,c){var%20f=&#39;http://v.t.sina.com.cn/share/share.php?appkey=1881139527&#39;,u=z||d.location,p=[&#39;&amp;url=&#39;,e(u),&#39;&amp;title=&#39;,e(t||d.title),&#39;&amp;source=&#39;,e(r),&#39;&amp;sourceUrl=&#39;,e(l),&#39;&amp;content=&#39;,c||&#39;gb2312&#39;,&#39;&amp;pic=&#39;,e(p||&#39;&#39;)].join(&#39;&#39;);function%20a(){if(!window.open([f,p].join(&#39;&#39;),&#39;mb&#39;,[&#39;toolbar=0,status=0,resizable=1,width=440,height=430,left=&#39;,(s.width-440)/2,&#39;,top=&#39;,(s.height-430)/2].join(&#39;&#39;)))u.href=[f,p].join(&#39;&#39;);};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();})(screen,document,encodeURIComponent,&#39;&#39;,&#39;&#39;,&#39;http://cwb.assets.jianshu.io/notes/images/7721445/weibo/image_6e14d56bfcbb.jpg&#39;, &#39;推荐 PossibleZero 的文章《面试中所遇到的那些坑》（ 分享自 @简书 ）&#39;,&#39;http://www.jianshu.com/p/aa8f47ea2a8a&#39;,&#39;页面编码gb2312|utf-8默认gb2312&#39;));" data-name="weibo">
+            <i class="fa fa-weibo"></i><span>分享到微博</span>
+          </a>
+          <a data-toggle="modal" href="http://www.jianshu.com/p/aa8f47ea2a8a?hmsr=toutiao.io&amp;utm_medium=toutiao.io&amp;utm_source=toutiao.io#share-weixin-modal" data-name="weixin">
+            <i class="fa fa-weixin"></i><span>分享到微信</span>
+          </a>
+          <div class="more">
+            <a href="javascript:void(0)" data-toggle="dropdown">更多分享<i class="fa fa-caret-down"></i></a>
+            <ul class="dropdown-menu arrow-top">
+                <li><a href="http://cwb.assets.jianshu.io/notes/images/7721445/weibo/image_6e14d56bfcbb.jpg" target="_blank" data-name="changweibo"><i class="fa fa-arrow-circle-o-down"></i> 下载长微博图片</a></li>
+                <li>
+                  <a data-name="tweibo" href="javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;http://share.v.t.qq.com/index.php?c=share&amp;a=index&amp;url=&#39;+e(&#39;http://www.jianshu.com/p/aa8f47ea2a8a&#39;)+&#39;&amp;title=&#39;+e(&#39;推荐 PossibleZero 的文章《面试中所遇到的那些坑》（ 分享自 @jianshuio ）&#39;),x=function(){if(!window.open(r,&#39;tweibo&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=600,height=600&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();">
+                    <img src="./面试中所遇到的那些坑 - 简书_files/tweibo.png" alt="Tweibo"> 分享到腾讯微博
+</a>                </li>
+                <li>
+                  <a data-name="qzone" href="javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=&#39;+e(&#39;http://www.jianshu.com/p/aa8f47ea2a8a&#39;)+&#39;&amp;title=&#39;+e(&#39;推荐 PossibleZero 的文章《面试中所遇到的那些坑》&#39;),x=function(){if(!window.open(r,&#39;qzone&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=600,height=600&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();">
+                    <img src="./面试中所遇到的那些坑 - 简书_files/qzone.png" alt="Qzone"> 分享到QQ空间
+</a>                </li>
+                <li>
+                  <a data-name="twitter" href="javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;https://twitter.com/share?url=&#39;+e(&#39;http://www.jianshu.com/p/aa8f47ea2a8a&#39;)+&#39;&amp;text=&#39;+e(&#39;推荐 PossibleZero 的文章《面试中所遇到的那些坑》（ 分享自 @jianshucom ）&#39;)+&#39;&amp;related=&#39;+e(&#39;jianshucom&#39;),x=function(){if(!window.open(r,&#39;twitter&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=600,height=600&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();">
+                    <img src="./面试中所遇到的那些坑 - 简书_files/twitter.png" alt="Twitter"> 分享到Twitter
+</a>                </li>
+                <li>
+                  <a data-name="facebook" href="javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;https://www.facebook.com/dialog/share?app_id=483126645039390&amp;display=popup&amp;href=http://www.jianshu.com/p/aa8f47ea2a8a&#39;,x=function(){if(!window.open(r,&#39;facebook&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();">
+                    <img src="./面试中所遇到的那些坑 - 简书_files/facebook.png" alt="Facebook"> 分享到Facebook
+</a>                </li>
+                <li>
+                  <a data-name="google_plus" href="javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;https://plus.google.com/share?url=&#39;+e(&#39;http://www.jianshu.com/p/aa8f47ea2a8a&#39;),x=function(){if(!window.open(r,&#39;google_plus&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();">
+                    <img src="./面试中所遇到的那些坑 - 简书_files/google_plus.png" alt="Google plus"> 分享到Google+
+</a>                </li>
+                <li>
+                  <a data-name="douban" href="javascript:void(function(){var d=document,e=encodeURIComponent,s1=window.getSelection,s2=d.getSelection,s3=d.selection,s=s1?s1():s2?s2():s3?s3.createRange().text:&#39;&#39;,r=&#39;http://www.douban.com/recommend/?url=&#39;+e(&#39;http://www.jianshu.com/p/aa8f47ea2a8a&#39;)+&#39;&amp;title=&#39;+e(&#39;面试中所遇到的那些坑&#39;)+&#39;&amp;sel=&#39;+e(s)+&#39;&amp;v=1&#39;,x=function(){if(!window.open(r,&#39;douban&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330&#39;))location.href=r+&#39;&amp;r=1&#39;};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})()">
+                    <img src="./面试中所遇到的那些坑 - 简书_files/douban.png" alt="Douban"> 分享到豆瓣
+</a>                </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modals -->
+      <div id="share-weixin-modal" class="modal hide fade share-weixin-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+  </div>
+  <div class="modal-body" title="http://www.jianshu.com/p/aa8f47ea2a8a?hmsr=toutiao.io&amp;utm_medium=toutiao.io&amp;utm_source=toutiao.io?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=weixin">
+    <h5>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</h5>
+  <canvas width="170" height="170" style="display: none;"></canvas><img src="data:image/png;base64,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" style="display: block;"></div>
+</div>
+
+      
+      <div id="notebooks-menu" class="panel notebooks-menu arrow-top modal hide fade"><img class="loader-tiny" src="./面试中所遇到的那些坑 - 简书_files/tiny.gif" alt="Tiny"></div>
+      <div id="collection-menu" class="panel collection-menu arrow-top modal hide fade"><img class="loader-tiny" src="./面试中所遇到的那些坑 - 简书_files/tiny.gif" alt="Tiny"></div>
+      
+      <div id="likes-modal" class="modal modal_new support_list-modal fullscreen hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3>喜欢的用户</h3>
+      </div>
+      <div class="modal-body">
+        <ul class="unstyled users">
+        <li data-user-id="1644003"> <a class="avatar" href="http://www.jianshu.com/users/46ec56e79ffa"> <img src="./面试中所遇到的那些坑 - 简书_files/14-75d944a989bbbd5b92a639698c9b4a3c.jpg"> </a> <a class="blue-link" href="http://www.jianshu.com/users/46ec56e79ffa">andy_zeng</a> <span class="time">2016.12.21 13:50</span></li><li data-user-id="2375679"> <a class="avatar" href="http://www.jianshu.com/users/69bf5cd9fc5a"> <img src="./面试中所遇到的那些坑 - 简书_files/11-bfaf6775ca414a8854c9ca910e05b7a1.jpg"> </a> <a class="blue-link" href="http://www.jianshu.com/users/69bf5cd9fc5a">LuckyTerry</a> <span class="time">2016.12.21 13:39</span></li><li data-user-id="4112628"> <a class="avatar" href="http://www.jianshu.com/users/4937384ea856"> <img src="./面试中所遇到的那些坑 - 简书_files/11-bfaf6775ca414a8854c9ca910e05b7a1.jpg"> </a> <a class="blue-link" href="http://www.jianshu.com/users/4937384ea856">sefsize</a> <span class="time">2016.12.21 13:02</span></li><li data-user-id="124293"> <a class="avatar" href="http://www.jianshu.com/users/8bf1ef28ea8b"> <img src="./面试中所遇到的那些坑 - 简书_files/ac2a630fe8ff.jpg"> </a> <a class="blue-link" href="http://www.jianshu.com/users/8bf1ef28ea8b">stevenMvp</a> <span class="time">2016.12.21 10:48</span></li><li data-user-id="1643415"> <a class="avatar" href="http://www.jianshu.com/users/c5da2f9c87fb"> <img src="./面试中所遇到的那些坑 - 简书_files/15-57a3e97082943073824a3529187f31f9.jpg"> </a> <a class="blue-link" href="http://www.jianshu.com/users/c5da2f9c87fb">Wey_Ye</a> <span class="time">2016.12.21 10:17</span></li><li data-user-id="611245"> <a class="avatar" href="http://www.jianshu.com/users/b33ff867cdbf"> <img src="./面试中所遇到的那些坑 - 简书_files/086ec31c5ddd.jpeg"> </a> <a class="blue-link" href="http://www.jianshu.com/users/b33ff867cdbf">凌晨五点钟_lee</a> <span class="time">2016.12.21 09:54</span></li><li data-user-id="2855414"> <a class="avatar" href="http://www.jianshu.com/users/6a1613a5b777"> <img src="./面试中所遇到的那些坑 - 简书_files/c7a1252788a5"> </a> <a class="blue-link" href="http://www.jianshu.com/users/6a1613a5b777">开发者头条_程序员必装的应用</a> <span class="time">2016.12.21 08:14</span></li><li data-user-id="4080039"> <a class="avatar" href="http://www.jianshu.com/users/e54a191a84e4"> <img src="./面试中所遇到的那些坑 - 简书_files/7-a82e998966cef5ab3eeda59b4297b619.jpg"> </a> <a class="blue-link" href="http://www.jianshu.com/users/e54a191a84e4">骆驼不爱吃苹果</a> <span class="time">2016.12.20 23:30</span></li><li data-user-id="2017392"> <a class="avatar" href="http://www.jianshu.com/users/b637fe356585"> <img src="./面试中所遇到的那些坑 - 简书_files/e1cd575c4815.jpg"> </a> <a class="blue-link" href="http://www.jianshu.com/users/b637fe356585">SunmengCoco</a> <span class="time">2016.12.20 19:23</span></li><li data-user-id="227460"> <a class="avatar" href="http://www.jianshu.com/users/dc462183decd"> <img src="./面试中所遇到的那些坑 - 简书_files/8e9cf15317cf.jpeg"> </a> <a class="blue-link" href="http://www.jianshu.com/users/dc462183decd">恨自己不能小清新</a> <span class="time">2016.12.20 18:48</span></li><li data-user-id="3597061"> <a class="avatar" href="http://www.jianshu.com/users/2900feeb8251"> <img src="./面试中所遇到的那些坑 - 简书_files/1-cd1d6dd91a96ca16fafcc8896bbc7b32.jpg"> </a> <a class="blue-link" href="http://www.jianshu.com/users/2900feeb8251">一袋小乞丐</a> <span class="time">2016.12.20 18:08</span></li><li data-user-id="1014529"> <a class="avatar" href="http://www.jianshu.com/users/a838a983576a"> <img src="./面试中所遇到的那些坑 - 简书_files/72740293b312"> </a> <a class="blue-link" href="http://www.jianshu.com/users/a838a983576a">刚升起的太阳</a> <span class="time">2016.12.20 15:48</span></li><li data-user-id="1523592"> <a class="avatar" href="http://www.jianshu.com/users/8e8ad16d1fcf"> <img src="./面试中所遇到的那些坑 - 简书_files/6c6ed9b0a3a7.gif"> </a> <a class="blue-link" href="http://www.jianshu.com/users/8e8ad16d1fcf">仰望星空的张拭心</a> <span class="time">2016.12.20 13:31</span></li><li data-user-id="3481170"> <a class="avatar" href="http://www.jianshu.com/users/ca90f283b414"> <img src="./面试中所遇到的那些坑 - 简书_files/6-c3a19bc117a55e66cd3be55684d8191c.jpg"> </a> <a class="blue-link" href="http://www.jianshu.com/users/ca90f283b414">逍遥小丿年</a> <span class="time">2016.12.20 13:17</span></li><li data-user-id="2589328"> <a class="avatar" href="http://www.jianshu.com/users/85e767d53c9d"> <img src="./面试中所遇到的那些坑 - 简书_files/e70782e5b4bd"> </a> <a class="blue-link" href="http://www.jianshu.com/users/85e767d53c9d">bblili</a> <span class="time">2016.12.20 12:59</span></li><a class="more hidden" data-max-id="51328391" href="javascript:void(null);"><i class="fa fa-ellipsis-h"></i></a></ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+    <!-- Comments -->
+    <div id="comments" class="comment-list clearfix">
+        <div class="comment-head clearfix">
+          6条评论
+          <span class="order">
+            （
+            <a data-order="asc" class="active" href="javascript:void(0)">按时间正序</a>·
+            <a data-order="desc" href="javascript:void(0)">按时间倒序</a>·
+            <a data-order="likes_count" href="javascript:void(0)">按喜欢排序</a>
+            ）
+          </span>
+            <a class="goto-comment pull-right" data-signin-link="true" data-toggle="modal" href="http://www.jianshu.com/sign_in">
+              <i class="fa fa-pencil"></i>添加新评论
+</a>        </div>
+        <div id="comment-list">
+
+
+<div class="note-comment clearfix" id="comment-6544619">
+  <div class="content">
+      <div class="meta-top">
+        <a class="avatar" href="http://www.jianshu.com/users/3948d9851014">
+          <img src="./面试中所遇到的那些坑 - 简书_files/10-f47ea4d685571bcb63f5b1ea99527d09.jpg" alt="10">
+</a>        <p>
+          <a class="author-name" href="http://www.jianshu.com/users/3948d9851014">我是小明123</a>
+        </p>
+        <span class="reply-time">
+          <small>2 楼 · </small>
+          <a href="http://www.jianshu.com/p/aa8f47ea2a8a/comments/6544619#comment-6544619">2016.12.20 09:41</a></span>
+      </div>
+      <p>感觉博主已经挺牛的啦，看了文章之后发现自己真是小菜鸟一个</p>
+      <div class="comment-footer clearfix text-right">
+        <a data-id="6544619" class="like pull-left" href="javascript:void(0)">
+          <i class="fa fa-heart-o"></i>喜欢<span>(0)</span>
+</a>        
+
+        <a data-id="6544619" data-nickname="我是小明123" class="reply" href="javascript:void(0)">回复</a>
+        
+        
+      </div>
+    <div class="child-comment-list hide">
+      
+      <div data-state="remaining-child-comments"></div>
+    </div>
+  </div>
+</div>
+
+<div class="note-comment clearfix" id="comment-6547983">
+  <div class="content">
+      <div class="meta-top">
+        <a class="avatar" href="http://www.jianshu.com/users/c70ee15e02a4">
+          <img src="./面试中所遇到的那些坑 - 简书_files/10-f47ea4d685571bcb63f5b1ea99527d09.jpg" alt="10">
+</a>        <p>
+          <a class="author-name" href="http://www.jianshu.com/users/c70ee15e02a4">阿拉Ray</a>
+        </p>
+        <span class="reply-time">
+          <small>3 楼 · </small>
+          <a href="http://www.jianshu.com/p/aa8f47ea2a8a/comments/6547983#comment-6547983">2016.12.20 11:46</a></span>
+      </div>
+      <p>感谢分享</p>
+      <div class="comment-footer clearfix text-right">
+        <a data-id="6547983" class="like pull-left" href="javascript:void(0)">
+          <i class="fa fa-heart-o"></i>喜欢<span>(0)</span>
+</a>        
+
+        <a data-id="6547983" data-nickname="阿拉Ray" class="reply" href="javascript:void(0)">回复</a>
+        
+        
+      </div>
+    <div class="child-comment-list hide">
+      
+      <div data-state="remaining-child-comments"></div>
+    </div>
+  </div>
+</div>
+
+<div class="note-comment clearfix" id="comment-6552283">
+  <div class="content">
+      <div class="meta-top">
+        <a class="avatar" href="http://www.jianshu.com/users/30e75732a996">
+          <img src="./面试中所遇到的那些坑 - 简书_files/b39698e0bf88.jpeg" alt="100">
+</a>        <p>
+          <a class="author-name" href="http://www.jianshu.com/users/30e75732a996">墨田</a>
+        </p>
+        <span class="reply-time">
+          <small>4 楼 · </small>
+          <a href="http://www.jianshu.com/p/aa8f47ea2a8a/comments/6552283#comment-6552283">2016.12.20 14:34</a></span>
+      </div>
+      <p>大神级别的人物</p>
+      <div class="comment-footer clearfix text-right">
+        <a data-id="6552283" class="like pull-left" href="javascript:void(0)">
+          <i class="fa fa-heart-o"></i>喜欢<span>(0)</span>
+</a>        
+
+        <a data-id="6552283" data-nickname="墨田" class="reply" href="javascript:void(0)">回复</a>
+        
+        
+      </div>
+    <div class="child-comment-list hide">
+      
+      <div data-state="remaining-child-comments"></div>
+    </div>
+  </div>
+</div>
+
+<div class="note-comment clearfix" id="comment-6568715">
+  <div class="content">
+      <div class="meta-top">
+        <a class="avatar" href="http://www.jianshu.com/users/6a1613a5b777">
+          <img src="./面试中所遇到的那些坑 - 简书_files/c7a1252788a5" alt="100">
+</a>        <p>
+          <a class="author-name" href="http://www.jianshu.com/users/6a1613a5b777">开发者头条_程序员必装的应用</a>
+        </p>
+        <span class="reply-time">
+          <small>5 楼 · </small>
+          <a href="http://www.jianshu.com/p/aa8f47ea2a8a/comments/6568715#comment-6568715">2016.12.21 08:14</a></span>
+      </div>
+      <p>感谢分享！已推荐到《开发者头条》：<a href="https://toutiao.io/posts/fu9c90" rel="nofollow" target="_blank">https://toutiao.io/posts/fu9c90</a> 欢迎点赞支持！<br>欢迎订阅《大圣归来学Android》：<a href="https://toutiao.io/subjects/12120" rel="nofollow" target="_blank">https://toutiao.io/subjects/12120</a></p>
+      <div class="comment-footer clearfix text-right">
+        <a data-id="6568715" class="like pull-left" href="javascript:void(0)">
+          <i class="fa fa-heart-o"></i>喜欢<span>(0)</span>
+</a>        
+
+        <a data-id="6568715" data-nickname="开发者头条_程序员必装的应用" class="reply" href="javascript:void(0)">回复</a>
+        
+        
+      </div>
+    <div class="child-comment-list hide">
+      
+      <div data-state="remaining-child-comments"></div>
+    </div>
+  </div>
+</div>
+
+<div class="note-comment clearfix" id="comment-6571090">
+  <div class="content">
+      <div class="meta-top">
+        <a class="avatar" href="http://www.jianshu.com/users/dd5f6394457d">
+          <img src="./面试中所遇到的那些坑 - 简书_files/1e776cdf497b.jpg" alt="100">
+</a>        <p>
+          <a class="author-name" href="http://www.jianshu.com/users/dd5f6394457d">柴泽建_Jack</a>
+        </p>
+        <span class="reply-time">
+          <small>6 楼 · </small>
+          <a href="http://www.jianshu.com/p/aa8f47ea2a8a/comments/6571090#comment-6571090">2016.12.21 09:54</a></span>
+      </div>
+      <p>「简单的那些被市面问烂的轮询方面内容」这个内容是指什么？</p>
+      <div class="comment-footer clearfix text-right">
+        <a data-id="6571090" class="like pull-left" href="javascript:void(0)">
+          <i class="fa fa-heart-o"></i>喜欢<span>(0)</span>
+</a>        
+
+        <a data-id="6571090" data-nickname="柴泽建_Jack" class="reply" href="javascript:void(0)">回复</a>
+        
+        
+      </div>
+    <div class="child-comment-list hide">
+      
+      <div data-state="remaining-child-comments"></div>
+    </div>
+  </div>
+</div>
+
+<div class="note-comment clearfix" id="comment-6571933">
+  <div class="content">
+      <div class="meta-top">
+        <a class="avatar" href="http://www.jianshu.com/users/6f8098186f2c">
+          <img src="./面试中所遇到的那些坑 - 简书_files/5-7cb2e7ce742a5c05b1a4fbebace48f1a.jpg" alt="5">
+</a>        <p>
+          <a class="author-name" href="http://www.jianshu.com/users/6f8098186f2c">字字珠玑</a>
+        </p>
+        <span class="reply-time">
+          <small>7 楼 · </small>
+          <a href="http://www.jianshu.com/p/aa8f47ea2a8a/comments/6571933#comment-6571933">2016.12.21 10:29</a></span>
+      </div>
+      <p>感谢作者最后推荐的两个网站。<br>作为一个10月份裸辞的人说两句，今年互联网环境肯定是无法跟之前万众创业的时候比了，并且现在不缺初级程序员，缺的是高级程序员，能够切实解决问题的人。还有一个就是年底了，真正招人的公司不多，很多时候也会面试，但是除非遇到特别好的人，一般不会招。</p>
+      <div class="comment-footer clearfix text-right">
+        <a data-id="6571933" class="like pull-left" href="javascript:void(0)">
+          <i class="fa fa-heart-o"></i>喜欢<span>(0)</span>
+</a>        
+
+        <a data-id="6571933" data-nickname="字字珠玑" class="reply" href="javascript:void(0)">回复</a>
+        
+        
+      </div>
+    <div class="child-comment-list hide">
+      
+      <div data-state="remaining-child-comments"></div>
+    </div>
+  </div>
+</div>
+
+
+  <p class="load-more">
+    <a class="blue-link" data-type="html" data-action="load-comments" data-remote="true" href="http://www.jianshu.com/notes/7721445/comments?max_id=6571933&amp;order=asc&amp;page=2">加载更多 <i class="fa fa-arrow-down"></i></a>
+  </p>
+</div>
+          <p class="signout-comment">
+    <a class="btn btn-info" data-signin-link="true" data-toggle="modal" href="http://www.jianshu.com/sign_in">
+      登录后发表评论
+</a>  </p>
+
+    </div>
+    <!-- -->
+
+  </div>
+
+  <script type="application/json" data-name="note">
+    {"id":7721445,"abbr":"不是怎么喜欢写开发类的文章，始终认为这些东西不应该由程序员来写，更加倾向于写一些感受以及想法可是慢慢的发现有些东西，你不写是不行的，好吧，那我就跟随大局也来谈谈我的面试经验以及各方面的看法吧。 以下的面试经验主要针对于3年~5年左右android开发经验中所遇到的问题，这些是我自身面试中的经验以及所遇到的坑，可能下面的内容不适合于所有人，不过还是希望能给正在面试中的你有所启发吧。 背景介绍： 今年可能是互联网情形最差的一年（明年更加不好说），往年都有个习惯，每到年底都要出去试试，于是就跟往年一样出去试试，可惜结果并没有想象中的那么理想，告诫下所有从业者，如果是迫于无奈，一定要骑驴找马，现...","slug":"aa8f47ea2a8a","url":"http://www.jianshu.com/p/aa8f47ea2a8a","image_url":"http://cwb.assets.jianshu.io/notes/images/7721445/weibo/image_6e14d56bfcbb.jpg","wordage":2877,"has_further_readings":false,"views_count":2271,"likes_count":22,"comments_count":6,"rewards_total_count":2}
+  </script>
+
+  <script type="application/json" data-name="uuid">
+    {"uuid":"27be3c22-e6c2-40f2-ab64-b09212aa36d1"}
+  </script>
+
+  <script type="application/json" data-name="author">
+    {"id":695134,"nickname":"PossibleZero","slug":"19dfccd6def0","public_notes_count":1,"followers_count":26,"total_likes_count":22,"is_current_user":false,"is_signed_author":false}
+  </script>
+
+
+  <div class="include-collection">
+    <div class="content">
+
+      
+        <h5>被以下专题收入，发现更多相似内容：</h5>
+        <ul id="all-collections" class="unstyled collections-list">
+            <li>
+              <a class="avatar" href="http://www.jianshu.com/collection/V2CqjW"><img src="./面试中所遇到的那些坑 - 简书_files/6249340_194140034135_2.jpg" alt="180"></a>              <div class="collections-info">
+                <h5>
+                  <a href="http://www.jianshu.com/collection/V2CqjW">@IT·互联网</a>
+                </h5>
+                
+  <div class="btn btn-success follow">
+    <a data-signin-link="true" data-toggle="modal" href="http://www.jianshu.com/sign_in"><i class="fa fa-fw fa-plus"></i>  <span>添加关注</span></a>
+    <span>273.5K</span>
+  </div>
+
+                <p class="description">@IT 专题 由 IT大分类，转定位于IT·互联网行业观察与思考，数码产品极客体验。
+
+主编：向右奔跑 http://www.ji...</p>
+                <p>
+                  <a class="blue-link" href="http://www.jianshu.com/collection/V2CqjW">13122篇文章</a> · 273582人关注
+                </p>
+              </div>
+            </li>
+            <li>
+              <a class="avatar" href="http://www.jianshu.com/collection/0f8bf9ffd608"><img src="./面试中所遇到的那些坑 - 简书_files/Android_L.jpg" alt="180"></a>              <div class="collections-info">
+                <h5>
+                  <a href="http://www.jianshu.com/collection/0f8bf9ffd608">Android Tech</a>
+                </h5>
+                
+  <div class="btn btn-success follow">
+    <a data-signin-link="true" data-toggle="modal" href="http://www.jianshu.com/sign_in"><i class="fa fa-fw fa-plus"></i>  <span>添加关注</span></a>
+    <span>605</span>
+  </div>
+
+                <p class="description">技术资料相关，主要以Android为主，自己收藏的专题！请勿投稿，不一定会收~但欢迎订阅！</p>
+                <p>
+                  <a class="blue-link" href="http://www.jianshu.com/collection/0f8bf9ffd608">439篇文章</a> · 605人关注
+                </p>
+              </div>
+            </li>
+            <li>
+              <a class="avatar" href="http://www.jianshu.com/collection/b1fa46ec3b08"><img src="./面试中所遇到的那些坑 - 简书_files/android.graphics.Bitmap_20c9506b.jpeg" alt="180"></a>              <div class="collections-info">
+                <h5>
+                  <a href="http://www.jianshu.com/collection/b1fa46ec3b08">Android Class</a>
+                </h5>
+                
+  <div class="btn btn-success follow">
+    <a data-signin-link="true" data-toggle="modal" href="http://www.jianshu.com/sign_in"><i class="fa fa-fw fa-plus"></i>  <span>添加关注</span></a>
+    <span>109</span>
+  </div>
+
+                <p class="description">专注分享Android技术干货、学习资源、成长路线、职业建议。打造极客氛围的Android专题✔</p>
+                <p>
+                  <a class="blue-link" href="http://www.jianshu.com/collection/b1fa46ec3b08">371篇文章</a> · 109人关注
+                </p>
+              </div>
+            </li>
+        </ul>
+    </div>
+  </div>
+
+  <!-- Modal -->
+    <div class="modal pay-modal text-center hide fade" id="pay-modal">
+  <div class="modal-header clearfix">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+  </div>
+  <form id="new_reward" class="new_reward" target="_blank" action="http://www.jianshu.com/notes/7721445/rewards" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="✓"><input type="hidden" name="authenticity_token" value="/CSUTznldFdtlS5wR+h6GSfOLkM8EutfpaIenx00pQAJ6MtuS4PVo72Joyv/LqX2bchxzOiaJtSpBhkFLfuo7w==">
+    <div class="modal-body">
+      <a href="http://www.jianshu.com/users/19dfccd6def0">
+        <div class="avatar"><img src="./面试中所遇到的那些坑 - 简书_files/7f89dafbd952.jpg" alt="100"></div>
+</a>      <p><i class="fa fa-quote-left pull-left"></i>如果觉得我的文章对您有用，请随意打赏。您的支持将鼓励我继续创作！<i class="fa fa-quote-right pull-right"></i></p>
+      <div class="main-inputs text-left">
+        <div class="control-group">
+          <label for="reward_amount">打赏金额</label><i class="fa fa-yen"></i>
+          <input value="2.00" type="text" name="reward[amount_in_yuan]" id="reward_amount_in_yuan">
+        </div>
+        <div class="control-group message">
+          <textarea placeholder="给Ta留言" name="reward[message]" id="reward_message"></textarea>
+        </div>
+      </div>
+      <div class="choose-pay text-left">
+        <h5>选择支付方式：</h5>
+        <div>
+          <label for="reward_channel_alipay">
+            <div class="iradio_minimal checked" style="position: relative;"><input type="radio" value="alipay" checked="checked" name="reward[channel]" id="reward_channel_alipay" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
+            <span class="alipay-bg"></span>
+</label>
+          
+          <label for="reward_channel_wx_pub_qr">
+            <div class="iradio_minimal" style="position: relative;"><input type="radio" value="wx_pub_qr" name="reward[channel]" id="reward_channel_wx_pub_qr" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
+            微信支付
+</label>        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button name="button" type="submit" class="btn btn-large btn-pay">立即支付</button>
+    </div>
+</form></div>
+
+    <div class="modal success-pay text-center hide fade" id="success-pay">
+  <div class="modal-header clearfix">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+  </div>
+  <div class="modal-body">
+    <h3><i class="icon-ok"></i>打赏成功</h3>
+    <img src="./面试中所遇到的那些坑 - 简书_files/complete-pay-25426877089eb23bd76d9d0e6aad89c1.png" alt="Complete pay">
+  </div>
+  <div class="modal-footer">
+    
+  </div>
+</div>
+
+</div>
+
+  </div>
+  <div id="flash" class="hide"></div>
+  
+  <div id="view-mode-modal" tabindex="-1" class="modal hide read-modal" aria-hidden="false" data-js-module="view-mode-modal">
+    <div class="btn-group change-background" data-toggle="buttons-radio">
+      <a class="btn btn-daytime active" data-mode="day" href="javascript:void(null);">
+        <i class="fa fa-sun-o"></i>
+</a>      <a class="btn btn-nighttime " data-mode="night" href="javascript:void(null);">
+        <i class="fa fa-moon-o"></i>
+</a>    </div>
+    <div class="btn-group change-font" data-toggle="buttons-radio">
+      <a class="btn font " data-font="font1" href="javascript:void(null);">宋体</a>
+      <a class="btn font hei active" data-font="font2" href="javascript:void(null);">黑体</a>
+    </div>
+    <div class="btn-group change-locale" data-toggle="buttons-radio">
+      <a class="btn font active" data-locale="zh-CN" href="javascript:void(null);">简</a>
+      <a class="btn font hei " data-locale="zh-TW" href="javascript:void(null);">繁</a>
+    </div>
+  </div>
+
+  
+
+  <script src="./面试中所遇到的那些坑 - 简书_files/base-90f2ea0f7da77d330f3fe2acdcf5d595.js.下载"></script>
+  
+  <script src="./面试中所遇到的那些坑 - 简书_files/reading-base-0028299ec0c770293c0f07e2f338b48f.js.下载"></script>
+  <script src="./面试中所遇到的那些坑 - 简书_files/note_show-cc5c20512664aad53acca20308dd4d1c.js.下载"></script>
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-35169517-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+<div style="display:none">
+  <script src="./面试中所遇到的那些坑 - 简书_files/z_stat.php" language="JavaScript"></script><script src="./面试中所遇到的那些坑 - 简书_files/core.php" charset="utf-8" type="text/javascript"></script><a href="http://www.cnzz.com/stat/website.php?web_id=1258679142" target="_blank" title="站长统计">站长统计</a>
+</div>
+
+<script>
+  (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      }
+      else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+</body></html>
