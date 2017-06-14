@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)http://www.cnblogs.com/chenyangyao/p/5296807.html -->
+<html lang="zh-cn"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>图解JAVA对象的创建过程 - 陈洋Cy - 博客园</title>
+<link type="text/css" rel="stylesheet" href="./图解JAVA对象的创建过程 - 陈洋Cy - 博客园_files/blog-common.css">
+<link id="MainCss" type="text/css" rel="stylesheet" href="./图解JAVA对象的创建过程 - 陈洋Cy - 博客园_files/bundle-red_autumnal_leaves.css">
+<link id="mobile-style" media="only screen and (max-width: 768px)" type="text/css" rel="stylesheet" href="./图解JAVA对象的创建过程 - 陈洋Cy - 博客园_files/bundle-red_autumnal_leaves-mobile.css">
+<link title="RSS" type="application/rss+xml" rel="alternate" href="http://www.cnblogs.com/chenyangyao/rss">
+<link title="RSD" type="application/rsd+xml" rel="EditURI" href="http://www.cnblogs.com/chenyangyao/rsd.xml">
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="http://www.cnblogs.com/chenyangyao/wlwmanifest.xml">
+<script async="" src="./图解JAVA对象的创建过程 - 陈洋Cy - 博客园_files/analytics.js.下载"></script><script src="./图解JAVA对象的创建过程 - 陈洋Cy - 博客园_files/jquery.js.下载" type="text/javascript"></script><style type="text/css">
+:root #header + #content > #left > #rlblock_left
+{ display: none !important; }</style>  
+<script type="text/javascript">var currentBlogApp = 'chenyangyao', cb_enable_mathjax=false;var isLogined=false;</script>
+<script src="./图解JAVA对象的创建过程 - 陈洋Cy - 博客园_files/blog-common.js.下载" type="text/javascript"></script>
+</head>
+<body>
+<a name="top"></a>
+
+<!--done-->
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+	<a id="lnkBlogLogo" href="http://www.cnblogs.com/chenyangyao/"><img id="blogLogo" src="./图解JAVA对象的创建过程 - 陈洋Cy - 博客园_files/logo.gif" alt="返回主页"></a>			
+		
+<!--done-->
+<h1><a id="Header1_HeaderTitle" class="headermaintitle" href="http://www.cnblogs.com/chenyangyao/">chenyang_yao</a></h1>
+<h2></h2>
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li><a id="blog_nav_sitehome" class="menu" href="http://www.cnblogs.com/">博客园</a></li>
+<li><a id="blog_nav_myhome" class="menu" href="http://www.cnblogs.com/chenyangyao/">首页</a></li>
+<li><a id="blog_nav_newpost" class="menu" rel="nofollow" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">新随笔</a></li>
+<li><a id="blog_nav_contact" class="menu" rel="nofollow" href="https://msg.cnblogs.com/send/%E9%99%88%E6%B4%8BCy">联系</a></li>
+<li><a id="blog_nav_rss" class="menu" href="http://www.cnblogs.com/chenyangyao/rss">订阅</a>
+<!--<a id="blog_nav_rss_image" class="aHeaderXML" href="http://www.cnblogs.com/chenyangyao/rss"><img src="//www.cnblogs.com/images/xml.gif" alt="订阅" /></a>--></li>
+<li><a id="blog_nav_admin" class="menu" rel="nofollow" href="https://i.cnblogs.com/">管理</a></li>
+</ul>
+		<div class="blogStats">
+			
+			<div id="blog_stats">
+<span id="stats_post_count">随笔 - 19&nbsp; </span>
+<span id="stats_article_count">文章 - 0&nbsp; </span>
+<span id="stats-comment_count">评论 - 40</span>
+</div>
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		
+<div id="post_detail">
+<!--done-->
+<div id="topics">
+	<div class="post">
+		<h1 class="postTitle">
+			<a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/chenyangyao/p/5296807.html">图解JAVA对象的创建过程</a>
+		</h1>
+		<div class="clear"></div>
+		<div class="postBody">
+			<div id="cnblogs_post_body"><p style="text-align: left;"><span style="font-size: 14pt; font-family: 楷体;">&nbsp; &nbsp; 前面几篇博文分别介绍了JAVA的Class文件格式、JVM的类加载机制和JVM的内存模型，这里就索性把java对象的创建过程一并说完，这样java对象的整个创建过程就基本上说明白了(当然你要有基础才能真正看明白)。经常有人问我为什么这么喜欢钻研底层的东西，首先，因为我以前的做硬件的和嵌入式的，兴趣使然；其次，我个人感觉，如果不把上下打通，心里老是有一堵墙过不去，说白了，这是个人因素，与好坏无关（当然，经常有人说，懂底层原理是成为高手的必经之路）。</span></p>
+<p style="text-align: left;"><span style="font-size: 14pt; font-family: 楷体;">&nbsp; &nbsp; 现在来说一下我当初学习JVM的原因，在学习JAVA之前，我只学过C/C++，当我接触JAVA之后，发现JAVA与C++之间有着巨大的差异，其中最困惑我的就是C++的继承和JAVA的继承实现原理是否一样(对象如何最终定位到字段，无论这个字段是自身的还是继承过来的)？多态的实现机制是否相同？等等。因为之前看过《深度探索C++对象模型》，对C++的对象模型略知一二(一直打算写一个C++对象模型的文章，苦于没时间，后面一定补上)，所以我感觉JVM可以解答我的疑惑。</span></p>
+<p style="text-align: left;">&nbsp; &nbsp; &nbsp;<span style="font-size: 14pt; font-family: 楷体;">&nbsp;关于对象的创建过程一般是从new指令(我说的是JVM的层面)开始的(具体请看图1)，JVM首先对符号引用进行解析，如果找不到对应的符号引用，那么这个类还没有被加载，因此JVM便会进行类加载过程（具体加载过程可参见我的另一篇博文）。符号引用解析完毕之后，JVM会为对象在堆中分配内存，HotSpot虚拟机实现的JAVA对象包括三个部分：对象头、实例字段和对齐填充字段（具体内容请看图2），其中要注意的是，实例字段包括自身定义的和从父类继承下来的（即使父类的实例字段被子类覆盖或者被private修饰，都照样为其分配内存）。相信很多人在刚接触面向对象语言时，总把继承看成简单的“复制”，这其实是完全错误的。JAVA中的继承仅仅是类之间的一种逻辑关系（具体如何保存记录这种逻辑关系，则设计到Class文件格式的知识，具体请看我的另一篇博文），唯有创建对象时的实例字段，可以简单的看成“复制”。</span></p>
+<p style="text-align: left;"><span style="font-size: 14pt; font-family: 楷体;">&nbsp; &nbsp; 为对象分配完堆内存之后，JVM会将该内存（除了对象头区域）进行零值初始化，这也就解释了为什么JAVA的属性字段无需显示初始化就可以被使用，而方法的局部变量却必须要显示初始化后才可以访问。最后，JVM会调用对象的构造函数，当然，调用顺序会一直上溯到Object类。</span></p>
+<p style="text-align: left;"><span style="font-size: 14pt; font-family: 楷体;">&nbsp; &nbsp; 至此，一个对象就被创建完毕，此时，一般会有一个引用指向这个对象。在JAVA中，存在两种数据类型，一种就是诸如int、double等基本类型，另一种就是引用类型，比如类、接口、内部类、枚举类、数组类型的引用等。引用的实现方式一般有两种，具体请看图3。此处说一句题外话，经常用人拿C++中的引用和JAVA的引用作对比，其实他们两个只是“名称”一样，本质并没什么关系，C++中的引用只是给现存变量起了一个别名(引用变量只是一个符号引用而已，编译器并不会给引用分配新的内存)，而JAVA中的引用变量却是真真正正的变量，具有自己的内存空间，只是不同的引用变量可以“指向”同一个对象而已。因此，如果要拿C++和JAVA引用对象的方式相对比，C++中的指针倒和JAVA中的引用如出一辙，毕竟，JAVA中的引用其实就是对指针的封装。</span></p>
+<p style="text-align: left;"><span style="font-size: 14pt; font-family: 楷体;">&nbsp; &nbsp; 注：本文为原创博文，转载请注明出处。</span></p>
+<p style="text-align: center;">&nbsp;</p>
+<p style="text-align: center;">&nbsp; &nbsp;<img src="./图解JAVA对象的创建过程 - 陈洋Cy - 博客园_files/592743-20160319235423381-1926278401.png" alt=""></p>
+<p style="text-align: center;"><span style="font-size: 14pt;">图1 &nbsp;对象的创建过程&nbsp;</span></p>
+<p style="text-align: center;">&nbsp;</p>
+<p style="text-align: center;"><img src="./图解JAVA对象的创建过程 - 陈洋Cy - 博客园_files/592743-20160319235633553-1910724119.png" alt="" width="680" height="1045"></p>
+<p style="text-align: center;"><span style="font-size: 14pt;">图2 对象的组成结构&nbsp;</span></p>
+<p style="text-align: center;">&nbsp;</p>
+<p style="text-align: center;"><img src="./图解JAVA对象的创建过程 - 陈洋Cy - 博客园_files/592743-20160319235555303-769658219.jpg" alt="" width="661" height="808"></p>
+<p style="text-align: center;"><span style="font-size: 14pt;">图3 &nbsp;对象引用的两种实现方式</span></p>
+<div><img src="file:///C:/Users/chen/Documents/Tencent%20Files/809476530/Image/C2C/RIGLSQ80DPACXV]TH%7D2[H41.png" alt=""></div>
+<div><img src="file:///C:/Users/chen/AppData/Roaming/Tencent/Users/809476530/QQ/WinTemp/RichOle/P8T1%J)H[]P%%7D$%7B)@~N2ONG.png" alt=""></div>
+<div><img src="file:///C:/Users/chen/AppData/Roaming/Tencent/Users/809476530/QQ/WinTemp/RichOle/P8T1%J)H[]P%%7D$%7B)@~N2ONG.png" alt=""></div></div><div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="BlogPostCategory">分类: <a href="http://www.cnblogs.com/chenyangyao/category/771514.html" target="_blank">JAVA</a></div>
+<div id="EntryTag">标签: <a href="http://www.cnblogs.com/chenyangyao/tag/%E5%9B%BE%E8%A7%A3/">图解</a>, <a href="http://www.cnblogs.com/chenyangyao/tag/java%E5%AF%B9%E8%B1%A1/">java对象</a>, <a href="http://www.cnblogs.com/chenyangyao/tag/%E5%88%9B%E5%BB%BA%E8%BF%87%E7%A8%8B/">创建过程</a></div>
+<div id="blog_post_info"><div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(5296807,cb_blogId,1);green_channel_success(this,&#39;谢谢推荐！&#39;);">好文要顶</a>
+            <a id="green_channel_follow" onclick="follow(&#39;e95cdd8c-e067-e311-8d02-90b11c0b17d6&#39;);" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="./图解JAVA对象的创建过程 - 陈洋Cy - 博客园_files/icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="./图解JAVA对象的创建过程 - 陈洋Cy - 博客园_files/wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/chenyangyao/" target="_blank"><img src="./图解JAVA对象的创建过程 - 陈洋Cy - 博客园_files/20170414181034.png" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/chenyangyao/">陈洋Cy</a><br>
+            <a href="http://home.cnblogs.com/u/chenyangyao/followees">关注 - 1</a><br>
+            <a href="http://home.cnblogs.com/u/chenyangyao/followers">粉丝 - 46</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow(&#39;e95cdd8c-e067-e311-8d02-90b11c0b17d6&#39;);return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(5296807,&#39;Digg&#39;)">
+        <span class="diggnum" id="digg_count">0</span>
+    </div>
+    <div class="buryit" onclick="votePost(5296807,&#39;Bury&#39;)">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+</div>
+<div class="clear"></div>
+<div id="post_next_prev"><a href="http://www.cnblogs.com/chenyangyao/p/5269622.html" class="p_n_p_prefix">« </a> 上一篇：<a href="http://www.cnblogs.com/chenyangyao/p/5269622.html" title="发布于2016-03-12 18:29">JVM内存模型、指令重排、内存屏障概念解析</a><br><a href="http://www.cnblogs.com/chenyangyao/p/5300958.html" class="p_n_p_prefix">» </a> 下一篇：<a href="http://www.cnblogs.com/chenyangyao/p/5300958.html" title="发布于2016-03-21 10:54">为何JAVA虚函数（虚方法）会造成父类可以"访问"子类的假象？</a><br></div>
+</div>
+
+
+		</div>
+		<div class="postDesc">posted @ <span id="post-date">2016-03-19 23:58</span> <a href="http://www.cnblogs.com/chenyangyao/">陈洋Cy</a> 阅读(<span id="post_view_count">1615</span>) 评论(<span id="post_comment_count">0</span>)  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=5296807" rel="nofollow">编辑</a> <a href="http://www.cnblogs.com/chenyangyao/p/5296807.html#" onclick="AddToWz(5296807);return false;">收藏</a></div>
+	</div>
+	<script type="text/javascript">var allowComments=true,cb_blogId=235200,cb_entryId=5296807,cb_blogApp=currentBlogApp,cb_blogUserGuid='e95cdd8c-e067-e311-8d02-90b11c0b17d6',cb_entryCreatedDate='2016/3/19 23:58:00';loadViewCount(cb_entryId);</script>
+	
+</div><!--end: topics 文章、评论容器-->
+</div><a name="!comments"></a><div id="blog-comments-placeholder"></div><script type="text/javascript">var commentManager = new blogCommentManager();commentManager.renderComments(0);</script>
+<div id="comment_form" class="commentform">
+<a name="commentform"></a>
+<div id="divCommentShow"></div>
+<div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="http://www.cnblogs.com/chenyangyao/p/5296807.html#" onclick="return RefreshPage();">刷新页面</a><a href="http://www.cnblogs.com/chenyangyao/p/5296807.html#top">返回顶部</a></div>
+<div id="comment_form_container"><div class="login_tips">注册用户登录后才能发表评论，请 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login(&#39;commentform&#39;);">登录</a> 或 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，<a href="http://www.cnblogs.com/">访问</a>网站首页。</div></div>
+<div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+<div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_blank">【推荐】50万行VC++源码: 大型组态工控、电力仿真CAD与GIS源码库</a><br><a href="http://click.aliyun.com/m/21970/" target="_blank">【阿里云】云计算科技红利邀您免费体验！云服务器、云数据库等35+产品，6个月免费使用！</a><br></div>
+<div id="opt_under_post"></div>
+<div id="cnblogs_c1" class="c_ad_block"><a href="https://cn.udacity.com/course/front-end-web-developer-nanodegree--nd001-cn-advanced/?utm_source=cnblogs&amp;utm_medium=referral&amp;utm_campaign=FEND04" target="_blank"><img width="300" height="250" src="./图解JAVA对象的创建过程 - 陈洋Cy - 博客园_files/24442-20170609131538700-730455145.png" alt="Udacity0610"></a></div>
+<div id="under_post_news"><div class="itnews c_ad_block"><b>最新IT新闻</b>:<br> ·  <a href="http://news.cnblogs.com/n/571566/" target="_blank">华为手机在英被判禁售 中国厂商成挨宰“专利肥羊”</a><br> ·  <a href="http://news.cnblogs.com/n/571556/" target="_blank">创始人黯然离开 Uber危机就此解除了吗？</a><br> ·  <a href="http://news.cnblogs.com/n/571565/" target="_blank">安全面前无小事 微软为Windows XP等提供安全更新</a><br> ·  <a href="http://news.cnblogs.com/n/571563/" target="_blank">联通花椒卡限量发售：套餐免费升级</a><br> ·  <a href="http://news.cnblogs.com/n/571562/" target="_blank">苹果中国疯狂开卖全新iPad Pro：5188元起</a><br>» <a href="http://news.cnblogs.com/" title="IT新闻" target="_blank">更多新闻...</a></div></div>
+<div id="cnblogs_c2" class="c_ad_block"><a href="https://www.mtyun.com/activity-anniversary?site=cnblogs&amp;campaign=20170601sales" target="_blank"><img width="468" height="60" src="./图解JAVA对象的创建过程 - 陈洋Cy - 博客园_files/24442-20170608095106606-2028001864.png" alt="美团云"></a></div>
+<div id="under_post_kb"><div class="itnews c_ad_block" id="kb_block"><b>最新知识库文章</b>:<br><div id="kb_recent"> ·  <a href="http://kb.cnblogs.com/page/570194/" target="_blank">小printf的故事：什么是真正的程序员？</a><br> ·  <a href="http://kb.cnblogs.com/page/569992/" target="_blank">程序员的工作、学习与绩效</a><br> ·  <a href="http://kb.cnblogs.com/page/569056/" target="_blank">软件开发为什么很难</a><br> ·  <a href="http://kb.cnblogs.com/page/565901/" target="_blank">唱吧DevOps的落地，微服务CI/CD的范本技术解读</a><br> ·  <a href="http://kb.cnblogs.com/page/566523/" target="_blank">程序员，如何从平庸走向理想？</a><br></div>» <a href="http://kb.cnblogs.com/" target="_blank">更多知识库文章...</a></div></div>
+<div id="HistoryToday" class="c_ad_block"></div>
+<script type="text/javascript">
+    fixPostBody();
+    setTimeout(function () { incrementViewCount(cb_entryId); }, 50);
+    deliverAdT2();
+    deliverAdC1();
+    deliverAdC2();    
+    loadNewsAndKb();
+    loadBlogSignature();
+    LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+    GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate);
+    loadOptUnderPost();
+    GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);   
+</script>
+</div>
+
+
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+<!--done-->
+<div class="newsItem">
+<h3 class="catListTitle">公告</h3>
+	<div id="blog-news"><div id="profile_block">昵称：<a href="http://home.cnblogs.com/u/chenyangyao/">陈洋Cy</a><br>园龄：<a href="http://home.cnblogs.com/u/chenyangyao/" title="入园时间：2013-12-18">3年5个月</a><br>粉丝：<a href="http://home.cnblogs.com/u/chenyangyao/followers/">46</a><br>关注：<a href="http://home.cnblogs.com/u/chenyangyao/followees/">1</a><div id="p_b_follow"><a href="javascript:void(0);" onclick="follow(&#39;e95cdd8c-e067-e311-8d02-90b11c0b17d6&#39;)">+加关注</a></div></div></div><script type="text/javascript">loadBlogNews();</script>
+</div>
+
+			<div id="blog-calendar" style=""><table id="blogCalendar" class="Cal" cellspacing="0" cellpadding="0" title="Calendar">
+	<tbody><tr><td colspan="7"><table class="CalTitle" cellspacing="0">
+		<tbody><tr><td class="CalNextPrev"><a href="javascript:void(0);" onclick="loadBlogCalendar(&#39;2017/05/01&#39;);return false;">&lt;</a></td><td align="center">2017年6月</td><td class="CalNextPrev" align="right"><a href="javascript:void(0);" onclick="loadBlogCalendar(&#39;2017/07/01&#39;);return false;">&gt;</a></td></tr>
+	</tbody></table></td></tr><tr><th class="CalDayHeader" align="center" abbr="日" scope="col">日</th><th class="CalDayHeader" align="center" abbr="一" scope="col">一</th><th class="CalDayHeader" align="center" abbr="二" scope="col">二</th><th class="CalDayHeader" align="center" abbr="三" scope="col">三</th><th class="CalDayHeader" align="center" abbr="四" scope="col">四</th><th class="CalDayHeader" align="center" abbr="五" scope="col">五</th><th class="CalDayHeader" align="center" abbr="六" scope="col">六</th></tr><tr><td class="CalOtherMonthDay" align="center">28</td><td class="CalOtherMonthDay" align="center">29</td><td class="CalOtherMonthDay" align="center">30</td><td class="CalOtherMonthDay" align="center">31</td><td align="center">1</td><td align="center">2</td><td class="CalWeekendDay" align="center">3</td></tr><tr><td class="CalWeekendDay" align="center">4</td><td align="center">5</td><td align="center">6</td><td align="center">7</td><td align="center">8</td><td align="center">9</td><td class="CalWeekendDay" align="center">10</td></tr><tr><td class="CalWeekendDay" align="center">11</td><td align="center">12</td><td align="center">13</td><td class="CalTodayDay" align="center">14</td><td align="center">15</td><td align="center">16</td><td class="CalWeekendDay" align="center">17</td></tr><tr><td class="CalWeekendDay" align="center">18</td><td align="center">19</td><td align="center">20</td><td align="center">21</td><td align="center">22</td><td align="center">23</td><td class="CalWeekendDay" align="center">24</td></tr><tr><td class="CalWeekendDay" align="center">25</td><td align="center">26</td><td align="center">27</td><td align="center">28</td><td align="center">29</td><td align="center">30</td><td class="CalOtherMonthDay" align="center">1</td></tr><tr><td class="CalOtherMonthDay" align="center">2</td><td class="CalOtherMonthDay" align="center">3</td><td class="CalOtherMonthDay" align="center">4</td><td class="CalOtherMonthDay" align="center">5</td><td class="CalOtherMonthDay" align="center">6</td><td class="CalOtherMonthDay" align="center">7</td><td class="CalOtherMonthDay" align="center">8</td></tr>
+</tbody></table></div><script type="text/javascript">loadBlogDefaultCalendar();</script>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn"><div id="sidebar_search" class="sidebar-block">
+<div id="sidebar_search" class="mySearch">
+<h3 class="catListTitle">搜索</h3>
+<div id="sidebar_search_box">
+<div id="widget_my_zzk" class="div_my_zzk"><input type="text" id="q" onkeydown="return zzk_go_enter(event);" class="input_my_zzk">&nbsp;<input onclick="zzk_go()" type="button" value="找找看" id="btnZzk" class="btn_my_zzk"></div>
+<div id="widget_my_google" class="div_my_zzk"><input type="text" name="google_q" id="google_q" onkeydown="return google_go_enter(event)" class="input_my_zzk">&nbsp;<input onclick="google_go()" type="button" value="谷歌搜索" class="btn_my_zzk"></div>
+</div>
+</div>
+
+</div><div id="sidebar_shortcut" class="sidebar-block">
+<div class="catListLink">
+<h3 class="catListTitle">常用链接</h3>
+<ul>
+<li><a href="http://www.cnblogs.com/chenyangyao/p/" title="我的博客的随笔列表">我的随笔</a></li><li><a href="http://www.cnblogs.com/chenyangyao/MyComments.html" title="我发表过的评论列表">我的评论</a></li><li><a href="http://www.cnblogs.com/chenyangyao/OtherPosts.html" title="我评论过的随笔列表">我的参与</a></li><li><a href="http://www.cnblogs.com/chenyangyao/RecentComments.html" title="我的博客的评论列表">最新评论</a></li><li><a href="http://www.cnblogs.com/chenyangyao/tag/" title="我的博客的标签列表">我的标签</a></li>
+</ul>
+<div id="itemListLin_con" style="display:none;">
+<ul>
+
+</ul>
+</div>
+</div></div><div id="sidebar_toptags" class="sidebar-block">
+<div class="catListTag">
+<h3 class="catListTitle">我的标签</h3>
+<ul>
+<li><a href="http://www.cnblogs.com/chenyangyao/tag/%E5%9B%BE%E8%A7%A3/">图解</a>(6)</li><li><a href="http://www.cnblogs.com/chenyangyao/tag/%E6%BA%90%E7%A0%81/">源码</a>(4)</li><li><a href="http://www.cnblogs.com/chenyangyao/tag/java/">java</a>(3)</li><li><a href="http://www.cnblogs.com/chenyangyao/tag/libuv/">libuv</a>(3)</li><li><a href="http://www.cnblogs.com/chenyangyao/tag/Netty%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">Netty源码分析</a>(2)</li><li><a href="http://www.cnblogs.com/chenyangyao/tag/%E8%AF%A6%E7%BB%86/">详细</a>(2)</li><li><a href="http://www.cnblogs.com/chenyangyao/tag/%E5%8E%9F%E7%90%86/">原理</a>(1)</li><li><a href="http://www.cnblogs.com/chenyangyao/tag/%E4%BC%AA%E4%BB%A3%E7%A0%81/">伪代码</a>(1)</li><li><a href="http://www.cnblogs.com/chenyangyao/tag/%E7%BA%BF%E7%A8%8B%E6%B1%A0/">线程池</a>(1)</li><li><a href="http://www.cnblogs.com/chenyangyao/tag/%E6%A0%88%E5%B8%A7/">栈帧</a>(1)</li><li><a href="http://www.cnblogs.com/chenyangyao/tag/">更多</a></li>
+</ul>
+</div></div><div id="sidebar_categories">
+<div id="sidebar_postcategory" class="catListPostCategory sidebar-block">
+<h3 class="catListTitle">随笔分类</h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_0_Link_0" href="http://www.cnblogs.com/chenyangyao/category/771516.html">C(6)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_1" href="http://www.cnblogs.com/chenyangyao/category/771517.html">C++(2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_2" href="http://www.cnblogs.com/chenyangyao/category/771520.html">GIT</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_3" href="http://www.cnblogs.com/chenyangyao/category/771514.html">JAVA(8)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_4" href="http://www.cnblogs.com/chenyangyao/category/771513.html">linux内核和驱动</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_5" href="http://www.cnblogs.com/chenyangyao/category/870817.html">Netty源码分析(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_6" href="http://www.cnblogs.com/chenyangyao/category/771518.html">PHP</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_7" href="http://www.cnblogs.com/chenyangyao/category/786764.html">python(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_8" href="http://www.cnblogs.com/chenyangyao/category/771515.html">单片机嵌入式</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_9" href="http://www.cnblogs.com/chenyangyao/category/771519.html">硬件</a> </li>
+
+</ul>
+
+</div>
+
+<div id="sidebar_postarchive" class="catListPostArchive sidebar-block">
+<h3 class="catListTitle">随笔档案</h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_1_Link_0" href="http://www.cnblogs.com/chenyangyao/archive/2017/04.html">2017年4月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_1" href="http://www.cnblogs.com/chenyangyao/archive/2016/12.html">2016年12月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_2" href="http://www.cnblogs.com/chenyangyao/archive/2016/11.html">2016年11月 (5)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_3" href="http://www.cnblogs.com/chenyangyao/archive/2016/08.html">2016年8月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_4" href="http://www.cnblogs.com/chenyangyao/archive/2016/04.html">2016年4月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_5" href="http://www.cnblogs.com/chenyangyao/archive/2016/03.html">2016年3月 (7)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_6" href="http://www.cnblogs.com/chenyangyao/archive/2016/02.html">2016年2月 (2)</a> </li>
+
+</ul>
+
+</div>
+
+</div><div id="sidebar_recentcomments" class="sidebar-block"><div id="recent_comments_wrap">
+<div class="catListComment">
+<h3 class="catListTitle">最新评论</h3>
+
+	<div id="RecentCommentsBlock"><ul>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/chenyangyao/p/libuv.html#3553166">1. Re:Nodejs事件引擎libuv源码剖析之：高效队列（queue）的实现</a></li>
+        <li class="recent_comment_body">@myy如果你能确保一个struct中只会有一个node的情况，这样倒也没问题。可现实情况是，那样你会限制struct的结构（node必须放在首位），而且对于复杂场景（linux内核中大多都是这样），......</li>
+        <li class="recent_comment_author">--陈洋Cy</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/chenyangyao/p/libuv.html#3553015">2. Re:Nodejs事件引擎libuv源码剖析之：高效队列（queue）的实现</a></li>
+        <li class="recent_comment_body">菜鸟，以前都不知道 container_of 这种用法。。。<br><br>有点小疑问，为什么不把 node 放在自定义结构的最前头呢？不是更简单明了？</li>
+        <li class="recent_comment_author">--myy</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/chenyangyao/p/python_descriptor.html#3480017">3. Re:python描述符(descriptor)、属性(property)、函数（类）装饰器(decorator )原理实例详解</a></li>
+        <li class="recent_comment_body">特地注册一个号来说，写的清晰明了，总结全面细致。很有帮助，最后的长代码后面再细看，感谢博主！</li>
+        <li class="recent_comment_author">--MyZenith</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/chenyangyao/p/python_descriptor.html#3477994">4. Re:python描述符(descriptor)、属性(property)、函数（类）装饰器(decorator )原理实例详解</a></li>
+        <li class="recent_comment_body">写的很好，赞！</li>
+        <li class="recent_comment_author">--寻_FIND</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/chenyangyao/p/5240079.html#3372596">5. Re:图解JAVA的Class文件格式(详细版)</a></li>
+        <li class="recent_comment_body">太底层了，如果是做应用开发的，了解一下即可，不必再底层上消耗太多时间</li>
+        <li class="recent_comment_author">--木的树</li>
+</ul>
+</div>
+</div>
+</div></div><div id="sidebar_topviewedposts" class="sidebar-block"><div id="topview_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">阅读排行榜</h3>
+	<div id="TopViewPostsBlock"><ul><li><a href="http://www.cnblogs.com/chenyangyao/p/5222696.html">1. 图解c/c＋＋多级指针与“多维”数组(3353)</a></li><li><a href="http://www.cnblogs.com/chenyangyao/p/5269622.html">2. JVM内存模型、指令重排、内存屏障概念解析(2371)</a></li><li><a href="http://www.cnblogs.com/chenyangyao/p/5296807.html">3. 图解JAVA对象的创建过程(1615)</a></li><li><a href="http://www.cnblogs.com/chenyangyao/p/5422044.html">4. protobuf中文教程（第一篇）(1336)</a></li><li><a href="http://www.cnblogs.com/chenyangyao/p/libuv_threadpool.html">5. Nodejs事件引擎libuv源码剖析之：高效线程池(threadpool)的实现(886)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topcommentedposts" class="sidebar-block"><div id="topfeedback_posts_wrap">
+<div class="catListFeedback">
+<h3 class="catListTitle">评论排行榜</h3>
+	<div id="TopFeedbackPostsBlock"><ul><li><a href="http://www.cnblogs.com/chenyangyao/p/python_descriptor.html">1. python描述符(descriptor)、属性(property)、函数（类）装饰器(decorator )原理实例详解(2)</a></li><li><a href="http://www.cnblogs.com/chenyangyao/p/libuv.html">2. Nodejs事件引擎libuv源码剖析之：高效队列（queue）的实现(2)</a></li><li><a href="http://www.cnblogs.com/chenyangyao/p/5245669.html">3. 图解JVM的类加载机制(详细版)(1)</a></li><li><a href="http://www.cnblogs.com/chenyangyao/p/5240079.html">4. 图解JVM的Class文件格式(详细版)(1)</a></li><li><a href="http://www.cnblogs.com/chenyangyao/p/5222696.html">5. 图解c/c＋＋多级指针与“多维”数组(1)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topdiggedposts" class="sidebar-block"><div id="topdigg_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">推荐排行榜</h3>
+<div id="TopDiggPostsBlock"><ul><li><a href="http://www.cnblogs.com/chenyangyao/p/5222696.html">1. 图解c/c＋＋多级指针与“多维”数组(5)</a></li><li><a href="http://www.cnblogs.com/chenyangyao/p/libuv.html">2. Nodejs事件引擎libuv源码剖析之：高效队列（queue）的实现(3)</a></li><li><a href="http://www.cnblogs.com/chenyangyao/p/libuv_threadpool.html">3. Nodejs事件引擎libuv源码剖析之：高效线程池(threadpool)的实现(3)</a></li><li><a href="http://www.cnblogs.com/chenyangyao/p/5245669.html">4. 图解JVM的类加载机制(详细版)(2)</a></li><li><a href="http://www.cnblogs.com/chenyangyao/p/python_descriptor.html">5. python描述符(descriptor)、属性(property)、函数（类）装饰器(decorator )原理实例详解(1)</a></li></ul></div>
+</div></div></div></div><script type="text/javascript">loadBlogSideColumn();</script>
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		
+<!--done-->
+Copyright ©2017 陈洋Cy
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+
+</body></html>
