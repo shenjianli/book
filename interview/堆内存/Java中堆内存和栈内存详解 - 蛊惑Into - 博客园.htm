@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<!-- saved from url=(0059)http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html -->
+<html lang="zh-cn"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Java中堆内存和栈内存详解 - 蛊惑Into - 博客园</title>
+<link type="text/css" rel="stylesheet" href="./Java中堆内存和栈内存详解 - 蛊惑Into - 博客园_files/blog-common.css">
+<link id="MainCss" type="text/css" rel="stylesheet" href="./Java中堆内存和栈内存详解 - 蛊惑Into - 博客园_files/bundle-SimpleBlue.css">
+<link id="mobile-style" media="only screen and (max-width: 768px)" type="text/css" rel="stylesheet" href="./Java中堆内存和栈内存详解 - 蛊惑Into - 博客园_files/bundle-SimpleBlue-mobile.css">
+<link title="RSS" type="application/rss+xml" rel="alternate" href="http://www.cnblogs.com/whgw/rss">
+<link title="RSD" type="application/rsd+xml" rel="EditURI" href="http://www.cnblogs.com/whgw/rsd.xml">
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="http://www.cnblogs.com/whgw/wlwmanifest.xml">
+<script async="" src="./Java中堆内存和栈内存详解 - 蛊惑Into - 博客园_files/analytics.js"></script><script src="./Java中堆内存和栈内存详解 - 蛊惑Into - 博客园_files/jquery.js" type="text/javascript"></script>  
+<script type="text/javascript">var currentBlogApp = 'whgw', cb_enable_mathjax=false;var isLogined=false;</script>
+<script src="./Java中堆内存和栈内存详解 - 蛊惑Into - 博客园_files/blog-common.js" type="text/javascript"></script>
+<style type="text/css">
+:root #header + #content > #left > #rlblock_left
+{ display: none !important; }</style></head>
+<body>
+<a name="top"></a>
+
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+		
+<!--done-->
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle" href="http://www.cnblogs.com/whgw/">蛊惑Into</a></div>
+<div class="subtitle"></div>
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="http://www.cnblogs.com/">博客园</a></li>
+<li id="nav_myhome"><a id="blog_nav_myhome" class="menu" href="http://www.cnblogs.com/whgw/">首页</a></li>
+<li id="nav_newpost"><a id="blog_nav_newpost" class="menu" rel="nofollow" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">新随笔</a></li>
+<li id="nav_contact"><a id="blog_nav_contact" class="menu" rel="nofollow" href="https://msg.cnblogs.com/send/%E8%9B%8A%E6%83%91Into">联系</a></li>
+<li id="nav_rss"><a id="blog_nav_rss" class="menu" href="http://www.cnblogs.com/whgw/rss">订阅</a>
+<!--<a id="blog_nav_rss_image" class="aHeaderXML" href="http://www.cnblogs.com/whgw/rss"><img src="//www.cnblogs.com/images/xml.gif" alt="订阅" /></a>--></li>
+<li id="nav_admin"><a id="blog_nav_admin" class="menu" rel="nofollow" href="https://i.cnblogs.com/">管理</a></li>
+</ul>
+
+		<div class="blogStats">
+			
+			<div id="blog_stats">
+<!--done-->
+随笔-35&nbsp;
+文章-0&nbsp;
+评论-75&nbsp;
+</div>
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		
+<div id="post_detail">
+<!--done-->
+<div id="topics">
+	<div class="post">
+		<h1 class="postTitle">
+			<a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html">Java中堆内存和栈内存详解</a>
+		</h1>
+		<div class="clear"></div>
+		<div class="postBody">
+			<div id="cnblogs_post_body"><p><span style="font-size: medium;" size="4">Java把内存分成两种，一种叫做栈内存，一种叫做堆内存</span></p>
+<p style="margin: 0px; text-indent: 2em; padding: 0px;"><span style="color: #000000;"><span style="font-size: medium;" size="4">在函数中定义的<span style="color: #800000;"><strong>一些基本类型的变量和对象的引用变量都是在函数的栈内存中分配</strong></span>。当在一段代码块中定义一个变量时，java就在栈中为这个变量分配内存空间，当超过变量的作用域后，java会自动释放掉为该变量分配的内存空间，该内存空间可以立刻被另作他用。</span></span></p>
+<p style="margin: 0px; text-indent: 2em; padding: 0px;"><span style="color: #000000;"><span style="font-size: medium;" size="4"><strong><span style="color: #800000;">堆内存用于存放由new创建的对象和数组</span></strong>。在堆中分配的内存，由java虚拟机自动垃圾回收器来管理。在堆中产生了一个数组或者对象后，还可以在栈中定义一个特殊的变量，这个变量的取值等于数组或者对象在堆内存中的首地址，在栈中的这个特殊的变量就变成了数组或者对象的引用变量，以后就可以在程序中使用栈内存中的引用变量来访问堆中的数组或者对象，引用变量相当于为数组或者对象起的一个别名，或者代号。</span></span></p>
+<p style="margin: 0px; text-indent: 2em; padding: 0px;"><span style="color: #000000;"><span style="font-size: medium;" size="4">引用变量是普通变量，定义时在栈中分配内存，引用变量在程序运行到作用域外释放。而数组＆对象本身在堆中分配，即使程序运行到使用new产生数组和对象的语句所在地代码块之外，数组和对象本身占用的堆内存也不会被释放，<span style="color: #800000;"><strong>数组和对象在没有引用变量指向它的时候，才变成垃圾，不能再被使用，但是仍然占着内存，在随后的一个不确定的时间被垃圾回收器释放掉。这个也是java比较占内存的主要原因，</strong></span><strong></strong></span></span><strong><span style="color: #000000;"><span style="font-size: medium;" size="4"><span style="font-size: small; color: #000000;" color="#000000" size="3">实际上，栈中的变量指向堆内存中的变量，这就是 Java 中的指针! </span></span></span></strong></p>
+<p style="margin: 0px; text-indent: 2em; padding: 0px;"><strong><span style="color: #000000;"><span style="font-size: medium;" size="4"><span style="font-size: small; color: #000000;" color="#000000" size="3"></span></span></span></strong>&nbsp;</p>
+<p style="margin: 0px; text-indent: 2em; padding: 0px;"><span><strong><span style="color: #993300;">java中内存分配策略及堆和栈的比较</span></strong> <br><br>　　1 内存分配策略 <br><br>　　按照编译原理的观点,程序运行时的内存分配有三种策略,分别是静态的,栈式的,和堆式的. <br><br>　　<strong><span style="color: #0000ff;">静态存储分配</span></strong>是指在编译时就能确定每个数据目标在运行时刻的存储空间需求,因而在编译时就可以给他们分配固定的内存空间.这种分配策略要求程序代码中不允许有可变数据结构(比如可变数组)的存在,也不允许有嵌套或者递归的结构出现,因为它们都会导致编译程序无法计算准确的存储空间需求. <br><br>　　栈式存储分配也可称为动态存储分配,是由一个类似于堆栈的运行栈来实现的.和静态存储分配相反,在栈式存储方案中,程序对数据区的需求在编译时是完全未知的,只有到运行的时候才能够知道,但是规定在运行中进入一个程序模块时,必须知道该程序模块所需的数据区大小才能够为其分配内存.和我们在数据结构所熟知的栈一样,栈式存储分配按照先进后出的原则进行分配。 <br><br>　　静态存储分配要求在编译时能知道所有变量的存储要求,栈式存储分配要求在过程的入口处必须知道所有的存储要求,而堆式存储分配则专门负责在编译时或运行时模块入口处都无法确定存储要求的数据结构的内存分配,比如可变长度串和对象实例.堆由大片的可利用块或空闲块组成,堆中的内存可以按照任意顺序分配和释放. <br><br>　　2 堆和栈的比较 <br><br>　　上面的定义从编译原理的教材中总结而来,除静态存储分配之外,都显得很呆板和难以理解,下面撇开静态存储分配,集中比较堆和栈: <br><br>　　从堆和栈的功能和作用来通俗的比较,<strong><span style="color: #0000ff;">堆主要用来存放对象的，栈主要是用来执行程序的</span></strong>.而这种不同又主要是由于堆和栈的特点决定的: <br><br>　　在编程中，例如C/C++中，所有的方法调用都是通过栈来进行的,所有的局部变量,形式参数都是从栈中分配内存空间的。实际上也不是什么分配,只是从栈顶向上用就行,就好像工厂中的传送带(conveyor belt)一样,Stack Pointer会自动指引你到放东西的位置,你所要做的只是把东西放下来就行.退出函数的时候，修改栈指针就可以把栈中的内容销毁.这样的模式速度最快, 当然要用来运行程序了.需要注意的是,在分配的时候,比如为一个即将要调用的程序模块分配数据区时,应事先知道这个数据区的大小,也就说是虽然分配是在程序运行时进行的,但是分配的大小多少是确定的,不变的,而这个"大小多少"是在编译时确定的,不是在运行时. <br><br>　　堆是应用程序在运行的时候请求操作系统分配给自己内存，由于从操作系统管理的内存分配,所以在分配和销毁时都要占用时间，因此用堆的效率非常低.但是堆的优点在于,编译器不必知道要从堆里分配多少存储空间，也不必知道存储的数据要在堆里停留多长的时间,因此,用堆保存数据时会得到更大的灵活性。事实上,面向对象的多态性,堆内存分配是必不可少的,因为多态变量所需的存储空间只有在运行时创建了对象之后才能确定.在C++中，要求创建一个对象时，只需用 new命令编制相关的代码即可。执行这些代码时，会在堆里自动进行数据的保存.当然，为达到这种灵活性，必然会付出一定的代价:在堆里分配存储空间时会花掉更长的时间!这也正是导致我们刚才所说的效率低的原因,看来列宁同志说的好,人的优点往往也是人的缺点,人的缺点往往也是人的优点(晕~). <br><br>　　3 JVM中的堆和栈 <br><br>　　JVM是基于堆栈的虚拟机.JVM为每个新创建的线程都分配一个堆栈.也就是说,对于一个Java程序来说，它的运行就是通过对堆栈的操作来完成的。堆栈以帧为单位保存线程的状态。JVM对堆栈只进行两种操作:以帧为单位的压栈和出栈操作。 <br><br>　　我们知道,某个线程正在执行的方法称为此线程的当前方法.我们可能不知道,当前方法使用的帧称为当前帧。当线程激活一个Java方法,JVM就会在线程的 Java堆栈里新压入一个帧。这个帧自然成为了当前帧.在此方法执行期间,这个帧将用来保存参数,局部变量,中间计算过程和其他数据.这个帧在这里和编译原理中的活动纪录的概念是差不多的. <br><br>　　从Java的这种分配机制来看,堆栈又可以这样理解:堆栈(Stack)是操作系统在建立某个进程时或者线程(在支持多线程的操作系统中是线程)为这个线程建立的存储区域，该区域具有先进后出的特性。 <br><br>　　每一个Java应用都唯一对应一个JVM实例，每一个实例唯一对应一个堆。应用程序在运行中所创建的所有类实例或数组都放在这个堆中,并由应用所有的线程共享.跟C/C++不同，Java中分配堆内存是自动初始化的。Java中所有对象的存储空间都是在堆中分配的，但是这个对象的引用却是在堆栈中分配,也就是说在建立一个对象时从两个地方都分配内存，在堆中分配的内存实际建立这个对象，而在堆栈中分配的内存只是一个指向这个堆对象的指针(引用)而已。 <br><br>　　Java 中的堆和栈 <br><br>　　Java把内存划分成两种：一种是栈内存，一种是堆内存。 <br><br>　　在函数中定义的一些基本类型的变量和对象的引用变量都在函数的栈内存中分配。 <br><br>　　当在一段代码块定义一个变量时，Java就在栈中为这个变量分配内存空间，当超过变量的作用域后，Java会自动释放掉为该变量所分配的内存空间，该内存空间可以立即被另作他用。 <br><br>　　堆内存用来存放由new创建的对象和数组。 <br><br>　　在堆中分配的内存，由Java虚拟机的自动垃圾回收器来管理。 <br><br>　　在堆中产生了一个数组或对象后，还可以在栈中定义一个特殊的变量，让栈中这个变量的取值等于数组或对象在堆内存中的首地址，栈中的这个变量就成了数组或对象的引用变量。 <br><br>　　引用变量就相当于是为数组或对象起的一个名称，以后就可以在程序中使用栈中的引用变量来访问堆中的数组或对象。 <br><br>　　具体的说： <br><br>　　栈与堆都是Java用来在Ram中存放数据的地方。与C++不同，Java自动管理栈和堆，程序员不能直接地设置栈或堆。 <br><br>　　Java的堆是一个运行时数据区,类的(对象从中分配空间。这些对象通过new、newarray、anewarray和multianewarray等指令建立，它们不需要程序代码来显式的释放。堆是由垃圾回收来负责的，堆的优势是可以动态地分配内存大小，生存期也不必事先告诉编译器，因为它是在运行时动态分配内存的，Java的垃圾收集器会自动收走这些不再使用的数据。但缺点是，由于要在运行时动态分配内存，存取速度较慢。 <br><br>　　栈的优势是，存取速度比堆要快，仅次于寄存器，栈数据可以共享。但缺点是，存在栈中的数据大小与生存期必须是确定的，缺乏灵活性。栈中主要存放一些基本类型的变量(,int, short, long, byte, float, double, boolean, char)和对象句柄。 <br><br>　　栈有一个很重要的特殊性，就是存在栈中的数据可以共享。假设我们同时定义： <br><br>　　int a = 3; <br><br>　　int b = 3; <br><br>　　编译器先处理int a = 3;首先它会在栈中创建一个变量为a的引用，然后查找栈中是否有3这个值，如果没找到，就将3存放进来，然后将a指向3。接着处理int b = 3;在创建完b的引用变量后，因为在栈中已经有3这个值，便将b直接指向3。这样，就出现了a与b同时均指向3的情况。这时，如果再令a=4;那么编译器会重新搜索栈中是否有4值，如果没有，则将4存放进来，并令a指向4;如果已经有了，则直接将a指向这个地址。因此a值的改变不会影响到b的值。要注意这种数据的共享与两个对象的引用同时指向一个对象的这种共享是不同的，因为这种情况a的修改并不会影响到b, 它是由编译器完成的，它有利于节省空间。而一个对象引用变量修改了这个对象的内部状态，会影响到另一个对象引用变量 <br><span style="font-size: medium;" size="4"><br></span></span></p></div><div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="BlogPostCategory"></div>
+<div id="EntryTag">标签: <a href="http://www.cnblogs.com/whgw/tag/Java%E4%B8%AD%E5%A0%86%E5%86%85%E5%AD%98%E5%92%8C%E6%A0%88%E5%86%85%E5%AD%98%E8%AF%A6%E8%A7%A3/">Java中堆内存和栈内存详解</a></div>
+<div id="blog_post_info"><div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(2194997,cb_blogId,1);green_channel_success(this,&#39;谢谢推荐！&#39;);">好文要顶</a>
+            <a id="green_channel_follow" onclick="follow(&#39;397874dd-33e8-e011-8ee0-842b2b196315&#39;);" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="./Java中堆内存和栈内存详解 - 蛊惑Into - 博客园_files/icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="./Java中堆内存和栈内存详解 - 蛊惑Into - 博客园_files/wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/whgw/" target="_blank"><img src="./Java中堆内存和栈内存详解 - 蛊惑Into - 博客园_files/u335939.png" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/whgw/">蛊惑Into</a><br>
+            <a href="http://home.cnblogs.com/u/whgw/followees">关注 - 5</a><br>
+            <a href="http://home.cnblogs.com/u/whgw/followers">粉丝 - 164</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow(&#39;397874dd-33e8-e011-8ee0-842b2b196315&#39;);return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(2194997,&#39;Digg&#39;)">
+        <span class="diggnum" id="digg_count">44</span>
+    </div>
+    <div class="buryit" onclick="votePost(2194997,&#39;Bury&#39;)">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+</div>
+<div class="clear"></div>
+<div id="post_next_prev"><a href="http://www.cnblogs.com/whgw/archive/2011/09/28/2194776.html" class="p_n_p_prefix">« </a> 上一篇：<a href="http://www.cnblogs.com/whgw/archive/2011/09/28/2194776.html" title="发布于2011-09-28 20:16">Java 线程池的原理与实现</a><br><a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194999.html" class="p_n_p_prefix">» </a> 下一篇：<a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194999.html" title="发布于2011-09-29 02:18">Java多线程-工具篇-BlockingQueue</a><br></div>
+</div>
+
+
+		</div>
+		<div class="postDesc">posted @ <span id="post-date">2011-09-29 02:00</span> <a href="http://www.cnblogs.com/whgw/">蛊惑Into</a> 阅读(<span id="post_view_count">141790</span>) 评论(<span id="post_comment_count">22</span>)  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=2194997" rel="nofollow">编辑</a> <a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#" onclick="AddToWz(2194997);return false;">收藏</a></div>
+	</div>
+	<script type="text/javascript">var allowComments=true,cb_blogId=98064,cb_entryId=2194997,cb_blogApp=currentBlogApp,cb_blogUserGuid='397874dd-33e8-e011-8ee0-842b2b196315',cb_entryCreatedDate='2011/9/29 2:00:00';loadViewCount(cb_entryId);</script>
+	
+</div><!--end: topics 文章、评论容器-->
+</div><a name="!comments"></a><div id="blog-comments-placeholder"><div id="comments_pager_top"></div>
+<!--done-->
+<div class="feedback_area_title">评论列表</div>
+<div class="feedbackNoItems"></div>
+	
+
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#2639386" class="layer">#1楼</a><a name="2639386" id="comment_anchor_2639386"></a>  <span class="comment_date">2013-03-21 10:58</span> <a id="a_comment_author_2639386" href="http://www.cnblogs.com/loongsoft/" target="_blank">loongchao</a> <a href="http://msg.cnblogs.com/send/loongchao" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2639386" class="blog_comment_body">mark</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2639386,&#39;Digg&#39;,this)">支持(1)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2639386,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2639386_avatar" style="display:none;">http://pic.cnblogs.com/face/u443310.jpg?id=31191252</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#2639583" class="layer">#2楼</a><a name="2639583" id="comment_anchor_2639583"></a>  <span class="comment_date">2013-03-21 14:43</span> <a id="a_comment_author_2639583" href="http://www.cnblogs.com/qinying/" target="_blank">心扬</a> <a href="http://msg.cnblogs.com/send/%E5%BF%83%E6%89%AC" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2639583" class="blog_comment_body">也不知道抄了多少篇文章，那么多重复的废话</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2639583,&#39;Digg&#39;,this)">支持(1)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2639583,&#39;Bury&#39;,this)">反对(14)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#2643843" class="layer">#3楼</a><a name="2643843" id="comment_anchor_2643843"></a>  <span class="comment_date">2013-03-27 13:24</span> <a id="a_comment_author_2643843" href="http://www.cnblogs.com/99arc/" target="_blank">觅渡</a> <a href="http://msg.cnblogs.com/send/%E8%A7%85%E6%B8%A1" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2643843" class="blog_comment_body">废话太多 一个简单的问题说了这么多 看得我都想睡觉了</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2643843,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2643843,&#39;Bury&#39;,this)">反对(14)</a></div><span id="comment_2643843_avatar" style="display:none;">http://pic.cnblogs.com/face/u312507.png?id=15160238</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3001057" class="layer">#4楼</a><a name="3001057" id="comment_anchor_3001057"></a>  <span class="comment_date">2014-08-05 15:32</span> <a id="a_comment_author_3001057" href="http://www.cnblogs.com/cton/" target="_blank">从此以后</a> <a href="http://msg.cnblogs.com/send/%E4%BB%8E%E6%AD%A4%E4%BB%A5%E5%90%8E" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3001057" class="blog_comment_body">核心说了，还不错。</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3001057,&#39;Digg&#39;,this)">支持(3)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3001057,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3001057_avatar" style="display:none;">http://pic.cnblogs.com/face/516338/20140125223600.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3107164" class="layer">#5楼</a><a name="3107164" id="comment_anchor_3107164"></a>  <span class="comment_date">2015-01-15 09:20</span> <a id="a_comment_author_3107164" href="http://home.cnblogs.com/u/714230/" target="_blank">小程不错</a> <a href="http://msg.cnblogs.com/send/%E5%B0%8F%E7%A8%8B%E4%B8%8D%E9%94%99" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3107164" class="blog_comment_body">读了之后，对堆栈有了清晰的认识，以前很模糊，感谢</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3107164,&#39;Digg&#39;,this)">支持(2)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3107164,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3109019" class="layer">#6楼</a><a name="3109019" id="comment_anchor_3109019"></a>  <span class="comment_date">2015-01-18 11:19</span> <a id="a_comment_author_3109019" href="http://www.cnblogs.com/beiyan/" target="_blank">北言</a> <a href="http://msg.cnblogs.com/send/%E5%8C%97%E8%A8%80" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3109019" class="blog_comment_body">楼主总结的不错，学习了</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3109019,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3109019,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3109026" class="layer">#7楼</a><a name="3109026" id="comment_anchor_3109026"></a>  <span class="comment_date">2015-01-18 11:34</span> <a id="a_comment_author_3109026" href="http://www.cnblogs.com/beiyan/" target="_blank">北言</a> <a href="http://msg.cnblogs.com/send/%E5%8C%97%E8%A8%80" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3109026" class="blog_comment_body">很详细</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3109026,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3109026,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3206056" class="layer">#8楼</a><a name="3206056" id="comment_anchor_3206056"></a>  <span class="comment_date">2015-06-11 12:51</span> <a id="a_comment_author_3206056" href="http://home.cnblogs.com/u/773387/" target="_blank">我</a> <a href="http://msg.cnblogs.com/send/%E6%88%91" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3206056" class="blog_comment_body">写得挺好的，才学java，一看就明白好多了</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3206056,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3206056,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3232541" class="layer">#9楼</a><a name="3232541" id="comment_anchor_3232541"></a>  <span class="comment_date">2015-07-21 21:26</span> <a id="a_comment_author_3232541" href="http://www.cnblogs.com/Anpbszzz/" target="_blank">陈文锦的秘密</a> <a href="http://msg.cnblogs.com/send/%E9%99%88%E6%96%87%E9%94%A6%E7%9A%84%E7%A7%98%E5%AF%86" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3232541" class="blog_comment_body">真心不错,讲的很详细</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3232541,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3232541,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3232541_avatar" style="display:none;">http://pic.cnblogs.com/face/410537/20140922231946.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3235277" class="layer">#10楼</a><a name="3235277" id="comment_anchor_3235277"></a>  <span class="comment_date">2015-07-25 19:57</span> <a id="a_comment_author_3235277" href="http://www.cnblogs.com/wazqy/" target="_blank">上街、找金莎</a> <a href="http://msg.cnblogs.com/send/%E4%B8%8A%E8%A1%97%E3%80%81%E6%89%BE%E9%87%91%E8%8E%8E" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3235277" class="blog_comment_body">太棒了，楼主加油</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3235277,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3235277,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3235277_avatar" style="display:none;">http://pic.cnblogs.com/face/689658/20141106181021.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3243147" class="layer">#11楼</a><a name="3243147" id="comment_anchor_3243147"></a>  <span class="comment_date">2015-08-07 10:19</span> <a id="a_comment_author_3243147" href="http://www.cnblogs.com/sevenlin/" target="_blank">SevenLin</a> <a href="http://msg.cnblogs.com/send/SevenLin" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3243147" class="blog_comment_body">博主我可以转发吗</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3243147,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3243147,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3243147_avatar" style="display:none;">http://pic.cnblogs.com/face/756366/20150512140015.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3245698" class="layer">#12楼</a><a name="3245698" id="comment_anchor_3245698"></a>  <span class="comment_date">2015-08-11 17:23</span> <a id="a_comment_author_3245698" href="http://www.cnblogs.com/dark-passion/" target="_blank">dark_passion</a> <a href="http://msg.cnblogs.com/send/dark_passion" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3245698" class="blog_comment_body">.....绕来绕去，不过有核心的话....</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3245698,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3245698,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3245698_avatar" style="display:none;">http://pic.cnblogs.com/face/784758/20151126095129.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3406311" class="layer">#13楼</a><a name="3406311" id="comment_anchor_3406311"></a>  <span class="comment_date">2016-04-12 19:27</span> <a id="a_comment_author_3406311" href="http://www.cnblogs.com/wujiang-2015/" target="_blank">挑战客</a> <a href="http://msg.cnblogs.com/send/%E6%8C%91%E6%88%98%E5%AE%A2" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3406311" class="blog_comment_body">的确很啰嗦，我更喜欢用最简洁的方法说出堆和栈的区别，或者用画图，或者写出不同点，便于记忆</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3406311,&#39;Digg&#39;,this)">支持(1)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3406311,&#39;Bury&#39;,this)">反对(1)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3460858" class="layer">#14楼</a><a name="3460858" id="comment_anchor_3460858"></a>  <span class="comment_date">2016-06-29 11:42</span> <a id="a_comment_author_3460858" href="http://www.cnblogs.com/advice/" target="_blank">汪先生</a> <a href="http://msg.cnblogs.com/send/%E6%B1%AA%E5%85%88%E7%94%9F" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3460858" class="blog_comment_body">不知道哪里抄起来的，不过总结还是比较详细</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3460858,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3460858,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3460858_avatar" style="display:none;">http://pic.cnblogs.com/face/608330/20141014102609.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3522635" class="layer">#15楼</a><a name="3522635" id="comment_anchor_3522635"></a>  <span class="comment_date">2016-09-29 17:17</span> <a id="a_comment_author_3522635" href="http://www.cnblogs.com/changyi/" target="_blank">wtxwd</a> <a href="http://msg.cnblogs.com/send/wtxwd" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3522635" class="blog_comment_body"><a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#2643843" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,2643843);">@</a>
+觅渡<br>看不惯可以不看，谁逼你看了，贱人就是矫情</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3522635,&#39;Digg&#39;,this)">支持(1)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3522635,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3527539" class="layer">#16楼</a><a name="3527539" id="comment_anchor_3527539"></a>  <span class="comment_date">2016-10-10 17:45</span> <a id="a_comment_author_3527539" href="http://www.cnblogs.com/wuyouwei/" target="_blank">有为吴</a> <a href="http://msg.cnblogs.com/send/%E6%9C%89%E4%B8%BA%E5%90%B4" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3527539" class="blog_comment_body">mark 是标记的意思，一楼为啥说个mark呢？想表达什么</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3527539,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3527539,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3527539_avatar" style="display:none;">http://pic.cnblogs.com/face/891968/20160204145343.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3559475" class="layer">#17楼</a><a name="3559475" id="comment_anchor_3559475"></a>  <span class="comment_date">2016-11-18 16:14</span> <a id="a_comment_author_3559475" href="http://www.cnblogs.com/redcoatjk/" target="_blank">redcoatjk</a> <a href="http://msg.cnblogs.com/send/redcoatjk" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3559475" class="blog_comment_body">很不错.</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3559475,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3559475,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3610218" class="layer">#18楼</a><a name="3610218" id="comment_anchor_3610218"></a>  <span class="comment_date">2017-01-28 16:47</span> <a id="a_comment_author_3610218" href="http://www.cnblogs.com/hq233/" target="_blank">滥好人</a> <a href="http://msg.cnblogs.com/send/%E6%BB%A5%E5%A5%BD%E4%BA%BA" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3610218" class="blog_comment_body">我可以转发吗</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3610218,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3610218,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3610218_avatar" style="display:none;">http://pic.cnblogs.com/face/1064320/20161128210329.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3648982" class="layer">#19楼</a><a name="3648982" id="comment_anchor_3648982"></a>  <span class="comment_date">2017-03-23 02:59</span> <a id="a_comment_author_3648982" href="http://home.cnblogs.com/u/1132266/" target="_blank">伪善天际</a> <a href="http://msg.cnblogs.com/send/%E4%BC%AA%E5%96%84%E5%A4%A9%E9%99%85" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3648982" class="blog_comment_body">新手，很多挺详细的，但是好像没有看懂，哪里是重点核心啊！楼主能不能标明一下。</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3648982,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3648982,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3688614" class="layer">#20楼</a><a name="3688614" id="comment_anchor_3688614"></a>  <span class="comment_date">2017-05-10 11:23</span> <a id="a_comment_author_3688614" href="http://www.cnblogs.com/libra0920/" target="_blank">那后来呢</a> <a href="http://msg.cnblogs.com/send/%E9%82%A3%E5%90%8E%E6%9D%A5%E5%91%A2" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3688614" class="blog_comment_body"><a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#2733590" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,2733590);">@</a>
+zhongheng<br>博客是一个交流的平台，既然发出来的东西，就要接受别人的表扬或者批评。</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3688614,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3688614,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3688614_avatar" style="display:none;">http://pic.cnblogs.com/face/937181/20160831154345.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3688615" class="layer">#21楼</a><a name="3688615" id="comment_anchor_3688615"></a>  <span class="comment_date">2017-05-10 11:25</span> <a id="a_comment_author_3688615" href="http://www.cnblogs.com/libra0920/" target="_blank">那后来呢</a> <a href="http://msg.cnblogs.com/send/%E9%82%A3%E5%90%8E%E6%9D%A5%E5%91%A2" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3688615" class="blog_comment_body"><a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3522635" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,3522635);">@</a>
+wtxwd<br>1. 中国就是这样，ZF就是这样，看不惯，不接受可以滚出中国。2. 电影就是拍成屎了，看不惯可以不看，谁逼你看了，脑残！。3. 军队就是打败仗，看不惯可以滚，谁逼你关注了。。。。 朋友，如果各届对于批评都是这个态度，社会还怎么进步？</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3688615,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3688615,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3688615_avatar" style="display:none;">http://pic.cnblogs.com/face/937181/20160831154345.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3692362" class="layer">#22楼</a><a name="3692362" id="comment_anchor_3692362"></a><span id="comment-maxId" style="display:none;">3692362</span><span id="comment-maxDate" style="display:none;">2017/5/15 13:04:36</span>  <span class="comment_date">2017-05-15 13:04</span> <a id="a_comment_author_3692362" href="http://www.cnblogs.com/libra0920/" target="_blank">那后来呢</a> <a href="http://msg.cnblogs.com/send/%E9%82%A3%E5%90%8E%E6%9D%A5%E5%91%A2" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3692362" class="blog_comment_body"><a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3692358" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,3692358);">@</a>
+zhongheng<br>谢谢，虽然阁下冷嘲热讽，但我还要对你说一句啊。你有批评任何公共事务的权利。</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3692362,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3692362,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3692362_avatar" style="display:none;">http://pic.cnblogs.com/face/937181/20160831154345.png</span>
+			</div>
+		</div>
+	<div id="comments_pager_bottom"></div></div><script type="text/javascript">var commentManager = new blogCommentManager();commentManager.renderComments(0);</script>
+<div id="comment_form" class="commentform">
+<a name="commentform"></a>
+<div id="divCommentShow"></div>
+<div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#" onclick="return RefreshPage();">刷新页面</a><a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#top">返回顶部</a></div>
+<div id="comment_form_container"><div class="login_tips">注册用户登录后才能发表评论，请 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login(&#39;commentform&#39;);">登录</a> 或 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，<a href="http://www.cnblogs.com/">访问</a>网站首页。</div></div>
+<div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+<div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_blank">【推荐】50万行VC++源码: 大型组态工控、电力仿真CAD与GIS源码库</a><br><a href="http://click.aliyun.com/m/21970/" target="_blank">【阿里云】云计算科技红利邀您免费体验！云服务器、云数据库等35+产品，6个月免费使用！</a><br></div>
+<div id="opt_under_post"></div>
+<div id="cnblogs_c1" class="c_ad_block"><a href="http://cn.udacity.com/android/?utm_source=cnbolg&amp;utm_medium=referral&amp;utm_campaign=AND03" target="_blank"><img width="300" height="250" src="./Java中堆内存和栈内存详解 - 蛊惑Into - 博客园_files/24442-20170613154413368-1655528381.jpg" alt="Andorid_0613"></a></div>
+<div id="under_post_news"><div class="itnews c_ad_block"><b>最新IT新闻</b>:<br> ·  <a href="http://news.cnblogs.com/n/571725/" target="_blank">百度外卖小哥逆行被查 婉转"揭发"同行美团</a><br> ·  <a href="http://news.cnblogs.com/n/571710/" target="_blank">E3观察：得不到的微软在骚动，被偏爱的索尼有恃无恐</a><br> ·  <a href="http://news.cnblogs.com/n/571723/" target="_blank">赞！跨年龄人脸检测技术：帮助定位和寻找失踪人士</a><br> ·  <a href="http://news.cnblogs.com/n/571724/" target="_blank">支付宝连发3个月福利！消费随机立减：最高可免单</a><br> ·  <a href="http://news.cnblogs.com/n/571722/" target="_blank">章泽天出售亿万豪宅，扒一扒最拼老板娘的投资版图</a><br>» <a href="http://news.cnblogs.com/" title="IT新闻" target="_blank">更多新闻...</a></div></div>
+<div id="cnblogs_c2" class="c_ad_block"><a href="https://www.mtyun.com/activity-anniversary?site=cnblogs&amp;campaign=20170601sales" target="_blank"><img width="468" height="60" src="./Java中堆内存和栈内存详解 - 蛊惑Into - 博客园_files/24442-20170615095125603-13625507.png" alt="美团云"></a></div>
+<div id="under_post_kb"><div class="itnews c_ad_block" id="kb_block"><b>最新知识库文章</b>:<br><div id="kb_recent"> ·  <a href="http://kb.cnblogs.com/page/570194/" target="_blank">小printf的故事：什么是真正的程序员？</a><br> ·  <a href="http://kb.cnblogs.com/page/569992/" target="_blank">程序员的工作、学习与绩效</a><br> ·  <a href="http://kb.cnblogs.com/page/569056/" target="_blank">软件开发为什么很难</a><br> ·  <a href="http://kb.cnblogs.com/page/565901/" target="_blank">唱吧DevOps的落地，微服务CI/CD的范本技术解读</a><br> ·  <a href="http://kb.cnblogs.com/page/566523/" target="_blank">程序员，如何从平庸走向理想？</a><br></div>» <a href="http://kb.cnblogs.com/" target="_blank">更多知识库文章...</a></div></div>
+<div id="HistoryToday" class="c_ad_block"></div>
+<script type="text/javascript">
+    fixPostBody();
+    setTimeout(function () { incrementViewCount(cb_entryId); }, 50);
+    deliverAdT2();
+    deliverAdC1();
+    deliverAdC2();    
+    loadNewsAndKb();
+    loadBlogSignature();
+    LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+    GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate);
+    loadOptUnderPost();
+    GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);   
+</script>
+</div>
+
+
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+<!--done-->
+<div class="newsItem">
+<h3 class="catListTitle">公告</h3>
+	<div id="blog-news"><div id="profile_block">昵称：<a href="http://home.cnblogs.com/u/whgw/">蛊惑Into</a><br>园龄：<a href="http://home.cnblogs.com/u/whgw/" title="入园时间：2011-09-26">5年8个月</a><br>粉丝：<a href="http://home.cnblogs.com/u/whgw/followers/">164</a><br>关注：<a href="http://home.cnblogs.com/u/whgw/followees/">5</a><div id="p_b_follow"><a href="javascript:void(0);" onclick="follow(&#39;397874dd-33e8-e011-8ee0-842b2b196315&#39;)">+加关注</a></div></div></div><script type="text/javascript">loadBlogNews();</script>
+</div>
+
+			<div id="calendar"><div id="blog-calendar" style=""><table id="blogCalendar" class="Cal" cellspacing="0" cellpadding="0" title="日历">
+	<tbody><tr><td colspan="7"><table class="CalTitle" cellspacing="0">
+		<tbody><tr><td class="CalNextPrev"><a href="javascript:void(0);" onclick="loadBlogCalendar(&#39;2011/08/01&#39;);return false;">&lt;</a></td><td align="center">2011年9月</td><td class="CalNextPrev" align="right"><a href="javascript:void(0);" onclick="loadBlogCalendar(&#39;2011/10/01&#39;);return false;">&gt;</a></td></tr>
+	</tbody></table></td></tr><tr><th class="CalDayHeader" align="center" abbr="日" scope="col">日</th><th class="CalDayHeader" align="center" abbr="一" scope="col">一</th><th class="CalDayHeader" align="center" abbr="二" scope="col">二</th><th class="CalDayHeader" align="center" abbr="三" scope="col">三</th><th class="CalDayHeader" align="center" abbr="四" scope="col">四</th><th class="CalDayHeader" align="center" abbr="五" scope="col">五</th><th class="CalDayHeader" align="center" abbr="六" scope="col">六</th></tr><tr><td class="CalOtherMonthDay" align="center">28</td><td class="CalOtherMonthDay" align="center">29</td><td class="CalOtherMonthDay" align="center">30</td><td class="CalOtherMonthDay" align="center">31</td><td align="center">1</td><td align="center">2</td><td class="CalWeekendDay" align="center">3</td></tr><tr><td class="CalWeekendDay" align="center">4</td><td align="center">5</td><td align="center">6</td><td align="center">7</td><td align="center">8</td><td align="center">9</td><td class="CalWeekendDay" align="center">10</td></tr><tr><td class="CalWeekendDay" align="center">11</td><td align="center">12</td><td align="center">13</td><td align="center">14</td><td align="center">15</td><td align="center">16</td><td class="CalWeekendDay" align="center">17</td></tr><tr><td class="CalWeekendDay" align="center">18</td><td align="center">19</td><td align="center">20</td><td align="center">21</td><td align="center">22</td><td align="center">23</td><td class="CalWeekendDay" align="center">24</td></tr><tr><td class="CalWeekendDay" align="center">25</td><td align="center"><a href="http://www.cnblogs.com/whgw/archive/2011/09/26.html"><u>26</u></a></td><td align="center"><a href="http://www.cnblogs.com/whgw/archive/2011/09/27.html"><u>27</u></a></td><td align="center"><a href="http://www.cnblogs.com/whgw/archive/2011/09/28.html"><u>28</u></a></td><td align="center"><a href="http://www.cnblogs.com/whgw/archive/2011/09/29.html"><u>29</u></a></td><td align="center">30</td><td class="CalOtherMonthDay" align="center">1</td></tr><tr><td class="CalOtherMonthDay" align="center">2</td><td class="CalOtherMonthDay" align="center">3</td><td class="CalOtherMonthDay" align="center">4</td><td class="CalOtherMonthDay" align="center">5</td><td class="CalOtherMonthDay" align="center">6</td><td class="CalOtherMonthDay" align="center">7</td><td class="CalOtherMonthDay" align="center">8</td></tr>
+</tbody></table></div><script type="text/javascript">loadBlogDefaultCalendar();</script></div>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn"><div id="sidebar_search" class="sidebar-block">
+<div id="sidebar_search" class="mySearch">
+<h3 class="catListTitle">搜索</h3>
+<div id="sidebar_search_box">
+<div id="widget_my_zzk" class="div_my_zzk"><input type="text" id="q" onkeydown="return zzk_go_enter(event);" class="input_my_zzk">&nbsp;<input onclick="zzk_go()" type="button" value="找找看" id="btnZzk" class="btn_my_zzk"></div>
+<div id="widget_my_google" class="div_my_zzk"><input type="text" name="google_q" id="google_q" onkeydown="return google_go_enter(event)" class="input_my_zzk">&nbsp;<input onclick="google_go()" type="button" value="谷歌搜索" class="btn_my_zzk"></div>
+</div>
+</div>
+
+</div><div id="sidebar_shortcut" class="sidebar-block">
+<div class="catListLink">
+<h3 class="catListTitle">常用链接</h3>
+<ul>
+<li><a href="http://www.cnblogs.com/whgw/p/" title="我的博客的随笔列表">我的随笔</a></li><li><a href="http://www.cnblogs.com/whgw/MyComments.html" title="我发表过的评论列表">我的评论</a></li><li><a href="http://www.cnblogs.com/whgw/OtherPosts.html" title="我评论过的随笔列表">我的参与</a></li><li><a href="http://www.cnblogs.com/whgw/RecentComments.html" title="我的博客的评论列表">最新评论</a></li><li><a href="http://www.cnblogs.com/whgw/tag/" title="我的博客的标签列表">我的标签</a></li>
+</ul>
+<div id="itemListLin_con" style="display:none;">
+<ul>
+
+</ul>
+</div>
+</div></div><div id="sidebar_toptags" class="sidebar-block">
+<div class="catListTag">
+<h3 class="catListTitle">我的标签</h3>
+<ul>
+<li><a href="http://www.cnblogs.com/whgw/tag/java.util.concurrent%E4%BB%8B%E7%BB%8D/">java.util.concurrent介绍</a>(2)</li><li><a href="http://www.cnblogs.com/whgw/tag/Java5%20%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B/">Java5 枚举类型</a>(1)</li><li><a href="http://www.cnblogs.com/whgw/tag/javascript/">javascript</a>(1)</li><li><a href="http://www.cnblogs.com/whgw/tag/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">Java并发编程</a>(1)</li><li><a href="http://www.cnblogs.com/whgw/tag/Java%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E7%9A%84%E4%B8%A4%E4%B8%AA%E6%96%B9%E6%B3%95/">Java创建线程的两个方法</a>(1)</li><li><a href="http://www.cnblogs.com/whgw/tag/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B-%E5%B7%A5%E5%85%B7%E7%AF%87-BlockingQueue/">Java多线程-工具篇-BlockingQueue</a>(1)</li><li><a href="http://www.cnblogs.com/whgw/tag/JAVA%E5%B0%B1%E4%B8%9A%E9%9D%A2%E8%AF%95%E9%A2%98%E7%9A%84%E4%B8%8D%E5%90%8C%E8%A7%A3%E6%B3%95/">JAVA就业面试题的不同解法</a>(1)</li><li><a href="http://www.cnblogs.com/whgw/tag/Java%E4%B8%AD%E5%A0%86%E5%86%85%E5%AD%98%E5%92%8C%E6%A0%88%E5%86%85%E5%AD%98%E8%AF%A6%E8%A7%A3/">Java中堆内存和栈内存详解</a>(1)</li><li><a href="http://www.cnblogs.com/whgw/tag/Java%E4%B8%AD%E4%BD%A0%E5%B8%B8%E7%94%A8%E5%88%B0%E7%9A%84%E4%BA%9B%E5%BF%AB%E6%8D%B7%E9%94%AE/">Java中你常用到的些快捷键</a>(1)</li><li><a href="http://www.cnblogs.com/whgw/tag/JDK%201.5%E7%9A%84%E6%96%B0%E7%89%B9%E6%80%A7/">JDK 1.5的新特性</a>(1)</li><li><a href="http://www.cnblogs.com/whgw/tag/">更多</a></li>
+</ul>
+</div></div><div id="sidebar_categories">
+<div class="catListPostCategory">
+<h3 class="catListTitle">随笔分类</h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_0_Link_0" href="http://www.cnblogs.com/whgw/category/331350.html">Java 学习总结(3)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_1" href="http://www.cnblogs.com/whgw/category/331348.html">Oracle 常见错误解决方案(2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_2" href="http://www.cnblogs.com/whgw/category/331349.html">Oracle 技术大全(5)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_3" href="http://www.cnblogs.com/whgw/category/325583.html">转载摘抄(4)</a> </li>
+
+</ul>
+
+</div>
+
+<div class="catListPostArchive">
+<h3 class="catListTitle">随笔档案</h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_1_Link_0" href="http://www.cnblogs.com/whgw/archive/2012/05.html">2012年5月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_1" href="http://www.cnblogs.com/whgw/archive/2011/11.html">2011年11月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_2" href="http://www.cnblogs.com/whgw/archive/2011/10.html">2011年10月 (14)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_3" href="http://www.cnblogs.com/whgw/archive/2011/09.html">2011年9月 (16)</a> </li>
+
+</ul>
+
+</div>
+
+</div><div id="sidebar_recentcomments" class="sidebar-block"><div id="recent_comments_wrap">
+<div class="catListComment">
+<h3 class="catListTitle">最新评论</h3>
+	<div id="RecentCommentsBlock"><ul>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3692362">1. Re:Java中堆内存和栈内存详解</a></li>
+        <li class="recent_comment_body">@zhongheng谢谢，虽然阁下冷嘲热讽，但我还要对你说一句啊。你有批评任何公共事务的权利。...</li>
+        <li class="recent_comment_author">--那后来呢</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3688615">2. Re:Java中堆内存和栈内存详解</a></li>
+        <li class="recent_comment_body">@wtxwd1. 中国就是这样，ZF就是这样，看不惯，不接受可以滚出中国。2. 电影就是拍成屎了，看不惯可以不看，谁逼你看了，脑残！。3. 军队就是打败仗，看不惯可以滚，谁逼你关注了。。。。 朋友，如......</li>
+        <li class="recent_comment_author">--那后来呢</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3688614">3. Re:Java中堆内存和栈内存详解</a></li>
+        <li class="recent_comment_body">@zhongheng博客是一个交流的平台，既然发出来的东西，就要接受别人的表扬或者批评。...</li>
+        <li class="recent_comment_author">--那后来呢</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html#3648982">4. Re:Java中堆内存和栈内存详解</a></li>
+        <li class="recent_comment_body">新手，很多挺详细的，但是好像没有看懂，哪里是重点核心啊！楼主能不能标明一下。</li>
+        <li class="recent_comment_author">--伪善天际</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/whgw/archive/2011/09/28/2194776.html#3635276">5. Re:Java 线程池的原理与实现</a></li>
+        <li class="recent_comment_body">/* 该任务是否需要立即执行 */ if (r.needExecuteImmediate()) { ......</li>
+        <li class="recent_comment_author">--曦阳x</li>
+</ul>
+</div>
+</div>
+</div></div><div id="sidebar_topviewedposts" class="sidebar-block"><div id="topview_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">阅读排行榜</h3>
+	<div id="TopViewPostsBlock"><ul><li><a href="http://www.cnblogs.com/whgw/archive/2011/10/05/2199535.html">1. Java 单例模式详解(148561)</a></li><li><a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html">2. Java中堆内存和栈内存详解(141790)</a></li><li><a href="http://www.cnblogs.com/whgw/archive/2011/10/03/2198506.html">3. Java创建线程的两个方法(89933)</a></li><li><a href="http://www.cnblogs.com/whgw/archive/2011/10/01/2197103.html">4. Java 可变参数(80966)</a></li><li><a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2195555.html">5. Java 信号量 Semaphore 介绍(53124)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topcommentedposts" class="sidebar-block"><div id="topfeedback_posts_wrap">
+<div class="catListFeedback">
+<h3 class="catListTitle">评论排行榜</h3>
+	<div id="TopFeedbackPostsBlock"><ul><li><a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html">1. Java中堆内存和栈内存详解(22)</a></li><li><a href="http://www.cnblogs.com/whgw/archive/2011/10/05/2199535.html">2. Java 单例模式详解(17)</a></li><li><a href="http://www.cnblogs.com/whgw/archive/2011/10/03/2198506.html">3. Java创建线程的两个方法(10)</a></li><li><a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2195555.html">4. Java 信号量 Semaphore 介绍(7)</a></li><li><a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2195669.html">5. CyclicBarrier介绍(6)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topdiggedposts" class="sidebar-block"><div id="topdigg_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">推荐排行榜</h3>
+<div id="TopDiggPostsBlock"><ul><li><a href="http://www.cnblogs.com/whgw/archive/2011/09/29/2194997.html">1. Java中堆内存和栈内存详解(44)</a></li><li><a href="http://www.cnblogs.com/whgw/archive/2011/10/05/2199535.html">2. Java 单例模式详解(25)</a></li><li><a href="http://www.cnblogs.com/whgw/archive/2011/10/03/2198506.html">3. Java创建线程的两个方法(10)</a></li><li><a href="http://www.cnblogs.com/whgw/archive/2011/10/01/2197103.html">4. Java 可变参数(6)</a></li><li><a href="http://www.cnblogs.com/whgw/archive/2011/10/01/2197083.html">5. overload与override的区别(6)</a></li></ul></div>
+</div></div></div></div><script type="text/javascript">loadBlogSideColumn();</script>
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		
+<!--done-->
+Copyright ©2017 蛊惑Into
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+
+</body></html>
