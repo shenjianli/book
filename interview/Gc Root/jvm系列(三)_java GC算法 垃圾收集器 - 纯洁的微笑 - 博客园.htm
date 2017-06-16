@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<!-- saved from url=(0047)http://www.cnblogs.com/ityouknow/p/5614961.html -->
+<html lang="zh-cn"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>jvm系列(三):java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园</title>
+<link type="text/css" rel="stylesheet" href="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/blog-common.css">
+<link type="text/css" rel="stylesheet" href="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/96952.css">
+<link id="mobile-style" media="only screen and (max-width: 768px)" type="text/css" rel="stylesheet" href="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/bundle-BlackLowKey-mobile.css">
+<link title="RSS" type="application/rss+xml" rel="alternate" href="http://www.cnblogs.com/ityouknow/rss">
+<link title="RSD" type="application/rsd+xml" rel="EditURI" href="http://www.cnblogs.com/ityouknow/rsd.xml">
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="http://www.cnblogs.com/ityouknow/wlwmanifest.xml">
+<script async="" src="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/analytics.js"></script><script src="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/jquery.js" type="text/javascript"></script><style type="text/css">
+:root #header + #content > #left > #rlblock_left
+{ display: none !important; }</style>  
+<script type="text/javascript">var currentBlogApp = 'ityouknow', cb_enable_mathjax=false;var isLogined=false;</script>
+<script src="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/blog-common.js" type="text/javascript"></script>
+<link rel="shortcut icon" href="http://files.cnblogs.com/files/ityouknow/www.ico.la_cb00753c7c82f4271f95fd0a046c4a80_128X128.ico"><meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no"></head>
+<body>
+<a name="top"></a>
+<div id="page_begin_html"></div><script>load_page_begin_html();</script>
+
+<!--done-->
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+	<a id="lnkBlogLogo" href="http://www.cnblogs.com/ityouknow/"><img id="blogLogo" src="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/logo.gif" alt="返回主页"></a>			
+		
+<!--done-->
+<h1><a id="Header1_HeaderTitle" class="headermaintitle" href="http://www.cnblogs.com/ityouknow/">keep pure, keep smile</a></h1>
+<h2><br>万事皆因忙中错，好人半自苦中来</h2>
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li><a id="blog_nav_sitehome" class="menu" href="http://www.cnblogs.com/">博客园</a></li>
+<li><a id="blog_nav_myhome" class="menu" href="http://www.cnblogs.com/ityouknow/">首页</a></li>
+<li><a id="blog_nav_newpost" class="menu" rel="nofollow" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">新随笔</a></li>
+<li><a id="blog_nav_contact" class="menu" rel="nofollow" href="https://msg.cnblogs.com/send/%E7%BA%AF%E6%B4%81%E7%9A%84%E5%BE%AE%E7%AC%91">联系</a></li>
+<li><a id="blog_nav_rss" class="menu" href="http://www.cnblogs.com/ityouknow/rss">订阅</a>
+<!--<a id="blog_nav_rss_image" class="aHeaderXML" href="http://www.cnblogs.com/ityouknow/rss"><img src="//www.cnblogs.com/images/xml.gif" alt="订阅" /></a>--></li>
+<li><a id="blog_nav_admin" class="menu" rel="nofollow" href="https://i.cnblogs.com/">管理</a></li>
+</ul>
+		<div class="blogStats">
+			
+			<div id="blog_stats">
+<span id="stats_post_count">随笔 - 65&nbsp; </span>
+<span id="stats_article_count">文章 - 4&nbsp; </span>
+<span id="stats-comment_count">评论 - 1098</span>
+</div>
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		
+<div id="post_detail">
+<!--done-->
+<div id="topics">
+	<div class="post">
+		<h1 class="postTitle">
+			<a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/ityouknow/p/5614961.html">jvm系列(三):java GC算法 垃圾收集器</a>
+		</h1>
+		<div class="clear"></div>
+		<div class="postBody">
+			<div id="cnblogs_post_body"><style><!--
+@font-face{
+font-family:"Times New Roman";
+}
+
+@font-face{
+font-family:"宋体";
+}
+
+@font-face{
+font-family:"Wingdings";
+}
+
+@font-face{
+font-family:"Calibri";
+}
+
+@font-face{
+font-family:"仿宋";
+}
+
+@font-face{
+font-family:"Arial";
+}
+
+@font-face{
+font-family:"Helvetica";
+}
+
+@font-face{
+font-family:"Lantinghei SC";
+}
+
+@font-face{
+font-family:"Tahoma";
+}
+
+@list l0:level1{
+mso-level-start-at:6;
+mso-level-number-format:decimal;
+mso-level-suffix:none;
+mso-level-text:"%1、";
+mso-level-tab-stop:none;
+mso-level-number-position:left;
+margin-left:0.0000pt;
+text-indent:0.0000pt;
+font-family:'Times New Roman';}
+
+@list l1:level1{
+mso-level-number-format:decimal;
+mso-level-suffix:none;
+mso-level-text:"%1、";
+mso-level-tab-stop:none;
+mso-level-number-position:left;
+margin-left:0.0000pt;
+text-indent:0.0000pt;
+font-family:'Times New Roman';}
+
+p.msonormal{
+mso-style-name:正文;
+mso-style-parent:"";
+margin:0pt;
+margin-bottom:.0001pt;
+mso-pagination:none;
+text-align:justify;
+text-justify:inter-ideograph;
+font-family:calibri;
+mso-fareast-font-family:宋体;
+mso-bidi-font-family:'Times New Roman';
+font-size:10.5000pt;
+mso-font-kerning:1.0000pt;
+}
+
+h1{
+mso-style-name:"标题 1";
+mso-style-next:正文;
+margin-top:5.0000pt;
+margin-bottom:5.0000pt;
+mso-margin-top-alt:auto;
+mso-margin-bottom-alt:auto;
+mso-pagination:none;
+text-align:left;
+font-family:宋体;
+font-weight:bold;
+font-size:24.0000pt;
+mso-font-kerning:22.0000pt;
+}
+
+h2{
+mso-style-name:"标题 2";
+mso-style-noshow:yes;
+mso-style-next:正文;
+margin-top:5.0000pt;
+margin-bottom:5.0000pt;
+mso-margin-top-alt:auto;
+mso-margin-bottom-alt:auto;
+mso-pagination:none;
+text-align:left;
+font-family:宋体;
+font-weight:bold;
+font-size:18.0000pt;
+}
+
+span.10{
+font-family:'Times New Roman';
+}
+
+span.15{
+font-family:'Times New Roman';
+color:rgb(0,0,255);
+text-decoration:underline;
+text-underline:single;
+}
+
+span.16{
+font-family:'Times New Roman';
+font-weight:bold;
+}
+
+p.p{
+mso-style-name:"普通\(网站\)";
+margin-top:5.0000pt;
+margin-right:0.0000pt;
+margin-bottom:5.0000pt;
+margin-left:0.0000pt;
+mso-margin-top-alt:auto;
+mso-margin-bottom-alt:auto;
+mso-pagination:none;
+text-align:left;
+font-family:calibri;
+mso-fareast-font-family:宋体;
+mso-bidi-font-family:'Times New Roman';
+font-size:12.0000pt;
+}
+
+span.msoins{
+mso-style-type:export-only;
+mso-style-name:"";
+text-decoration:underline;
+text-underline:single;
+color:blue;
+}
+
+span.msodel{
+mso-style-type:export-only;
+mso-style-name:"";
+text-decoration:line-through;
+color:red;
+}
+
+table.msonormaltable{
+mso-style-name:普通表格;
+mso-style-parent:"";
+mso-style-noshow:yes;
+mso-tstyle-rowband-size:0;
+mso-tstyle-colband-size:0;
+mso-padding-alt:0.0000pt 5.4000pt 0.0000pt 5.4000pt;
+mso-para-margin:0pt;
+mso-para-margin-bottom:.0001pt;
+mso-pagination:widow-orphan;
+font-family:'Times New Roman';
+font-size:10.0000pt;
+mso-ansi-language:#0400;
+mso-fareast-language:#0400;
+mso-bidi-language:#0400;
+}
+@page{mso-page-border-surround-header:no;
+	mso-page-border-surround-footer:no;}@page section0{
+margin-top:72.0000pt;
+margin-bottom:72.0000pt;
+margin-left:90.0000pt;
+margin-right:90.0000pt;
+size:595.3000pt 841.9000pt;
+layout-grid:15.6000pt;
+}
+div.section0{page:section0;}
+--></style>
+<!--StartFragment-->
+<div class="Section0" style="layout-grid: 15.6pt none;">
+<p class="MsoNormal"><a name="OLE_LINK18"></a></p>
+<h1 style="text-align: center; margin: 0pt; text-autospace: ideograph-numeric; text-indent: 0pt; mso-pagination: widow-orphan; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000; padding: 0pt;" align="center"><a name="OLE_LINK1"></a><strong><span style="font-size: 18pt; font-family: 仿宋; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 22.0000pt; mso-spacerun: &#39;yes&#39;;">GC算法 </span></strong><strong><span style="font-size: 18pt; font-family: 仿宋; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 22.0000pt; mso-spacerun: &#39;yes&#39;;">垃圾收集</span></strong><strong><span style="font-size: 18pt; font-family: 仿宋; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 22.0000pt; mso-spacerun: &#39;yes&#39;;">器</span></strong></h1>
+<h1 style="text-align: left; margin: 0pt; text-autospace: ideograph-numeric; text-indent: 0pt; mso-pagination: widow-orphan; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000; padding: 0pt;"><strong><span style="font-size: 18pt; font-family: 仿宋; text-transform: none; font-weight: bold; color: #0047dd; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 22.0000pt; mso-spacerun: &#39;yes&#39;;">概述</span></strong></h1>
+<p class="p" style="text-align: left; margin: 0pt; text-autospace: ideograph-numeric; text-indent: 21pt; mso-pagination: widow-orphan; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;"><a name="OLE_LINK4"></a><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">垃圾收集 Garbage Collection 通常被称为“GC”，它诞生于1960年 MIT 的 Lisp 语言，经过半个多世纪，目前已经十分成熟了</span><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">。</span></p>
+<p class="p" style="text-align: left; margin: 0pt; text-autospace: ideograph-numeric; text-indent: 21pt; mso-pagination: widow-orphan; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;"><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">jvm</span><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;"> 中，程序计数器、虚拟机栈、本地方法栈都是随线程而生随线程而灭，栈帧随着方法的进入和退出做入栈和出栈操作，实现了自动的内存清理，因此，我们的内存垃圾回收</span><strong><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: bold; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">主要集中于 java 堆和方法区中</span></strong><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">，在程序运行期间，这部分内存的分配和使用都是动态的</span><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">.</span></p>
+<p class="p" style="text-align: left; margin: 0pt; text-autospace: ideograph-numeric; text-indent: 21pt; mso-pagination: widow-orphan; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;">&nbsp;</p>
+<h1 style="text-align: left; margin: 0pt; text-autospace: ideograph-numeric; text-indent: 0pt; mso-pagination: widow-orphan; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000; padding: 0pt;"><a name="OLE_LINK2"></a><strong><span style="font-size: 18pt; font-family: 仿宋; text-transform: none; font-weight: bold; color: #0047dd; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 22.0000pt; mso-spacerun: &#39;yes&#39;;">对象存<a name="OLE_LINK3"></a>活判断</span></strong></h1>
+<p class="p" style="text-align: left; margin: 0pt; text-autospace: ideograph-numeric; text-indent: 0pt; mso-pagination: widow-orphan; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;"><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">判断对象是否存活一般有两种方式：</span></p>
+<p class="p" style="text-align: left; margin: 0pt; text-autospace: ideograph-numeric; text-indent: 0pt; mso-pagination: widow-orphan; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;"><strong><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: bold; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">引用计数</span></strong><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">：每个对象有一个引用计数属性，新增一个引用时计数加1，引用释放时计数减1，计数为0时可以回收。此方法简单，</span><strong><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: bold; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">无法解决对象相互循环引用</span></strong><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">的问题。</span></p>
+<p class="p" style="text-align: left; margin: 0pt; text-autospace: ideograph-numeric; text-indent: 0pt; mso-pagination: widow-orphan; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;"><strong><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: bold; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">可达性分析</span></strong><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">（Reachability Analysis）：从GC Roots开始向下搜索，搜索所走过的路径称为引用链。当一个对象到GC Roots没有任何引用链相连时，则证明此对象是不可用的。不可达对象。</span></p>
+<blockquote>
+<p class="p" style="text-align: left; margin: 0pt; text-autospace: ideograph-numeric; text-indent: 0pt; mso-pagination: widow-orphan; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;"><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">在Java语言中，</span><strong><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: bold; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">GC Roots</span></strong><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">包括：</span></p>
+<p class="p" style="text-align: left; margin: 0pt; text-autospace: ideograph-numeric; text-indent: 0pt; mso-pagination: widow-orphan; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;"><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">&nbsp; 虚拟机栈中引用的对象。</span></p>
+<p class="p" style="text-align: left; margin: 0pt; text-autospace: ideograph-numeric; text-indent: 0pt; mso-pagination: widow-orphan; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;"><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">&nbsp; 方法区中类静态属性实体引用的对象。</span></p>
+<p class="p" style="text-align: left; margin: 0pt; text-autospace: ideograph-numeric; text-indent: 0pt; mso-pagination: widow-orphan; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;"><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">&nbsp; 方法区中常量引用的对象。</span></p>
+<p class="p" style="text-align: left; margin: 0pt; text-autospace: ideograph-numeric; text-indent: 0pt; mso-pagination: widow-orphan; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;"><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">&nbsp; 本地方法栈中JNI引用的对象。</span></p>
+</blockquote>
+<p class="p" style="text-align: left; margin: 0pt; text-autospace: ideograph-numeric; text-indent: 0pt; mso-pagination: widow-orphan; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;">&nbsp;</p>
+<h1 style="text-align: left; margin: 0pt; text-autospace: ideograph-numeric; text-indent: 0pt; mso-pagination: widow-orphan; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000; padding: 0pt;"><a name="OLE_LINK5"></a><strong><span style="font-size: 18pt; font-family: 仿宋; text-transform: none; font-weight: bold; color: #0047dd; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 22.0000pt; mso-spacerun: &#39;yes&#39;;">垃圾收集算法</span></strong></h1>
+<h2 style="background: #ffffff; border-bottom: #cccccc 1pt solid; padding-bottom: 2pt; text-align: left; padding-top: 0pt; padding-left: 0pt; margin: 0pt 0pt 5.25pt; line-height: 15.75pt; padding-right: 0pt; text-indent: 0pt; mso-pagination: widow-orphan; mso-border-bottom-alt: 0.7500pt solid #cccccc;"><strong><span style="font-size: 12pt; font-family: helvetica; background: #ffffff; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;">标记 -清除算法</span></strong></h2>
+<p><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">&nbsp;&nbsp; “</span><strong><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: bold; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">标记-清除</span></strong><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">”（Mark-Sweep）算法，如它的名字一样，算法分为“标记”和“清除”两个阶段：首先标记出所有需要回收的对象，在标记完成后统一回收掉所有被标记的对象。之所以说它是最基础的收集算法，是因为后续的收集算法都是基于这种思路并对其缺点进行改进而得到的。</span></p>
+<p class="p" style="text-align: left; margin: 0pt; text-autospace: ideograph-numeric; text-indent: 21pt; mso-pagination: widow-orphan; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;"><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">它的主要缺点有两个：一个是效率问题，标记和清除过程的效率都不高；另外一个是空间问题，标记清除之后会产生大量不连续的内存碎片，</span><strong><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: bold; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">空间碎片太多</span></strong><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">可能会导致，当程序在以后的运行过程中需要分配较大对象时无法找到足够的连续内存而不得不提前触发另一次垃圾收集动作。</span></p>
+<p><a href="http://images2015.cnblogs.com/blog/331425/201606/331425-20160624174233406-219010809.png"><img style="background-image: none; float: none; padding-top: 0px; padding-left: 0px; margin: 1px auto; display: block; padding-right: 0px; border-width: 0px;" title="wpsA73E.tmp" src="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/331425-20160624174234266-1575111287.png" alt="wpsA73E.tmp" width="476" height="342" border="0"></a></p>
+<p class="MsoNormal">&nbsp;</p>
+<h2 style="background: #ffffff; border-bottom: #cccccc 1pt solid; padding-bottom: 2pt; text-align: left; padding-top: 0pt; padding-left: 0pt; margin: 0pt 0pt 5.25pt; line-height: 15.75pt; padding-right: 0pt; text-indent: 0pt; mso-pagination: widow-orphan; mso-border-bottom-alt: 0.7500pt solid #cccccc;"><strong><span style="font-size: 12pt; font-family: helvetica; background: #ffffff; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;">复制算法 </span></strong></h2>
+<p class="MsoNormal" style="text-indent: 21pt; mso-char-indent-count: 0.0000;"><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">“复制”（Copying）的收集算法，它将可用内存按容量划分为大小相等的两块，每次只使用其中的一块。当这一块的内存用完了，就将还存活着的对象复制到另外一块上面，然后再把已使用过的内存空间一次清理掉。</span></p>
+<p class="MsoNormal" style="text-indent: 21pt; mso-char-indent-count: 0.0000;"><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">这样使得每次都是对其中的一块进行内存回收，内存分配时也就不用考虑内存碎片等复杂情况，只要移动堆顶指针，按顺序分配内存即可，实现简单，运行高效。只是这种算法的代价是将内存缩小为原来的一半，持续复制长生存期的对象则导致效率降低。</span></p>
+<p><a href="http://images2015.cnblogs.com/blog/331425/201606/331425-20160624174235125-36263316.png"><img style="background-image: none; float: none; padding-top: 0px; padding-left: 0px; margin: 1px auto; display: block; padding-right: 0px; border-width: 0px;" title="wps9D31.tmp" src="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/331425-20160624174237703-328169343.png" alt="wps9D31.tmp" width="496" height="357" border="0"></a></p>
+<p class="MsoNormal">&nbsp;</p>
+<h2 style="background: #ffffff; border-bottom: #cccccc 1pt solid; padding-bottom: 2pt; text-align: left; padding-top: 0pt; padding-left: 0pt; margin: 0pt 0pt 5.25pt; line-height: 15.75pt; padding-right: 0pt; text-indent: 0pt; mso-pagination: widow-orphan; mso-border-bottom-alt: 0.7500pt solid #cccccc;"><strong><span style="font-size: 12pt; font-family: helvetica; background: #ffffff; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;">标记-</span></strong><strong><span style="font-size: 12pt; font-family: 宋体; background: #ffffff; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-bidi-font-family: helvetica; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-ascii-font-family: helvetica; mso-hansi-font-family: helvetica; mso-shading: #ffffff;">压缩</span></strong><strong><span style="font-size: 12pt; font-family: helvetica; background: #ffffff; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;">算法</span></strong></h2>
+<p class="MsoNormal" style="text-indent: 21pt; mso-char-indent-count: 0.0000;"><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">复制收集算法在对象存活率较高时就要执行较多的复制操作，效率将会变低。更关键的是，如果不想浪费50%的空间，就需要有额外的空间进行分配担保，以应对被使用的内存中所有对象都100%存活的极端情况，所以在老年代一般不能直接选用这种算法。 </span></p>
+<p class="MsoNormal" style="text-indent: 21pt; mso-char-indent-count: 0.0000;"><span style="font-size: 12pt; font-family: 仿宋; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;;">根据老年代的特点，有人提出了另外一种“标记-整理”（Mark-Compact）算法，标记过程仍然与“标记-清除”算法一样，但后续步骤不是直接对可回收对象进行清理，而是让所有存活的对象都向一端移动，然后直接清理掉端边界以外的内存</span></p>
+<p><a href="http://images2015.cnblogs.com/blog/331425/201606/331425-20160624174238516-890282785.png"><img style="background-image: none; float: none; padding-top: 0px; padding-left: 0px; margin: 1px auto; display: block; padding-right: 0px; border-width: 0px;" title="wps3952.tmp" src="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/331425-20160624174239219-1187241876.png" alt="wps3952.tmp" width="502" height="402" border="0"></a></p>
+<p class="MsoNormal">&nbsp;</p>
+<h2 style="background: #ffffff; border-bottom: #cccccc 1pt solid; padding-bottom: 2pt; text-align: left; padding-top: 0pt; padding-left: 0pt; margin: 0pt 0pt 5.25pt; line-height: 15.75pt; padding-right: 0pt; text-indent: 0pt; mso-pagination: widow-orphan; mso-border-bottom-alt: 0.7500pt solid #cccccc;"><strong><span style="font-size: 12pt; font-family: helvetica; background: #ffffff; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;">分代收集算法</span></strong></h2>
+<p class="MsoNormal" style="text-align: justify; margin-left: 0pt; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; text-indent: 21pt; mso-pagination: none; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;" align="justify"><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">GC分代的基本假设：</span></strong><strong><span class="16" style="font-size: 12pt; font-family: 仿宋; background: #ffffff; text-transform: none; font-weight: bold; color: #555555; font-style: normal; letter-spacing: 0pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;">绝大部分对象的生命周期都非常短暂，存活时间短。</span></strong></p>
+<p class="MsoNormal" style="text-align: justify; margin-left: 0pt; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; text-indent: 21pt; mso-pagination: none; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;" align="justify"><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">“分代收集”（Generational Collection）算法，把Java堆分为新生代和老年代，这样就可以根据各个年代的特点采用最适当的收集算法。在新生代中，每次垃圾收集时都发现有大批对象死去，只有少量存活，那就选用复制算法，只需要付出少量存活对象的复制成本就可以完成收集。而老年代中因为对象存活率高、没有额外空间对它进行分配担保，就必须使用“标记-清理”或“标记-整理”算法来进行回收。</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<h1 style="text-align: left; margin: 0pt; text-autospace: ideograph-numeric; text-indent: 0pt; mso-pagination: widow-orphan; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000; padding: 0pt;"><a name="OLE_LINK17"></a><strong><span style="font-size: 18pt; font-family: 仿宋; text-transform: none; font-weight: bold; color: #0047dd; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 22.0000pt; mso-spacerun: &#39;yes&#39;;">垃圾收集器 </span></strong></h1>
+<p class="MsoNormal"><span style="font-size: 10.5pt; font-family: helvetica; background: #ffffff; text-transform: none; font-weight: normal; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;">&nbsp;</span><span style="font-size: 10.5pt; font-family: 宋体; background: #ffffff; text-transform: none; font-weight: normal; color: #000000; font-style: normal; letter-spacing: 0pt; mso-bidi-font-family: helvetica; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;; mso-ascii-font-family: helvetica; mso-hansi-font-family: helvetica; mso-shading: #ffffff;">&nbsp;&nbsp;&nbsp; </span><span style="font-size: 12pt; font-family: 仿宋; background: #ffffff; text-transform: none; font-weight: normal; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;">如果说收集算法是内存回收的方法论，垃圾收集器就是内存回收的具体实现</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<h2 style="background: #ffffff; border-bottom: #cccccc 1pt solid; padding-bottom: 2pt; text-align: left; padding-top: 0pt; padding-left: 0pt; margin: 0pt 0pt 5.25pt; line-height: 15.75pt; padding-right: 0pt; text-indent: 0pt; mso-pagination: widow-orphan; mso-border-bottom-alt: 0.7500pt solid #cccccc;"><strong><span style="font-size: 12pt; font-family: helvetica; background: #ffffff; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;">Serial收集器</span></strong></h2>
+<p class="MsoNormal" style="text-align: justify; margin-left: 0pt; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; text-indent: 21pt; mso-pagination: none; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;" align="justify"><a name="OLE_LINK11"></a><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;"><a name="OLE_LINK7"></a>串行收集器是</span><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">最古老，最稳定以及效率高的收集器</span><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">，</span><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">可能会产生较长的停顿，只使用</span><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">一个线程</span></strong><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">去回收</span><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">。新生代、老年代使用</span><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">串行</span></strong><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">回收；</span><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">新生代复制算法</span></strong><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">、</span><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">老年代标记-压缩</span></strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">；垃圾收集的过程中会Stop The World（服务暂停）</span></p>
+<p class="MsoNormal" style="text-align: justify; margin-left: 0pt; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; text-indent: 21pt; mso-pagination: none; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;" align="justify"><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">参数控制：</span><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">-XX:+UseSerialGC</span></strong><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">&nbsp; </span></strong><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">串行收集器</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p><a href="http://images2015.cnblogs.com/blog/331425/201606/331425-20160624174239719-1127409322.png"><img style="background-image: none; float: none; padding-top: 0px; padding-left: 0px; margin: 1px auto; display: block; padding-right: 0px; border-width: 0px;" title="wpsA77.tmp" src="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/331425-20160624174240391-864339858.png" alt="wpsA77.tmp" width="517" height="297" border="0"></a></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">&nbsp;</p>
+<h2 style="background: #ffffff; border-bottom: #cccccc 1pt solid; padding-bottom: 2pt; text-align: left; padding-top: 0pt; padding-left: 0pt; margin: 0pt 0pt 5.25pt; line-height: 15.75pt; padding-right: 0pt; text-indent: 0pt; mso-pagination: widow-orphan; mso-border-bottom-alt: 0.7500pt solid #cccccc;"><a name="OLE_LINK8"></a><strong><span style="font-size: 12pt; font-family: helvetica; background: #ffffff; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;">ParNew收集器</span></strong></h2>
+<p class="MsoNormal" style="text-align: justify; margin-left: 0pt; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; text-indent: 21pt; mso-pagination: none; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;" align="justify"><a name="OLE_LINK10"></a><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;"><a name="OLE_LINK9"></a>ParNew收集器其实就是Serial收集器的多线程版本。</span><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">新生代并行，老年代串行；</span></strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">新生代复制算法、老年代标记-压缩</span></p>
+<p class="MsoNormal" style="text-align: justify; margin-left: 0pt; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; text-indent: 21pt; mso-pagination: none; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;" align="justify"><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">参数控制：</span><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">-XX:+UseParNewGC</span></strong><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">&nbsp; </span></strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">ParNew收集器</span></p>
+<p class="MsoNormal" style="text-align: justify; margin-left: 63pt; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; text-indent: 21pt; mso-pagination: none; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;" align="justify"><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">-XX:ParallelGCThreads </span></strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">限制线程数量</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p><a href="http://images2015.cnblogs.com/blog/331425/201606/331425-20160624174241188-1502278645.png"><img style="background-image: none; float: none; padding-top: 0px; padding-left: 0px; margin: 1px auto; display: block; padding-right: 0px; border-width: 0px;" title="wps6A83.tmp" src="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/331425-20160624174244797-1533472044.png" alt="wps6A83.tmp" width="517" height="316" border="0"></a></p>
+<h2 style="background: #ffffff; border-bottom: #cccccc 1pt solid; padding-bottom: 2pt; text-align: left; padding-top: 0pt; padding-left: 0pt; margin: 0pt 0pt 5.25pt; line-height: 15.75pt; padding-right: 0pt; text-indent: 0pt; mso-pagination: widow-orphan; mso-border-bottom-alt: 0.7500pt solid #cccccc;"><a name="OLE_LINK14"></a><strong><span style="font-size: 12pt; font-family: helvetica; background: #ffffff; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;"><a name="OLE_LINK15"></a>Parallel收集器</span></strong></h2>
+<p class="MsoNormal" style="text-align: justify; margin-left: 0pt; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; text-indent: 21pt; mso-pagination: none; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;" align="justify"><a name="OLE_LINK12"></a><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">Parallel Scavenge收集器类似ParNew收集器，<a name="OLE_LINK13"></a>Parallel收集器更关注系统的</span><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">吞吐量</span></strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">。可以通过参数来打开</span><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">自适应调节策略，</span></strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">虚拟机会根据当前系统的运行情况收集性能监控信息，动态调整这些参数以提供最合适的停顿时间或最大的吞吐量；也可以通过参数控制</span><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">GC的时间不大于多少毫秒或者比例；</span><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">新生代复制算法、老年代标记-压缩</span></p>
+<p class="MsoNormal" style="text-align: justify; margin-left: 0pt; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; text-indent: 21pt; mso-pagination: none; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;" align="justify"><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">参数控制：</span><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">-XX:+UseParallelGC&nbsp; </span></strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">使用Parallel收集器+ 老年代串行</span></p>
+<p class="MsoNormal" style="text-align: justify; margin-left: 0pt; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; text-indent: 21pt; mso-pagination: none; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;" align="justify"><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></strong></p>
+<h2 style="background: #ffffff; border-bottom: #cccccc 1pt solid; padding-bottom: 2pt; text-align: left; padding-top: 0pt; padding-left: 0pt; margin: 0pt 0pt 5.25pt; line-height: 15.75pt; padding-right: 0pt; text-indent: 0pt; mso-pagination: widow-orphan; mso-border-bottom-alt: 0.7500pt solid #cccccc;"><strong><span style="font-size: 12pt; font-family: helvetica; background: #ffffff; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;">Paralle</span></strong><strong><span style="font-size: 12pt; font-family: 宋体; background: #ffffff; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-bidi-font-family: helvetica; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-ascii-font-family: helvetica; mso-hansi-font-family: helvetica; mso-shading: #ffffff;">l</span></strong><strong><span style="font-size: 12pt; font-family: helvetica; background: #ffffff; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;"> Old</span></strong><strong><span style="font-size: 12pt; font-family: 宋体; background: #ffffff; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-bidi-font-family: helvetica; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-ascii-font-family: helvetica; mso-hansi-font-family: helvetica; mso-shading: #ffffff;">&nbsp;</span></strong><strong><span style="font-size: 12pt; font-family: helvetica; background: #ffffff; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;">收集器</span></strong></h2>
+<p class="MsoNormal" style="text-align: justify; margin-left: 0pt; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; text-indent: 21pt; mso-pagination: none; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;" align="justify"><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">Parallel Old是Parallel Scavenge收集器的老年代版本，使用多线程和“标记－整理”算法。这个收集器是在JDK 1.6中才开始提供</span></p>
+<p class="MsoNormal" style="text-align: justify; margin-left: 0pt; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; text-indent: 21pt; mso-pagination: none; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;" align="justify"><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">参数控制：</span><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;"> -XX:+UseParallelOldGC </span></strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">使用Parallel收集器+ 老年代并行</span></p>
+<p class="MsoNormal" style="text-align: left;">&nbsp;</p>
+<h2 style="background: #ffffff; border-bottom: #cccccc 1pt solid; padding-bottom: 2pt; text-align: left; padding-top: 0pt; padding-left: 0pt; margin: 0pt 0pt 5.25pt; line-height: 15.75pt; padding-right: 0pt; text-indent: 0pt; mso-pagination: widow-orphan; mso-border-bottom-alt: 0.7500pt solid #cccccc;"><a name="OLE_LINK16"></a><strong><span style="font-size: 12pt; font-family: 宋体; background: #ffffff; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-bidi-font-family: helvetica; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-ascii-font-family: helvetica; mso-hansi-font-family: helvetica; mso-shading: #ffffff;">CMS</span></strong><strong><span style="font-size: 12pt; font-family: helvetica; background: #ffffff; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;">收集器</span></strong></h2>
+<p class="MsoNormal" style="text-align: justify; margin-left: 0pt; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; text-indent: 21pt; mso-pagination: none; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;" align="justify"><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">CMS（Concurrent Mark Sweep）收集器是一种以获取最短回收停顿时间为目标的收集器。目前很大一部分的Java应用都集中在互联网站或B/S系统的服务端上，这类应用尤其重视服务的响应速度，希望系统停顿时间最短，以给用户带来较好的体验。</span></p>
+<p class="MsoNormal" style="text-align: justify; margin-left: 0pt; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; text-indent: 21pt; mso-pagination: none; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;" align="justify"><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">从名字（包含“Mark Sweep”）上就可以看出CMS收集器是基于“标记-清除”算法实现的，它的运作过程相对于前面几种收集器来说要更复杂一些，整个过程分为4个步骤，包括：</span><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">&nbsp;</span></p>
+<p class="MsoNormal" style="text-align: justify; margin-left: 0pt; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; text-indent: 21pt; mso-pagination: none; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;" align="justify"><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">初始标记（CMS initial mark） </span></p>
+<p class="MsoNormal" style="text-align: justify; margin-left: 0pt; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; text-indent: 21pt; mso-pagination: none; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;" align="justify"><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">并发标记（CMS concurrent mark） </span></p>
+<p class="MsoNormal" style="text-align: justify; margin-left: 0pt; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; text-indent: 21pt; mso-pagination: none; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;" align="justify"><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">重新标记（CMS remark） </span></p>
+<p class="MsoNormal" style="text-align: justify; margin-left: 0pt; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; text-indent: 21pt; mso-pagination: none; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;" align="justify"><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">并发清除（CMS concurrent sweep） </span></p>
+<p class="MsoNormal" style="text-align: justify; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; mso-pagination: none; mso-para-margin-right: 0.0000gd;" align="justify"><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">&nbsp;</span><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">其中初始标记、重新标记这两个步骤仍然需要“Stop The World”。初始标记仅仅只是标记一下GC Roots能直接关联到的对象，速度很快，并发标记阶段就是进行GC Roots Tracing的过程，而重新标记阶段则是为了修正并发标记期间，因用户程序继续运作而导致标记产生变动的那一部分对象的标记记录，这个阶段</span><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">的停顿时间一般会比初始标记阶段稍长一些，但远比并发标记的时间短。 </span><span style="font-size: 12pt; font-family: 仿宋; background: #ffffff; text-transform: none; font-weight: normal; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;"><br></span><span style="font-size: 12pt; font-family: 仿宋; background: #ffffff; text-transform: none; font-weight: normal; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 由于整个过程中耗时最长的并发标记和并发清除过程中，收集器线程都可以与用户线程一起工作，所以总体上来说，CMS收集器的内存回收过程是与用户线程一起并发地执行</span><span style="font-size: 12pt; font-family: 仿宋; background: #ffffff; text-transform: none; font-weight: normal; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;">。</span><strong><span style="font-size: 12pt; font-family: 仿宋; background: #ffffff; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;">老年代收集器</span></strong><span style="font-size: 12pt; font-family: 仿宋; background: #ffffff; text-transform: none; font-weight: normal; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;">（新生代使用ParNew）</span></p>
+<p class="MsoNormal" style="text-align: justify; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; mso-pagination: none; mso-para-margin-right: 0.0000gd;" align="justify"><span style="font-size: 12pt; font-family: 仿宋; background: #ffffff; text-transform: none; font-weight: normal; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;">&nbsp; </span><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">优点:</span><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">并发收集</span></strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">、</span><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">低停顿</span></strong><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">&nbsp; </span></strong></p>
+<p class="MsoNormal" style="text-align: justify; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; mso-pagination: none; mso-para-margin-right: 0.0000gd;" align="justify"><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">&nbsp;&nbsp; </span></strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">缺点：</span><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">产生大量空间碎片</span></strong><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">、</span></strong><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">并发阶段会降低吞吐量</span></strong></p>
+<p class="MsoNormal" style="text-align: justify; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; mso-pagination: none; mso-para-margin-right: 0.0000gd;" align="justify"><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">&nbsp;&nbsp; </span><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">参数控制：</span><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">-XX:+UseConcMarkSweepGC&nbsp; </span></strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">使用</span><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">CMS</span><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">收集器</span></p>
+<p class="MsoNormal" style="text-align: justify; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; mso-pagination: none; mso-para-margin-right: 0.0000gd;" align="justify"><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></strong><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">-XX:+ UseCMSCompactAtFullCollection </span></strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">Full</span><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">&nbsp;</span><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">GC后，进行一次</span><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">碎片</span><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">整理</span><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">；整理过程是独占的，会引起停顿时间变长</span></p>
+<p class="MsoNormal" style="text-align: justify; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; mso-pagination: none; mso-para-margin-right: 0.0000gd;" align="justify"><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></strong><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">-XX:+CMSFullGCsBeforeCompaction&nbsp; </span></strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">设置进行几次Full GC后，进行一次碎片整理</span></p>
+<p class="MsoNormal" style="text-align: justify; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; mso-pagination: none; mso-para-margin-right: 0.0000gd;" align="justify"><span style="font-size: 12pt; font-family: 宋体; text-transform: none; font-weight: normal; color: #3d464d; font-style: normal; letter-spacing: 0pt; mso-bidi-font-family: &#39;Lantinghei SC&#39;; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;; mso-ascii-font-family: &#39;Lantinghei SC&#39;; mso-hansi-font-family: &#39;Lantinghei SC&#39;;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="font-size: 12pt; font-family: &#39;Lantinghei SC&#39;; text-transform: none; font-weight: normal; color: #3d464d; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">-</span><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">XX:ParallelCMSThreads </span></strong><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">&nbsp;</span></strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">设定CMS的线程数量（一般情况约等于可用CPU数量）</span></p>
+<p><a href="http://images2015.cnblogs.com/blog/331425/201606/331425-20160624174245500-1388590060.png"><img style="background-image: none; float: none; padding-top: 0px; padding-left: 0px; margin: 1px auto; display: block; padding-right: 0px; border-width: 0px;" title="wpsCA6E.tmp" src="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/331425-20160624174246485-1027326741.png" alt="wpsCA6E.tmp" width="546" height="259" border="0"></a></p>
+<p class="MsoNormal" style="text-align: justify; margin-left: 0pt; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; text-indent: 21pt; mso-pagination: none; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;" align="justify"><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></strong></p>
+<h2 style="background: #ffffff; border-bottom: #cccccc 1pt solid; padding-bottom: 2pt; text-align: left; padding-top: 0pt; padding-left: 0pt; margin: 0pt 0pt 5.25pt; line-height: 15.75pt; padding-right: 0pt; text-indent: 0pt; mso-pagination: widow-orphan; mso-border-bottom-alt: 0.7500pt solid #cccccc;"><strong><span style="font-size: 12pt; font-family: 宋体; background: #ffffff; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-bidi-font-family: helvetica; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-ascii-font-family: helvetica; mso-hansi-font-family: helvetica; mso-shading: #ffffff;">G1</span></strong><strong><span style="font-size: 12pt; font-family: helvetica; background: #ffffff; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;">收集器</span></strong></h2>
+<p class="MsoNormal" style="text-align: justify; margin-left: 0pt; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; text-indent: 21pt; mso-pagination: none; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;" align="justify"><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">G1是目前技术发展的最前沿成果之一，HotSpot开发团队赋予它的使命是未来可以替换掉JDK1.5中发布的CMS收集器。与CMS收集器相比G1收集器有以下特点：</span></p>
+<p class="MsoNormal" style="text-align: justify; margin-left: 0pt; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; text-indent: 21pt; mso-pagination: none; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;" align="justify"><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">1. </span><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">空间整合</span></strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">，G1收集器采用标记整理算法，不会产生内存空间碎片。分配大对象时不会因为无法找到连续空间而提前触发下一次GC。</span></p>
+<p class="MsoNormal" style="text-align: justify; margin-left: 0pt; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; text-indent: 21pt; mso-pagination: none; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;" align="justify"><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">2. </span><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">可预测停顿</span></strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">，这是G1的另一大优势，降低停顿时间是G1和CMS的共同关注点，但G1除了追求低停顿外，还能建立可预测的停顿时间模型，能让使用者明确指定在一个长度为N毫秒的时间片段内，消耗在垃圾收集上的时间不得超过N毫秒，这几乎已经是实时Java（RTSJ）的垃圾收集器的特征了。</span></p>
+<p class="MsoNormal" style="text-align: justify; margin-left: 0pt; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; text-indent: 21pt; mso-pagination: none; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000;" align="justify"><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">上面提到的垃圾收集器，收集的范围都是整个新生代或者老年代，而G1不再是这样。使用G1收集器时，Java堆的内存布局与其他收集器有很大差别，它将整个Java堆划分为多个大小相等的独立区域（Region），虽然还保留有新生代和老年代的概念，但新生代和老年代不再是物理隔阂了，它们都是一部分（可以不连续）Region的集合。</span></p>
+<p><a href="http://images2015.cnblogs.com/blog/331425/201606/331425-20160624174247125-2073079982.jpg"><img style="background-image: none; float: none; padding-top: 0px; padding-left: 0px; margin: 1px auto; display: block; padding-right: 0px; border-width: 0px;" title="wps3B4C.tmp" src="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/331425-20160624174247641-1572774731.jpg" alt="wps3B4C.tmp" width="607" height="343" border="0"></a></p>
+<p class="MsoNormal" style="text-align: justify; text-justify: inter-ideograph; text-autospace: ideograph-numeric; margin-right: 0pt; mso-pagination: none; mso-para-margin-right: 0.0000gd;" align="justify">&nbsp;</p>
+<p class="MsoNormal"><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">G1的新生代收集跟ParNew类似，当新生代占用达到一定比例的时候，开始出发收集。和CMS类似，G1收集器收集老年代对象会有短暂停顿。</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">收集步骤</span></strong><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">：</span></p>
+<p class="MsoNormal"><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">1、</span><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">标记阶段</span></strong><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">，首先初始标记(Initial-Mark),这个阶段是停顿的(Stop the World Event)，并且会触发一次普通Mintor GC。对应GC log:GC pause (young) (inital-mark)</span></p>
+<p class="MsoNormal"><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">2、</span><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">Root Region Scanning</span></strong><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">，程序运行过程中会回收survivor区(存活到老年代)，这一过程必须在young GC之前完成。</span></p>
+<p class="MsoNormal"><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">3、</span><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">Concurrent Marking</span></strong><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">，在整个堆中进行并发标记(和应用程序并发执行)，此过程可能被young GC中断。在并发标记阶段，若发现区域对象中的所有对象都是垃圾，那个这个区域会被立即回收(图中打X)。同时，并发标记过程中，会计算每个区域的对象活性(区域中存活对象的比例)。</span></p>
+<p><a href="http://images2015.cnblogs.com/blog/331425/201606/331425-20160624174248703-2128319077.png"><img style="background-image: none; float: none; padding-top: 0px; padding-left: 0px; margin: 1px auto; display: block; padding-right: 0px; border-width: 0px;" title="wps93E7.tmp" src="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/331425-20160624174249203-774809988.png" alt="wps93E7.tmp" width="606" height="330" border="0"></a></p>
+<p class="MsoNormal"><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">4、</span><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">Remark</span></strong><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">, 再标记，会有短暂停顿(STW)。再标记阶段是用来收集 并发标记阶段 产生新的垃圾(并发阶段和应用程序一同运行)；G1中采用了比CMS更快的初始快照算法:snapshot-at-the-beginning (SATB)。</span></p>
+<p class="MsoNormal"><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">5、</span><strong><span style="font-size: 12pt; font-family: 仿宋; font-weight: bold; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">Copy/Clean up</span></strong><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">，多线程清除失活对象，会有STW。G1将回收区域的存活对象拷贝到新区域，清除Remember Sets，并发清空回收区域并把它返回到空闲区域链表中。</span></p>
+<p><a href="http://images2015.cnblogs.com/blog/331425/201606/331425-20160624174249938-1165331497.png"><img style="background-image: none; float: none; padding-top: 0px; padding-left: 0px; margin: 1px auto; display: block; padding-right: 0px; border-width: 0px;" title="wps47EC.tmp" src="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/331425-20160624174250656-1729618538.png" alt="wps47EC.tmp" width="607" height="331" border="0"></a></p>
+<p class="MsoNormal" style="text-align: left; mso-list: l0 level1 lfo1;"><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt;"><span style="mso-list: ignore;">6、</span></span><span style="font-size: 12pt; font-family: 仿宋; font-weight: normal; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">复制/清除</span><span style="font-size: 12pt; font-family: 仿宋; mso-font-kerning: 1.0000pt; mso-spacerun: &#39;yes&#39;;">过程后。回收区域的活性对象已经被集中回收到深蓝色和深绿色区域。</span></p>
+<p><a href="http://images2015.cnblogs.com/blog/331425/201606/331425-20160624174251406-2060589648.png"><img style="background-image: none; float: none; padding-top: 0px; padding-left: 0px; margin: 1px auto; display: block; padding-right: 0px; border-width: 0px;" title="wpsEAB1.tmp" src="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/331425-20160624174252078-703896755.png" alt="wpsEAB1.tmp" width="620" height="343" border="0"></a></p>
+<p class="MsoNormal" style="text-align: left; mso-pagination: none;">&nbsp;</p>
+<h2 style="background: #ffffff; border-bottom: #cccccc 1pt solid; padding-bottom: 2pt; text-align: left; padding-top: 0pt; padding-left: 0pt; margin: 0pt 0pt 5.25pt; line-height: 15.75pt; padding-right: 0pt; text-indent: 0pt; mso-pagination: widow-orphan; mso-border-bottom-alt: 0.7500pt solid #cccccc;"><strong><span style="font-size: 12pt; font-family: 宋体; background: #ffffff; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-bidi-font-family: helvetica; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-ascii-font-family: helvetica; mso-hansi-font-family: helvetica; mso-shading: #ffffff;">常用的</span></strong><strong><span style="font-size: 12pt; font-family: helvetica; background: #ffffff; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;">收集器</span></strong><strong><span style="font-size: 12pt; font-family: 宋体; background: #ffffff; text-transform: none; font-weight: bold; color: #000000; font-style: normal; letter-spacing: 0pt; mso-bidi-font-family: helvetica; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-ascii-font-family: helvetica; mso-hansi-font-family: helvetica; mso-shading: #ffffff;">组合</span></strong></h2>
+<table style="width: 100%;" border="1" cellspacing="0" cellpadding="2">
+<tbody>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top"><span style="font-family: 仿宋; font-size: 15px;"><strong>新生代GC策略</strong></span></td>
+<td valign="top"><span style="font-family: 仿宋; font-size: 15px;"><strong>年老代GC策略</strong></span></td>
+<td valign="top"><span style="font-family: 仿宋; font-size: 15px;"><strong>说明</strong></span></td>
+
+
+
+
+
+</tr>
+<tr>
+<td valign="top"><span style="font-family: 仿宋; font-size: 14px;">组合1</span></td>
+<td valign="top"><span style="font-family: 仿宋; font-size: 14px;">Serial</span></td>
+<td valign="top"><span style="font-family: 仿宋; font-size: 14px;">Serial Old</span></td>
+<td valign="top">
+<div><span style="font-family: 仿宋; font-size: 14px;">Serial和Serial Old都是单线程进行GC，特点就是GC时暂停所有应用线程。</span></div>
+
+
+
+
+
+</td>
+
+
+
+
+
+</tr>
+<tr>
+<td valign="top"><span style="font-family: 仿宋; font-size: 14px;">组合2</span></td>
+<td valign="top"><span style="font-family: 仿宋; font-size: 14px;">Serial</span></td>
+<td valign="top"><span style="font-family: 仿宋; font-size: 14px;">CMS+Serial Old</span></td>
+<td valign="top"><span style="font-family: 仿宋; font-size: 14px;">CMS（Concurrent Mark Sweep）是并发GC，实现GC线程和应用线程并发工作，不需要暂停所有应用线程。另外，当CMS进行GC失败时，会自动使用Serial Old策略进行GC。</span></td>
+
+
+
+
+
+</tr>
+<tr>
+<td valign="top"><span style="font-family: 仿宋; font-size: 14px;">组合3</span></td>
+<td valign="top">
+<div><span style="font-family: 仿宋; font-size: 14px;">ParNew</span></div>
+
+
+
+
+
+</td>
+<td valign="top"><span style="font-family: 仿宋; font-size: 14px;">CMS</span></td>
+<td valign="top">
+<div><span style="font-family: 仿宋; font-size: 14px;">使用-XX:+UseParNewGC选项来开启。ParNew是Serial的并行版本，可以指定GC线程数，默认GC线程数为CPU的数量。可以使用-XX:ParallelGCThreads选项指定GC的线程数。</span></div>
+<div><span style="font-family: 仿宋; font-size: 14px;">如果指定了选项-XX:+UseConcMarkSweepGC选项，则新生代默认使用ParNew GC策略。</span></div>
+
+
+
+
+
+</td>
+
+
+
+
+
+</tr>
+<tr>
+<td valign="top"><span style="font-family: 仿宋; font-size: 14px;">组合4</span></td>
+<td valign="top">
+<div><span style="font-family: 仿宋; font-size: 14px;">ParNew</span></div>
+
+
+
+
+
+</td>
+<td valign="top"><span style="font-family: 仿宋; font-size: 14px;">Serial Old</span></td>
+<td valign="top"><span style="font-family: 仿宋; font-size: 14px;">使用-XX:+UseParNewGC选项来开启。新生代使用ParNew GC策略，年老代默认使用Serial Old GC策略。</span></td>
+
+
+
+
+
+</tr>
+<tr>
+<td valign="top"><span style="font-family: 仿宋; font-size: 14px;">组合5</span></td>
+<td valign="top">
+<div><span style="font-family: 仿宋; font-size: 14px;">Parallel Scavenge</span></div>
+
+
+
+
+
+</td>
+<td valign="top"><span style="font-family: 仿宋; font-size: 14px;">Serial Old</span></td>
+<td valign="top">
+<div><span style="font-family: 仿宋; font-size: 14px;">Parallel Scavenge策略主要是关注一个可控的吞吐量：应用程序运行时间 / (应用程序运行时间 + GC时间)，可见这会使得CPU的利用率尽可能的高，适用于后台持久运行的应用程序，而不适用于交互较多的应用程序。</span></div>
+
+
+
+
+
+</td>
+
+
+
+
+
+</tr>
+<tr>
+<td valign="top"><span style="font-family: 仿宋; font-size: 14px;">组合6</span></td>
+<td valign="top">
+<div><span style="font-family: 仿宋; font-size: 14px;">Parallel Scavenge</span></div>
+
+
+
+
+
+</td>
+<td valign="top"><span style="font-family: 仿宋; font-size: 14px;">Parallel Old</span></td>
+<td valign="top">
+<div><span style="font-family: 仿宋; font-size: 14px;">Parallel Old是Serial Old的并行版本</span></div>
+<p><span style="font-family: 仿宋; font-size: 14px;">&nbsp;</span></p>
+
+
+
+
+
+</td>
+
+
+
+
+
+</tr>
+<tr>
+<td valign="top"><span style="font-family: 仿宋; font-size: 14px;">组合7</span></td>
+<td valign="top">
+<div><span style="font-family: 仿宋; font-size: 14px;">G1GC</span></div>
+
+
+
+
+
+</td>
+<td valign="top"><span style="font-family: 仿宋; font-size: 14px;">G1GC</span></td>
+<td valign="top">
+<div><span style="font-family: 仿宋; font-size: 14px;">-XX:+UnlockExperimentalVMOptions -XX:+UseG1GC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#开启</span><br><span style="font-family: 仿宋; font-size: 14px;">-XX:MaxGCPauseMillis =50&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#暂停时间目标</span><br><span style="font-family: 仿宋; font-size: 14px;">-XX:GCPauseIntervalMillis =200&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#暂停间隔目标</span><br><span style="font-family: 仿宋; font-size: 14px;">-XX:+G1YoungGenSize=512m&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#年轻代大小</span><br><span style="font-family: 仿宋; font-size: 14px;">-XX:SurvivorRatio=6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#幸存区比例</span></div>
+
+
+
+
+
+</td>
+
+
+
+
+
+</tr>
+
+
+
+
+
+</tbody>
+
+
+
+
+
+</table>
+<p class="MsoNormal" style="text-align: left; mso-pagination: none; mso-list: l1 level1 lfo2;">&nbsp;</p>
+<h1 style="text-align: left; margin: 0pt; text-autospace: ideograph-numeric; text-indent: 0pt; mso-pagination: widow-orphan; mso-para-margin-right: 0.0000gd; mso-para-margin-left: 0.0000gd; mso-char-indent-count: 0.0000; padding: 0pt;"><strong><span style="font-size: 18pt; font-family: 仿宋; text-transform: none; font-weight: bold; color: #0047dd; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 22.0000pt; mso-spacerun: &#39;yes&#39;;">参考 </span></strong></h1>
+<p class="MsoNormal" style="text-align: left; mso-pagination: none;"><span><a href="http://my.oschina.net/hosee/blog/644618"><span style="text-decoration: underline;"><span class="15" style="font-size: 12pt; text-decoration: underline; font-family: 仿宋; text-transform: none; font-weight: normal; color: #0000ff; font-style: normal; letter-spacing: 0pt; text-underline: single; mso-spacerun: &#39;yes&#39;;">http://my.oschina.net/hosee/blog/644618</span></span></a></span></p>
+<p class="MsoNormal" style="background: #ffffff; text-align: left; margin: 7.5pt 0pt; line-height: 14.65pt; text-indent: 0pt; mso-pagination: widow-orphan; padding: 0pt;"><span style="font-size: 12pt; font-family: 仿宋; background: #ffffff; text-transform: none; font-weight: normal; color: #0000ff; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;">深入理解Java虚拟机：JVM高级特性与最佳实践</span><span style="font-size: 12pt; font-family: 仿宋; background: #ffffff; text-transform: none; font-weight: normal; color: #0000ff; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;"> pdf</span></p>
+<p class="MsoNormal" style="background: #ffffff; text-align: left; margin: 7.5pt 0pt; line-height: 14.65pt; text-indent: 0pt; mso-pagination: widow-orphan; padding: 0pt;"><strong><span class="16" style="font-size: 12pt; font-family: 仿宋; background: #ffffff; text-transform: none; font-weight: bold; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;">下载地址</span></strong><span style="font-size: 12pt; font-family: 仿宋; background: #ffffff; text-transform: none; font-weight: normal; color: #333333; font-style: normal; letter-spacing: 0pt; mso-font-kerning: 0.0000pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;">：</span><span><a href="http://download.csdn.net/detail/ityouknow/9557109"><span class="15" style="font-size: 12pt; font-family: 仿宋; background: #ffffff; text-transform: none; font-weight: normal; color: #ff7300; font-style: normal; letter-spacing: 0pt; mso-spacerun: &#39;yes&#39;; mso-shading: #ffffff;">http://download.csdn.net/detail/ityouknow/9557109</span></a></span></p>
+
+
+
+
+
+
+</div></div><div id="MySignature" style="display: block;"><div>
+        <p style="border-top: #e0e0e0 1px dashed; border-right: #e0e0e0 1px dashed; border-bottom: #e0e0e0 1px dashed; border-left: #e0e0e0 1px dashed; padding-top: 5px; padding-right: 10px; padding-bottom: 10px; padding-left: 150px; background: url(http://images.cnblogs.com/cnblogs_com/ityouknow/914073/o_keep.jpg) #e5f1f4 no-repeat 1% 50%; font-family: 微软雅黑; font-size: 11px;" id="PSignature">
+            <br>
+            作者：<span style="font-weight: bold; font-size: large;"><a href="http://www.cnblogs.com/ityouknow/" target="_blank">纯洁的微笑</a></span>
+            <br>
+            出处：<a href="http://www.ityouknow.com/" target="_blank">www.ityouknow.com</a>
+            <br>
+            本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文连接，否则保留追究法律责任的权利。
+            <br>
+            <br>
+            <span style="font-size: large; color: #F00;">
+                  本文如对您有帮助，还请多帮 <b>【推荐】</b> 下此文。
+</span><br>
+            <span style="font-size: 150%; font-weight: bold;">如果喜欢我的文章，请关注我的公众号</span><br>
+        </p>
+    </div></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="BlogPostCategory">分类: <a href="http://www.cnblogs.com/ityouknow/category/437541.html" target="_blank">java</a></div>
+<div id="EntryTag"></div>
+<div id="blog_post_info"><div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(5614961,cb_blogId,1);green_channel_success(this,&#39;谢谢推荐！&#39;);">好文要顶</a>
+            <a id="green_channel_follow" onclick="follow(&#39;44ce118c-0edc-e011-8ee0-842b2b196315&#39;);" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/ityouknow/" target="_blank"><img src="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/20130328094900.png" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/ityouknow/">纯洁的微笑</a><br>
+            <a href="http://home.cnblogs.com/u/ityouknow/followees">关注 - 0</a><br>
+            <a href="http://home.cnblogs.com/u/ityouknow/followers">粉丝 - 851</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor">荣誉：<a href="http://www.cnblogs.com/expert/" target="_blank">推荐博客</a></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow(&#39;44ce118c-0edc-e011-8ee0-842b2b196315&#39;);return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(5614961,&#39;Digg&#39;)">
+        <span class="diggnum" id="digg_count">8</span>
+    </div>
+    <div class="buryit" onclick="votePost(5614961,&#39;Bury&#39;)">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+</div>
+<div class="clear"></div>
+<div id="post_next_prev"><a href="http://www.cnblogs.com/ityouknow/p/5610232.html" class="p_n_p_prefix">« </a> 上一篇：<a href="http://www.cnblogs.com/ityouknow/p/5610232.html" title="发布于2016-06-23 11:59">jvm系列(二):JVM内存结构</a><br><a href="http://www.cnblogs.com/ityouknow/p/5623921.html" class="p_n_p_prefix">» </a> 下一篇：<a href="http://www.cnblogs.com/ityouknow/p/5623921.html" title="发布于2016-06-28 16:21">混合应用技术选型</a><br></div>
+</div>
+
+
+		</div>
+		<div class="postDesc">posted @ <span id="post-date">2016-06-24 17:43</span> <a href="http://www.cnblogs.com/ityouknow/">纯洁的微笑</a> 阅读(<span id="post_view_count">9800</span>) 评论(<span id="post_comment_count">3</span>)  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=5614961" rel="nofollow">编辑</a> <a href="http://www.cnblogs.com/ityouknow/p/5614961.html#" onclick="AddToWz(5614961);return false;">收藏</a></div>
+	</div>
+	<script type="text/javascript">var allowComments=true,cb_blogId=96952,cb_entryId=5614961,cb_blogApp=currentBlogApp,cb_blogUserGuid='44ce118c-0edc-e011-8ee0-842b2b196315',cb_entryCreatedDate='2016/6/24 17:43:00';loadViewCount(cb_entryId);</script>
+	
+</div><!--end: topics 文章、评论容器-->
+</div><a name="!comments"></a><div id="blog-comments-placeholder"><div id="comments_pager_top"></div>
+<br>
+<div class="feedback_area_title">评论列表</div>
+<div class="feedbackNoItems"></div>	
+
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/ityouknow/p/5614961.html#3636404" class="layer">#1楼</a><a name="3636404" id="comment_anchor_3636404"></a>  <span class="comment_date">2017-03-09 20:18</span> <a id="a_comment_author_3636404" href="http://home.cnblogs.com/u/1121962/" target="_blank">阿棠</a> <a href="http://msg.cnblogs.com/send/%E9%98%BF%E6%A3%A0" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3636404" class="blog_comment_body">这一章看不懂，还是没明白，一会新，一会老，改天再看一次试试吧</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3636404,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3636404,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/ityouknow/p/5614961.html#3655650" class="layer">#2楼</a><a name="3655650" id="comment_anchor_3655650"></a>  <span class="comment_date">2017-03-30 15:11</span> <a id="a_comment_author_3655650" href="http://home.cnblogs.com/u/1137306/" target="_blank">街头小瘪三</a> <a href="http://msg.cnblogs.com/send/%E8%A1%97%E5%A4%B4%E5%B0%8F%E7%98%AA%E4%B8%89" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3655650" class="blog_comment_body">总结的蛮清楚的，我看JVM书籍，太泛了，缺乏总结！</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3655650,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3655650,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/ityouknow/p/5614961.html#3660803" class="layer">#3楼</a><a name="3660803" id="comment_anchor_3660803"></a><span id="comment-maxId" style="display:none;">3660803</span><span id="comment-maxDate" style="display:none;">2017/4/6 17:28:14</span>  <span class="comment_date">2017-04-06 17:28</span> <a id="a_comment_author_3660803" href="http://www.cnblogs.com/leocook/" target="_blank">leocook</a> <a href="http://msg.cnblogs.com/send/leocook" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3660803" class="blog_comment_body">感谢，总结的相当到位！</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3660803,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3660803,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3660803_avatar" style="display:none;">http://pic.cnblogs.com/face/562023/20141119112033.png</span>
+			</div>
+		</div>
+	<div id="comments_pager_bottom"></div></div><script type="text/javascript">var commentManager = new blogCommentManager();commentManager.renderComments(0);</script>
+<div id="comment_form" class="commentform">
+<a name="commentform"></a>
+<div id="divCommentShow"></div>
+<div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="http://www.cnblogs.com/ityouknow/p/5614961.html#" onclick="return RefreshPage();">刷新页面</a><a href="http://www.cnblogs.com/ityouknow/p/5614961.html#top">返回顶部</a></div>
+<div id="comment_form_container"><div class="login_tips">注册用户登录后才能发表评论，请 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login(&#39;commentform&#39;);">登录</a> 或 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，<a href="http://www.cnblogs.com/">访问</a>网站首页。</div></div>
+<div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+<div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_blank">【推荐】50万行VC++源码: 大型组态工控、电力仿真CAD与GIS源码库</a><br><a href="http://click.aliyun.com/m/21970/" target="_blank">【阿里云】云计算科技红利邀您免费体验！云服务器、云数据库等35+产品，6个月免费使用！</a><br></div>
+<div id="opt_under_post"></div>
+<div id="cnblogs_c1" class="c_ad_block"><a href="http://cn.udacity.com/android/?utm_source=cnbolg&amp;utm_medium=referral&amp;utm_campaign=AND03" target="_blank"><img width="300" height="250" src="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/24442-20170613154413368-1655528381.jpg" alt="Andorid_0613"></a></div>
+<div id="under_post_news"><div class="itnews c_ad_block"><b>最新IT新闻</b>:<br> ·  <a href="http://news.cnblogs.com/n/571811/" target="_blank">Airbnb开设新平台，号召全世界房东向难民提供短期免费住宿</a><br> ·  <a href="http://news.cnblogs.com/n/571810/" target="_blank">顺丰铁了心做电商 包装箱贴二维码非个别地区所为</a><br> ·  <a href="http://news.cnblogs.com/n/571808/" target="_blank">你们费尽心机把芝麻信用分攒到750，到底图个啥呢？</a><br> ·  <a href="http://news.cnblogs.com/n/571803/" target="_blank">妹子来一发？魅族智能体脂秤来了：618首发</a><br> ·  <a href="http://news.cnblogs.com/n/571805/" target="_blank">夏普正式撤回对海信起诉 但战争仍将继续</a><br>» <a href="http://news.cnblogs.com/" title="IT新闻" target="_blank">更多新闻...</a></div></div>
+<div id="cnblogs_c2" class="c_ad_block"><a href="https://www.mtyun.com/activity-anniversary?site=cnblogs&amp;campaign=20170601sales" target="_blank"><img width="468" height="60" src="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/24442-20170615095125603-13625507.png" alt="美团云"></a></div>
+<div id="under_post_kb"><div class="itnews c_ad_block" id="kb_block"><b>最新知识库文章</b>:<br><div id="kb_recent"> ·  <a href="http://kb.cnblogs.com/page/570194/" target="_blank">小printf的故事：什么是真正的程序员？</a><br> ·  <a href="http://kb.cnblogs.com/page/569992/" target="_blank">程序员的工作、学习与绩效</a><br> ·  <a href="http://kb.cnblogs.com/page/569056/" target="_blank">软件开发为什么很难</a><br> ·  <a href="http://kb.cnblogs.com/page/565901/" target="_blank">唱吧DevOps的落地，微服务CI/CD的范本技术解读</a><br> ·  <a href="http://kb.cnblogs.com/page/566523/" target="_blank">程序员，如何从平庸走向理想？</a><br></div>» <a href="http://kb.cnblogs.com/" target="_blank">更多知识库文章...</a></div></div>
+<div id="HistoryToday" class="c_ad_block"></div>
+<script type="text/javascript">
+    fixPostBody();
+    setTimeout(function () { incrementViewCount(cb_entryId); }, 50);
+    deliverAdT2();
+    deliverAdC1();
+    deliverAdC2();    
+    loadNewsAndKb();
+    loadBlogSignature();
+    LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+    GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate);
+    loadOptUnderPost();
+    GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);   
+</script>
+</div>
+
+
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+<!--done-->
+<div class="newsItem">
+<h3 class="catListTitle">公告</h3>
+	<div id="blog-news"><a href="https://github.com/ityouknow"><img style="position: absolute; top: 0; right: 0; border: 0;" src="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+
+<style>
+.profile{ 
+    background: #fff;
+    padding: 8px;
+    color: #333;
+    font-size: 12px;
+    line-height: 1.8;
+    margin-top: 0!important;
+    border:0;
+    border-bottom:1px dashed #333;
+    border-right:0;
+}
+
+.profile img{display:inline-block;}
+
+</style>
+
+<div class="profile">
+<h3><strong>微信公众号：纯洁的微笑</strong></h3>
+<p>
+ <img src="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/o_qrcode_for_gh_d751b87d749e_344.jpg" alt="" width="230" height="230">
+</p>
+
+<h3><strong>导航：</strong></h3>
+<p>
+   &nbsp;&nbsp;&nbsp;<a href="http://www.ityouknow.com/about">关于我</a>
+</p>
+<p>
+   &nbsp;&nbsp;&nbsp;<a href="http://www.ityouknow.com/blog">文章索引</a>
+</p>
+<p>
+   &nbsp;&nbsp;&nbsp;交流群：<strong>144304696</strong>
+</p>
+</div><div id="profile_block">昵称：<a href="http://home.cnblogs.com/u/ityouknow/">纯洁的微笑</a><br>园龄：<a href="http://home.cnblogs.com/u/ityouknow/" title="入园时间：2011-09-11">5年9个月</a><br>荣誉：<a href="http://www.cnblogs.com/expert/">推荐博客</a><br>粉丝：<a href="http://home.cnblogs.com/u/ityouknow/followers/">851</a><br>关注：<a href="http://home.cnblogs.com/u/ityouknow/followees/">0</a><div id="p_b_follow"><a href="javascript:void(0);" onclick="follow(&#39;44ce118c-0edc-e011-8ee0-842b2b196315&#39;)">+加关注</a></div></div></div><script type="text/javascript">loadBlogNews();</script>
+</div>
+
+			<div id="blog-calendar" style="display:none"></div><script type="text/javascript">loadBlogDefaultCalendar();</script>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn"><div id="sidebar_search" class="sidebar-block"></div><div id="sidebar_categories">
+<div id="sidebar_postcategory" class="catListPostCategory sidebar-block">
+<h3 class="catListTitle">随笔分类<span style="font-size:11px;font-weight:normal">(68)</span></h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_0_Link_0" href="http://www.cnblogs.com/ityouknow/category/437541.html">java(11)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_1" href="http://www.cnblogs.com/ityouknow/category/678488.html">PHP(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_2" href="http://www.cnblogs.com/ityouknow/category/902184.html">python(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_3" href="http://www.cnblogs.com/ityouknow/category/914493.html">springboot(13)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_4" href="http://www.cnblogs.com/ityouknow/category/994104.html">springcloud(10)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_5" href="http://www.cnblogs.com/ityouknow/category/802018.html">spring系列(5)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_6" href="http://www.cnblogs.com/ityouknow/category/914494.html">其它(6)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_7" href="http://www.cnblogs.com/ityouknow/category/806651.html">前端(2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_8" href="http://www.cnblogs.com/ityouknow/category/812247.html">生活杂谈(8)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_9" href="http://www.cnblogs.com/ityouknow/category/809108.html">系统架构(11)</a> </li>
+
+</ul>
+
+</div>
+
+<div id="sidebar_postarchive" class="catListPostArchive sidebar-block">
+<h3 class="catListTitle">随笔档案<span style="font-size:11px;font-weight:normal">(65)</span></h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_1_Link_0" href="http://www.cnblogs.com/ityouknow/archive/2017/06.html">2017年6月 (5)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_1" href="http://www.cnblogs.com/ityouknow/archive/2017/05.html">2017年5月 (14)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_2" href="http://www.cnblogs.com/ityouknow/archive/2017/04.html">2017年4月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_3" href="http://www.cnblogs.com/ityouknow/archive/2017/03.html">2017年3月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_4" href="http://www.cnblogs.com/ityouknow/archive/2017/02.html">2017年2月 (5)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_5" href="http://www.cnblogs.com/ityouknow/archive/2017/01.html">2017年1月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_6" href="http://www.cnblogs.com/ityouknow/archive/2016/12.html">2016年12月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_7" href="http://www.cnblogs.com/ityouknow/archive/2016/11.html">2016年11月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_8" href="http://www.cnblogs.com/ityouknow/archive/2016/10.html">2016年10月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_9" href="http://www.cnblogs.com/ityouknow/archive/2016/09.html">2016年9月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_10" href="http://www.cnblogs.com/ityouknow/archive/2016/08.html">2016年8月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_11" href="http://www.cnblogs.com/ityouknow/archive/2016/07.html">2016年7月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_12" href="http://www.cnblogs.com/ityouknow/archive/2016/06.html">2016年6月 (5)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_13" href="http://www.cnblogs.com/ityouknow/archive/2016/04.html">2016年4月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_14" href="http://www.cnblogs.com/ityouknow/archive/2016/03.html">2016年3月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_15" href="http://www.cnblogs.com/ityouknow/archive/2015/11.html">2015年11月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_16" href="http://www.cnblogs.com/ityouknow/archive/2015/10.html">2015年10月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_17" href="http://www.cnblogs.com/ityouknow/archive/2015/04.html">2015年4月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_18" href="http://www.cnblogs.com/ityouknow/archive/2012/12.html">2012年12月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_19" href="http://www.cnblogs.com/ityouknow/archive/2012/11.html">2012年11月 (1)</a> </li>
+
+</ul>
+
+</div>
+
+<div id="sidebar_links862003" class="catList sidebar-block">
+<h3 class="catListTitle">友情链接</h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_2_Link_0" href="http://wherebt.com/" rel="nofollow">BT导航网</a> </li>
+
+<li><a id="CatList_LinkList_2_Link_1" href="http://www.ityouknow.com/" rel="nofollow">个人博客</a> </li>
+
+<li><a id="CatList_LinkList_2_Link_2" href="http://favorites.ren/" rel="nofollow">云收藏-让收藏更简单</a> </li>
+
+</ul>
+
+</div>
+
+</div><div id="sidebar_scorerank" class="sidebar-block">
+<div class="catListBlogRank">
+<h3 class="catListTitle">积分与排名</h3>
+<ul>
+	<li class="liScore">
+		积分 -	130802
+	</li>
+	<li class="liRank">
+		排名 -	1810
+	</li>
+</ul>
+</div>
+
+
+</div><div id="sidebar_recentcomments" class="sidebar-block"><div id="recent_comments_wrap">
+<div class="catListComment">
+<h3 class="catListTitle">最新评论</h3>
+
+	<div id="RecentCommentsBlock"><ul>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/ityouknow/p/7015879.html#3714943">1. Re:如何做一个对账系统</a></li>
+        <li class="recent_comment_body">@农码一生哈哈...</li>
+        <li class="recent_comment_author">--纯洁的微笑</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/ityouknow/p/7015879.html#3714915">2. Re:如何做一个对账系统</a></li>
+        <li class="recent_comment_body">看到了天上掉钱。。。</li>
+        <li class="recent_comment_author">--农码一生</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/ityouknow/p/7015879.html#3714902">3. Re:如何做一个对账系统</a></li>
+        <li class="recent_comment_body">支持支持</li>
+        <li class="recent_comment_author">--牛腩</li>
+</ul>
+</div>
+</div>
+</div></div><div id="sidebar_topviewedposts" class="sidebar-block"><div id="topview_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">阅读排行榜</h3>
+	<div id="TopViewPostsBlock"><ul><li><a href="http://www.cnblogs.com/ityouknow/p/5662753.html">1. spring boot(一)：入门篇(30923)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6276686.html">2. 从零到百亿互联网金融架构发展史(17294)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5748830.html">3. spring boot(三)：Spring Boot中Redis的使用(16197)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5603287.html">4. jvm系列(一):java类的加载机制(15126)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5833560.html">5. spring boot(四)：thymeleaf使用详解(14507)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5891443.html">6. spring boot(五)：spring data jpa的使用(13239)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6634350.html">7. 你看那个人他像一条狗(12086)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6369051.html">8. 一次生产事故的优化经历(11324)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6084208.html">9. 六年程序生涯(10962)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5730412.html">10. spring boot(二)：web综合开发(10826)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5614961.html">11. jvm系列(三):java GC算法 垃圾收集器(9800)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6404163.html">12. 百亿互金平台救火故事(7905)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5772248.html">13. 程序员该用哪种姿势来理财(7091)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6380603.html">14. 一次dns缓存引发的惨案(6883)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5909460.html">15. spring boot 实战：我们的第一款开源软件(6399)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6871580.html">16. 思维的局限(6133)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6800166.html">17. 给你1000万你可以把生活过的更好吗？(5644)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6760172.html">18. 那些年，我们租过的房子(5469)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6102399.html">19. spring boot(七)：springboot+mybatis多数据源最简解决方案(5441)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6120544.html">20. springboot(八)：RabbitMQ详解(5080)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/4977136.html">21. spring 多数据源一致性事务方案(4831)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5610232.html">22. jvm系列(二):JVM内存结构(4374)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6037431.html">23. spring boot(六)：如何优雅的使用mybatis(4268)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5378874.html">24. jvm系列(五):tomcat性能调优和性能监控（visualvm）(3564)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5714703.html">25. jvm系列(四):jvm调优-命令大全（jps jstat jmap jhat jstack jinfo）(3178)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6013074.html">26. python3爬取1024图片(2945)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6241290.html">27. 2016颠倒梦想,2017静心前行(2713)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5647513.html">28. jvm系列(六):jvm调优-从eclipse开始(2676)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6392426.html">29. 一个脚本引发的血案(2469)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5923489.html">30. linux定时备份mysql并同步到其它服务器(2452)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topcommentedposts" class="sidebar-block"><div id="topfeedback_posts_wrap">
+<div class="catListFeedback">
+<h3 class="catListTitle">评论排行榜</h3>
+	<div id="TopFeedbackPostsBlock"><ul><li><a href="http://www.cnblogs.com/ityouknow/p/6084208.html">1. 六年程序生涯(165)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6800166.html">2. 给你1000万你可以把生活过的更好吗？(117)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6634350.html">3. 你看那个人他像一条狗(113)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6276686.html">4. 从零到百亿互联网金融架构发展史(91)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6760172.html">5. 那些年，我们租过的房子(78)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6871580.html">6. 思维的局限(73)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6369051.html">7. 一次生产事故的优化经历(72)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6404163.html">8. 百亿互金平台救火故事(67)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5772248.html">9. 程序员该用哪种姿势来理财(61)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6380603.html">10. 一次dns缓存引发的惨案(46)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5909460.html">11. spring boot 实战：我们的第一款开源软件(29)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6241290.html">12. 2016颠倒梦想,2017静心前行(20)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5662753.html">13. spring boot(一)：入门篇(14)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6950746.html">14. 编程科普书籍推荐(12)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6769161.html">15. 我开通了微信公众号(12)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5748830.html">16. spring boot(三)：Spring Boot中Redis的使用(10)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6037431.html">17. spring boot(六)：如何优雅的使用mybatis(8)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5603287.html">18. jvm系列(一):java类的加载机制(8)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6859802.html">19. springcloud(三)：服务提供与调用(7)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5891443.html">20. spring boot(五)：spring data jpa的使用(7)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5610232.html">21. jvm系列(二):JVM内存结构(7)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6102399.html">22. spring boot(七)：springboot+mybatis多数据源最简解决方案(7)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6295469.html">23. 发现另外一个世界(7)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6013074.html">24. python3爬取1024图片(6)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/7015879.html">25. 如何做一个对账系统(5)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5714703.html">26. jvm系列(四):jvm调优-命令大全（jps jstat jmap jhat jstack jinfo）(4)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6944096.html">27. springcloud(十)：服务网关zuul(4)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5923489.html">28. linux定时备份mysql并同步到其它服务器(4)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6854805.html">29. springcloud(二)：注册中心Eureka(4)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6791221.html">30. springcloud(一)：大话Spring Cloud(3)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topdiggedposts" class="sidebar-block"><div id="topdigg_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">推荐排行榜</h3>
+<div id="TopDiggPostsBlock"><ul><li><a href="http://www.cnblogs.com/ityouknow/p/6276686.html">1. 从零到百亿互联网金融架构发展史(193)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6634350.html">2. 你看那个人他像一条狗(154)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6369051.html">3. 一次生产事故的优化经历(117)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6084208.html">4. 六年程序生涯(108)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6404163.html">5. 百亿互金平台救火故事(85)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6871580.html">6. 思维的局限(79)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6380603.html">7. 一次dns缓存引发的惨案(57)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5603287.html">8. jvm系列(一):java类的加载机制(45)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6760172.html">9. 那些年，我们租过的房子(44)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6800166.html">10. 给你1000万你可以把生活过的更好吗？(37)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5772248.html">11. 程序员该用哪种姿势来理财(29)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5662753.html">12. spring boot(一)：入门篇(29)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6241290.html">13. 2016颠倒梦想,2017静心前行(26)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6482464.html">14. jvm系列(八):jvm知识点总览(20)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5909460.html">15. spring boot 实战：我们的第一款开源软件(18)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5730412.html">16. spring boot(二)：web综合开发(15)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5714703.html">17. jvm系列(四):jvm调优-命令大全（jps jstat jmap jhat jstack jinfo）(12)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6037431.html">18. spring boot(六)：如何优雅的使用mybatis(10)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6950746.html">19. 编程科普书籍推荐(10)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/7015879.html">20. 如何做一个对账系统(10)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5614961.html">21. jvm系列(三):java GC算法 垃圾收集器(8)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5610232.html">22. jvm系列(二):JVM内存结构(8)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6295469.html">23. 发现另外一个世界(7)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5647513.html">24. jvm系列(六):jvm调优-从eclipse开始(6)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5748830.html">25. spring boot(三)：Spring Boot中Redis的使用(6)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5891443.html">26. spring boot(五)：spring data jpa的使用(6)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/5833560.html">27. spring boot(四)：thymeleaf使用详解(6)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6931958.html">28. springcloud(九)：配置中心和消息总线（配置中心终结版）(5)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6791221.html">29. springcloud(一)：大话Spring Cloud(5)</a></li><li><a href="http://www.cnblogs.com/ityouknow/p/6769161.html">30. 我开通了微信公众号(5)</a></li></ul></div>
+</div></div></div></div><script type="text/javascript">loadBlogSideColumn();</script>
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		
+<!--done-->
+Copyright ©2017 纯洁的微笑
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+<!--PageEndHtml Block Begin-->
+<script type="text/javascript" language="javascript">
+　　//Setting ico for cnblogs
+　　var linkObject = document.createElement('link');
+　　linkObject.rel = "shortcut icon";
+　　linkObject.href = "http://files.cnblogs.com/files/ityouknow/www.ico.la_cb00753c7c82f4271f95fd0a046c4a80_128X128.ico";
+　　document.getElementsByTagName("head")[0].appendChild(linkObject);
+</script>
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254128672'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1254128672%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script><span id="cnzz_stat_icon_1254128672"><a href="http://www.cnzz.com/stat/website.php?web_id=1254128672" target="_blank">站长统计</a><a href="http://www.cnzz.com/stat/website.php?web_id=1254128672" target="_blank"> |  今日IP[1141] | 今日PV[2019] | 昨日IP[1523] |  昨日PV[2804] | </a><a href="http://www.cnzz.com/stat/website.php?web_id=1254128672&amp;method=online" target="_blank">当前在线[4]</a></span><script src="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/z_stat.php" type="text/javascript"></script><script src="./jvm系列(三)_java GC算法 垃圾收集器 - 纯洁的微笑 - 博客园_files/core.php" charset="utf-8" type="text/javascript"></script>
+<!--PageEndHtml Block End-->
+
+
+</body></html>

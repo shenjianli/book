@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<!-- saved from url=(0050)http://www.cnblogs.com/kubixuesheng/p/5208647.html -->
+<html lang="zh-cn"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园</title>
+<link type="text/css" rel="stylesheet" href="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/blog-common.css">
+<link id="MainCss" type="text/css" rel="stylesheet" href="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/bundle-LessIsMoreRight.css">
+<link type="text/css" rel="stylesheet" href="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/201548.css">
+<link id="mobile-style" media="only screen and (max-width: 768px)" type="text/css" rel="stylesheet" href="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/bundle-LessIsMoreRight-mobile.css">
+<link title="RSS" type="application/rss+xml" rel="alternate" href="http://www.cnblogs.com/kubixuesheng/rss">
+<link title="RSD" type="application/rsd+xml" rel="EditURI" href="http://www.cnblogs.com/kubixuesheng/rsd.xml">
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="http://www.cnblogs.com/kubixuesheng/wlwmanifest.xml">
+<script async="" src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/analytics.js"></script><script type="text/javascript" src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/encoder.js"></script><script src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/jquery.js" type="text/javascript"></script><style type="text/css">
+:root #header + #content > #left > #rlblock_left
+{ display: none !important; }</style>  
+<script type="text/javascript">var currentBlogApp = 'kubixuesheng', cb_enable_mathjax=true;var isLogined=false;</script>
+<script src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/blog-common.js" type="text/javascript"></script>
+<script type="text/x-mathjax-config;executed=true">MathJax.Hub.Config({
+  tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] },
+  TeX: { equationNumbers: { autoNumber: ['AMS'], useLabelIds: true }, extensions: ['extpfeil.js'] },
+  'HTML-CSS': { linebreaks: { automatic: true } },
+  SVG: { linebreaks: { automatic: true } }});</script><script type="text/javascript" src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/MathJax.js"></script><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 5px 0px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -khtml-border-radius: 5px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 1px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: .7em}
+.MathJax_MenuRadioCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuLabel {padding: 1px 2em 3px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #DDDDDD; margin: 4px 3px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: #606872; color: white}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style></head>
+<body><div id="MathJax_Message" style="display: none;"></div>
+<a name="top"></a>
+
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+		
+<!--done-->
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle" href="http://www.cnblogs.com/kubixuesheng/">dashuai的博客</a></div>
+<div class="subtitle">我是一个膜法师！</div>
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li id="nav_sitehome"></li>
+<li id="nav_myhome"><a id="blog_nav_myhome" class="menu" href="http://www.cnblogs.com/kubixuesheng/">首页</a></li>
+<li id="nav_newpost"></li>
+<li id="nav_contact"><a id="blog_nav_contact" class="menu" rel="nofollow" href="https://msg.cnblogs.com/send/%E6%9C%A8%E6%A3%89%E5%92%8C%E6%9C%A8%E6%A7%BF">联系</a></li>
+<li id="nav_rss"><a id="blog_nav_rss" class="menu" href="http://www.cnblogs.com/kubixuesheng/rss">订阅</a>
+<!--<a id="blog_nav_rss_image" class="aHeaderXML" href="http://www.cnblogs.com/kubixuesheng/rss"><img src="//www.cnblogs.com/images/xml.gif" alt="订阅" /></a>--></li>
+<li id="nav_admin"><a id="blog_nav_admin" class="menu" rel="nofollow" href="https://i.cnblogs.com/">管理</a></li>
+</ul>
+
+		<div class="blogStats">
+			
+			<div id="blog_stats">
+<!--done-->
+随笔-96&nbsp;
+文章-0&nbsp;
+评论-148&nbsp;
+</div>
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		
+<div id="post_detail">
+<!--done-->
+<div id="topics">
+	<div class="post">
+		<h1 class="postTitle">
+			<a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/kubixuesheng/p/5208647.html">JVM学习（4）——全面总结Java的GC算法和回收机制</a>
+		</h1>
+		<div class="clear"></div>
+		<div class="postBody">
+			<div id="cnblogs_post_body"><p><span style="background-color: #ffff00;"><strong>俗话说，自己写的代码，6个月后也是别人的代码……复习！复习！复习！</strong><strong>涉及到的知识点总结如下：</strong></span></p>
+<ul>
+<li>&nbsp;一些JVM的跟踪参数的设置</li>
+<li>Java堆的分配参数</li>
+<li>
+<p style="display: inline !important;">-Xmx 和 –Xms 应该保持一个什么关系，可以让系统的性能尽可能的好呢？是不是虚拟机内存越大越好？</p>
+</li>
+<li>Java 7之前和Java 8的堆内存结构</li>
+<li>Java栈的分配参数</li>
+<li>GC算法思想介绍
+<div class="O1">–GC ROOT可达性算法</div>
+<div class="O1">–标记清除</div>
+<div class="O1">–标记压缩</div>
+<div class="O1">–复制算法</div>
+</li>
+<li>可触及性含义和在Java中的体现</li>
+<li>finalize方法理解</li>
+<li>Java的强引用，软引用，弱引用，虚引用</li>
+<li>GC引起的Stop-The-World现象</li>
+<li>串行收集器</li>
+<li>并行收集器</li>
+<li>CMS</li>
+</ul>
+<p>　　记得JVM学习1里总结了一个例子，就是<span style="background-color: #ffff00;"><strong>使用&nbsp;-XX:+printGC参数来使能JVM的GC日志打印</strong></span>，让程序员可以追踪GC的踪迹。如例子：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show(&#39;b4ff4374-99b8-42ec-be74-448a5b69b599&#39;)"><img id="code_img_closed_b4ff4374-99b8-42ec-be74-448a5b69b599" class="code_img_closed" src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/ContractedBlock.gif" alt=""><img id="code_img_opened_b4ff4374-99b8-42ec-be74-448a5b69b599" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide(&#39;b4ff4374-99b8-42ec-be74-448a5b69b599&#39;,event)" src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/ExpandedBlockStart.gif" alt="">
+<div id="cnblogs_code_open_b4ff4374-99b8-42ec-be74-448a5b69b599" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> OnStackTest {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #008000;">/**</span>
+<span style="color: #008080;"> 3</span> <span style="color: #008000;">     * alloc方法内分配了两个字节的内存空间
+</span><span style="color: #008080;"> 4</span>      <span style="color: #008000;">*/</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> alloc(){
+</span><span style="color: #008080;"> 6</span>         <span style="color: #0000ff;">byte</span>[] b = <span style="color: #0000ff;">new</span> <span style="color: #0000ff;">byte</span>[2<span style="color: #000000;">];
+</span><span style="color: #008080;"> 7</span>         b[0] = 1<span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> main(String[] args) {
+</span><span style="color: #008080;">11</span>         <span style="color: #0000ff;">long</span> b =<span style="color: #000000;"> System.currentTimeMillis();
+</span><span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> 分配 100000000 个 alloc 分配的内存空间</span>
+<span style="color: #008080;">14</span>         <span style="color: #0000ff;">for</span>(<span style="color: #0000ff;">int</span> i = 0; i &lt; 100000000; i++<span style="color: #000000;">){
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">            alloc();
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">17</span> 
+<span style="color: #008080;">18</span>         <span style="color: #0000ff;">long</span> e =<span style="color: #000000;"> System.currentTimeMillis();
+</span><span style="color: #008080;">19</span>         System.out.println(e -<span style="color: #000000;"> b);
+</span><span style="color: #008080;">20</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">21</span> }</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>　　配置参数-XX:+printGC，再次运行会打印GC日志，截取一句：</p>
+<div class="cnblogs_code">
+<pre>[GC (Allocation Failure)  4416K-&gt;716K(15872K), 0.0018384 secs]</pre>
+</div>
+<p>　　代表发生了GC，花费了多长时间，效果是GC之前为4M多，GC之后为716K，回收了将近4M内存空间，而堆的大小大约是16M（默认的）。</p>
+<p>　　如果还嫌这些信息不够，<span style="background-color: #ffff00;"><strong>JVM还提供了打印详细GC日志的参数：-XX:+PrintGCDetails</strong></span></p>
+<div class="cnblogs_code">
+<pre>[GC (Allocation Failure) [DefNew: 4480K-&gt;0K(4992K), 0.0001689 secs] 5209K-&gt;729K(15936K), 0.0001916 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] </pre>
+</div>
+<p>会详细显示堆的各个代的GC信息，还详细的给出了耗时信息：user代表用户态cpu耗时，sys代表系统的cpu耗时，real代表实际经历时间。除此之外，<strong>-XX:+PrintGCDetails，</strong>还会在JVM退出前打印堆的详细信息：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show(&#39;50040255-8d47-4a07-be08-91543b44917e&#39;)"><img id="code_img_closed_50040255-8d47-4a07-be08-91543b44917e" class="code_img_closed" src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/ContractedBlock.gif" alt=""><img id="code_img_opened_50040255-8d47-4a07-be08-91543b44917e" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide(&#39;50040255-8d47-4a07-be08-91543b44917e&#39;,event)" src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/ExpandedBlockStart.gif" alt="">
+<div id="cnblogs_code_open_50040255-8d47-4a07-be08-91543b44917e" class="cnblogs_code_hide">
+<pre><span style="color: #000000;">Heap
+ def </span><span style="color: #0000ff;">new</span> generation   total 4992K, used 4301K [0x03800000, 0x03d60000, 0x08d50000<span style="color: #000000;">)
+  eden space 4480K,  </span>96% used [0x03800000, 0x03c33568, 0x03c60000<span style="color: #000000;">)
+  from space 512K,   </span>0% used [0x03ce0000, 0x03ce0000, 0x03d60000<span style="color: #000000;">)
+  to   space 512K,   </span>0% used [0x03c60000, 0x03c60000, 0x03ce0000<span style="color: #000000;">)
+ tenured generation   total 10944K, used 729K [</span>0x08d50000, 0x09800000, 0x13800000<span style="color: #000000;">)
+   the space 10944K,   </span>6% used [0x08d50000, 0x08e06700, 0x08e06800, 0x09800000<span style="color: #000000;">)
+ Metaspace       used 103K, capacity 2248K, committed 2368K, reserved 4480K</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<div>　　经过分析得知，该堆的新生代有5M空间，使用了3M</div>
+<div>
+<div class="cnblogs_code">
+<pre>def <span style="color: #0000ff;">new</span> generation   total 4992K, used 3226K [0x03800000, 0x03d60000, 0x08d50000)</pre>
+</div>
+<p>　　在对象出生的地方，也就是伊甸园，有4M空间，使用了72%</p>
+<div class="cnblogs_code">
+<pre>eden space 4480K,  72% used [0x03800000, 0x03b26830, 0x03c60000)</pre>
+</div>
+<p>　　还有幸存代，from和to，他俩一定是相等的。</p>
+<div class="cnblogs_code">
+<pre>from space 512K,   0% used [0x03ce0000, 0x03ce0000, 0x03d60000<span style="color: #000000;">)
+  to   space 512K,   </span>0% used [0x03c60000, 0x03c60000, 0x03ce0000)</pre>
+</div>
+<p>　　最后还有一个老年代空间，总共有10M，使用了729K</p>
+<div class="cnblogs_code">
+<pre>tenured generation   total 10944K, used 729K [0x08d50000, 0x09800000, 0x13800000)</pre>
+</div>
+<p>　　最后是Java 8改进之后的元数据空间，其中还有些16进制数字，比如[0x08d50000, 0x09800000, 0x13800000)，意思依次是低边界，当前边界，最高边界，代表内存分配的初始位置，当前分配到的位置，和最终能分配到的位置。</p>
+<p>&nbsp;</p>
+<p>　　<strong><span style="background-color: #ffff00;">重定向GC日志的方法</span></strong></p>
+</div>
+<div>　　-Xloggc:log/gc.log，指定GC log的位置，把GC日志输出到工作空间的log文件夹下的gc.log文件中，能更加方便的帮助开发人员分析问题。</div>
+<div>&nbsp;</div>
+<div>　　打印最详细的GC堆的日志：<span style="background-color: #ffff00;"><strong>&nbsp;-XX:+PrintHeapAtGC</strong></span></div>
+<div>　　意思是<span style="color: #ff0000;">每次记录GC日志，前后都要打印Java堆的详细信息</span>。如下一次：</div>
+<div>
+<div class="cnblogs_code" onclick="cnblogs_code_show(&#39;9a0a2cdf-b7fc-49a3-b2c2-5b917403c1e4&#39;)"><img id="code_img_closed_9a0a2cdf-b7fc-49a3-b2c2-5b917403c1e4" class="code_img_closed" src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/ContractedBlock.gif" alt=""><img id="code_img_opened_9a0a2cdf-b7fc-49a3-b2c2-5b917403c1e4" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide(&#39;9a0a2cdf-b7fc-49a3-b2c2-5b917403c1e4&#39;,event)" src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/ExpandedBlockStart.gif" alt="">
+<div id="cnblogs_code_open_9a0a2cdf-b7fc-49a3-b2c2-5b917403c1e4" class="cnblogs_code_hide">
+<pre>{Heap before GC invocations=0 (full 0<span style="color: #000000;">):
+ def </span><span style="color: #0000ff;">new</span> generation   total 4928K, used 4416K [0x03c00000, 0x04150000, 0x09150000<span style="color: #000000;">)
+  eden space 4416K, </span>100% used [0x03c00000, 0x04050000, 0x04050000<span style="color: #000000;">)
+  from space 512K,   </span>0% used [0x04050000, 0x04050000, 0x040d0000<span style="color: #000000;">)
+  to   space 512K,   </span>0% used [0x040d0000, 0x040d0000, 0x04150000<span style="color: #000000;">)
+ tenured generation   total 10944K, used 0K [</span>0x09150000, 0x09c00000, 0x13c00000<span style="color: #000000;">)
+   the space 10944K,   </span>0% used [0x09150000, 0x09150000, 0x09150200, 0x09c00000<span style="color: #000000;">)
+ Metaspace       used 1915K, capacity 2248K, committed 2368K, reserved 4480K
+Heap after GC invocations</span>=1 (full 0<span style="color: #000000;">):
+ def </span><span style="color: #0000ff;">new</span> generation   total 4928K, used 512K [0x03c00000, 0x04150000, 0x09150000<span style="color: #000000;">)
+  eden space 4416K,   </span>0% used [0x03c00000, 0x03c00000, 0x04050000<span style="color: #000000;">)
+  from space 512K, </span>100% used [0x040d0000, 0x04150000, 0x04150000<span style="color: #000000;">)
+  to   space 512K,   </span>0% used [0x04050000, 0x04050000, 0x040d0000<span style="color: #000000;">)
+ tenured generation   total 10944K, used 202K [</span>0x09150000, 0x09c00000, 0x13c00000<span style="color: #000000;">)
+   the space 10944K,   </span>1% used [0x09150000, 0x09182950, 0x09182a00, 0x09c00000<span style="color: #000000;">)
+ Metaspace       used 1915K, capacity 2248K, committed 2368K, reserved 4480K
+}</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>&nbsp;</p>
+<p>　　<span style="background-color: #ffff00;"><strong>监控Java类的加载情况： -XX:+TraceClassLoading</strong></span></p>
+<p>　　监控系统中每一个类的加载，每一行代表一个类，主要用于跟踪调试程序。</p>
+<p>&nbsp;</p>
+<p>　　<strong><span style="background-color: #ffff00;">监控类的使用情况：-XX:+PrintClassHistogram</span></strong></p>
+<p>　　在程序运行中，按下Ctrl+Break后，打印类的信息：截取发现程序使用了大量的hashmap：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show(&#39;9a4458bf-a712-4424-83fd-1450846cb51a&#39;)"><img id="code_img_closed_9a4458bf-a712-4424-83fd-1450846cb51a" class="code_img_closed" src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/ContractedBlock.gif" alt=""><img id="code_img_opened_9a4458bf-a712-4424-83fd-1450846cb51a" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide(&#39;9a4458bf-a712-4424-83fd-1450846cb51a&#39;,event)" src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/ExpandedBlockStart.gif" alt="">
+<div id="cnblogs_code_open_9a4458bf-a712-4424-83fd-1450846cb51a" class="cnblogs_code_hide">
+<pre> num     #instances         #bytes  <span style="color: #0000ff;">class</span><span style="color: #000000;"> name
+</span>----------------------------------------------
+   1:          2919         400528<span style="color: #000000;">  [C
+   </span>2:           173          77072<span style="color: #000000;">  [B
+   </span>3:           593          58016<span style="color: #000000;">  java.lang.Class
+   </span>4:          2552          40832<span style="color: #000000;">  java.lang.String
+   </span>5:           638          36280<span style="color: #000000;">  [Ljava.lang.Object;
+   </span>6:           827          26464  java.util.TreeMap$Entry</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>分别显示序号（按照空间占用大小排序）、实例数量、总大小、类型</p>
+<p>&nbsp;</p>
+<p>　　下面看看Java堆的分配参数，<span style="background-color: #ffff00;"><strong>指定最大堆和最小堆&nbsp;-Xmx –Xms</strong></span></p>
+<div class="O1">
+<p>　　-Xms 10m，表示JVM Heap(堆内存)最小尺寸10MB，<strong>最开始只有 -Xms 的参数，表示 `初始` memory size(m表示memory，s表示size)</strong>，属于初始分配10m，-Xms表示的 `初始` 内存也有一个 `最小` 内存的概念（其实常用的做法中初始内存采用的也就是最小内存）。</p>
+<p>　　-Xmx 10m，表示JVM&nbsp;Heap(堆内存)<strong>最大允许</strong>的尺寸10MB，按需分配。如果 -Xmx 不指定或者指定偏小，也许出现java.lang.OutOfMemory错误，此错误来自JVM不是Throwable的，无法用try...catch捕捉。</p>
+<p>　　看下对JVM设置：-Xmx20m -Xms5m</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show(&#39;736a5999-db67-488e-bd3c-7f6044e68d1c&#39;)"><img id="code_img_closed_736a5999-db67-488e-bd3c-7f6044e68d1c" class="code_img_closed" src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/ContractedBlock.gif" alt=""><img id="code_img_opened_736a5999-db67-488e-bd3c-7f6044e68d1c" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide(&#39;736a5999-db67-488e-bd3c-7f6044e68d1c&#39;,event)" src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/ExpandedBlockStart.gif" alt="">
+<div id="cnblogs_code_open_736a5999-db67-488e-bd3c-7f6044e68d1c" class="cnblogs_code_hide">
+<pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> OnStackTest {
+    </span><span style="color: #008000;">/**</span><span style="color: #008000;">
+     * alloc方法内分配了两个字节的内存空间
+     </span><span style="color: #008000;">*/</span>
+    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> alloc(){
+        </span><span style="color: #0000ff;">byte</span>[] b = <span style="color: #0000ff;">new</span> <span style="color: #0000ff;">byte</span>[10<span style="color: #000000;">];
+        b[</span>0] = 1<span style="color: #000000;">;
+    }
+
+    </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> main(String[] args) {
+        </span><span style="color: #0000ff;">long</span> b =<span style="color: #000000;"> System.currentTimeMillis();
+
+        </span><span style="color: #008000;">//</span><span style="color: #008000;"> 分配 100000000 个 alloc 分配的内存空间</span>
+        <span style="color: #0000ff;">for</span>(<span style="color: #0000ff;">int</span> i = 0; i &lt; 100000000; i++<span style="color: #000000;">){
+            alloc();
+        }
+
+        System.out.print(</span>"Xmx ="<span style="color: #000000;">);
+        System.out.println(Runtime.getRuntime().maxMemory() </span>/ 1024.0 / 1024 + "M"<span style="color: #000000;">);
+
+        System.out.print(</span>"free mem ="<span style="color: #000000;">);
+        System.out.println(Runtime.getRuntime().freeMemory() </span>/ 1024.0 / 1024 + "M"<span style="color: #000000;">);
+
+        System.out.print(</span>"total mem ="<span style="color: #000000;">);
+        System.out.println(Runtime.getRuntime().totalMemory() </span>/ 1024.0 / 1024 + "M"<span style="color: #000000;">);
+
+        </span><span style="color: #0000ff;">long</span> e =<span style="color: #000000;"> System.currentTimeMillis();
+        System.out.println(e </span>-<span style="color: #000000;"> b);
+    }
+}</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>Xmx =19.375M<br>free mem =4.21685791015625M<br>total mem =5.875M<br>1032</p>
+<hr>
+<p>　　<strong><span style="color: #ff0000;">记住：Java会尽量的维持在最小堆运行，即使设置的最大值很大，只有当GC之后也无法满足最小堆，才会去扩容。</span></strong></p>
+<p>&nbsp;</p>
+<p>　　<strong><span style="background-color: #ffff00;">-Xmx 和 –Xms 应该保持一个什么关系，可以让系统的性能尽可能的好呢？是不是虚拟机内存越大越好？</span></strong></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<p>　　占坑，后续的GC机制来补充回答这个问题。首先并不是虚拟机内存越大就越好，大概原因是因为：内存越大，JVM 进行 Full GC 所需的时间越久，由于 Full GC 时 stop whole world 特性，如果是用于响应HTTP 请求的服务器，这个时候就表现为停止响应，对于需要低延迟的应用来说，这是不可接受的。对于需要高吞吐量的应用来说，可以不在乎这种停顿，比如一些后台的应用之类的，那么内存可以适当调大一些。需要根据具体情况权衡。</p>
+<p>　　<span style="background-color: #ffff00;"><strong>设置新生代大小，-Xmn参数，设置的是绝对值</strong></span>，30m就是30m，10m就是10m。还有一个参数&nbsp;<strong><span style="background-color: #ffff00;">-XX:NewRatio，看名字就知道是按照比例来设置</span></strong>，意思是设置新生代（eden+2*s）和老年代（不包含永久区）的比值，比如-XX:NewRatio4 表示 新生代:老年代=1:4。</p>
+<div>　　<strong><span style="background-color: #ffff00;">设置两个Survivor区（s0，s1或者from和to）和eden的比例&nbsp;-XX:SurvivorRatio</span></strong>，比如-XX:SurvivorRatio8表示两个Survivor : eden=2:8，即一个Survivor占年轻代的1/10。</div>
+<div>&nbsp;</div>
+<div>　　PS，<strong><span style="background-color: #ffff00;">这里说下Java堆的内存结构</span></strong>，Java 7和Java 8略有不同。先看 7以及以前的:</div>
+<div><img src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/682679-20160224200558974-748103479.png" alt=""></div>
+<div>　　分为了eden伊甸园，两个幸存代survivor，前三者也叫年轻代，其次是老年代old和永久代permanent。一个Java对象被创建，先是存在于eden，如果存活时间超过了两个幸存代就转移到老年代保存，而永久带保存了对象的方法，变量等元数据，如果永久带没地方了就会发生内存泄漏异常错误OutOfMemeoryError：PermGen。</div>
+<div>&nbsp;</div>
+<div>　　<strong><span style="color: #ff0000;">Java 8的堆内存结构有变化，移除了永久带</span></strong>，也就是不再有OutOfMemeoryError：PermGen错误了。新加了元数据区，和对应的参数-XX:MaxMetaspaceSize。</div>
+<div>&nbsp;</div>
+<div>　　<span style="background-color: #ffff00;"><strong>OOM时导出堆到文件进行内存分析和问题排查</strong></span></div>
+<div>　　-XX:+HeapDumpOnOutOfMemoryError，<span style="line-height: 1.5;">-XX:+HeapDumpPath&nbsp;</span>导出OOM的路径，比如：</div>
+<div>-Xmx20m -Xms5m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/a.dump</div>
+<div>&nbsp;</div>
+<div>　　<span style="background-color: #ffff00;"><strong>堆的分配参数总结</strong></span>
+<div>
+<ul>
+<li>根据实际事情调整新生代和幸存代的大小</li>
+<li><span style="line-height: 1.5;">官方推荐新生代占堆的3/8</span></li>
+<li><span style="line-height: 1.5;">幸存代占新生代的1/10</span></li>
+<li><span style="line-height: 1.5;">在OOM时，记得Dump出堆，确保可以排查现场问题</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<div>　　<span style="background-color: #ffff00;"><strong>永久区分配参数</strong></span></div>
+<div>
+<div>　　-XX:PermSize ， -XX:MaxPermSize，设置永久区的初始空间和最大空间，他们表示，一个系统可以容纳多少个类型。类似-Xms和-Xmx。当使用一些框架时，会产生大量的类，这样的类越来越多，会可能挤爆永久区，导致OOM。也就是说如果堆没有用完（实际堆的空间占用很少），也抛出了OOM错误，很有可能是永久区导致的OOM问题。</div>
+<div>&nbsp;</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<div>　　<span style="background-color: #ffff00;"><strong>栈大小分配&nbsp;-Xss</strong></span></div>
+<div>
+<div class="O1">　　通常只有几百K，一般很少调大，它的大小决定了函数调用的深度，之前也说了每个线程都有独立的栈空间，保存了局部变量、参数等。如果想跑更多的线程，需要把栈用-Xss尽量调小，而不是变大！因为线程越多，每个线程都要分配内存空间，这样每个栈的空间越大，占据的内存越多……</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<div>但是也得预防很深的函数调用可能导致栈内存溢出问题，比如不合适的递归调用。</div>
+<div>&nbsp;</div>
+<div>
+<div>　　<span style="background-color: #ffff00;"><strong>Garbage Collection 垃圾收集简介</strong></span></div>
+<div><span style="line-height: 1.5;"><span style="line-height: 1.5;">　　Java中，GC的对象主要是堆空间和永久区，记得很多人都下意识的认为Java的GC使用的是引用计数法，好像地球人都知道，无需多言似的，比如Python就是使用的这个。其实这是误导人的，<span style="color: #ff0000;">Java可以说从来都没有用过这个引用计数算法</span>！这是一个非常古老的算法了，另外PS：Java也不是第一个使用GC机制的语言（<span style="line-height: 1.5;">1960年 List 使用了GC</span></span></span><span style="line-height: 1.5;">）。</span></div>
+<div>&nbsp;</div>
+<div><span style="line-height: 1.5;">　　<span style="color: #ff0000;"><strong>引用计数法，它的一个基本思想</strong></span></span></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<div>
+<div>　　对于一个对象A，只要有任何一个对象引用了A，则A的引用计数器就加1，当引用失效时，引用计数器就减1。只要对象A的引用计数器的值为0，则对象A就不可能再被使用。就可以回收了。如图有一个根对象，和一个可达的对象：</div>
+<div><img src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/682679-20160227134140083-1259892349.png" alt=""></div>
+<div>　　Java为什么不用他呢，因为<span style="color: #ff0000;"><strong>引用计数法有很多缺点</strong></span>：</div>
+<div>
+<ul>
+<li>性能，每次引用和去引用都要加减</li>
+<li>循环引用问题</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<div><img src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/682679-20160227134318083-1105954496.png" alt=""></div>
+<div>对象1没办法回收，但是确实没有用了。</div>
+<div>&nbsp;</div>
+<div>　　<span style="color: #ff0000;"><strong>现代Java的垃圾回收使用的基本的算法思想是标记-清除算法</strong></span>：</div>
+<div>　　标记-清除算法是现代垃圾回收算法的思想基础。将垃圾回收分为两个阶段：标记阶段和清除阶段。</div>
+<div>　　一种可行的实现是，在标记阶段，首先通过根节点，标记所有从根节点开始的可达对象（从GC ROOT开始标记引用链——<span style="color: #ff0000;"><strong>又叫可达性算法</strong></span>）。因此，未被标记的对象就是未被引用的垃圾对象。然后，在清除阶段，清除所有未被标记的对象。这样就不怕循环问题了。</div>
+<div>&nbsp;</div>
+<div>　　<strong><span style="background-color: #ffff00;">PS：Java中可以作为GC ROOT的对象有：</span></strong></div>
+<div>
+<ul>
+<li>静态变量引用的对象</li>
+<li>常量引用的对象</li>
+<li>本地方法栈（JNI）引用的对象</li>
+<li>Java栈中引用的对象</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<div>　　如图，从根节点能到达的都是不能回收的，是被引用的。标记下。而这种算法的缺点就是容易出现内存碎片。利用率不高。</div>
+<div><img src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/682679-20160227135215661-1120071963.png" alt="" width="874" height="219"></div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>　　要知道，<span style="background-color: #ffff00;"><strong><span style="color: #ff0000;">现代的Java虚拟机都是使用的分代回收的设计</span></strong></span>，比如在标记-清除算法的基础上做了一些优化的——<span style="line-height: 1.5;"><strong><span style="color: #ff0000;">标记-压缩算法，</span></strong></span><strong><span style="line-height: 1.5; color: #ff0000;">适合用于存活对象较多的场合，如老年代。</span></strong></div>
+<div><span style="line-height: 1.5;">　　和标记-清除算法一样，标记-压缩算法也首先需要从根节点开始，对所有可达对象做一次标记。但之后，它并不简单的清理未标记的对象，而是将所有的存活对象压缩到内存的一端。之后，清理边界外所有的空间。有效解决内存碎片问题。</span></div>
+<div><span style="line-height: 1.5;"><img src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/682679-20160227135539380-490591287.png" alt="" width="1043" height="204" style="width: 898px;"></span>&nbsp;</div>
+<div>　　还有一个算法，<span style="color: #ff0000; background-color: #ffff00;"><strong>针对新生代的回收，叫复制算法</strong></span></div>
+<div><span style="line-height: 1.5;">　　</span><span style="line-height: 1.5;">和标记-清除算法相比，复制算法是一种相对高效的回收方法，但是</span>
+<div style="display: inline !important;">不适用于存活对象较多的场合如老年代，使用在新生代，</div>
+<div style="display: inline !important;">原理是</div>
+<div style="display: inline !important;">将原有的内存空间分为两块，<span style="line-height: 1.5;">两块空间完全相同，每次只用一块</span>，在垃圾回收时，将正在使用的内存中的存活对象复制到未使用的内存块中，之后，清除正在使用的内存块中的所有对象，交换两个内存的角色，完成垃圾回收。同样也没有内存</div>
+<div style="display: inline !important;">碎片产生。</div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;"><strong>复制算法的缺点是内存的浪费</strong>，因为每次只是使用了一般的空间，<span style="line-height: 1.5;">&nbsp;而大多数存活对象都在老年代，故复制算法不用在老年代，老年代是Java堆的空间的担保地区。复制算法主要用在新生代。在垃圾回收的时候，大对象直接从新生代进入了老年代存放，大对象一般不使用复制算法，因为一是太大，复制效率低，二是过多的大对象，会使得小对象复制的时候无地方存放。还有被长期引用的对象也放在了老年代。</span></div>
+<div style="display: inline !important;"><span style="line-height: 1.5;"><strong style="line-height: 1.5;"><span style="color: #ff0000;">Java的垃圾回收机制使用的是分代的思想。</span></strong></span></div>
+<div style="display: inline !important;">依据对象的存活周期进行分类，短命对象归为新生代，长命对象归为老年代。<span style="line-height: 1.5;">根据不同代的特点，选取合适的收集算法。</span><span style="line-height: 1.5;">少量对象存活（新生代，朝生夕死的特性），适合复制算法，</span><span style="line-height: 1.5;">大量对象存活（老年代，生命周期很长，甚至和应用程序存放时间一样），适合标记清理或者标记压缩算法。</span></div>
+<div style="display: inline !important;"><span style="line-height: 1.5; color: #ff0000;"><strong>以上一定注意：Java没有采用引用计数算法！</strong></span></div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;">经过上述总结，想到<span style="line-height: 1.5;">所有的算法，需要能够识别一个垃圾对象，那么怎么才能识别呢？</span></div>
+<div style="display: inline !important;"><span style="line-height: 1.5;">因此需要给出一个<span style="background-color: #ffff00;"><strong>可触及性的定义</strong></span>：</span></div>
+
+
+
+
+
+
+
+
+</div>
+<div>
+<div style="display: inline !important;">
+<div>
+<ul>
+<li>可触及的<span style="line-height: 1.5;">–从GC ROOT这个根节点对象，沿着引用的链条，可以触及到这个对象，该对象就叫可触及的，也就是之前说的可达性算法的思想。</span></li>
+<li><span style="line-height: 1.5;">可复活的</span><span style="line-height: 1.5;">–一旦所有引用被释放，就是可复活状态，</span><span style="line-height: 1.5;">因为在finalize()中可能复活该对象（<strong><span style="color: #ff0000;">finalize方法只会调用一次</span></strong>）。</span></li>
+<li><span style="line-height: 1.5;">不可触及的</span><span style="line-height: 1.5;">–在finalize()后，可能会进入不可触及状态，</span><span style="line-height: 1.5;">不可触及的对象不可能复活，就</span><span style="line-height: 1.5;">可以回收了。</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<div style="display: inline !important;">　　<span style="background-color: #ffff00;"><strong>引出一个方法的理解：finalize方法</strong></span></div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;">
+<p>　　GC准备释放内存的时候，会先调用finalize()。而调用了这个方法不代表对象一定会被回收。因为GC和finalize() 都是靠不住的，只要JVM还没有快到耗尽内存的地步，它是不会浪费时间进行垃圾回收的。</p>
+<p>　　<strong><span style="color: #ff0000;">finalize()在什么时候被调用?</span></strong><br>　　有三种情况</p>
+<ul>
+<li>所有对象被Garbage Collection时自动调用,比如运行System.gc()的时候。</li>
+<li>程序退出时为每个对象调用一次finalize方法。</li>
+<li><span style="line-height: 1.5;">显式的调用finalize方法。</span></li>
+
+
+
+
+
+
+
+
+
+
+
+</ul>
+<p>　　finalize 是Object的 protected 方法，子类可以覆盖该方法以实现资源清理工作，GC在回收对象之前调用该方法。<span style="color: #ff0000;"><strong>finalize与C++中的析构函数不是对应的。</strong>C++中的析构函数调用的时机是确定的（对象离开作用域或delete掉），但Java中的finalize的调用具有不确定性。</span></p>
+<p>　　不建议用finalize方法完成“非内存资源”的清理工作，因为Java语言规范并<span style="color: #ff0000;">不保证finalize方法会被及时地执行</span>、而且根本不会保证它们会被执行，而且<span style="color: #ff0000;"> finalize 方法可能会带来性能问题</span>。因为JVM通常在单独的低优先级线程中完成finalize的执行，finalize方法中，可将待回收对象赋值给GC Roots可达的对象引用，从而<span style="color: #ff0000;">达到对象再生的目的</span>。finalize方法<span style="color: #ff0000;">至多由GC执行一次</span>(用户当然可以手动调用对象的finalize方法，但并不影响GC对finalize的行为)</p>
+<p>　　但建议用于：</p>
+<ul>
+<li>清理本地对象(通过JNI创建的对象)；</li>
+<li>作为确保某些非内存资源(如Socket、文件等)释放的一个补充：在finalize方法中显式调用其他资源释放方法。</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;"><strong>　</strong></div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;"><strong>　</strong><span style="background-color: #ffff00;"><strong>说到这里，不得不提下Java的四种引用类型:</strong></span></div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;">前面说了，GC是分代的，GC的的回收条件取决于识别该对象是不是垃圾。而识别垃圾对象又取决于指向该对象的引用类型。Java中有四种引用类型，强，软，弱，虚。</div>
+<div style="display: inline !important;">如果一个对象只有弱引用指向它，GC会立即回收该对象，这是一种急切回收方式。相对的，如果有软引用指向这些对象，则只有在JVM需要内存时才回收这些对象。弱引用和软引用的特殊行为使得它们在某些情况下非常有用。</div>
+<div style="display: inline !important;">例如：软引用可以很好的用来实现缓存，当JVM需要内存时，垃圾回收器就会回收这些只有被软引用指向的对象。而弱引用非常适合存储元数据，例如：存储ClassLoader引用。如果没有类被加载，那么也没有指向ClassLoader的引用。一旦上一次的强引用被去除，只有弱引用的ClassLoader就会被回收。</div>
+<div style="display: inline !important;">
+<ul>
+<li>强引用：类似我们常见的，比如 A a = new A（）；a就叫强引用。任何被强引用指向的对象都不能GC，这些对象都是在程序中需要的。</li>
+<li>软引用：使用java.lang.ref.SoftReference类来表示，软引用可以很好的用来实现缓存，当JVM需要内存时，垃圾回收器就会回收这些只有被软引用指向的对象。如下：</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</ul>
+<div class="cnblogs_code" onclick="cnblogs_code_show(&#39;cbae27d1-bb20-4c20-8b50-6185be905932&#39;)"><img id="code_img_closed_cbae27d1-bb20-4c20-8b50-6185be905932" class="code_img_closed" src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/ContractedBlock.gif" alt=""><img id="code_img_opened_cbae27d1-bb20-4c20-8b50-6185be905932" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide(&#39;cbae27d1-bb20-4c20-8b50-6185be905932&#39;,event)" src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/ExpandedBlockStart.gif" alt="">
+<div id="cnblogs_code_open_cbae27d1-bb20-4c20-8b50-6185be905932" class="cnblogs_code_hide">
+<pre>Counter prime = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Counter(); 
+SoftReference soft </span>= <span style="color: #0000ff;">new</span> SoftReference(prime) ; <span style="color: #008000;">//</span><span style="color: #008000;">soft reference</span>
+prime = <span style="color: #0000ff;">null</span>; </pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>　　强引用置空之后，代码的第二行为对象Counter创建了一个软引用，该引用同样不能阻止垃圾回收器回收对象，但是可以延迟回收，软引用更适用于缓存机制，而弱引用更适用于存贮元数据。</p>
+<ul>
+<li>弱引用：使用java.lang.ref.WeakReference 类来表示，弱引用非常适合存储元数据，例如：存储ClassLoader引用。如果没有类被加载，那么也没有指向ClassLoader的引用。一旦上一次的强引用被去除，只有弱引用的ClassLoader就会被回收。也就是说如果一个对象只有弱引用指向它，GC会立即回收该对象，这是一种急切回收方式。如：</li>
+</ul>
+<div class="cnblogs_code" onclick="cnblogs_code_show(&#39;16ed911c-4adb-4855-a85c-c83556231d91&#39;)"><img id="code_img_closed_16ed911c-4adb-4855-a85c-c83556231d91" class="code_img_closed" src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/ContractedBlock.gif" alt=""><img id="code_img_opened_16ed911c-4adb-4855-a85c-c83556231d91" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide(&#39;16ed911c-4adb-4855-a85c-c83556231d91&#39;,event)" src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/ExpandedBlockStart.gif" alt="">
+<div id="cnblogs_code_open_16ed911c-4adb-4855-a85c-c83556231d91" class="cnblogs_code_hide">
+<pre>Counter counter = <span style="color: #0000ff;">new</span> Counter(); <span style="color: #008000;">//</span><span style="color: #008000;"> strong reference </span>
+WeakReference&lt;Counter&gt; weakCounter = newWeakReference&lt;Counter&gt;(counter); <span style="color: #008000;">//</span><span style="color: #008000;">weak reference</span>
+counter = <span style="color: #0000ff;">null</span>; </pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>　　只要给强引用对象counter赋null,该对象就可以被垃圾回收器回收。因为该对象不再含有其他强引用，即使指向该对象的弱引用weakCounter也无法阻止垃圾回收器对该对象的回收。相反的，如果该对象含有软引用，Counter对象不会立即被回收，除非JVM需要内存。</p>
+<p>　　另一个使用弱引用的例子是WeakHashMap，它是除HashMap和TreeMap之外，Map接口的另一种实现。WeakHashMap有一个特点：map中的键值(keys)都被封装成弱引用，也就是说一旦强引用被删除，WeakHashMap内部的弱引用就无法阻止该对象被垃圾回收器回收。</p>
+<ul>
+<li>虚引用：没什么实际用处，就是一个标志，当GC的时候好知道。拥有虚引用的对象可以在任何时候GC。</li>
+</ul>
+</div>
+<div style="display: inline !important;">　　除了了解弱引用、软引用、虚引用和WeakHashMap，还需要了解ReferenceQueue。在创建任何弱引用、软引用和虚引用的过程中，可以通过如下代码提供引用队列ReferenceQueue：</div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;">
+<div class="cnblogs_code" onclick="cnblogs_code_show(&#39;2c809237-e3d9-4962-8278-2f64a7c40cce&#39;)"><img id="code_img_closed_2c809237-e3d9-4962-8278-2f64a7c40cce" class="code_img_closed" src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/ContractedBlock.gif" alt=""><img id="code_img_opened_2c809237-e3d9-4962-8278-2f64a7c40cce" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide(&#39;2c809237-e3d9-4962-8278-2f64a7c40cce&#39;,event)" src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/ExpandedBlockStart.gif" alt="">
+<div id="cnblogs_code_open_2c809237-e3d9-4962-8278-2f64a7c40cce" class="cnblogs_code_hide">
+<pre>ReferenceQueue refQueue = <span style="color: #0000ff;">new</span><span style="color: #000000;"> ReferenceQueue();
+DigitalCounter digit </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> DigitalCounter();
+PhantomReference</span>&lt;DigitalCounter&gt; phantom = <span style="color: #0000ff;">new</span> PhantomReference&lt;DigitalCounter&gt;(digit, refQueue);</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>　　引用实例被添加在引用队列中，可以在任何时候通过查询引用队列回收对象。</p>
+<p>　　</p>
+<p>　　<span style="background-color: #ffff00;"><strong>现在我对一个对象的生命周期进行描述：</strong></span></p>
+</div>
+<div style="display: inline !important;">　　新建Java对象A首先处于可达的，未执行finalize方法的状态，<span style="line-height: 1.5;">随着程序的运行，一些引用关系会消失，或者变迁，</span>当对A使用可达性算法判断，对象A变成了&nbsp;GC Roots 不可达时，A从可达状态变迁到不可达状态，但是JVM不会就就这样把它清理了，而是在第一次GC的时候，对它首先进行一个标记（标记清除算法），之后最少还要再进行一次筛选，而对其筛选的的条件就是看该对象是否覆盖了Object的finalize方法，或者看这个对象是否执行过一次finalize方法。如果没有执行，也没有覆盖，就满足筛选条件，JVM将其放入F-Queue队列，由JVM的一个低优先级的线程执行该队列中对象的finalize方法。此时执行finalize方法优先级是很低的，且不会保证等待finalize方法执行完毕才进行第二次回收（怕发生无限等待的情景，JVM崩溃），之后不久GC对队列里的对象进行二轮回收，去判断该对象是否可达，若不可达，才进行回收，否则，对象“复活”（<span style="color: #ff0000;">执行finalize的过程中，应用程序是可以让对象再次被引用，复活的</span>）。而在可达性判断的时候，还要兼顾四种引用类型，根据不同的引用类型特点去判断是否是回收的对象。看例子：</div>
+<div style="display: inline !important;">&nbsp;</div>
+<div style="display: inline !important;">
+<div class="cnblogs_code" onclick="cnblogs_code_show(&#39;0a83358f-6949-4fbf-a343-252cc1b768cc&#39;)"><img id="code_img_closed_0a83358f-6949-4fbf-a343-252cc1b768cc" class="code_img_closed" src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/ContractedBlock.gif" alt=""><img id="code_img_opened_0a83358f-6949-4fbf-a343-252cc1b768cc" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide(&#39;0a83358f-6949-4fbf-a343-252cc1b768cc&#39;,event)" src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/ExpandedBlockStart.gif" alt="">
+<div id="cnblogs_code_open_0a83358f-6949-4fbf-a343-252cc1b768cc" class="cnblogs_code_hide">
+<pre><span style="color: #0000ff;">package</span><span style="color: #000000;"> wys.demo1;
+
+</span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> Demo1 {
+    </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span><span style="color: #000000;"> Demo1 obj;
+    
+    @Override
+    </span><span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">void</span> finalize() <span style="color: #0000ff;">throws</span><span style="color: #000000;"> Throwable {
+        </span><span style="color: #0000ff;">super</span><span style="color: #000000;">.finalize();
+        
+        System.out.println(</span>"CanReliveObj finalize called"<span style="color: #000000;">);
+        
+        obj </span>= <span style="color: #0000ff;">this</span>;<span style="color: #008000;">//</span><span style="color: #008000;"> 把obj复活了！！！</span>
+<span style="color: #000000;">    }
+    
+    @Override
+    </span><span style="color: #0000ff;">public</span><span style="color: #000000;"> String toString(){
+        </span><span style="color: #0000ff;">return</span> "I am CanReliveObj"<span style="color: #000000;">;
+    }
+    
+    </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> main(String[] args) <span style="color: #0000ff;">throws</span><span style="color: #000000;"> InterruptedException{
+        obj </span>= <span style="color: #0000ff;">new</span> Demo1();<span style="color: #008000;">//</span><span style="color: #008000;"> 强引用</span>
+        obj = <span style="color: #0000ff;">null</span>;   <span style="color: #008000;">//</span><span style="color: #008000;">不会被立即回收，是可复活的对象</span>
+<span style="color: #000000;">        
+        System.gc();</span><span style="color: #008000;">//</span><span style="color: #008000;"> 主动建议JVM做一次GC，GC之前会调用finalize方法，而我在里面把obj复活了！！！</span>
+        Thread.sleep(1000<span style="color: #000000;">);
+
+        </span><span style="color: #0000ff;">if</span>(obj == <span style="color: #0000ff;">null</span><span style="color: #000000;">){
+            System.out.println(</span>"obj 是 null"<span style="color: #000000;">);
+        }</span><span style="color: #0000ff;">else</span><span style="color: #000000;">{
+            System.out.println(</span>"obj 可用"<span style="color: #000000;">);
+        }
+        
+        System.out.println(</span>"第二次gc"<span style="color: #000000;">);
+        obj </span>= <span style="color: #0000ff;">null</span>;    <span style="color: #008000;">//</span><span style="color: #008000;">不可复活</span>
+<span style="color: #000000;">        System.gc();
+        Thread.sleep(</span>1000<span style="color: #000000;">);
+        
+        </span><span style="color: #0000ff;">if</span>(obj == <span style="color: #0000ff;">null</span><span style="color: #000000;">){
+            System.out.println(</span>"obj 是 null"<span style="color: #000000;">);
+        }</span><span style="color: #0000ff;">else</span><span style="color: #000000;">{
+            System.out.println(</span>"obj 可用"<span style="color: #000000;">);
+        }
+    }
+}</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>　　结果：</p>
+<p>CanReliveObj finalize called<br>obj 可用<br>第二次gc<br>obj 是 null</p>
+<p>　　说明JVM不管程序员手动调用finalize，JVM它就是执行一次finalize方法。执行finalize方法完毕后，GC会再次进行二轮回收，去判断该对象是否可达，若不可达，才进行回收。</p>
+<p>　　</p>
+<p>　　<strong><span style="color: #ff0000;"><span style="background-color: #ffff00;">建议：避免使用finalize方法！</span></span></strong></p>
+<p><strong><span style="color: #ff0000;">　　太复杂了，还是让系统照管比较好。可以定义其它的方法来释放非内存资源。建议使用try-catch-finally来替代它执行清理操作。</span></strong></p>
+<p><strong><span style="color: #ff0000;">　　</span></strong>如果手动调用了finalize，很容易出错。且它执行的优先级低，何时被调用，不确定——也就是何时发生GC不确定，因为只有当内存告急时，GC才工作，即使GC工作，finalize方法也不一定得到执行，这是由于程序中的其他线程的优先级远远高于执行finalize（）的线程优先级。&nbsp;因此当finalize还没有被执行时，系统的其他资源，比如文件句柄、数据库连接池等已经消耗殆尽，造成系统崩溃。且垃圾回收和finalize方法的执行本身就是对系统资源的消耗，有可能造成程序的暂时停止，因此在程序中尽量避免使用finalize方法。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<div>　　上面提到了GC或者执行finalize可能造成程序暂停，这引出一个概念：<strong><span style="line-height: 1.5; background-color: #ffff00;">Stop-The-World现象。</span></strong>
+<div class="O1">　　这是Java中一种全局暂停的现象，全局停顿，所有Java代码停止，类似JVM挂起的状态……但是native代码可以执行，但不能和JVM交互。这多半由于GC引起，其他的引起原因比如：</div>
+<div class="O1">
+<ul>
+<li>Dump线程</li>
+<li>JVM的死锁检查</li>
+<li>堆的Dump。</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<div class="O1">　　这三者出现概率很低，多半是程序员手动引起的，而GC是JVM自动引起的。</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<div>
+<div>　　</div>
+<div>　　<span style="background-color: #ffff00;"><strong>GC时为什么会有全局停顿？</strong></span></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<div>
+<div class="O1">　　类比在聚会时打扫房间，聚会时很乱，又有新的垃圾产生，房间永远打扫不干净，只有让大家停止活动了，才能将房间在某一个状态下打扫干净。回程序中就是只有程序暂停了，才能全面，完整，正确的清理一次垃圾对象，否则前脚清理了，后脚还有新的，永远清理不完，对判断垃圾对象也是一个判断上干扰的问题，也永远干净不了。</div>
+<div class="O1">&nbsp;</div>
+<div class="O1">　　<span style="background-color: #ffff00;"><strong>Stop-The-World现象<span style="line-height: 1.5;">危害</span></strong></span>
+<div class="O1">　　长时间服务停止，没有响应，一般新生代的GC停顿时间很短，零点几秒。而老年代比较时间长，几秒甚至几十分钟……一般堆内存越大，GC时间越长，也就是<strong>Stop-The-World越久。<span style="color: #ff0000;">所以，JVM的内存不是越大越好，要根据实际情况设置。</span></strong></div>
+<div class="O1">　　遇到HA系统，可能引起主备切换，严重危害生产环境。比如一个系统，一个主机服务器，一个备机服务器，不会同时启动，我们会只使用一个，比如主机暂时因为GC没有响应，如果时间太长，我们会使用备机，一旦主机恢复了，主机也启动了，此时备机主机都启动了，很可能导致服务器数据不一致……</div>
+<div class="O1">　　</div>
+<div class="O1">　　前面罗嗦了一堆，那么这些算法是如何在JVM中配合使用的呢？那么就引出新的问题需要解决：<strong><span style="background-color: #ffff00;">JVM的垃圾回收器。</span></strong></div>
+<div class="O1">　　回忆下堆的结构：还是以Java 7为例子：</div>
+<div class="O1"><img src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/682679-20160228012955799-646684444.png" alt=""></div>
+<div class="O1"><img src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/682679-20160224200558974-748103479.png" alt=""></div>
+<div class="O1">　　Java堆整体分两代，新生代和老年代，顾名思义，前者存放新生对象，大部分都是朝生夕死！进行GC的次数不多，后者存放的是时间比较久的对象，也就是多次GC还没死的对象。对象创建的时候，大部分都是放入新生代的eden区，除非是很大的对象，可能会直接存放到老年代，还有之前说的栈上分配（逃逸分析）。</div>
+<div class="O1">　　如果eden对象在GC时幸存，就会进入幸存区，也就是s0，s1，或者叫from和to，或者叫survivor（两个），大小一样。完全对称，功能也一样。前面说了GC有复制算法，那么就是使用在这里，GC在新生代时，eden区的存活对象被复制到未使用的幸存区，假设是to，而正在使用的是from区的年轻的对象也会一起被复制到了to区，如果to区满了，这些对象也和大对象，老年对象一样直接进入了老年代保存（担保空间）。此时，eden区剩余的对象和from区剩余的对象就是垃圾对象，能直接GC，to区存放的是新生代的此次GC活下来的对象。避免了产生内存碎片。</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<p>　　先不说了，先看看JVM的垃圾回收器吧，先看<strong><span style="background-color: #ffff00;">一种最古老的收集器——串行收集器</span></strong></p>
+<p><strong>　　</strong>最古老，最稳定，效率高，但是串行的最大问题就是停顿时间很长！因为串行收集器只使用一个线程去回收，可能会产生较长的停顿现象。我们可以<span style="color: #ff0000;"><strong>使用参数-XX:+UseSerialGC</strong></span>，设置新生代、老年代使用串行回收，此时新生代使用复制算法，老年代使用标记-压缩算法（<span style="color: #ff0000;">标记-压缩算法首先需要从根节点开始，对所有可达对象做一次标记。但之后，它并不简单的清理未标记的对象，而是将所有的存活对象压缩到内存的一端。之后，清理边界外所有的空间。有效解决内存碎片问题</span>）。</p>
+<p><img src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/682679-20160228014708205-995521518.png" alt=""></p>
+<p>　　因为串行收集器只使用一个线程去回收，可能会产生较长的停顿现象。</p>
+<p>&nbsp;</p>
+<p>　　<span style="background-color: #ffff00;"><strong>还有一种收集器叫并行收集器（两种并行收集器）</strong></span></p>
+<div>
+<ul>
+<li><span style="line-height: 1.5;"><span style="line-height: 1.5;">一种是<span style="line-height: 1.5;">ParNew并行收集器。</span></span></span><span style="line-height: 1.5;">使用JVM参数设置XX:+UseParNewGC，设置之后，那么</span>新生代就是并行回收，而老年代依然是串行回收，也就是<span style="color: #ff0000;"><strong>并行回收器不会影响老年代</strong></span>，它是Serial收集器在新生代的并行版本，新生代并行依然使用复制算法，但是是多线程，需要多核支持，我们可以使用JVM参数：&nbsp;XX:ParallelGCThreads 去限制线程的数量。如图：</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<div><img src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/682679-20160228015159471-1073511945.png" alt=""></div>
+<div>
+<p><strong><span style="color: #ff0000;">　　注意：新生代的多线程回收不一定快</span></strong>！看在多核还是单核，和具体环境。、</p>
+<ul>
+<li>还有一种是<span style="line-height: 1.5;">Parallel收集器，它</span><span style="line-height: 1.5;">类似ParNew，但是更加关注JVM的吞吐量！同样是在</span><span style="line-height: 1.5;">新生代复制算法，</span><span style="line-height: 1.5;">老年代使用标记压缩算法，可以使用JVM参数</span><span style="line-height: 1.5;">XX:+UseParallelGC设置使用</span><span style="line-height: 1.5;">Parallel并行收集器+ 老年代串行，或者使用</span><span style="line-height: 1.5;">XX:+UseParallelOldGC，</span><span style="line-height: 1.5;">使用Parallel并行收集器+ 并行老年代。也就是说，Parallel收集器可以同时让新生代和老年代都并行收集。如图：</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</ul>
+<p><span style="line-height: 1.5;"><img src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/682679-20160228015838346-65716433.png" alt=""></span></p>
+<div>　　关于并行收集器还有两个参数设置：</div>
+<div>　　-XX:MaxGCPauseMills，代表最大的GC线程占用的停顿时间，单位是毫秒，GC尽力保证回收时间不超过设定值，不是100%的保证。</div>
+<div>　　-XX:GCTimeRatio，GC使用的cpu时间占总时间的百分比，理解为吞吐量，0-100的取值范围，垃圾收集时间占总时间的比，默认99，即最大允许1%时间做GC。我们肯定希望停顿时间短，且占用总时间比例少，但是这两个参数是矛盾的。因为停顿时间和吞吐量不可能同时调优。</div>
+<div>　　如果GC很频繁，那么GC的最大停顿时间变短，但吞吐量变小，如果GC次数很少，最大的停顿时间就会变长，但吞吐量增大。</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<p>　　</p>
+<p>　　最后看一个很重要的收集器<strong><span style="background-color: #ffff00;">-CMS（并发标记清除收集器Concurrent Mark Sweep）收集器</span></strong></p>
+<p>　　顾名思义，它在<span style="color: #ff0000;"><strong>老年代使用的是标记清除算法</strong></span>，而不是标记压缩算法，也就是说<strong><span style="color: #ff0000;">CMS是老年代收集器（新生代使用ParNew），所谓并发标记清除就是CMS</span><span style="color: #ff0000;">与用户线程一起执行。</span></strong>标记-清除算法与标记-压缩相比，并发阶段会降低吞吐量，使用参数-XX:+UseConcMarkSweepGC打开。</p>
+<p>&nbsp;　　CMS运行过程比较复杂，着重实现<strong>了<span style="color: #ff0000;">标记</span></strong>的过程，可分为：</p>
+<ul>
+<li>初始标记，标记GC ROOT&nbsp;<span style="line-height: 1.5;">根可以直接关联到的对象<strong>（会产生全局停顿</strong>），但是初始标记</span><span style="line-height: 1.5;">速度快。</span></li>
+<li><span style="line-height: 1.5;">并发标记（和用户线程一起），</span><span style="line-height: 1.5;">主要的标记过程，标记了系统的全部的对象（不论垃圾不垃圾）。</span></li>
+<li><span style="line-height: 1.5;">重新标记，</span><span style="line-height: 1.5;">由于并发标记时，用户线程依然运行（可能产生新的对象），因此在正式清理前，再做一次修正，<strong>会产生全局停顿</strong>。</span></li>
+<li><span style="line-height: 1.5;">并发清除（和用户线程一起），</span><span style="line-height: 1.5;">基于标记结果，直接清理对象。这也是为什么使用标记清除算法的原因，因为清理对象的时候用户线程还能执行！标记压缩算法的压缩过程涉及到内存块移动，这样会有冲突。</span></li>
+<li>并发重置，为下一次GC做准备工作。</li>
+
+
+
+
+
+
+
+
+
+
+
+
+</ul>
+<p>&nbsp;<img src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/682679-20160228021134846-1862055437.png" alt=""></p>
+<div>　　<span style="background-color: #ffff00;"><strong>CMS的特点</strong></span></div>
+<div class="O1">　　尽可能降低了JVM的停顿时间，但是会影响系统整体吞吐量和性能，比如：</div>
+<div class="O1"><ol>
+<li>在用户线程运行过程中，分一半CPU去做GC，系统性能在GC阶段，反应速度就下降一半。</li>
+<li>清理不彻底。<span style="line-height: 1.5;">因为在清理阶段，用户线程还在运行，会产生新的垃圾，无法清理。</span></li>
+<li><span style="line-height: 1.5;">因为和用户线程基本上是一起运行的，故不能在空间快满时再清理。</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+</ol>
+<p>可以使用-XX:CMSInitiatingOccupancyFraction设置触发CMS GC的阈值，设置空间内存占用到多少时，去触发GC，<span style="line-height: 1.5;">如果不幸内存预留空间不够，就会引起concurrent mode failure。</span></p>
+<p><span style="line-height: 1.5;">可以使用-XX:+ UseCMSCompactAtFullCollection， Full GC后，进行一次整理，而</span><span style="line-height: 1.5;">整理过程是独占的，会引起停顿时间变长。</span></p>
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<div>
+<div class="O1">
+<div>可以使用-XX:+CMSFullGCsBeforeCompaction，设置进行几次Full GC后，进行一次碎片整理。</div>
+<div>还可以使用-XX:ParallelCMSThreads，设定CMS的线程数量，一般设置为cpu数量，不用太大。</div>
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<div>&nbsp;</div>
+<div>
+<div>　　<span style="background-color: #ffff00;"><strong>为减轻GC压力，我们需要注意些什么？</strong></span></div>
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<p>&nbsp;　　从三个方面考虑：</p>
+<ul>
+<li><span style="line-height: 1.5;">软件如何设计架构</span></li>
+<li><span style="line-height: 1.5;">代码如何写</span></li>
+<li><span style="line-height: 1.5;">堆空间如何分配</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+</ul>
+<p>&nbsp;</p></div><div id="MySignature" style="display: block;">辛苦的劳动，转载请注明出处，谢谢……</div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="BlogPostCategory">分类: <a href="http://www.cnblogs.com/kubixuesheng/category/782358.html" target="_blank">JVM</a></div>
+<div id="EntryTag">标签: <a href="http://www.cnblogs.com/kubixuesheng/tag/jvm%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">jvm垃圾回收</a>, <a href="http://www.cnblogs.com/kubixuesheng/tag/cms/">cms</a>, <a href="http://www.cnblogs.com/kubixuesheng/tag/GC%E6%94%B6%E9%9B%86%E5%99%A8/">GC收集器</a></div>
+<div id="blog_post_info"><div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(5208647,cb_blogId,1);green_channel_success(this,&#39;谢谢推荐！&#39;);">好文要顶</a>
+            <a id="green_channel_follow" onclick="follow(&#39;4d5b0b9a-d855-e411-b908-9dcfd8948a71&#39;);" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/kubixuesheng/" target="_blank"><img src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/20141027094559.png" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/kubixuesheng/">木棉和木槿</a><br>
+            <a href="http://home.cnblogs.com/u/kubixuesheng/followees">关注 - 8</a><br>
+            <a href="http://home.cnblogs.com/u/kubixuesheng/followers">粉丝 - 225</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow(&#39;4d5b0b9a-d855-e411-b908-9dcfd8948a71&#39;);return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(5208647,&#39;Digg&#39;)">
+        <span class="diggnum" id="digg_count">2</span>
+    </div>
+    <div class="buryit" onclick="votePost(5208647,&#39;Bury&#39;)">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+</div>
+<div class="clear"></div>
+<div id="post_next_prev"><a href="http://www.cnblogs.com/kubixuesheng/p/5202556.html" class="p_n_p_prefix">« </a> 上一篇：<a href="http://www.cnblogs.com/kubixuesheng/p/5202556.html" title="发布于2016-02-23 00:41">JVM学习（3）——总结Java内存模型</a><br><a href="http://www.cnblogs.com/kubixuesheng/p/5177238.html" class="p_n_p_prefix">» </a> 下一篇：<a href="http://www.cnblogs.com/kubixuesheng/p/5177238.html" title="发布于2016-03-08 00:04">Hibernate（1）——数据访问层的架构模式</a><br></div>
+</div>
+
+
+		</div>
+		<div class="postDesc">posted @ <span id="post-date">2016-02-28 02:10</span> <a href="http://www.cnblogs.com/kubixuesheng/">木棉和木槿</a> 阅读(<span id="post_view_count">5694</span>) 评论(<span id="post_comment_count">2</span>)  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=5208647" rel="nofollow">编辑</a> <a href="http://www.cnblogs.com/kubixuesheng/p/5208647.html#" onclick="AddToWz(5208647);return false;">收藏</a></div>
+	</div>
+	<script type="text/javascript">var allowComments=true,cb_blogId=201548,cb_entryId=5208647,cb_blogApp=currentBlogApp,cb_blogUserGuid='4d5b0b9a-d855-e411-b908-9dcfd8948a71',cb_entryCreatedDate='2016/2/28 2:10:00';loadViewCount(cb_entryId);</script>
+	
+</div><!--end: topics 文章、评论容器-->
+</div><a name="!comments"></a><div id="blog-comments-placeholder"><div id="comments_pager_top"></div>
+<!--done-->
+<div class="feedback_area_title">评论列表</div>
+<div class="feedbackNoItems"></div>
+	
+
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/kubixuesheng/p/5208647.html#3368365" class="layer">#1楼</a><a name="3368365" id="comment_anchor_3368365"></a>  <span class="comment_date">2016-02-29 09:55</span> <a id="a_comment_author_3368365" href="http://home.cnblogs.com/u/463609/" target="_blank">aimicm</a> <a href="http://msg.cnblogs.com/send/aimicm" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3368365" class="blog_comment_body">nice~~！</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3368365,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3368365,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/kubixuesheng/p/5208647.html#3369362" class="layer">#2楼</a><a name="3369362" id="comment_anchor_3369362"></a>[<span class="louzhu">楼主</span>]<span id="comment-maxId" style="display:none;">3369362</span><span id="comment-maxDate" style="display:none;">2016/3/1 15:05:59</span>  <span class="comment_date">2016-03-01 15:05</span> <a id="a_comment_author_3369362" href="http://www.cnblogs.com/kubixuesheng/" target="_blank">木棉和木槿</a> <a href="http://msg.cnblogs.com/send/%E6%9C%A8%E6%A3%89%E5%92%8C%E6%9C%A8%E6%A7%BF" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3369362" class="blog_comment_body"><a href="http://www.cnblogs.com/kubixuesheng/p/5208647.html#3368365" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,3368365);">@</a>
+aimicm<br>thanks</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3369362,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3369362,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3369362_avatar" style="display:none;">http://pic.cnblogs.com/face/682679/20141027094559.png</span>
+			</div>
+		</div>
+	<div id="comments_pager_bottom"></div></div><script type="text/javascript">var commentManager = new blogCommentManager();commentManager.renderComments(0);</script>
+<div id="comment_form" class="commentform">
+<a name="commentform"></a>
+<div id="divCommentShow"></div>
+<div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="http://www.cnblogs.com/kubixuesheng/p/5208647.html#" onclick="return RefreshPage();">刷新页面</a><a href="http://www.cnblogs.com/kubixuesheng/p/5208647.html#top">返回顶部</a></div>
+<div id="comment_form_container"><div class="login_tips">注册用户登录后才能发表评论，请 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login(&#39;commentform&#39;);">登录</a> 或 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，<a href="http://www.cnblogs.com/">访问</a>网站首页。</div></div>
+<div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+<div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_blank">【推荐】50万行VC++源码: 大型组态工控、电力仿真CAD与GIS源码库</a><br><a href="http://click.aliyun.com/m/21970/" target="_blank">【阿里云】云计算科技红利邀您免费体验！云服务器、云数据库等35+产品，6个月免费使用！</a><br></div>
+<div id="opt_under_post"></div>
+<div id="cnblogs_c1" class="c_ad_block"><a href="http://cn.udacity.com/android/?utm_source=cnbolg&amp;utm_medium=referral&amp;utm_campaign=AND03" target="_blank"><img width="300" height="250" src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/24442-20170613154413368-1655528381.jpg" alt="Andorid_0613"></a></div>
+<div id="under_post_news"><div class="itnews c_ad_block"><b>最新IT新闻</b>:<br> ·  <a href="http://news.cnblogs.com/n/571814/" target="_blank">第一次参加就甩开IBM 阿里云成为国际顶级竞技手</a><br> ·  <a href="http://news.cnblogs.com/n/571812/" target="_blank">暴雪有意重制《暗黑破坏神2》：正招聘相关人员</a><br> ·  <a href="http://news.cnblogs.com/n/571811/" target="_blank">Airbnb开设新平台，号召全世界房东向难民提供短期免费住宿</a><br> ·  <a href="http://news.cnblogs.com/n/571810/" target="_blank">顺丰铁了心做电商 包装箱贴二维码非个别地区所为</a><br> ·  <a href="http://news.cnblogs.com/n/571808/" target="_blank">你们费尽心机把芝麻信用分攒到750，到底图个啥呢？</a><br>» <a href="http://news.cnblogs.com/" title="IT新闻" target="_blank">更多新闻...</a></div></div>
+<div id="cnblogs_c2" class="c_ad_block"><a href="https://www.mtyun.com/activity-anniversary?site=cnblogs&amp;campaign=20170601sales" target="_blank"><img width="468" height="60" src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/24442-20170615095125603-13625507.png" alt="美团云"></a></div>
+<div id="under_post_kb"><div class="itnews c_ad_block" id="kb_block"><b>最新知识库文章</b>:<br><div id="kb_recent"> ·  <a href="http://kb.cnblogs.com/page/570194/" target="_blank">小printf的故事：什么是真正的程序员？</a><br> ·  <a href="http://kb.cnblogs.com/page/569992/" target="_blank">程序员的工作、学习与绩效</a><br> ·  <a href="http://kb.cnblogs.com/page/569056/" target="_blank">软件开发为什么很难</a><br> ·  <a href="http://kb.cnblogs.com/page/565901/" target="_blank">唱吧DevOps的落地，微服务CI/CD的范本技术解读</a><br> ·  <a href="http://kb.cnblogs.com/page/566523/" target="_blank">程序员，如何从平庸走向理想？</a><br></div>» <a href="http://kb.cnblogs.com/" target="_blank">更多知识库文章...</a></div></div>
+<div id="HistoryToday" class="c_ad_block"></div>
+<script type="text/javascript">
+    fixPostBody();
+    setTimeout(function () { incrementViewCount(cb_entryId); }, 50);
+    deliverAdT2();
+    deliverAdC1();
+    deliverAdC2();    
+    loadNewsAndKb();
+    loadBlogSignature();
+    LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+    GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate);
+    loadOptUnderPost();
+    GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);   
+</script>
+</div>
+
+
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+<!--done-->
+<div class="newsItem">
+<h3 class="catListTitle">公告</h3>
+	<div id="blog-news"><a href="http://info.flagcounter.com/yyLM"><img src="./JVM学习（4）——全面总结Java的GC算法和回收机制 - 木棉和木槿 - 博客园_files/saved_resource" alt="Flag Counter" border="0"></a><div id="profile_block">昵称：<a href="http://home.cnblogs.com/u/kubixuesheng/">木棉和木槿</a><br>园龄：<a href="http://home.cnblogs.com/u/kubixuesheng/" title="入园时间：2014-10-17">2年7个月</a><br>粉丝：<a href="http://home.cnblogs.com/u/kubixuesheng/followers/">225</a><br>关注：<a href="http://home.cnblogs.com/u/kubixuesheng/followees/">8</a><div id="p_b_follow"><a href="javascript:void(0);" onclick="follow(&#39;4d5b0b9a-d855-e411-b908-9dcfd8948a71&#39;)">+加关注</a></div></div></div><script type="text/javascript">loadBlogNews();</script>
+</div>
+
+			<div id="calendar"><div id="blog-calendar" style="display:none"></div><script type="text/javascript">loadBlogDefaultCalendar();</script></div>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn"><div id="sidebar_search" class="sidebar-block"></div><div id="sidebar_categories">
+<div class="catListPostCategory">
+<h3 class="catListTitle">随笔分类</h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_0_Link_0" href="http://www.cnblogs.com/kubixuesheng/category/621044.html">c/c++(9)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_1" href="http://www.cnblogs.com/kubixuesheng/category/931599.html">GitHub</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_2" href="http://www.cnblogs.com/kubixuesheng/category/785410.html">Hibernate专题(6)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_3" href="http://www.cnblogs.com/kubixuesheng/category/621045.html">iOS(4)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_4" href="http://www.cnblogs.com/kubixuesheng/category/746523.html">Java编程语言(5)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_5" href="http://www.cnblogs.com/kubixuesheng/category/784987.html">Java并发编程全面总结</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_6" href="http://www.cnblogs.com/kubixuesheng/category/786399.html">Java集合框架专题(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_7" href="http://www.cnblogs.com/kubixuesheng/category/782358.html">JVM(5)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_8" href="http://www.cnblogs.com/kubixuesheng/category/789499.html">Linux(3)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_9" href="http://www.cnblogs.com/kubixuesheng/category/954630.html">LVS</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_10" href="http://www.cnblogs.com/kubixuesheng/category/932053.html">Netty</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_11" href="http://www.cnblogs.com/kubixuesheng/category/661941.html">objective-c(8)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_12" href="http://www.cnblogs.com/kubixuesheng/category/857059.html">Python</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_13" href="http://www.cnblogs.com/kubixuesheng/category/935285.html">Redis</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_14" href="http://www.cnblogs.com/kubixuesheng/category/954796.html">SDN</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_15" href="http://www.cnblogs.com/kubixuesheng/category/937921.html">shell(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_16" href="http://www.cnblogs.com/kubixuesheng/category/941612.html">vim(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_17" href="http://www.cnblogs.com/kubixuesheng/category/633294.html">把《c++ primer》读薄(7)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_18" href="http://www.cnblogs.com/kubixuesheng/category/938170.html">把《深入理解计算机系统》 读薄</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_19" href="http://www.cnblogs.com/kubixuesheng/category/804034.html">笔试面试(8)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_20" href="http://www.cnblogs.com/kubixuesheng/category/624291.html">编程规范(5)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_21" href="http://www.cnblogs.com/kubixuesheng/category/939186.html">编译原理</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_22" href="http://www.cnblogs.com/kubixuesheng/category/833431.html">大数据(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_23" href="http://www.cnblogs.com/kubixuesheng/category/939817.html">机器学习</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_24" href="http://www.cnblogs.com/kubixuesheng/category/632662.html">计算机操作系统(4)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_25" href="http://www.cnblogs.com/kubixuesheng/category/781705.html">练手项目</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_26" href="http://www.cnblogs.com/kubixuesheng/category/661943.html">面向对象 OOP(11)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_27" href="http://www.cnblogs.com/kubixuesheng/category/939403.html">爬虫</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_28" href="http://www.cnblogs.com/kubixuesheng/category/621042.html">数据结构算法分析(30)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_29" href="http://www.cnblogs.com/kubixuesheng/category/630949.html">数据库(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_30" href="http://www.cnblogs.com/kubixuesheng/category/621050.html">网络(3)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_31" href="http://www.cnblogs.com/kubixuesheng/category/789498.html">心情旅行(3)</a> </li>
+
+</ul>
+
+</div>
+
+<div class="catListPostArchive">
+<h3 class="catListTitle">随笔档案</h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_1_Link_0" href="http://www.cnblogs.com/kubixuesheng/archive/2017/03.html">2017年3月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_1" href="http://www.cnblogs.com/kubixuesheng/archive/2017/01.html">2017年1月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_2" href="http://www.cnblogs.com/kubixuesheng/archive/2016/12.html">2016年12月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_3" href="http://www.cnblogs.com/kubixuesheng/archive/2016/10.html">2016年10月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_4" href="http://www.cnblogs.com/kubixuesheng/archive/2016/06.html">2016年6月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_5" href="http://www.cnblogs.com/kubixuesheng/archive/2016/05.html">2016年5月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_6" href="http://www.cnblogs.com/kubixuesheng/archive/2016/04.html">2016年4月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_7" href="http://www.cnblogs.com/kubixuesheng/archive/2016/03.html">2016年3月 (7)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_8" href="http://www.cnblogs.com/kubixuesheng/archive/2016/02.html">2016年2月 (6)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_9" href="http://www.cnblogs.com/kubixuesheng/archive/2016/01.html">2016年1月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_10" href="http://www.cnblogs.com/kubixuesheng/archive/2015/05.html">2015年5月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_11" href="http://www.cnblogs.com/kubixuesheng/archive/2015/04.html">2015年4月 (14)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_12" href="http://www.cnblogs.com/kubixuesheng/archive/2015/03.html">2015年3月 (31)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_13" href="http://www.cnblogs.com/kubixuesheng/archive/2014/12.html">2014年12月 (6)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_14" href="http://www.cnblogs.com/kubixuesheng/archive/2014/11.html">2014年11月 (9)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_15" href="http://www.cnblogs.com/kubixuesheng/archive/2014/10.html">2014年10月 (4)</a> </li>
+
+</ul>
+
+</div>
+
+</div><div id="sidebar_scorerank" class="sidebar-block">
+<div class="catListBlogRank">
+<h3 class="catListTitle">积分与排名</h3>
+<ul>
+	<li class="liScore">
+		积分 -	88467
+	</li>
+	<li class="liRank">
+		排名 -	2980
+	</li>
+</ul>
+</div>
+
+
+</div><div id="sidebar_recentcomments" class="sidebar-block"><div id="recent_comments_wrap">
+<div class="catListComment">
+<h3 class="catListTitle">最新评论</h3>
+	<div id="RecentCommentsBlock"><ul>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/kubixuesheng/p/5525306.html#3639138">1. Re:Hadoop学习笔记（1）：概念和整体架构</a></li>
+        <li class="recent_comment_body">加油！！</li>
+        <li class="recent_comment_author">--爱裸奔的小亮亮</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/kubixuesheng/p/4353907.html#3624116">2. Re:c++编译器对多态的实现原理总结</a></li>
+        <li class="recent_comment_body">写的真是太好了，受益匪浅。<br>总结上面的那句话的后半句应该是纯虚函数必须在子类里去实现</li>
+        <li class="recent_comment_author">--最最最爱小盖儿</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/kubixuesheng/p/6286395.html#3607858">3. Re:美团点评2017校招研发offer面经</a></li>
+        <li class="recent_comment_body">@muz阿飞谢谢...</li>
+        <li class="recent_comment_author">--木棉和木槿</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/kubixuesheng/p/6286395.html#3605063">4. Re:美团点评2017校招研发offer面经</a></li>
+        <li class="recent_comment_body">恭喜楼主！</li>
+        <li class="recent_comment_author">--muz阿飞</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/kubixuesheng/p/6286395.html#3604290">5. Re:美团点评2017校招研发offer面经</a></li>
+        <li class="recent_comment_body">@javadream谢谢...</li>
+        <li class="recent_comment_author">--木棉和木槿</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/kubixuesheng/p/6286395.html#3604289">6. Re:美团点评2017校招研发offer面经</a></li>
+        <li class="recent_comment_body">@becket谢谢...</li>
+        <li class="recent_comment_author">--木棉和木槿</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/kubixuesheng/p/6286395.html#3604287">7. Re:美团点评2017校招研发offer面经</a></li>
+        <li class="recent_comment_body">@Qinw从目前校招来看，微软系的需求极少，不好找...</li>
+        <li class="recent_comment_author">--木棉和木槿</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/kubixuesheng/p/6286395.html#3604272">8. Re:美团点评2017校招研发offer面经</a></li>
+        <li class="recent_comment_body">就是没有C#呗</li>
+        <li class="recent_comment_author">--Qinw</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/kubixuesheng/p/6286395.html#3604170">9. Re:美团点评2017校招研发offer面经</a></li>
+        <li class="recent_comment_body">辛苦！</li>
+        <li class="recent_comment_author">--becket</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/kubixuesheng/p/6286395.html#3603853">10. Re:美团点评2017校招研发offer面经</a></li>
+        <li class="recent_comment_body">答主写的很好！！谢谢答主分享，受教了。</li>
+        <li class="recent_comment_author">--javadream</li>
+</ul>
+</div>
+</div>
+</div></div><div id="sidebar_topviewedposts" class="sidebar-block"><div id="topview_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">阅读排行榜</h3>
+	<div id="TopViewPostsBlock"><ul><li><a href="http://www.cnblogs.com/kubixuesheng/p/4399705.html">1. 图的遍历（搜索）算法（深度优先算法DFS和广度优先算法BFS）(9065)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/5208647.html">2. JVM学习（4）——全面总结Java的GC算法和回收机制(5695)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/5525306.html">3. Hadoop学习笔记（1）：概念和整体架构(4820)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/4107309.html">4. 从如何判断浮点数是否等于0说起——浮点数的机器级表示(4621)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/4397798.html">5. 哈夫曼（huffman）树和哈夫曼编码(4502)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/4394509.html">6. 全面分析再动手的习惯：链表的反转问题（递归和非递归方式）(3458)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/6286395.html">7. 美团点评2017校招研发offer面经(2650)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/5300437.html">8. Hibernate（6）—— 一对多 和 多对多关联关系映射（xml和注解）总结(2552)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/4132116.html">9. OO中，先有对象还是先有类？(2389)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/5308888.html">10. 2016网易春招Java在线笔试回忆录(2343)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topcommentedposts" class="sidebar-block"><div id="topfeedback_posts_wrap">
+<div class="catListFeedback">
+<h3 class="catListTitle">评论排行榜</h3>
+	<div id="TopFeedbackPostsBlock"><ul><li><a href="http://www.cnblogs.com/kubixuesheng/p/4132116.html">1. OO中，先有对象还是先有类？(52)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/5407166.html">2. 千回百折：百度Java研发offer斩获记和经验分享(11)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/6286395.html">3. 美团点评2017校招研发offer面经(8)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/6144535.html">4. Java集合专题总结（1）：HashMap 和 HashTable 源码学习和面试总结(7)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/5308888.html">5. 2016网易春招Java在线笔试回忆录(7)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/4072608.html">6. c/c++系列的运算符优先级总结(7)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/4149050.html">7. 把《c++ primer》读薄（4-1  c和c++数组）(4)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/5199200.html">8. JVM学习（1）——通过实例总结Java虚拟机的运行机制(4)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/5525306.html">9. Hadoop学习笔记（1）：概念和整体架构(3)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/5177238.html">10. Hibernate（1）——数据访问层的架构模式(3)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topdiggedposts" class="sidebar-block"><div id="topdigg_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">推荐排行榜</h3>
+<div id="TopDiggPostsBlock"><ul><li><a href="http://www.cnblogs.com/kubixuesheng/p/5354442.html">1. 百度互联网数据研发部电面：一面记录(11)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/5199200.html">2. JVM学习（1）——通过实例总结Java虚拟机的运行机制(10)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/5407166.html">3. 千回百折：百度Java研发offer斩获记和经验分享(9)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/4107309.html">4. 从如何判断浮点数是否等于0说起——浮点数的机器级表示(9)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/5202556.html">5. JVM学习（3）——总结Java内存模型(8)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/6286395.html">6. 美团点评2017校招研发offer面经(8)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/6144535.html">7. Java集合专题总结（1）：HashMap 和 HashTable 源码学习和面试总结(8)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/5968347.html">8. Core Java 总结（异常类问题）(7)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/5177238.html">9. Hibernate（1）——数据访问层的架构模式(6)</a></li><li><a href="http://www.cnblogs.com/kubixuesheng/p/6260195.html">10. Linux系统下搭建DNS服务器——DNS原理总结(5)</a></li></ul></div>
+</div></div></div></div><script type="text/javascript">loadBlogSideColumn();</script>
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		
+<!--done-->
+Copyright ©2017 木棉和木槿
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+
+</body></html>
