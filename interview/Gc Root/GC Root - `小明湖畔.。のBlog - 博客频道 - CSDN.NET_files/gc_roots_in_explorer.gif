@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <meta name="robots" content="all">
+
+  <link rel="icon" href="/favicon.ico">
+
+  <link rel="stylesheet" type="text/css" href="/res/style.css">
+  <link rel="stylesheet" type="text/css" href="/res/docs.css">
+  <link rel="stylesheet" type="text/css" href="/parts/sidebar.css">
+  <script type="text/javascript" src="/res/jquery.min.js"></script>
+  <script type="text/javascript" src="/res/scripts.js"></script>
+  <meta name="description" content="Java profiler, .NET profiler, Performance monitoring">
+  <meta name="keywords" content="Java profiler, .NET profiler, C# profiler, memory leak, cpu profiler, monitoring, Ant, Gradle, Maven, JUnit, TestNG, Jenkins, Hudson, TeamCity">
+  <title>Java Profiler - .NET Profiler - The profilers for Java and .NET professionals</title>
+
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-313655-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+</head>
+<body>
+  <div id="content-wrapper-id">
+    <div id="top" class="color-theme bottom-shadow" style="z-index: 2">
+  <div class="dyna-padding">
+    <div id="l1-container-id" class="static-padding">
+      <div id="l1-logo-id"><a href="/"><img src="/images/yk_logo.png" alt="YourKit"></a></div>
+      <div id="l1-menu-wrapper-id">
+        <div class='l1-menu-item l1-menu-item-unselected'><a href='javascript:void(0)' onclick='toggleProducts()'>Products</a></div><div class='l1-menu-separator'>&nbsp;</div>
+<div class='l1-menu-item l1-menu-item-selected'><a href='/docs/'>Docs</a></div><div class='l1-menu-separator'>&nbsp;</div>
+<div class='l1-menu-item l1-menu-item-unselected'><a href='/forum/'>Forum</a></div><div class='l1-menu-separator'>&nbsp;</div>
+<div class='l1-menu-item l1-menu-item-unselected'><a href='/company/'>Company</a></div></div>
+
+      <div>
+        <form action="https://www.google.com/cse" id="cse-search-box" target="_blank">
+          <input type="hidden" name="cx" value="009545117114514069296:od02ms7v3ng">
+          <input type="hidden" name="ie" value="UTF-8">
+          <input type="search" name="q" class="form-control" placeholder="Search">
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="products-id" class="dyna-padding">
+    <div class="static-padding">
+      <div id="products-container-id">
+        <div class="product" style="background-image: url('/images/hlogo_yjp.png'); background-position: bottom 0.25rem right; background-repeat: no-repeat;">
+          <div class="product-title"><a href="/java/profiler/features/">Java Profiler</a></div>
+          <div class="product-description small">
+            Fully featured low overhead profiler for Java EE and Java SE platforms.
+          </div>
+          <ul class="product-links nodisc light" style="padding-bottom: 0">
+            <li style="margin-bottom: 0.75rem">
+              <a href="/java/profiler/features/">Overview & Features</a>
+            </li>
+            <li style="margin-bottom: 0.75rem">
+              <a href="/java/profiler/download/">Download</a>
+            </li>
+            <li>
+              <a href="/purchase/">Buy &amp; Upgrade</a>
+            </li>
+          </ul>
+        </div>
+        <div class="product" style="background-image: url('/images/hlogo_projectx.png'); background-position: bottom 0.25rem right; background-repeat: no-repeat;">
+          <div class="product-title"><a href="/projectx/features/">Project<span style="color: #ec6924; margin-left: 0.15rem; text-shadow: rgba(0, 0, 0, 0.7) 0 0 4px; ">X</span></a></div>
+          <div class="product-description small">
+            Monitoring and profiling solution for Gradle, Maven, Ant, JUnit and TestNG.
+          </div>
+          <ul class="product-links nodisc light" style="padding-bottom: 0">
+            <li style="margin-bottom: 0.75rem">
+              <a href="/projectx/features/">Overview & Features</a>
+            </li>
+            <li style="margin-bottom: 0.75rem">
+              <a href="/projectx/eap/">Try Early Access Version</a>
+            </li>
+          </ul>
+        </div>
+        <div class="product" style="background-image: url('/images/hlogo_ynp.png'); background-position: bottom 0.25rem right; background-repeat: no-repeat;">
+          <div class="product-title"><a href="/.net/profiler/features/">.NET Profiler</a></div>
+          <div class="product-description small">
+            Easy to use performance and memory profiler for .NET framework.
+          </div>
+          <ul class="product-links nodisc light" style="padding-bottom: 0">
+            <li style="margin-bottom: 0.75rem">
+              <a href="/.net/profiler/features/">Overview & Features</a>
+            </li>
+            <li style="margin-bottom: 0.75rem">
+              <a href="/.net/profiler/download/">Download</a>
+            </li>
+            <li>
+              <a href="/dotnet/purchase/">Buy &amp; Upgrade</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="l2-placeholder-id"></div>
+<div id="l2-id" class="dyna-padding bottom-shadow" style='display: none'>
+  <div class="static-padding" style="padding-top: 0.75em; padding-bottom: 0.75em">
+    </div>
+</div>
+<section class="dyna-padding">
+      <div id="content-id">
+        <h1 class="very-important">Moved to archive</h1>
+
+<p>
+  YourKit Java Profiler 8.0 Help was permanently moved to <a href="/download/older.html#yjp80">archive</a>.
+  It is available only as <a href="/download/yjp-80-help.zip">ZIP bundle</a>.
+</p>
+
+<p>
+</p>
+</div>
+      <aside id="sb-sidebar-id">
+  <article>
+      <header>What's new</header>
+      <div class="yk_follow_us_outer">
+          <a href="https://www.twitter.com/yourkit" target="_blank" class="yk_loc_follow_link">
+            <img src="/images/twitter.png" title="Follow us on Twitter" alt="Follow us on Twitter">
+          </a>
+          <a href="https://www.facebook.com/YourKitLLC" target="_blank" class="yk_loc_follow_link">
+            <img src="/images/facebook.png" title="Follow us on Facebook" alt="Follow us on Facebook">
+          </a>
+          <a href="https://plus.google.com/+yourkit/" rel="publisher" target="_blank">
+            <img src="/images/gplus.png" title="Follow us on Google+" alt="Follow us on Google+">
+          </a>
+        </div>
+      <div class="sb-article-content">
+        <time>June 2, 2017</time>
+YourKit ProjectX EAP started.<br>
+<div style="margin-top: 0.5rem;">New profiling and monitoring solution<br>
+for  continuous integration servers and<br>build tools.</div>
+<div class="sb-whatsnew-link"><a href="/projectx/features/">Learn more &raquo;</a></div>
+<br>
+
+<time>February 10, 2017</time>
+YourKit Java Profiler 2017.02 released
+<div class="sb-whatsnew-link"><a href="/changes/">Learn more &raquo;</a></div>
+<br>
+YourKit Profiler 2017.02 for .NET released
+<div class="sb-whatsnew-link"><a href="/dotnet/changes/">Learn more &raquo;</a></div>
+</div>
+    </article>
+  <article>
+      <header>Customers</header>
+      <div class="sb-article-content">
+        <table id="sb-customer-table-id" onclick="window.location = '/customers/'">
+  <tr>
+    <td><img src="/images/clogo_google.png" title="Google" alt="Google"></td>
+    <td><img src="/images/clogo_microsoft.png" title="Microsoft Corporation" alt="Microsoft Corporation"></td>
+  </tr>
+  <tr>
+    <td style="white-space: nowrap">
+      <img src="/images/clogo_apple.png" style="padding-right: 0.5rem" title="Apple Inc." alt="Apple Inc.">
+      <img src="/images/clogo_volkswagen.png" style="vertical-align: bottom; padding-right: 0.5rem" title="Volkswagen AG" alt="Volkswagen AG">
+      <img src="/images/clogo_dbank.png" style="vertical-align: bottom" title="Deutsche Bank AG" alt="Deutsche Bank AG">
+    </td>
+    <td style="vertical-align: middle;"><img src="/images/clogo_boeing.png" title="The Boeing Company" alt="The Boeing Company"></td>
+  </tr>
+  <tr>
+    <td><img src="/images/clogo_samsung.png" title="Samsung Group" alt="Samsung Group"></td>
+    <td><img src="/images/clogo_citibank.png" title="Citibank" alt="Citibank"></td>
+  </tr>
+  <tr>
+    <td><img src="/images/clogo_linkedin.png" title="LinkedIn" alt="LinkedIn"></td>
+    <td><img src="/images/clogo_siemens.png" title="Siemens AG" alt="Siemens AG"></td>
+  </tr>
+  <tr>
+    <td><img src="/images/clogo_daimler.png" title="Daimler AG" alt="Daimler AG"></td>
+    <td><img src="/images/clogo_facebook.png" title="Facebook" alt="Facebook"></td>
+  </tr>
+  <tr>
+    <td><img src="/images/clogo_paypal.png" title="PayPal Inc." alt="PayPal Inc."></td>
+    <td rowspan="2"><img src="/images/clogo_intel.png" title="Intel Corporation" alt="Intel Corporation"></td>
+  </tr>
+  <tr>
+    <td><img src="/images/clogo_nasdaq.png" title="NASDAQ" alt="NASDAQ"></td>
+  </tr>
+</table>
+</div>
+    </article>
+  </aside>
+</section>
+
+    <div id="footer-wrapper-id" class="color-theme dyna-padding">
+      <div id="footer-id" class="static-padding">
+        Copyright &copy; 2003-2017 YourKit. All rights reserved.
+      </div>
+    </div>
+  </div>
+</body>
+</html>
