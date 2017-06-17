@@ -1,0 +1,1330 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0054)http://blog.csdn.net/zsuguangh/article/details/6429592 -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">  
+
+            <link rel="canonical" href="http://blog.csdn.net/zsuguangh/article/details/6429592"> 
+ <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="http://blog.csdn.net/zsuguangh/article/details/6429592#">
+
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848"> 
+       
+    <title>Java垃圾回收机制 - zsuguangh的专栏
+        - 博客频道 - CSDN.NET</title>
+    
+    <meta name="description" content="综合了若干人的blog～1. 垃圾回收的意义　　在C++中，对象所占的内存在程序结束运行之前一直被占用，在明确释放之前不能分配给其它对象；而在Java中，当没有对象引用指向原先分配给某个对象的内存时，该内存便成为垃圾。JVM的一个系统级线程会自动释放该内存块。垃圾回收意味着程序不再需要的对象是无用信息，这些信息将被丢弃。当一个对象不再被引用的时候，内存回收它占领的空间，以便空间被后来的新对象使用。事实上，除了释放没用的对象，垃圾回收也可以清除内存记录碎片。由于创建对象和垃圾回收器释放丢弃对象所占的内存空">
+
+    <meta name="keywords" content="java,算法,jvm">
+
+   
+    <script src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/hm.js"></script><script src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/blog_static_head.min.js" type="text/javascript"></script>
+
+    
+        <!--new top-->
+       
+       
+        <!--new top-->
+    
+      <!-- ad begin -->
+         
+    <!-- ad end-->
+
+    <link rel="Stylesheet" type="text/css" href="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/style.css">
+
+    
+
+    <link id="RSSLink" title="RSS" type="application/rss+xml" rel="alternate" href="http://blog.csdn.net/zsuguangh/rss/list">
+    <link rel="shortcut icon" href="http://c.csdnimg.cn/public/favicon.ico">
+    <link type="text/css" rel="stylesheet" href="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/default.css">
+ 
+
+
+
+
+    <link href="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/csdn_public_blog_detail.min.css" type="text/css" rel="stylesheet">
+     
+         <link rel="stylesheet" href="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/csdn_blog_detail.min.css">
+
+  
+
+
+    <!-- 请置于所有广告位代码之前 --> 
+            <script src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/ds.js"></script>
+
+<script src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/share.js"></script><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Hover_Arrow {position: absolute; width: 15px; height: 11px; cursor: pointer}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 5px 0px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -khtml-border-radius: 5px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 1px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; color: #666666}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: .7em}
+.MathJax_MenuRadioCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuLabel {padding: 1px 2em 3px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #DDDDDD; margin: 4px 3px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: #606872; color: white}
+.MathJax_Menu_Close {position: absolute; width: 31px; height: 31px; top: -15px; left: -15px}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><link href="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/bdsstyle.css" rel="stylesheet" type="text/css"><link rel="stylesheet" type="text/css" href="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/style(1).css"><link rel="stylesheet" type="text/css" href="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/style(2).css"><script src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/logger.js"></script><style type="text/css">
+:root #header + #content > #left > #rlblock_left
+{ display: none !important; }</style><link rel="stylesheet" href="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/share_style0_16.css"></head>
+
+
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/o.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div><iframe frameborder="0" style="display: none;" src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/saved_resource.html"></iframe><div id="MathJax_Message" style="display: none;"></div><div class="csdn-toolbar csdn-toolbar-skin-black ">        <div class="container row center-block ">          <div class="col-md-3 pull-left logo clearfix"><a href="http://www.csdn.net/?ref=toolbar" title="CSDN首页" target="_blank" class="icon"></a><a title="频道首页" href="http://blog.csdn.net/?ref=toolbar_logo" class="img blog-icon"></a></div>          <div class="pull-right login-wrap ">            <ul class="btns">              <li class="loginlink"><a href="https://passport.csdn.net/account/login?ref=toolbar" target="_top">登录&nbsp;</a>|<a target="_top" href="http://passport.csdn.net/account/mobileregister?ref=toolbar&amp;action=mobileRegister">&nbsp;注册</a></li>              <li class="search">                <div class="icon on-search-icon">                  <div class="wrap">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <form action="http://so.csdn.net/search" id="toolbar_search" method="get" target="_blank">                      <input type="hidden" value="toolbar" name="ref" accesskey="2">                      <div class="border">                        <input placeholder="搜索" type="text" value="" name="q" accesskey="2"><span class="icon-enter-sm"></span>                      </div>                    </form>                  </div>                </div>              </li>              <li class="favor">                <div class="icon on-favor-icon">                  <div class="wrap">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <div style="display:none;" class="favor-success"><span class="msg">收藏成功</span>                      <div class="btns"><span class="btn btn-primary ok">确定</span></div>                    </div>                    <div style="display:none;" class="favor-failed"><span class="icon-danger-lg"></span><span class="msg">收藏失败，请重新收藏</span>                      <div class="btns"><span class="btn btn-primary ok">确定</span></div>                    </div>                    <form role="form" class="form-horizontal favor-form">                      <div class="form-group">                        <div class="clearfix">                          <label for="input-title" class="col-sm-2 control-label"><span class="red_txt">*</span>标题</label>                          <div class="col-sm-10">                            <input id="inputTitle" type="text" placeholder="" class="title form-control">                          </div>                        </div>                        <div class="alert alert-danger"><strong></strong>标题不能为空</div>                      </div>                      <div class="form-group" style="display:none;">                        <label for="input-url" class="col-sm-2 control-label">网址</label>                        <div class="col-sm-10">                          <input id="input-url" type="text" placeholder="" class="url form-control">                        </div>                      </div>                      <div class="form-group">                        <label for="input-tag" class="col-sm-2 tag control-label">标签</label>                        <div class="col-sm-10">                          <input id="input-tag" type="text" class="form-control tag">                        </div>                      </div>                      <div class="form-group">                        <label for="input-description" class="description col-sm-2 control-label">位置</label>                        <div class="col-sm-10">                          <div class="my_lib_box">                            个人主页&nbsp;-&nbsp;<a href="http://my.csdn.net/" target="_blank">我的知识</a>                          </div>                          <div class="checkbox">                            <div class="pull-left">                              <label>                                <input type="checkbox" name="share" class="save_lib_map" checked="checked">同时保存至：                              </label>                            </div>                            <div class="pull-left">                              <div class="dropdown">                                <button id="toolbar_sele_map" type="button">                                  选择知识图谱                                  <i class="fa fa-chevron-down"></i>                                </button>                                <div class="top_arr"></div>                                <div class="outside">                                  <ul class="dropdown-menu" id="toolbar_Design_knowledge"><li>选择知识图谱</li></ul>                                </div>                              </div>                            </div>                            <div class="pull-left new_txt">                              <a href="http://lib.csdn.net/my/create/structure" target="_blank">新建？</a>                            </div>                          </div>                        </div>                      </div>                      <div class="form-group">                        <div class="col-sm-offset-2 col-sm-10 ft">                          <div class="col-sm-4 pull-left" style="display:none">                            <div class="checkbox">                              <label>                                <input type="checkbox" name="share" checked="checked" class="share">公开                              </label>                            </div>                          </div>                          <div class="col-sm-8 pull-right favor-btns">                            <button type="button" class="cancel btn btn-default">取消</button>                            <button type="submit" class="submit btn btn-primary">收藏</button>                          </div>                        </div>                      </div>                    </form>                  </div>                </div>              </li>              <li class="notify">                <div style="display:none" class="number"></div>                <div style="" class="icon-hasnotes-sm"></div>                <div id="header_notice_num"><div class="icon-hasnotes" style=""></div></div>                <div class="icon on-notify-icon">                  <div class="wrap">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <div id="note1" class="csdn_note" style="left: -212px; top: 795px;">                      <div class="box"><div class="notifications notice_list_con curr">  <div class="menu_title">    <span class="title"><a href="http://msg.csdn.net/letters" target="_blank" class="read_all">查看所有私信</a><a href="http://msg.csdn.net/" target="_blank" class="go_all">查看所有通知</a></span>  </div>  <div class="loading"></div>  <div class="empty">暂没有新通知</div>  <div class="notice_content" style="overflow-y: auto; max-height: 270px;"></div></div><div class="notifications detail_con" style="display: none">  <div class="menu_title">    <span class="title">      <a class="go_back" href="javascript:void 0;">返回通知列表</a>      <a class="notifications_page_none nextnote" href="javascript:void 0;">下一条</a>      <a class="notifications_page prvnote" href="javascript:void 0;">上一条</a>    </span>  </div>  <div class="notice_content" style="overflow-y: scroll; height: 250px;"></div></div><div class="error"></div></div>                    <iframe src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/saved_resource(1).html" frameborder="0" allowtransparency="true" style="z-index:-1;position:absolute;top:0;left:0;width:100%;height:100%;background:transparent"></iframe></div>                  </div>                </div>              </li>              <li class="ugc">                <div class="icon on-ugc-icon">                  <div class="wrap clearfix">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <dl>                      <dt><a href="http://geek.csdn.net/news/expert?ref=toolbar" target="_blank" class="p-news clearfix" style="display:none;"><em class="icon"></em><span>分享资讯</span></a></dt>                      <dt style="border: none;"><a href="http://u.download.csdn.net/upload?ref=toolbar" target="_blank" class="p-doc clearfix"><em class="icon"></em><span>传PPT/文档</span></a></dt>                      <dt><a href="http://bbs.csdn.net/topics/new?ref=toolbar" target="_blank" class="p-ask clearfix"><em class="icon"></em><span>提问题</span></a></dt>                      <dt><a href="http://write.blog.csdn.net/postedit?ref=toolbar" target="_blank" class="p-blog clearfix"><em class="icon"></em><span>写博客</span></a></dt>                      <dt><a href="http://u.download.csdn.net/upload?ref=toolbar" target="_blank" class="p-src clearfix"><em class="icon"></em><span>传资源</span></a></dt>                      <dt><a href="https://code.csdn.net/projects/new?ref=toolbar" target="_blank" class="c-obj clearfix"><em class="icon"></em><span>创建项目</span></a></dt>                      <dt><a href="https://code.csdn.net/snippets/new?ref=toolbar" target="_blank" class="c-code clearfix"><em class="icon"></em><span>创建代码片</span></a></dt>                    </dl>                  </div>                </div>              </li>              <li class="profile">                <div class="icon on-profile-icon"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/2_shenjianli2016.jpg" class="curr-icon-img">                  <div class="wrap clearfix">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <div class="bd">                      <dl class="clearfix">                        <dt class="pull-left img"><a target="_blank" href="http://my.csdn.net/?ref=toolbar" class="avatar"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/2_shenjianli2016.jpg"></a></dt>                        <dd class="info" style="border: none;"><a target="_blank" href="http://my.csdn.net/?ref=toolbar" class="nickname">shenjianli2016</a><span class="dec"><a class="fill-dec" href="http://my.csdn.net/" target="_blank">编辑自我介绍，让更多人了解你<span class="write-icon"></span></a></span></dd>                      </dl>                    </div>                    <div class="ft clearfix"><a target="_blank" href="http://my.csdn.net/my/account/changepwd?ref=toolbar" class="pull-left"><span class="icon-cog"></span>帐号设置</a><a href="https://passport.csdn.net/account/logout?ref=toolbar" target="_top" class="pull-left" style="margin-left:132px; width:18px; height:27px; white-space:nowrap; overflow:hidden;"><span class="icon-signout"></span><span class="out">退出</span></a></div>                  </div>                </div>              </li>              <li class="apps">                <div id="chasnew123" class="hasnew" style="display: none;"></div>                <div id="cappsarea123" class="icon on-apps-icon">                  <div class="wrap clearfix">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                  <div class="detail">                    <dl>                      <dt>                        <h5>社区</h5>                      </dt>                      <dd> <a href="http://blog.csdn.net/?ref=toolbar" target="_blank">博客</a></dd>                      <dd> <a href="http://bbs.csdn.net/?ref=toolbar" target="_blank">论坛</a></dd>                      <dd> <a href="http://download.csdn.net/?ref=toolbar" target="_blank">下载</a></dd>                      <dd> <a href="http://lib.csdn.net/?ref=toolbar" target="_blank">知识库</a></dd>                      <dd><a href="http://ask.csdn.net/?ref=toolbar" target="_blank">技术问答</a></dd>                      <dd><a href="http://geek.csdn.net/?ref=toolbar" target="_blank">极客头条</a></dd>                      <dd style="display:none"> <a href="http://hero.csdn.net/?ref=toolbar" target="_blank">英雄会</a></dd>                    </dl>                  </div>                  <div class="detail">                    <dl>                      <dt>                        <h5>服务</h5>                      </dt>                      <dd style="display:none"> <a href="http://job.csdn.net/?ref=toolbar" target="_blank">JOB<img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/new.gif" style="display: none; margin-top: -26px; width: 23px;"></a></dd>                      <dd> <a href="http://edu.csdn.net/?ref=toolbar" target="_blank">学院<img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/new.gif" style="display: none; margin-top: -26px; width: 23px;"></a></dd>                      <dd> <a href="https://code.csdn.net/?ref=toolbar" target="_blank">CODE</a></dd>                      <dd> <a href="http://huiyi.csdn.net/?ref=toolbar" target="_blank">活动</a></dd>                      <dd> <a href="http://www.csto.com/?ref=toolbar" target="_blank">CSTO</a></dd>                      <dd> <a href="http://mall.csdn.net/?ref=toolbar" target="_blank">C币兑换<img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/new.gif" style="display: none; margin-top: -26px; width: 23px;"></a></dd>                    </dl>                  </div>                  <div class="detail last">                    <dl>                      <dt>                        <h5>俱乐部</h5>                      </dt>                      <dd> <a href="http://cto.csdn.net/?ref=toolbar" target="_blank">CTO俱乐部</a></dd>                      <dd> <a href="http://student.csdn.net/?ref=toolbar" target="_blank">高校俱乐部</a></dd>                    </dl>                  </div>                </div>              </div>            </li>            </ul>          </div>        </div>    </div>
+        <div class="tracking-ad" data-view="true" data-mod="ad_popu_72" data-mtp="62" data-order="40" data-con="ad_content_2072">
+                     <script id="popuLayer_js_q" src="http://ads.csdn.net/js/popuLayer.js" defer="defer" type="text/javascript"></script>
+                <div id="layerd" style="position: fixed;bottom:0px;right:0px;line-height:0px;z-index:1000">
+    	                <div class="J_close layer_close" style="display:;background-color:#efefef;padding:0px;color:#333;font:12px/24px Helvetica,Tahoma,Arial,sans-serif;text-align:right;">关闭</div><!-- 广告占位容器 --><div id="cpro_u2895327"><iframe id="iframeu2895327_0" src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/jcxm.html" width="300" height="250" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0;vertical-align:bottom;margin:0;width:300px;height:250px" allowtransparency="true"></iframe></div></div>
+                <script>  document.getElementById("popuLayer_js_q").onload = function () { var styObjd = styObj = { width: "300px", "height": parseInt(250) + 28 }; window.CSDN.Layer.PopuLayer("#layerd", { storageName: "layerd", styleObj: styObjd, total: 50, expoire: 1000 * 60 }); }</script><!-- 投放代码 --><script type="text/javascript">                /*服务器频道首页置顶Banner960*90，创建于2014-7-3*/    (window.cproArray = window.cproArray || []).push({ id: "u2895327" });  </script>  <script src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/c.js" type="text/javascript"></script>
+     
+        </div>
+
+    <!-- 广告位开始 -->
+        
+    <!-- 广告位结束 -->
+
+    
+   
+      <!--new top-->
+    <script id="toolbar-tpl-scriptId" fixed="true" prod="blog" skin="black" src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/html.js" type="text/javascript"></script>
+     <!--new top-->
+    <div id="container">
+        <div id="header">
+    <div class="header">
+        <div id="blog_title">
+            <h2>
+                <a href="http://blog.csdn.net/zsuguangh">zsuguangh的专栏</a></h2>
+            <h3></h3>
+            <div class="clear">
+            </div>
+        </div>
+        <div class="clear">
+        </div>
+        
+     
+    </div>
+</div>
+<div id="navigator">
+    <div class="navigator_bg">
+    </div>
+    <div class="navigator">
+        <ul>           
+                <li id="btnContents"><a href="http://blog.csdn.net/zsuguangh?viewmode=contents"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_mulu&#39;])">
+                    <img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/ico_list.gif">目录视图</span></a></li>
+                <li id="btnView"><a href="http://blog.csdn.net/zsuguangh?viewmode=list"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_zhaiyao&#39;])">
+                    <img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/ico_summary.gif">摘要视图</span></a></li>
+                <li id="btnRss"><a href="http://blog.csdn.net/zsuguangh/rss/list"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_RSS&#39;])">
+                    <img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/ico_rss.gif">订阅</span></a></li>                
+            
+
+            </ul>
+    </div>
+</div>
+<script type="text/javascript">
+    var username = "zsuguangh";
+    var _blogger = username;
+    var blog_address = "http://blog.csdn.net/zsuguangh";
+    var static_host = "http://static.blog.csdn.net";
+    var currentUserName = "shenjianli2016";  
+</script>
+
+        <div id="body">
+            <div id="main">
+                <div class="main">
+                        <div class="ad_class">
+<div class="notice tracking-ad" data-mod="popu_3"> 
+
+
+<a href="http://blog.csdn.net/blogdevteam/article/details/72917467" target="_blank">
+<font color="red"><strong>征文 | 从高考，到程序员</strong></font></a>
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="http://edu.csdn.net/huiyiCourse/detail/422?ref=text" target="_blank">
+<font color="blue"><strong>深度学习与TensorFlow入门一课搞定！</strong></font></a>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+<a href="http://blog.csdn.net/broadview2006/article/details/73230409" target="_blank">
+<font color="red"><strong>每周荐书 | Web扫描、HTML 5、Python（评论送书）</strong></font></a>
+
+
+</div>                        </div>
+                        
+
+
+
+  
+
+
+
+
+
+
+<script type="text/javascript" src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/category.js"></script>
+
+  <script type="text/ecmascript">
+      window.quickReplyflag = true;
+           
+            var isBole = false;
+            
+      
+      var fasrc="http://my.csdn.net/my/favorite/miniadd?t=Java%e5%9e%83%e5%9c%be%e5%9b%9e%e6%94%b6%e6%9c%ba%e5%88%b6&u=http://blog.csdn.net/zsuguangh/article/details/6429592"
+
+    </script>
+<div id="article_details" class="details">
+    <div class="article_title">   
+         <span class="ico ico_type_Original"></span>
+
+
+    <h1>
+        <span class="link_title"><a href="http://blog.csdn.net/zsuguangh/article/details/6429592">
+        Java垃圾回收机制            
+        </a></span>
+    </h1>
+</div>
+
+   
+
+        <div class="article_manage clearfix">
+        <div class="article_l">
+            <span class="link_categories">
+            标签：
+              <a href="http://www.csdn.net/tag/java" target="_blank" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_tag&#39;]);">java</a><a href="http://www.csdn.net/tag/%e7%ae%97%e6%b3%95" target="_blank" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_tag&#39;]);">算法</a><a href="http://www.csdn.net/tag/jvm" target="_blank" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_tag&#39;]);">jvm</a><a href="http://www.csdn.net/tag/string" target="_blank" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_tag&#39;]);">string</a><a href="http://www.csdn.net/tag/generation" target="_blank" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_tag&#39;]);">generation</a><a href="http://www.csdn.net/tag/%e5%b7%a5%e4%bd%9c" target="_blank" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_tag&#39;]);">工作</a>
+            </span>
+        </div>
+        <div class="article_r">
+            <span class="link_postdate">2011-05-18 15:02</span>
+            <span class="link_view" title="阅读次数">122407人阅读</span>
+            <span class="link_comments" title="评论次数"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#comments" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_pinglun&#39;])">评论</a>(40)</span>
+            <span class="link_collect tracking-ad" data-mod="popu_171"> <a href="javascript:void(0);" onclick="javascript:collectArticle(&#39;Java%e5%9e%83%e5%9c%be%e5%9b%9e%e6%94%b6%e6%9c%ba%e5%88%b6&#39;,&#39;6429592&#39;);return false;" title="收藏" target="_blank">收藏</a></span>
+             <span class="link_report"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" onclick="javascript:report(6429592,2);return false;" title="举报">举报</a></span>
+
+        </div>
+    </div>
+    <div class="embody" style="display:none" id="embody">
+        <span class="embody_t">本文章已收录于：</span>
+        <div class="embody_c" id="lib" value="{&quot;err&quot;:0,&quot;msg&quot;:&quot;ok&quot;,&quot;data&quot;:[]}"></div>
+    </div>
+    <style type="text/css">        
+            .embody{
+                padding:10px 10px 10px;
+                margin:0 -20px;
+                border-bottom:solid 1px #ededed;                
+            }
+            .embody_b{
+                margin:0 ;
+                padding:10px 0;
+            }
+            .embody .embody_t,.embody .embody_c{
+                display: inline-block;
+                margin-right:10px;
+            }
+            .embody_t{
+                font-size: 12px;
+                color:#999;
+            }
+            .embody_c{
+                font-size: 12px;
+            }
+            .embody_c img,.embody_c em{
+                display: inline-block;
+                vertical-align: middle;               
+            }
+             .embody_c img{               
+                width:30px;
+                height:30px;
+            }
+            .embody_c em{
+                margin: 0 20px 0 10px;
+                color:#333;
+                font-style: normal;
+            }
+    </style>
+    <script type="text/javascript">
+        $(function () {
+            try
+            {
+                var lib = eval("("+$("#lib").attr("value")+")");
+                var html = "";
+                if (lib.err == 0) {
+                    $.each(lib.data, function (i) {
+                        var obj = lib.data[i];
+                        //html += '<img src="' + obj.logo + '"/>' + obj.name + "&nbsp;&nbsp;";
+                        html += ' <a href="' + obj.url + '" target="_blank">';
+                        html += ' <img src="' + obj.logo + '">';
+                        html += ' <em><b>' + obj.name + '</b></em>';
+                        html += ' </a>';
+                    });
+                    if (html != "") {
+                        setTimeout(function () {
+                            $("#lib").html(html);                      
+                            $("#embody").show();
+                        }, 100);
+                    }
+                }      
+            } catch (err)
+            { }
+            
+        });
+    </script>
+      <div class="category clearfix">
+        <div class="category_l">
+           <img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/category_icon.jpg">
+            <span>分类：</span>
+        </div>
+        <div class="category_r">
+                    <label onclick="GetCategoryArticles(&#39;801169&#39;,&#39;zsuguangh&#39;,&#39;top&#39;,&#39;6429592&#39;);">
+                        <span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_fenlei&#39;]);">Java<em>（4）</em></span>
+                      <img class="arrow-down" src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/arrow_triangle _down.jpg" style="display:inline;">
+                      <img class="arrow-up" src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/arrow_triangle_up.jpg" style="display:none;">
+                        <div class="subItem">
+                            <div class="subItem_t"><a href="http://blog.csdn.net/zsuguangh/article/category/801169" target="_blank">作者同类文章</a><i class="J_close">X</i></div>
+                            <ul class="subItem_l" id="top_801169">                            
+                            </ul>
+                        </div>
+                    </label>                    
+        </div>
+    </div>
+        <div class="bog_copyright">         
+            <p class="copyright_p">版权声明：本文为博主原创文章，未经博主允许不得转载。</p>
+        </div>
+
+  
+
+  
+  
+     
+
+
+<div id="article_content" class="article_content tracking-ad" data-mod="popu_307" data-dsm="post">
+<p><span style="font-size: x-small;"><span style="color: #ff0000;"><span style="font-size: small;">综合了若干人的blog～</span></span></span></p>
+<p><strong><span style="font-size: medium;">1. 垃圾回收的意义<br></span></strong>　　在C++中，对象所占的内存在程序结束运行之前一直被占用，在明确释放之前不能分配给其它对象；而在Java中，当没有对象引用指向原先分配给某个对象的内存时，该内存便成为垃圾。JVM的一个系统级线程会自动释放该内存块。垃圾回收意味着程序不再需要的对象是"无用信息"，这些信息将被丢弃。当一个对象不再被引用的时候，内存回收它占领的空间，以便空间被后来的新对象使用。事实上，除了<span style="background-color: #ffff00;">释放没用的对象</span>，垃圾回收也可以<span style="background-color: #ffff00;">清除内存记录碎片</span>。由于创建对象和垃圾回收器释放丢弃对象所占的内存空间，内存会出现碎片。碎片是分配给对象的内存块之间的空闲内存洞。碎片整理将所占用的堆内存移到堆的一端，JVM将整理出的内存分配给新的对象。<br>　　垃圾回收能自动释放内存空间，减轻编程的负担。这使Java 虚拟机具有一些优点。首先，它能使编程效率提高。在没有垃圾回收机制的时候，可能要花许多时间来解决一个难懂的存储器问题。在用Java语言编程的时候，靠垃圾回收机制可大大缩短时间。其次是它保护程序的完整性， 垃圾回收是Java语言安全性策略的一个重要部份。<br>　　垃圾回收的一个潜在的缺点是它的开销影响程序性能。Java虚拟机必须追踪运行程序中有用的对象，而且最终释放没用的对象。这一个过程需要花费处理器的时间。其次垃圾回收算法的不完备性，早先采用的某些垃圾回收算法就不能保证100%收集到所有的废弃内存。当然随着垃圾回收算法的不断改进以及软硬件运行效率的不断提升，这些问题都可以迎刃而解。<br><strong><span style="font-size: medium;">2. 垃圾收集的算法分析</span></strong><br>　　Java语言规范没有明确地说明JVM使用哪种垃圾回收算法，但是任何一种垃圾回收算法一般要做2件基本的事情：（1）发现无用信息对象；（2）回收被无用对象占用的内存空间，使该空间可被程序再次使用。<br>　　大多数垃圾回收算法使用了根集(root set)这个概念；所谓根集就是正在执行的Java程序可以访问的引用变量的集合(包括局部变量、参数、类变量)，程序可以使用引用变量访问对象的属性和调用对象的方法。垃圾回收首先需要确定从根开始哪些是可达的和哪些是不可达的，从根集可达的对象都是活动对象，它们不能作为垃圾被回收，这也包括从根集间接可达的对象。而根集通过任意路径不可达的对象符合垃圾收集的条件，应该被回收。下面介绍几个常用的算法。<br>　　<span style="font-size: small;"><strong>2.1. 引用计数法(Reference Counting Collector)<br></strong></span>　　引用计数法是唯一没有使用根集的垃圾回收的法，该算法<span style="background-color: #ffff00;">使用引用计数器来区分存活对象和不再使用的对象</span>。一般来说，堆中的每个对象对应一个引用计数器。当每一次创建一个对象并赋给一个变量时，引用计数器置为1。当对象被赋给任意变量时，引用计数器每次加1当对象出了作用域后(该对象丢弃不再使用)，引用计数器减1，一旦引用计数器为0，对象就满足了垃圾收集的条件。<br>　　基于引用计数器的垃圾收集器运行较快，不会长时间中断程序执行，适宜地必须实时运行的程序。但引用计数器增加了程序执行的开销，因为每次对象赋给新的变量，计数器加1，而每次现有对象出了作用域生，计数器减1。<br>　　<span style="font-size: x-small;"><strong><span style="font-size: small;">2.2. tracing算法(Tracing Collector)</span></strong><br></span>　　tracing算法是为了解决引用计数法的问题而提出，它使用了根集的概念。基于tracing算法的垃圾收集器从根集开始扫描，识别出哪些对象可达，哪些对象不可达，并用某种方式标记可达对象，例如对每个可达对象设置一个或多个位。在扫描识别过程中，基于tracing算法的垃圾收集也称为<span style="background-color: #ffff00;">标记和清除(mark-and-sweep)</span>垃圾收集器.<br>　　<span style="font-size: small;"><strong>2.3. compacting算法(Compacting Collector)</strong><br></span>　　为了解决堆碎片问题，基于tracing的垃圾回收吸收了Compacting算法的思想，在清除的过程中，算法将所有的对象移到堆的一端，堆的另一端就变成了一个相邻的空闲内存区，收集器会对它移动的所有对象的所有引用进行更新，使得这些引用在新的位置能识别原来的对象。在基于Compacting算法的收集器的实现中，一般增加句柄和句柄表。<br>　　<strong><span style="font-size: small;">2.4. copying算法(Coping Collector)<br></span></strong>　　该算法的提出是为了克服句柄的开销和解决堆碎片的垃圾回收。它开始时把堆分成一个对象区和多个空闲区，程序从对象区为对象分配空间，当对象满了，基于coping算法的垃圾回收就从根集中扫描活动对象，并将每个活动对象复制到空闲区(使得活动对象所占的内存之间没有空闲间隔)，这样空闲区变成了对象区，原来的对象区变成了空闲区，程序会在新的对象区中分配内存。<br>　　一种典型的基于coping算法的垃圾回收是stop-and-copy算法，它将堆分成对象区和空闲区域区，在对象区与空闲区域的切换过程中，程序暂停执行。<br>　　<span style="font-size: small;"><strong>2.5.</strong> <strong>generation算法(Generational Collector)</strong><br></span>　　stop-and-copy垃圾收集器的一个缺陷是收集器必须复制所有的活动对象，这增加了程序等待时间，这是coping算法低效的原因。在程序设计中有这样的规律：多数对象存在的时间比较短，少数的存在时间比较长。因此，<span style="background-color: #ffff00;">generation算法将堆分成两个或多个，每个子堆作为对象的一代 (generation)</span>。由于多数对象存在的时间比较短，随着程序丢弃不使用的对象，垃圾收集器将从最年轻的子堆中收集这些对象。在分代式的垃圾收集器运行后，上次运行存活下来的对象移到下一最高代的子堆中，由于老一代的子堆不会经常被回收，因而节省了时间。<br>　　<span style="font-size: x-small;"><strong><span style="font-size: small;">2.6. adaptive算法(Adaptive Collector)</span></strong></span><br>　　在特定的情况下，一些垃圾收集算法会优于其它算法。基于Adaptive算法的垃圾收集器就是监控当前堆的使用情况，并将选择适当算法的垃圾收集器。</p>
+<p><span style="font-size: medium;"><strong>3. System.gc()方法</strong></span></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 命令行参数透视垃圾收集器的运行<br>　　使用System.gc()可以不管JVM使用的是哪一种垃圾回收的算法，都可以请求Java的垃圾回收。在命令行中有一个参数-verbosegc可以查看Java使用的堆内存的情况，它的格式如下：<br>　　java -verbosegc classfile<br>　　可以看个例子：<br>　　<div class="dp-highlighter bg_java"><div class="bar"><div class="tools"><b>[java]</b> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#" class="ViewSource" title="view plain" onclick="dp.sh.Toolbar.Command(&#39;ViewSource&#39;,this);return false;" target="_blank">view plain</a><span data-mod="popu_168"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#" class="CopyToClipboard" title="copy" onclick="dp.sh.Toolbar.Command(&#39;CopyToClipboard&#39;,this);return false;" target="_blank">copy</a><div style="position: absolute; left: 551px; top: 2133px; width: 18px; height: 18px; z-index: 99;"><embed id="ZeroClipboardMovie_1" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="18" height="18" name="ZeroClipboardMovie_1" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=1&amp;width=18&amp;height=18" wmode="transparent"></div></span><span data-mod="popu_169"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#" class="PrintSource" title="print" onclick="dp.sh.Toolbar.Command(&#39;PrintSource&#39;,this);return false;" target="_blank">print</a></span><a href="http://blog.csdn.net/zsuguangh/article/details/6429592#" class="About" title="?" onclick="dp.sh.Toolbar.Command(&#39;About&#39;,this);return false;" target="_blank">?</a></div></div><ol start="1" class="dp-j"><li class="alt"><span><span class="keyword">class</span><span>&nbsp;TestGC&nbsp;&nbsp;</span></span></li><li class=""><span>{&nbsp;&nbsp;</span></li><li class="alt"><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public</span><span>&nbsp;</span><span class="keyword">static</span><span>&nbsp;</span><span class="keyword">void</span><span>&nbsp;main(String[]&nbsp;args)&nbsp;&nbsp;</span></span></li><li class=""><span>&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;</span></li><li class="alt"><span>　　&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">new</span><span>&nbsp;TestGC();&nbsp;&nbsp;</span></span></li><li class=""><span>　　&nbsp;&nbsp;&nbsp;&nbsp;System.gc();&nbsp;&nbsp;</span></li><li class="alt"><span>　　&nbsp;&nbsp;&nbsp;&nbsp;System.runFinalization();&nbsp;&nbsp;</span></li><li class=""><span>　　&nbsp;}&nbsp;&nbsp;</span></li><li class="alt"><span>}&nbsp;&nbsp;</span></li></ol></div><textarea cols="85" rows="9" name="code" class="java" style="display: none;">class TestGC
+{
+    public static void main(String[] args)
+    {
+　　    new TestGC();
+　　    System.gc();
+　　    System.runFinalization();
+　　 }
+}</textarea> </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>　　在这个例子中，一个新的对象被创建，由于它没有使用，所以该对象迅速地变为不可达，程序编译后，执行命令： java -verbosegc TestGC 后结果为：<br>　　[Full GC 168K-&gt;97K(1984K)， 0.0253873 secs]<br>　　机器的环境为，Windows 2000 + JDK1.3.1，箭头前后的数据168K和97K分别表示垃圾收集GC前后所有存活对象使用的内存容量，说明有168K-97K=71K的对象容量被回收，括号内的数据1984K为堆内存的总容量，收集所需要的时间是0.0253873秒（这个时间在每次执行的时候会有所不同）。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="background-color: #ffff00;">需要注意的是，调用System.gc()也仅仅是一个请求(建议)。JVM接受这个消息后，并不是立即做垃圾回收，而只是对几个垃圾回收算法做了加权，使垃圾回收操作容易发生，或提早发生，或回收较多而已。</span></p>
+<p><span style="font-size: medium;"><strong>4. finalize()方法</strong></span></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在JVM垃圾回收器收集一个对象之前，一般要求程序调用适当的方法释放资源，但在没有明确释放资源的情况下，Java提供了缺省机制来终止该对象心释放资源，这个方法就是finalize（）。它的原型为：<br>　　protected void finalize() throws Throwable<br>　　在finalize()方法返回之后，对象消失，垃圾收集开始执行。原型中的throws Throwable表示它可以抛出任何类型的异常。<br>　　之所以要使用finalize()，是存在着垃圾回收器不能处理的特殊情况。假定你的对象（并非使用new方法）获得了一块“特殊”的内存区域，由于垃圾回收器只知道那些显示地经由new分配的内存空间，所以它不知道该如何释放这块“特殊”的内存区域，那么这个时候java允许在类中定义一个由finalize()方法。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 特殊的区域例如：1）由于在分配内存的时候可能采用了类似 C语言的做法，而非JAVA的通常new做法。这种情况主要发生在native method中，比如native method调用了C/C++方法malloc()函数系列来分配存储空间，但是除非调用free()函数，否则这些内存空间将不会得到释放，那么这个时候就可能造成内存泄漏。但是由于free()方法是在C/C++中的函数，所以finalize()中可以用本地方法来调用它。以释放这些“特殊”的内存空间。2）又或者打开的文件资源，这些资源不属于垃圾回收器的回收范围。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 换言之，finalize()的主要用途是释放一些其他做法开辟的内存空间，以及做一些清理工作。因为在JAVA中并没有提够像“析构”函数或者类似概念的函数，要做一些类似清理工作的时候，必须自己动手创建一个执行清理工作的普通方法，也就是override Object这个类中的finalize()方法。例如，假设某一个对象在创建过程中会将自己绘制到屏幕上，如果不是明确地从屏幕上将其擦出，它可能永远都不会被清理。如果在finalize()加入某一种擦除功能，当GC工作时，finalize()得到了调用，图像就会被擦除。要是GC没有发生，那么这个图像就会</p>
+<p>被一直保存下来。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 一旦垃圾回收器准备好释放对象占用的存储空间，首先会去调用finalize()方法进行一些必要的清理工作。<span style="background-color: #ffff00;">只有到下一次再进行垃圾回收动作的时候，才会真正释放这个对象所占用的内存空间。<br></span>　　在普通的清除工作中，为清除一个对象，那个对象的用户必须在希望进行清除的地点调用一个清除方法。这与C++"析构函数"的概念稍有抵触。在C++中，所有对象都会破坏（清除）。或者换句话说，所有对象都"应该"破坏。若将C++对象创建成一个本地对象，比如在堆栈中创建（在Java中是不可能的，Java都在堆中），那么清除或破坏工作就会在"结束花括号"所代表的、创建这个对象的作用域的末尾进行。若对象是用new创建的（类似于Java），那么当程序员调用C++的 delete命令时（Java没有这个命令），就会调用相应的析构函数。若程序员忘记了，那么永远不会调用析构函数，我们最终得到的将是一个内存"漏洞"，另外还包括对象的其他部分永远不会得到清除。<br>　　相反，Java不允许我们创建本地（局部）对象--无论如何都要使用new。但在Java中，没有"delete"命令来释放对象，因为垃圾回收器会帮助我们自动释放存储空间。所以如果站在比较简化的立场，我们可以说正是由于存在垃圾回收机制，所以Java没有析构函数。然而，随着以后学习的深入，就会知道垃圾收集器的存在并不能完全消除对析构函数的需要，或者说不能消除对析构函数代表的那种机制的需要（原因见下一段。另外finalize()函数是在垃圾回收器准备释放对象占用的存储空间的时候被调用的，绝对不能直接调用finalize()，所以应尽量避免用它）。若希望执行除释放存储空间之外的其他某种形式的清除工作，仍然必须调用Java中的一个方法。它等价于C++的析构函数，只是没后者方便。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在C++中所有的对象运用delete()一定会被销毁，而JAVA里的对象并非总会被垃圾回收器回收。In another word, 1 对象可能不被垃圾回收，2 垃圾回收并不等于“析构”，3 垃圾回收只与内存有关。也就是说，并不是如果一个对象不再被使用，是不是要在finalize()中释放这个对象中含有的其它对象呢？不是的。因为无论对象是如何创建的，垃圾回收器都会负责释放那些对象占有的内存。</p>
+<p><strong><span style="font-size: medium;">5. 触发主GC（Garbage Collector）的条件</span></strong></p>
+<p>　　JVM进行次GC的频率很高,但因为这种GC占用时间极短,所以对系统产生的影响不大。更值得关注的是主GC的触发条件,因为它对系统影响很明显。总的来说,有两个条件会触发主GC:</p>
+<p>　　1)当应用程序空闲时,即没有应用线程在运行时,GC会被调用。<span style="background-color: #ffff00;">因为GC在优先级最低的线程中进行,所以当应用忙时,GC线程就不会被调用</span>,但以下条件除外。</p>
+<p>　　2)<span style="background-color: #ffff00;">Java堆内存不足时,GC会被调用</span>。当应用线程在运行,并在运行过程中创建新对象,若这时内存空间不足,JVM就会强制地调用GC线程,以便回收内存用于新的分配。若GC一次之后仍不能满足内存分配的要求,JVM会再进行两次GC作进一步的尝试,若仍无法满足要求,则 JVM将报“out of memory”的错误,Java应用将停止。</p>
+<p>　　由于是否进行主GC由JVM根据系统环境决定,而系统环境在不断的变化当中,所以主GC的运行具有不确定性,无法预计它何时必然出现,但可以确定的是对一个长期运行的应用来说,其主GC是反复进行的。</p>
+<p><span style="font-size: medium;"><strong>6. 减少GC开销的措施</strong></span></p>
+<p>　　根据上述GC的机制,程序的运行会直接影响系统环境的变化,从而影响GC的触发。若不针对GC的特点进行设计和编码,就会出现内存驻留等一系列负面影响。为了避免这些影响,基本的原则就是尽可能地减少垃圾和减少GC过程中的开销。具体措施包括以下几个方面:</p>
+<p>　　<span style="font-size: x-small;"><strong><span style="font-size: small;">(1)不要显式调用System.gc()</span></strong></span></p>
+<p>　　此函数建议JVM进行主GC,虽然只是建议而非一定,但很多情况下它会触发主GC,从而增加主GC的频率,也即增加了间歇性停顿的次数。</p>
+<p>　<span style="font-size: small;">　<strong>(2)尽量减少临时对象的使用</strong></span></p>
+<p>　　临时对象在跳出函数调用后,会成为垃圾,少用临时变量就相当于减少了垃圾的产生,从而延长了出现上述第二个触发条件出现的时间,减少了主GC的机会。</p>
+<p>　　<strong><span style="font-size: small;">(3)对象不用时最好显式置为Null</span></strong></p>
+<p>　　一般而言,为Null的对象都会被作为垃圾处理,所以将不用的对象显式地设为Null,有利于GC收集器判定垃圾,从而提高了GC的效率。</p>
+<p>　　<strong><span style="font-size: small;">(4)尽量使用StringBuffer,而不用String来累加字符串</span></strong></p>
+<p>　　由于String是固定长的字符串对象,累加String对象时,并非在一个String对象中扩增,而是重新创建新的String对象,如Str5=Str1+Str2+Str3+Str4,这条语句执行过程中会产生多个垃圾对象,因为对次作“+”操作时都必须创建新的String对象,但这些过渡对象对系统来说是没有实际意义的,只会增加更多的垃圾。避免这种情况可以改用StringBuffer来累加字符串,因StringBuffer是可变长的,它在原有基础上进行扩增,不会产生中间对象。</p>
+<p>　　<span style="font-size: x-small;"><strong><span style="font-size: small;">(5)能用基本类型如Int,Long,就不用Integer,Long对象</span></strong></span></p>
+<p>　　基本类型变量占用的内存资源比相应对象占用的少得多,如果没有必要,最好使用基本变量。</p>
+<p>　　<span style="font-size: x-small;"><strong><span style="font-size: small;">(6)尽量少用静态对象变量</span></strong></span></p>
+<p>　　静态变量属于全局变量,不会被GC回收,它们会一直占用内存。</p>
+<p>　　<strong><span style="font-size: small;">(7)分散对象创建或删除的时间</span></strong></p>
+<p>　　集中在短时间内大量创建新对象,特别是大对象,会导致突然需要大量内存,JVM在面临这种情况时,只能进行主GC,以回收内存或整合内存碎片,从而增加主GC的频率。集中删除对象,道理也是一样的。它使得突然出现了大量的垃圾对象,空闲空间必然减少,从而大大增加了下一次创建新对象时强制主GC的机会。</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 下面这个例子向大家展示了垃圾收集所经历的过程，并对前面的陈述进行了总结。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <div class="dp-highlighter bg_java"><div class="bar"><div class="tools"><b>[java]</b> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#" class="ViewSource" title="view plain" onclick="dp.sh.Toolbar.Command(&#39;ViewSource&#39;,this);return false;" target="_blank">view plain</a><span data-mod="popu_168"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#" class="CopyToClipboard" title="copy" onclick="dp.sh.Toolbar.Command(&#39;CopyToClipboard&#39;,this);return false;" target="_blank">copy</a><div style="position: absolute; left: 551px; top: 5053px; width: 18px; height: 18px; z-index: 99;"><embed id="ZeroClipboardMovie_2" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="18" height="18" name="ZeroClipboardMovie_2" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=2&amp;width=18&amp;height=18" wmode="transparent"></div></span><span data-mod="popu_169"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#" class="PrintSource" title="print" onclick="dp.sh.Toolbar.Command(&#39;PrintSource&#39;,this);return false;" target="_blank">print</a></span><a href="http://blog.csdn.net/zsuguangh/article/details/6429592#" class="About" title="?" onclick="dp.sh.Toolbar.Command(&#39;About&#39;,this);return false;" target="_blank">?</a></div></div><ol start="1" class="dp-j"><li class="alt"><span><span class="keyword">class</span><span>&nbsp;Chair&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>　　<span class="keyword">static</span><span>&nbsp;</span><span class="keyword">boolean</span><span>&nbsp;gcrun&nbsp;=&nbsp;</span><span class="keyword">false</span><span>;&nbsp;&nbsp;</span></span></li><li class="alt"><span>　　<span class="keyword">static</span><span>&nbsp;</span><span class="keyword">boolean</span><span>&nbsp;f&nbsp;=&nbsp;</span><span class="keyword">false</span><span>;&nbsp;&nbsp;</span></span></li><li class=""><span>　　<span class="keyword">static</span><span>&nbsp;</span><span class="keyword">int</span><span>&nbsp;created&nbsp;=&nbsp;</span><span class="number">0</span><span>;&nbsp;&nbsp;</span></span></li><li class="alt"><span>　　<span class="keyword">static</span><span>&nbsp;</span><span class="keyword">int</span><span>&nbsp;finalized&nbsp;=&nbsp;</span><span class="number">0</span><span>;&nbsp;&nbsp;</span></span></li><li class=""><span>　　<span class="keyword">int</span><span>&nbsp;i;&nbsp;&nbsp;</span></span></li><li class="alt"><span>　　Chair()&nbsp;{&nbsp;&nbsp;</span></li><li class=""><span>　　&nbsp;&nbsp;&nbsp;&nbsp;i&nbsp;=&nbsp;++created;&nbsp;&nbsp;</span></li><li class="alt"><span>　　&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>(created&nbsp;==&nbsp;</span><span class="number">47</span><span>)&nbsp;&nbsp;</span></span></li><li class=""><span>　　　&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println(<span class="string">"Created&nbsp;47"</span><span>);&nbsp;&nbsp;</span></span></li><li class="alt"><span>　　}&nbsp;&nbsp;</span></li><li class=""><span>　　<span class="keyword">protected</span><span>&nbsp;</span><span class="keyword">void</span><span>&nbsp;finalize()&nbsp;{&nbsp;&nbsp;</span></span></li><li class="alt"><span>　　&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>(!gcrun)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>　　　&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gcrun&nbsp;=&nbsp;<span class="keyword">true</span><span>;&nbsp;&nbsp;</span></span></li><li class="alt"><span>　　　&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println(<span class="string">"Beginning&nbsp;to&nbsp;finalize&nbsp;after&nbsp;"</span><span>&nbsp;+&nbsp;created&nbsp;+&nbsp;</span><span class="string">"&nbsp;Chairs&nbsp;have&nbsp;been&nbsp;created"</span><span>);&nbsp;&nbsp;</span></span></li><li class=""><span>　　&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li class="alt"><span>　　&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>(i&nbsp;==&nbsp;</span><span class="number">47</span><span>)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>　　　&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println(<span class="string">"Finalizing&nbsp;Chair&nbsp;#47，&nbsp;"</span><span>&nbsp;+</span><span class="string">"Setting&nbsp;flag&nbsp;to&nbsp;stop&nbsp;Chair&nbsp;creation"</span><span>);&nbsp;&nbsp;</span></span></li><li class="alt"><span>　　　&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f&nbsp;=&nbsp;<span class="keyword">true</span><span>;&nbsp;&nbsp;</span></span></li><li class=""><span>　　&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li class="alt"><span>　　&nbsp;&nbsp;&nbsp;&nbsp;finalized++;&nbsp;&nbsp;</span></li><li class=""><span>　　&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>(finalized&nbsp;&gt;=&nbsp;created)&nbsp;&nbsp;</span></span></li><li class="alt"><span>　　　&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println(<span class="string">"All&nbsp;"</span><span>&nbsp;+&nbsp;finalized&nbsp;+&nbsp;</span><span class="string">"&nbsp;finalized"</span><span>);&nbsp;&nbsp;</span></span></li><li class=""><span>　　}&nbsp;&nbsp;</span></li><li class="alt"><span>}&nbsp;&nbsp;</span></li><li class=""><span>&nbsp;&nbsp;</span></li><li class="alt"><span><span class="keyword">public</span><span>&nbsp;</span><span class="keyword">class</span><span>&nbsp;Garbage&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>　　<span class="keyword">public</span><span>&nbsp;</span><span class="keyword">static</span><span>&nbsp;</span><span class="keyword">void</span><span>&nbsp;main(String[]&nbsp;args)&nbsp;{&nbsp;&nbsp;</span></span></li><li class="alt"><span>　　<span class="keyword">if</span><span>(args.length&nbsp;==&nbsp;</span><span class="number">0</span><span>)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>　　　&nbsp;&nbsp;System.err.println(<span class="string">"Usage:&nbsp;/n"</span><span>&nbsp;+&nbsp;</span><span class="string">"java&nbsp;Garbage&nbsp;before/n&nbsp;or:/n"</span><span>&nbsp;+&nbsp;</span><span class="string">"java&nbsp;Garbage&nbsp;after"</span><span>);&nbsp;&nbsp;</span></span></li><li class="alt"><span>　　　&nbsp;&nbsp;<span class="keyword">return</span><span>;&nbsp;&nbsp;</span></span></li><li class=""><span>　　}&nbsp;&nbsp;</span></li><li class="alt"><span>　　<span class="keyword">while</span><span>(!Chair.f)&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>　　　&nbsp;&nbsp;<span class="keyword">new</span><span>&nbsp;Chair();&nbsp;&nbsp;</span></span></li><li class="alt"><span>　　　&nbsp;&nbsp;<span class="keyword">new</span><span>&nbsp;String(</span><span class="string">"To&nbsp;take&nbsp;up&nbsp;space"</span><span>);&nbsp;&nbsp;</span></span></li><li class=""><span>　　}&nbsp;&nbsp;</span></li><li class="alt"><span>　　System.out.println(<span class="string">"After&nbsp;all&nbsp;Chairs&nbsp;have&nbsp;been&nbsp;created:/n"</span><span>&nbsp;+&nbsp;</span><span class="string">"total&nbsp;created&nbsp;=&nbsp;"</span><span>&nbsp;+&nbsp;Chair.created&nbsp;+&nbsp;&nbsp;</span></span></li><li class=""><span>　　<span class="string">"，&nbsp;total&nbsp;finalized&nbsp;=&nbsp;"</span><span>&nbsp;+&nbsp;Chair.finalized);&nbsp;&nbsp;</span></span></li><li class="alt"><span>　　<span class="keyword">if</span><span>(args[</span><span class="number">0</span><span>].equals(</span><span class="string">"before"</span><span>))&nbsp;{&nbsp;&nbsp;</span></span></li><li class=""><span>　　　　System.out.println(<span class="string">"gc():"</span><span>);&nbsp;&nbsp;</span></span></li><li class="alt"><span>　　　　System.gc();&nbsp;&nbsp;</span></li><li class=""><span>　　　　System.out.println(<span class="string">"runFinalization():"</span><span>);&nbsp;&nbsp;</span></span></li><li class="alt"><span>　　　　System.runFinalization();&nbsp;&nbsp;</span></li><li class=""><span>　　}&nbsp;&nbsp;</span></li><li class="alt"><span>　　System.out.println(<span class="string">"bye!"</span><span>);&nbsp;&nbsp;</span></span></li><li class=""><span>　　<span class="keyword">if</span><span>(args[</span><span class="number">0</span><span>].equals(</span><span class="string">"after"</span><span>))&nbsp;&nbsp;</span></span></li><li class="alt"><span>　　　&nbsp;&nbsp;System.runFinalizersOnExit(<span class="keyword">true</span><span>);&nbsp;&nbsp;</span></span></li><li class=""><span>　　}&nbsp;&nbsp;</span></li><li class="alt"><span>}&nbsp;&nbsp;</span></li></ol></div><textarea cols="84" rows="15" name="code" class="java" style="display: none;">class Chair {
+　　static boolean gcrun = false;
+　　static boolean f = false;
+　　static int created = 0;
+　　static int finalized = 0;
+　　int i;
+　　Chair() {
+　　    i = ++created;
+　　    if(created == 47)
+　　　      System.out.println("Created 47");
+　　}
+　　protected void finalize() {
+　　    if(!gcrun) {
+　　　      gcrun = true;
+　　　      System.out.println("Beginning to finalize after " + created + " Chairs have been created");
+　　    }
+　　    if(i == 47) {
+　　　      System.out.println("Finalizing Chair #47， " +"Setting flag to stop Chair creation");
+　　　      f = true;
+　　    }
+　　    finalized++;
+　　    if(finalized &gt;= created)
+　　　      System.out.println("All " + finalized + " finalized");
+　　}
+}
+
+public class Garbage {
+　　public static void main(String[] args) {
+　　if(args.length == 0) {
+　　　  System.err.println("Usage: /n" + "java Garbage before/n or:/n" + "java Garbage after");
+　　　  return;
+　　}
+　　while(!Chair.f) {
+　　　  new Chair();
+　　　  new String("To take up space");
+　　}
+　　System.out.println("After all Chairs have been created:/n" + "total created = " + Chair.created +
+　　"， total finalized = " + Chair.finalized);
+　　if(args[0].equals("before")) {
+　　　　System.out.println("gc():");
+　　　　System.gc();
+　　　　System.out.println("runFinalization():");
+　　　　System.runFinalization();
+　　}
+　　System.out.println("bye!");
+　　if(args[0].equals("after"))
+　　　  System.runFinalizersOnExit(true);
+　　}
+}
+</textarea> </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 上面这个程序创建了许多Chair对象，而且在垃圾收集器开始运行后的某些时候，程序会停止创建Chair。由于垃圾收集器可能在任何时间运行，所以我们不能准确知道它在何时启动。因此，程序用一个名为gcrun的标记来指出垃圾收集器是否已经开始运行。利用第二个标记f，Chair可告诉main()它应停止对象的生成。这两个标记都是在finalize()内部设置的，它调用于垃圾收集期间。另两个static变量--created以及 finalized--分别用于跟踪已创建的对象数量以及垃圾收集器已进行完收尾工作的对象数量。最后，每个Chair都有它自己的（非 static）int i，所以能跟踪了解它具体的编号是多少。编号为47的Chair进行完收尾工作后，标记会设为true，最终结束Chair对象的创建过程。<br><br><strong><span style="font-size: medium;">7. 关于垃圾回收的几点补充</span></strong><br>　　经过上述的说明，可以发现垃圾回收有以下的<span style="background-color: #ffff00;">几个特点</span>：<br>　　（1）垃圾收集发生的不可预知性：由于实现了不同的垃圾回收算法和采用了不同的收集机制，所以它有可能是定时发生，有可能是当出现系统空闲CPU资源时发生，也有可能是和原始的垃圾收集一样，等到内存消耗出现极限时发生，这与垃圾收集器的选择和具体的设置都有关系。<br>　　（2）垃圾收集的精确性：主要包括2 个方面：（a）垃圾收集器能够精确标记活着的对象；（b）垃圾收集器能够精确地定位对象之间的引用关系。前者是完全地回收所有废弃对象的前提，否则就可能造成内存泄漏。而后者则是实现归并和复制等算法的必要条件。所有不可达对象都能够可靠地得到回收，所有对象都能够重新分配，允许对象的复制和对象内存的缩并，这样就有效地防止内存的支离破碎。<br>　　（3）现在有许多种不同的垃圾收集器，每种有其算法且其表现各异，既有当垃圾收集开始时就停止应用程序的运行，又有当垃圾收集开始时也允许应用程序的线程运行，还有在同一时间垃圾收集多线程运行。<br>　　（4）垃圾收集的实现和具体的JVM 以及JVM的内存模型有非常紧密的关系。不同的JVM 可能采用不同的垃圾收集，而JVM 的内存模型决定着该JVM可以采用哪些类型垃圾收集。现在，HotSpot 系列JVM中的内存系统都采用先进的面向对象的框架设计，这使得该系列JVM都可以采用最先进的垃圾收集。<br>　　（5）随着技术的发展，现代垃圾收集技术提供许多可选的垃圾收集器，而且在配置每种收集器的时候又可以设置不同的参数，这就使得根据不同的应用环境获得最优的应用性能成为可能。<br>　　针对以上特点，我们在使用的时候要<span style="background-color: #ffff00;">注意</span>：<br>　　（1）不要试图去假定垃圾收集发生的时间，这一切都是未知的。比如，方法中的一个临时对象在方法调用完毕后就变成了无用对象，这个时候它的内存就可以被释放。<br>　　（2）Java中提供了一些和垃圾收集打交道的类，而且提供了一种强行执行垃圾收集的方法--调用System.gc()，但这同样是个不确定的方法。Java 中并不保证每次调用该方法就一定能够启动垃圾收集，它只不过会向JVM发出这样一个申请，到底是否真正执行垃圾收集，一切都是个未知数。<br>　　（3）挑选适合自己的垃圾收集器。一般来说，如果系统没有特殊和苛刻的性能要求，可以采用JVM的缺省选项。否则可以考虑使用有针对性的垃圾收集器，比如增量收集器就比较适合实时性要求较高的系统之中。系统具有较高的配置，有比较多的闲置资源，可以考虑使用并行标记/清除收集器。<br>　　（4）关键的也是难把握的问题是内存泄漏。良好的编程习惯和严谨的编程态度永远是最重要的，不要让自己的一个小错误导致内存出现大漏洞。<br>　　（5）尽早释放无用对象的引用。大多数程序员在使用临时变量的时候，都是让引用变量在退出活动域(scope)后，自动设置为null，暗示垃圾收集器来收集该对象，还必须注意该引用的对象是否被监听，如果有，则要去掉监听器，然后再赋空值。</p>
+<p>&nbsp;</p>
+<p>参考：</p>
+<p><a href="http://blog.sina.com.cn/s/blog_544e54220100dv0q.html" target="_blank">http://blog.sina.com.cn/s/blog_544e54220100dv0q.html</a></p>
+<p><a href="http://java.chinaitlab.com/base/839279_1.html" target="_blank">http://java.chinaitlab.com/base/839279_1.html</a></p>
+<p><a href="http://blog.sina.com.cn/s/blog_5ef35aa00100ky9o.html" target="_blank">http://blog.sina.com.cn/s/blog_5ef35aa00100ky9o.html</a></p>
+<p><a href="http://hi.baidu.com/ou_yang_/blog/item/129f1a33486e1dfe1b4cff55.html" target="_blank">http://hi.baidu.com/ou_yang_/blog/item/129f1a33486e1dfe1b4cff55.html</a></p>   
+</div>
+
+
+
+
+<!-- Baidu Button BEGIN -->
+
+
+
+
+<div class="bdsharebuttonbox tracking-ad bdshare-button-style0-16" style="float: right;" data-mod="popu_172" data-bd-bind="1497704828503">
+<a href="http://blog.csdn.net/zsuguangh/article/details/6429592#" class="bds_more" data-cmd="more" style="background-position:0 0 !important; background-image: url(http://bdimg.share.baidu.com/static/api/img/share/icons_0_16.png?v=d754dcc0.png) !important" target="_blank"></a>
+<a href="http://blog.csdn.net/zsuguangh/article/details/6429592#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间" style="background-position:0 -52px !important" target="_blank"></a>
+<a href="http://blog.csdn.net/zsuguangh/article/details/6429592#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博" style="background-position:0 -104px !important" target="_blank"></a>
+<a href="http://blog.csdn.net/zsuguangh/article/details/6429592#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博" style="background-position:0 -260px !important" target="_blank"></a>
+<a href="http://blog.csdn.net/zsuguangh/article/details/6429592#" class="bds_renren" data-cmd="renren" title="分享到人人网" style="background-position:0 -208px !important" target="_blank"></a>
+<a href="http://blog.csdn.net/zsuguangh/article/details/6429592#" class="bds_weixin" data-cmd="weixin" title="分享到微信" style="background-position:0 -1612px !important" target="_blank"></a>
+</div>
+<script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "1", "bdMiniList": false, "bdPic": "", "bdStyle": "0", "bdSize": "16" }, "share": {} }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+<!-- Baidu Button END -->
+
+   
+
+    
+<!--172.16.140.13-->
+
+<!-- Baidu Button BEGIN -->
+<script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=1536434" src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/bds_s_v2.js"></script>
+
+<script type="text/javascript">
+    document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+</script>
+<!-- Baidu Button END -->
+
+
+
+ 
+
+
+        <div id="digg" articleid="6429592">
+            <dl id="btnDigg" class="digg digg_enable" onclick="btndigga();">
+               
+                 <dt>顶</dt>
+                <dd>33</dd>
+            </dl>
+           
+              
+            <dl id="btnBury" class="digg digg_enable" onclick="btnburya();">
+              
+                  <dt>踩</dt>
+                <dd>2</dd>               
+            </dl>
+            
+        </div>
+     <div class="tracking-ad" data-mod="popu_222"><a href="javascript:void(0);" target="_blank">&nbsp;</a>   </div>
+    <div class="tracking-ad" data-mod="popu_223"> <a href="javascript:void(0);" target="_blank">&nbsp;</a></div>
+    <script type="text/javascript">
+                function btndigga() {
+                    $(".tracking-ad[data-mod='popu_222'] a").click();
+                }
+                function btnburya() {
+                    $(".tracking-ad[data-mod='popu_223'] a").click();
+                }
+            </script>
+
+   <ul class="article_next_prev">
+                <li class="prev_article"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_shangyipian&#39;]);location.href=&#39;/zsuguangh/article/details/6427285&#39;;">上一篇</span><a href="http://blog.csdn.net/zsuguangh/article/details/6427285" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_shangyipian&#39;])">Linux 操作系统启动流程</a></li>
+                <li class="next_article"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_xiayipian&#39;]);location.href=&#39;/zsuguangh/article/details/6429655&#39;;">下一篇</span><a href="http://blog.csdn.net/zsuguangh/article/details/6429655" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_xiayipian&#39;])">JVM Heap的设置</a></li>
+    </ul>
+
+    <div style="clear:both; height:10px;"></div>
+
+
+            <div class="similar_article">
+                    <h4></h4>
+                    <div class="similar_c" style="margin:20px 0px 0px 0px">
+                        <div class="similar_c_t">
+                          &nbsp;&nbsp;相关文章推荐
+                        </div>
+                   
+                        <div class="similar_wrap tracking-ad" data-mod="popu_36" style="max-height:195px;">                       
+                            <ul class="similar_list fl">    
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/plgy_Y/article/details/72791483" title="图解Java 垃圾回收机制" strategy="" target="_blank" style="width: 290px;">图解Java 垃圾回收机制</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://sjmz30071360.iteye.com/blog/1739120" title="JAVA垃圾回收机制" strategy="" target="_blank" style="width: 290px;">JAVA垃圾回收机制</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/qq_27489007/article/details/51939737" title="java垃圾回收机制相关" strategy="" target="_blank" style="width: 290px;">java垃圾回收机制相关</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://xiaoruanjian.iteye.com/blog/878605" title="Java与C#的垃圾回收机制" strategy="" target="_blank" style="width: 290px;">Java与C#的垃圾回收机制</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/youngwhz1/article/details/17840653" title="[转]如何优化Java垃圾回收机制" strategy="" target="_blank" style="width: 290px;">[转]如何优化Java垃圾回收机制</a>
+                                   </li>
+                            </ul>
+                              <ul class="similar_list fr">      
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://hoxis.iteye.com/blog/2040197" title="成为JavaGC专家Part III：如何优化Java垃圾回收机制" strategy="" target="_blank" style="width: 290px;">成为JavaGC专家Part III：如何优化Java垃圾回收机制</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://201205083157.iteye.com/blog/1870824" title="详细介绍Java垃圾回收机制" strategy="" target="_blank" style="width: 290px;">详细介绍Java垃圾回收机制</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/yajing8/article/details/62221594" title="Java垃圾回收机制知识点总结" strategy="" target="_blank" style="width: 290px;">Java垃圾回收机制知识点总结</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/torbyhuang/article/details/52650697" title="Java垃圾回收机制(GC)详解" strategy="" target="_blank" style="width: 290px;">Java垃圾回收机制(GC)详解</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/li951418089/article/details/50395187" title="详细介绍Java垃圾回收机制--转" strategy="" target="_blank" style="width: 290px;">详细介绍Java垃圾回收机制--转</a>
+                                   </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>   
+      
+</div>
+
+    <div>
+        
+
+        <script type="text/javascript">
+            /*博客内容页下方Banner1-728*90，创建于2016-12-13*/
+            var cpro_id = "u2843949";
+        </script>
+        <script type="text/javascript" src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/c.js"></script><div id="BAIDU_SSP__wrapper_u2843949_0"><iframe id="iframeu2843949_0" src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/jcxm(1).html" width="728" height="90" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0;vertical-align:bottom;margin:0;width:728px;height:90px" allowtransparency="true"></iframe></div>
+
+     </div>
+
+<div id="suggest">
+
+</div>
+         <script language="javascript" type="text/javascript">     
+             $(function(){
+                 $.get("/zsuguangh/svc/GetSuggestContent/6429592",function(data){
+                     $("#suggest").html(data);
+                 });     
+             });             
+         </script>  
+
+
+<style>
+.blog-ass-articl dd {
+color: #369;
+width: 99%; /*修改行*/
+float: left;
+overflow: hidden;
+font: normal normal 12px/23px "SimSun";
+height: 23px;
+margin: 0;
+padding: 0 0 0 10px;
+margin-right: 30px;
+background: url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;
+}
+</style>
+
+ 
+
+
+ 
+
+<dl class="blog-ass-articl tracking-ad" id="res-relatived" data-mod="popu_84"> 
+    <div class="embody embody_b" id="libkeyparent" style="display:none">
+            <span class="embody_t">更多资料请参考：</span>
+            <div class="embody_c" id="libkey"></div>
+    </div>
+
+
+     <dt><span>猜你在找</span></dt>    
+
+
+   
+
+    
+    <div id="adCollege"> 
+        <div>
+                <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                     <a href="http://edu.csdn.net/huiyiCourse/detail/422?ref=blog&amp;loc=r1" title="深度学习基础与TensorFlow实践" strategy="undefined" target="_blank">深度学习基础与TensorFlow实践</a>
+                </dd>
+                <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                     <a href="http://edu.csdn.net/huiyiCourse/series_detail/43?ref=blog&amp;loc=r1" title="【在线峰会】前端开发重点难点技术剖析与创新实践" strategy="undefined" target="_blank">【在线峰会】前端开发重点难点技术剖析与创新实践</a>
+                </dd>
+                <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                     <a href="http://edu.csdn.net/huiyiCourse/series_detail/42?ref=blog&amp;loc=r1" title="【在线峰会】一天掌握物联网全栈开发之道" strategy="undefined" target="_blank">【在线峰会】一天掌握物联网全栈开发之道</a>
+                </dd>
+                <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                     <a href="http://edu.csdn.net/huiyiCourse/series_detail/41?ref=blog&amp;loc=r1" title="【在线峰会】如何高质高效的进行Android技术开发" strategy="undefined" target="_blank">【在线峰会】如何高质高效的进行Android技术开发</a>
+                </dd>
+                <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                     <a href="http://edu.csdn.net/huiyiCourse/detail/404?ref=blog&amp;loc=r1" title="机器学习40天精英计划" strategy="undefined" target="_blank">机器学习40天精英计划</a>
+                </dd>
+                <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                     <a href="http://edu.csdn.net/huiyiCourse/detail/402?ref=blog&amp;loc=r1" title="Python数据挖掘与分析速成班" strategy="undefined" target="_blank">Python数据挖掘与分析速成班</a>
+                </dd>
+                <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                     <a href="http://edu.csdn.net/course/detail/3011?ref=blog&amp;loc=r1" title="微信小程序开发实战" strategy="undefined" target="_blank">微信小程序开发实战</a>
+                </dd>
+                <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                     <a href="http://edu.csdn.net/course/detail/1968?ref=blog&amp;loc=r1" title="JFinal极速开发企业实战" strategy="undefined" target="_blank">JFinal极速开发企业实战</a>
+                </dd>
+                <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                     <a href="http://edu.csdn.net/combo/detail/23?ref=blog&amp;loc=r1" title="备战2017软考 系统集成项目管理工程师 学习套餐" strategy="undefined" target="_blank">备战2017软考 系统集成项目管理工程师 学习套餐</a>
+                </dd>
+                <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                     <a href="http://edu.csdn.net/course/detail/3338?ref=blog&amp;loc=r1" title="Python大型网络爬虫项目开发实战（全套）" strategy="undefined" target="_blank">Python大型网络爬虫项目开发实战（全套）</a>
+                </dd>
+            
+        </div>
+    </div>  
+
+    
+
+    
+   
+</dl>
+
+
+
+
+
+    <div id="ad_cen">        
+                <div>
+                              <script type="text/javascript">
+                                  /*博客内容页下方Banner-728*90，创建于2014-7-3*/
+                                  var cpro_id = "u1607657";
+                                            </script>
+                              <script type="text/javascript" src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/c.js"></script><div id="BAIDU_SSP__wrapper_u1607657_0"><iframe id="iframeu1607657_0" src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/jcxm(2).html" width="728" height="90" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0;vertical-align:bottom;margin:0;width:728px;height:90px" allowtransparency="true"></iframe></div>
+                    </div>
+    </div>  
+
+        <!-- 广告位开始 -->
+        <!-- 广告位结束 -->
+
+
+<div class="comment_class">
+    <div id="comment_title" class="panel_head">
+        <span class="see_comment">查看评论</span><a name="comments"></a></div>
+    <div id="comment_list"><dl class="comment_item comment_topic" id="comment_item_6746533"><dt class="comment_head" floor="38">38楼 <span class="user"><a class="username" href="http://blog.csdn.net/h1213135231" target="_blank">h1213135231</a> <span class="ptime">2017-04-12 11:23发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="6746533" username="h1213135231"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/h1213135231" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_h1213135231.jpg" width="40" height="40"></a></dd><dd class="comment_body">很好</dd></dl><dl class="comment_item comment_topic" id="comment_item_6684879"><dt class="comment_head" floor="37">37楼 <span class="user"><a class="username" href="http://blog.csdn.net/csdnshenzhen" target="_blank">CSDNShenZhen</a> <span class="ptime">2017-03-19 16:44发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="6684879" username="csdnshenzhen"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/csdnshenzhen" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_csdnshenzhen.jpg" width="40" height="40"></a></dd><dd class="comment_body">感谢楼主</dd></dl><dl class="comment_item comment_topic" id="comment_item_6684876"><dt class="comment_head" floor="36">36楼 <span class="user"><a class="username" href="http://blog.csdn.net/csdnshenzhen" target="_blank">CSDNShenZhen</a> <span class="ptime">2017-03-19 16:43发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="6684876" username="csdnshenzhen"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/csdnshenzhen" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_csdnshenzhen.jpg" width="40" height="40"></a></dd><dd class="comment_body">学习了很多，谢谢楼主</dd></dl><dl class="comment_item comment_topic" id="comment_item_6545396"><dt class="comment_head" floor="35">35楼 <span class="user"><a class="username" href="http://blog.csdn.net/qq_25391375" target="_blank">M麦神</a> <span class="ptime">2017-01-10 17:56发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="6545396" username="qq_25391375"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/qq_25391375" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_qq_25391375.jpg" width="40" height="40"></a></dd><dd class="comment_body">太棒了！</dd></dl><dl class="comment_item comment_topic" id="comment_item_6232300"><dt class="comment_head" floor="34">34楼 <span class="user"><a class="username" href="http://blog.csdn.net/u013126379" target="_blank">飞--鹰</a> <span class="ptime">2016-08-26 20:16发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="6232300" username="u013126379"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/u013126379" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_u013126379.jpg" width="40" height="40"></a></dd><dd class="comment_body">谢谢楼主。</dd></dl><dl class="comment_item comment_topic" id="comment_item_6147350"><dt class="comment_head" floor="33">33楼 <span class="user"><a class="username" href="http://blog.csdn.net/haovip123" target="_blank">河北-宝哥</a> <span class="ptime">2016-07-26 21:27发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="6147350" username="haovip123"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/haovip123" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_haovip123.jpg" width="40" height="40"></a></dd><dd class="comment_body">博主,能转载吗?会附上博主连接的.</dd></dl><dl class="comment_item comment_topic" id="comment_item_6147308"><dt class="comment_head" floor="32">32楼 <span class="user"><a class="username" href="http://blog.csdn.net/haovip123" target="_blank">河北-宝哥</a> <span class="ptime">2016-07-26 21:14发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="6147308" username="haovip123"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/haovip123" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_haovip123.jpg" width="40" height="40"></a></dd><dd class="comment_body">总结的很棒,果断收藏!</dd></dl><dl class="comment_item comment_topic" id="comment_item_6128809"><dt class="comment_head" floor="31">31楼 <span class="user"><a class="username" href="http://blog.csdn.net/YANG_GUANGCHAO" target="_blank">YANG_GUANGCHAO</a> <span class="ptime">2016-07-14 17:10发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="6128809" username="YANG_GUANGCHAO"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/YANG_GUANGCHAO" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_yang_guangchao.jpg" width="40" height="40"></a></dd><dd class="comment_body">受益匪浅</dd></dl><dl class="comment_item comment_topic" id="comment_item_6115141"><dt class="comment_head" floor="30">30楼 <span class="user"><a class="username" href="http://blog.csdn.net/z609292366" target="_blank">z609292366</a> <span class="ptime">2016-07-04 03:45发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="6115141" username="z609292366"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/z609292366" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_z609292366.jpg" width="40" height="40"></a></dd><dd class="comment_body">很棒的文章，用手机好想不能分享到微信朋友圈里。</dd></dl><dl class="comment_item comment_topic" id="comment_item_6097241"><dt class="comment_head" floor="29">29楼 <span class="user"><a class="username" href="http://blog.csdn.net/u013422608" target="_blank">永远的利剑</a> <span class="ptime">2016-06-27 00:11发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="6097241" username="u013422608"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/u013422608" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_u013422608.jpg" width="40" height="40"></a></dd><dd class="comment_body">感谢楼主，收藏了</dd></dl><dl class="comment_item comment_topic" id="comment_item_6001586"><dt class="comment_head" floor="28">28楼 <span class="user"><a class="username" href="http://blog.csdn.net/q785883308" target="_blank">q785883308</a> <span class="ptime">2016-04-27 11:23发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="6001586" username="q785883308"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/q785883308" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_q785883308.jpg" width="40" height="40"></a></dd><dd class="comment_body">在finalize 释放文件句柄是不是不合适？<br>有鉴于finalize甚至不被调用</dd></dl><dl class="comment_item comment_topic" id="comment_item_5985116"><dt class="comment_head" floor="27">27楼 <span class="user"><a class="username" href="http://blog.csdn.net/xx23x" target="_blank">xx23x</a> <span class="ptime">2016-04-15 17:45发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="5985116" username="xx23x"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/xx23x" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_xx23x.jpg" width="40" height="40"></a></dd><dd class="comment_body">很棒。有帮助了</dd></dl><dl class="comment_item comment_topic" id="comment_item_5859960"><dt class="comment_head" floor="26">26楼 <span class="user"><a class="username" href="http://blog.csdn.net/qq_30068375" target="_blank">qq_30068375</a> <span class="ptime">2016-01-28 17:33发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="5859960" username="qq_30068375"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/qq_30068375" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_qq_30068375.jpg" width="40" height="40"></a></dd><dd class="comment_body">写的 不错 赠人玫瑰 手有余香</dd></dl><dl class="comment_item comment_topic" id="comment_item_5742920"><dt class="comment_head" floor="25">25楼 <span class="user"><a class="username" href="http://blog.csdn.net/vf2guo" target="_blank">0T_T0G</a> <span class="ptime">2015-12-26 01:09发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="5742920" username="vf2guo"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/vf2guo" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_vf2guo.jpg" width="40" height="40"></a></dd><dd class="comment_body">谢谢</dd></dl><dl class="comment_item comment_topic" id="comment_item_5641399"><dt class="comment_head" floor="24">24楼 <span class="user"><a class="username" href="http://blog.csdn.net/GitHubBoys" target="_blank">IUCocoa</a> <span class="ptime">2015-11-25 21:59发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="5641399" username="GitHubBoys"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/GitHubBoys" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_githubboys.jpg" width="40" height="40"></a></dd><dd class="comment_body">学习啦</dd></dl><dl class="comment_item comment_topic" id="comment_item_5595269"><dt class="comment_head" floor="23">23楼 <span class="user"><a class="username" href="http://blog.csdn.net/yueyewuzhe" target="_blank">你好达西0601</a> <span class="ptime">2015-11-06 15:05发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="5595269" username="yueyewuzhe"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/yueyewuzhe" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_yueyewuzhe.jpg" width="40" height="40"></a></dd><dd class="comment_body">相当给力。。。大赞楼主</dd></dl><dl class="comment_item comment_topic" id="comment_item_5415889"><dt class="comment_head" floor="22">22楼 <span class="user"><a class="username" href="http://blog.csdn.net/u013777351" target="_blank">life_爱水的鱼</a> <span class="ptime">2015-09-16 00:29发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="5415889" username="u013777351"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/u013777351" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_u013777351.jpg" width="40" height="40"></a></dd><dd class="comment_body">好赞，谢谢博主的分享</dd></dl><dl class="comment_item comment_topic" id="comment_item_5386955"><dt class="comment_head" floor="21">21楼 <span class="user"><a class="username" href="http://blog.csdn.net/ws15286832380" target="_blank">noah199001</a> <span class="ptime">2015-09-02 16:33发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="5386955" username="ws15286832380"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/ws15286832380" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_ws15286832380.jpg" width="40" height="40"></a></dd><dd class="comment_body">学习</dd></dl><dl class="comment_item comment_topic" id="comment_item_5321217"><dt class="comment_head" floor="20">20楼 <span class="user"><a class="username" href="http://blog.csdn.net/katelilikatelili" target="_blank">VV伶俐</a> <span class="ptime">2015-08-21 09:48发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="5321217" username="katelilikatelili"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/katelilikatelili" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_katelilikatelili.jpg" width="40" height="40"></a></dd><dd class="comment_body">赞</dd></dl><dl class="comment_item comment_topic" id="comment_item_5289687"><dt class="comment_head" floor="19">19楼 <span class="user"><a class="username" href="http://blog.csdn.net/joshho" target="_blank">影子-001</a> <span class="ptime">2015-08-09 23:58发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="5289687" username="joshho"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/joshho" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_joshho.jpg" width="40" height="40"></a></dd><dd class="comment_body">不错</dd></dl><dl class="comment_item comment_topic" id="comment_item_5238175"><dt class="comment_head" floor="18">18楼 <span class="user"><a class="username" href="http://blog.csdn.net/u011292870" target="_blank">张先森其实是张先生</a> <span class="ptime">2015-07-29 14:39发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="5238175" username="u011292870"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/u011292870" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_u011292870.jpg" width="40" height="40"></a></dd><dd class="comment_body">学习了，感谢楼主分享</dd></dl><dl class="comment_item comment_topic" id="comment_item_5205231"><dt class="comment_head" floor="17">17楼 <span class="user"><a class="username" href="http://blog.csdn.net/Qxuaner" target="_blank">Qxuaner</a> <span class="ptime">2015-07-15 21:50发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="5205231" username="Qxuaner"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/Qxuaner" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_qxuaner.jpg" width="40" height="40"></a></dd><dd class="comment_body">博主的Chair()是不是写的有问题啊？i==47时候应该要设置调用finalize吧，否则会一直执行下去进入死循环的，不知道是我理解有误还是怎样</dd><dl class="comment_item comment_reply" id="comment_item_5938675"><dt class="comment_head" floor="17">Re: <span class="user"><a class="username" href="http://blog.csdn.net/StanleyHuNju" target="_blank">胡晓祥nju</a> <span class="ptime">2016-03-19 12:28发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="5938675" username="StanleyHuNju"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/StanleyHuNju" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_stanleyhunju.jpg" width="40" height="40"></a></dd><dd class="comment_body">回复Qxuaner：是的，我运行的时候也发现这个小问题了。<br>我的做法是在i&gt;=47的时候，设置f=true。当运行finalzie()时，会设置结束创建Chair对象的标识。</dd></dl></dl><dl class="comment_item comment_topic" id="comment_item_5187131"><dt class="comment_head" floor="16">16楼 <span class="user"><a class="username" href="http://blog.csdn.net/guolin521_" target="_blank">fight_machine</a> <span class="ptime">2015-07-06 14:34发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="5187131" username="guolin521_"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/guolin521_" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_guolin521_.jpg" width="40" height="40"></a></dd><dd class="comment_body">内容很翔实，学习了</dd></dl><dl class="comment_item comment_topic" id="comment_item_4976973"><dt class="comment_head" floor="15">15楼 <span class="user"><a class="username" href="http://blog.csdn.net/zhongboheng" target="_blank">zhongboheng</a> <span class="ptime">2015-04-27 16:14发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="4976973" username="zhongboheng"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/zhongboheng" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_zhongboheng.jpg" width="40" height="40"></a></dd><dd class="comment_body">牛xxxxx！</dd></dl><dl class="comment_item comment_topic" id="comment_item_4850615"><dt class="comment_head" floor="14">14楼 <span class="user"><a class="username" href="http://blog.csdn.net/ading8986986" target="_blank">丁猴儿</a> <span class="ptime">2015-03-16 11:19发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="4850615" username="ading8986986"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/ading8986986" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_ading8986986.jpg" width="40" height="40"></a></dd><dd class="comment_body">特别赞的一篇文章，掳走了~~</dd></dl><dl class="comment_item comment_topic" id="comment_item_4828425"><dt class="comment_head" floor="13">13楼 <span class="user"><a class="username" href="http://blog.csdn.net/u010156024" target="_blank">龙吟在天</a> <span class="ptime">2015-03-06 16:29发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="4828425" username="u010156024"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/u010156024" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_u010156024.jpg" width="40" height="40"></a></dd><dd class="comment_body">楼主，赞！不错！</dd></dl><dl class="comment_item comment_topic" id="comment_item_4720927"><dt class="comment_head" floor="12">12楼 <span class="user"><a class="username" href="http://blog.csdn.net/Shb_derek" target="_blank">Shb_derek</a> <span class="ptime">2015-01-19 15:35发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="4720927" username="Shb_derek"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/Shb_derek" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_shb_derek.jpg" width="40" height="40"></a></dd><dd class="comment_body">感谢分享，整理的很清楚！</dd></dl><dl class="comment_item comment_topic" id="comment_item_4632965"><dt class="comment_head" floor="11">11楼 <span class="user"><a class="username" href="http://blog.csdn.net/Iwantyousafe" target="_blank">Deng-Wulin</a> <span class="ptime">2014-12-24 14:26发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="4632965" username="Iwantyousafe"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/Iwantyousafe" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_iwantyousafe.jpg" width="40" height="40"></a></dd><dd class="comment_body">写的真棒！</dd></dl><dl class="comment_item comment_topic" id="comment_item_4618691"><dt class="comment_head" floor="10">10楼 <span class="user"><a class="username" href="http://blog.csdn.net/bigtree_3721" target="_blank">大树叶</a> <span class="ptime">2014-12-18 10:21发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="4618691" username="bigtree_3721"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/bigtree_3721" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_bigtree_3721.jpg" width="40" height="40"></a></dd><dd class="comment_body">不错</dd></dl><dl class="comment_item comment_topic" id="comment_item_4401535"><dt class="comment_head" floor="9">9楼 <span class="user"><a class="username" href="http://blog.csdn.net/SYK2WWJ" target="_blank">没什么了</a> <span class="ptime">2014-10-16 09:56发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="4401535" username="SYK2WWJ"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/SYK2WWJ" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_syk2wwj.jpg" width="40" height="40"></a></dd><dd class="comment_body">赞</dd></dl><dl class="comment_item comment_topic" id="comment_item_4258495"><dt class="comment_head" floor="8">8楼 <span class="user"><a class="username" href="http://blog.csdn.net/x939364052" target="_blank">x939364052</a> <span class="ptime">2014-09-07 22:05发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="4258495" username="x939364052"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/x939364052" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_x939364052.jpg" width="40" height="40"></a></dd><dd class="comment_body">不错不错</dd></dl><dl class="comment_item comment_topic" id="comment_item_4228945"><dt class="comment_head" floor="7">7楼 <span class="user"><a class="username" href="http://blog.csdn.net/fzhmoive" target="_blank">fzhmoive</a> <span class="ptime">2014-08-30 16:22发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="4228945" username="fzhmoive"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/fzhmoive" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_fzhmoive.jpg" width="40" height="40"></a></dd><dd class="comment_body">例子不错，加深理解了</dd></dl><dl class="comment_item comment_topic" id="comment_item_3751741"><dt class="comment_head" floor="6">6楼 <span class="user"><a class="username" href="http://blog.csdn.net/m1111121" target="_blank">夏了夏天c</a> <span class="ptime">2014-04-18 10:33发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="3751741" username="m1111121"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/m1111121" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_m1111121.jpg" width="40" height="40"></a></dd><dd class="comment_body">不错、</dd></dl><dl class="comment_item comment_topic" id="comment_item_3301725"><dt class="comment_head" floor="5">5楼 <span class="user"><a class="username" href="http://blog.csdn.net/u012398365" target="_blank">JianYiLead</a> <span class="ptime">2013-12-17 23:22发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="3301725" username="u012398365"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/u012398365" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_u012398365.jpg" width="40" height="40"></a></dd><dd class="comment_body">博主的内容很精辟，大有用处。我也斗胆推荐一个链接：http://www.cnblogs.com/laoyangHJ/articles/java_gc.html</dd></dl><dl class="comment_item comment_topic" id="comment_item_3033515"><dt class="comment_head" floor="4">4楼 <span class="user"><a class="username" href="http://blog.csdn.net/l1334889580" target="_blank">独觞</a> <span class="ptime">2013-10-27 13:38发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="3033515" username="l1334889580"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/l1334889580" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_l1334889580.jpg" width="40" height="40"></a></dd><dd class="comment_body">真的理解的很深刻<br>不错的 资料谢谢楼主了</dd></dl><dl class="comment_item comment_topic" id="comment_item_2772029"><dt class="comment_head" floor="3">3楼 <span class="user"><a class="username" href="http://blog.csdn.net/yuanjian19900610" target="_blank">平凡的程序员</a> <span class="ptime">2013-07-30 12:04发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="2772029" username="yuanjian19900610"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/yuanjian19900610" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_yuanjian19900610.jpg" width="40" height="40"></a></dd><dd class="comment_body">挺不错的，受益匪浅！非常感谢！</dd></dl><dl class="comment_item comment_topic" id="comment_item_2579797"><dt class="comment_head" floor="2">2楼 <span class="user"><a class="username" href="http://blog.csdn.net/Vindra" target="_blank">Vindra</a> <span class="ptime">2013-04-05 08:35发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="2579797" username="Vindra"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/Vindra" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_vindra.jpg" width="40" height="40"></a></dd><dd class="comment_body">受益匪浅</dd></dl><dl class="comment_item comment_topic" id="comment_item_2180712"><dt class="comment_head" floor="1">1楼 <span class="user"><a class="username" href="http://blog.csdn.net/zdovey" target="_blank">zdovey</a> <span class="ptime">2012-04-13 11:21发表</span>  <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="2180712" username="zdovey"> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/zdovey" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/3_zdovey.jpg" width="40" height="40"></a></dd><dd class="comment_body">很详细，受益了～感谢楼主分享～</dd></dl><div class="clear"></div></div>
+    <div id="comment_bar" style="display: none;">
+    </div>
+    <div id="comment_form"><a name="commentbox"></a><a name="reply"></a><a name="quote"></a><form action="http://blog.csdn.net/zsuguangh/comment/submit?id=6429592" method="post" onsubmit="return subform(this);"><div class="commentform"><div class="panel_head">发表评论</div><ul><li class="left">用 户 名：</li><li class="right">shenjianli2016</li></ul><ul><li class="left">评论内容：</li><li class="right" style="position:relative;"><div id="ubbtools"><a href="http://blog.csdn.net/zsuguangh/article/details/6429592#insertcode" code="code"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/code.gif" border="0" alt="插入代码" title="插入代码"></a></div><div id="lang_list" style="position: absolute; top: 28px; left: 0px; display: none;"><a class="long_name" href="http://blog.csdn.net/zsuguangh/article/details/6429592#html">HTML/XML</a><a class="long_name" href="http://blog.csdn.net/zsuguangh/article/details/6429592#objc">objective-c</a><a class="zhong_name" href="http://blog.csdn.net/zsuguangh/article/details/6429592#delphi">Delphi</a><a class="zhong_name" href="http://blog.csdn.net/zsuguangh/article/details/6429592#ruby">Ruby</a><a href="http://blog.csdn.net/zsuguangh/article/details/6429592#php">PHP</a><a class="duan_name" href="http://blog.csdn.net/zsuguangh/article/details/6429592#csharp">C#</a><a style=" border-right: none;" class="duan_name" href="http://blog.csdn.net/zsuguangh/article/details/6429592#cpp">C++</a><a style=" border-bottom:none;" class="long_name" href="http://blog.csdn.net/zsuguangh/article/details/6429592#javascript">JavaScript</a><a style=" border-bottom:none;" class="long_name" href="http://blog.csdn.net/zsuguangh/article/details/6429592#vb">Visual Basic</a><a style=" border-bottom:none;" class="zhong_name" href="http://blog.csdn.net/zsuguangh/article/details/6429592#python">Python</a><a style=" border-bottom:none;" class="zhong_name" href="http://blog.csdn.net/zsuguangh/article/details/6429592#java">Java</a><a style="border-bottom:none;" class="duan_name" href="http://blog.csdn.net/zsuguangh/article/details/6429592#css">CSS</a><a style="border-bottom:none;" class="duan_name" href="http://blog.csdn.net/zsuguangh/article/details/6429592#sql">SQL</a><a style="border:none;" class="duan_name" href="http://blog.csdn.net/zsuguangh/article/details/6429592#plain">其它</a></div><textarea class="comment_content" name="comment_content" id="comment_content" style="width: 400px; height: 200px;"></textarea></li></ul><ul><input type="hidden" id="comment_replyId" name="comment_replyId"><input type="hidden" id="comment_userId" name="comment_userId" value="521203"><input type="hidden" id="commentId" name="commentId" value=""><input type="submit" class="comment_btn" value="提交">&nbsp;&nbsp;<span id="tip_comment" style="color: Red; display: none;"></span></ul></div></form></div>
+    <div class="announce">
+        * 以上用户言论只代表其个人观点，不代表CSDN网站的观点或立场<a name="reply"></a><a name="quote"></a></div>
+</div>
+
+<script type="text/javascript">
+    var fileName = '6429592';
+    var commentscount = 40;
+    var islock = false
+</script>
+
+    <div id="ad_bot">
+    </div>
+<div id="report_dialog">
+</div>
+
+<div id="d-top" style="bottom:60px;">
+
+        <a id="quick-reply" class="btn btn-top q-reply" title="快速回复" style="display:none;">
+            <img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/blog-icon-reply.png" alt="快速回复">
+        </a>    
+    <a id="d-top-a" class="btn btn-top backtop" style="display: none;" title="返回顶部" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_huidaodingbu&#39;])">         
+         <img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/top.png" alt="TOP">
+    </a>
+</div>
+<script type="text/javascript">
+    $(function ()
+    {
+        $("#ad_frm_0").height("90px");
+        
+        setTimeout(function(){
+            $("#ad_frm_2").height("200px");
+        },1000);    
+    });
+  
+</script>
+<style type="text/css">
+    .tag_list
+    {
+        background: none repeat scroll 0 0 #FFFFFF;
+        border: 1px solid #D7CBC1;
+        color: #000000;
+        font-size: 12px;
+        line-height: 20px;
+        list-style: none outside none;
+        margin: 10px 2% 0 1%;
+        padding: 1px;
+    }
+    .tag_list h5
+    {
+        background: none repeat scroll 0 0 #E0DBD3;
+        color: #47381C;
+        font-size: 12px;
+        height: 24px;
+        line-height: 24px;
+        padding: 0 5px;
+        margin: 0;
+    }
+    .tag_list h5 a
+    {
+        color: #47381C;
+    }
+    .classify
+    {
+        margin: 10px 0;
+        padding: 4px 12px 8px;
+    }
+    .classify a
+    {
+        margin-right: 20px;
+        white-space: nowrap;
+    }
+</style>
+
+
+
+
+
+<div id="pop_win" style="display:none ;position: absolute; z-index: 10000; border: 1px solid rgb(220, 220, 220); top: 222.5px; left: 630px; opacity: 1; background: none 0px 0px repeat scroll rgb(255, 255, 255);">
+    
+</div>
+<div id="popup_mask"></div>
+<style>
+    #popup_mask
+    {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        z-index: 9999;
+        left: 0px;
+        top: 0px;
+        opacity: 0.3;
+        filter: alpha(opacity=30);
+        display: none;
+    }
+
+</style>
+
+
+
+
+<script type="text/javascript">
+    $(function(){        
+        
+        setTimeout(function(){
+            $(".comment_body:contains('回复')").each(function(index,item){
+                var u=$(this).text().split('：')[0].toString().replace("回复","")
+                var thisComment=$(this);
+                if(u)
+                {
+                    $.getJSON("https://passport.csdn.net/get/nick?callback=?", {users: u}, function(a) {
+                        if(a!=null&&a.data!=null&&a.data.length>0)
+                        {
+                            nick=a.data[0].n; 
+                            if(u!=nick)
+                            {
+                                thisComment.text(thisComment.text().replace(u,nick));  
+                            }
+                        }       
+                    });  
+                }
+            });         
+
+        },200);  
+
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },5000);
+
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },10000);
+
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },15000);
+        
+        setTimeout(function(){
+            $("a img[src='http://js.tongji.linezing.com/stats.gif']").parent().css({"position":"absolute","left":"50%"});
+        },300);
+    });
+
+    function loginbox(){
+        var $logpop=$("#pop_win");
+        $logpop.html('<iframe src="https://passport.csdn.net/account/loginbox?service=http://static.blog.csdn.net/callback.htm" frameborder="0" height="600" width="400" scrolling="no"></iframe>');
+
+        $('#popup_mask').css({
+            opacity: 0.5,
+            width: $( document ).width() + 'px',
+            height:  $( document ).height() + 'px'
+        });
+        $('#popup_mask').css("display","block");
+ 
+        $logpop.css( {
+            top: ($( window ).height() - $logpop.height())/ 2  + $( window 
+       ).scrollTop() + 'px',
+            left:($( window ).width() - $logpop.width())/ 2
+        } );
+ 
+        setTimeout( function () {
+            $logpop.show();
+            $logpop.css( {
+                opacity: 1
+            } );
+        }, 200 );
+ 
+        $('#popup_mask').unbind("click");
+        $('#popup_mask').bind("click", function(){
+            $('#popup_mask').hide();
+            var $clopop = $("#pop_win");
+            $("#common_ask_div_sc").css("display","none");
+            $clopop.css( {
+                opacity: 0
+            } );
+            setTimeout( function () {
+                $clopop.hide();
+            }, 350 );
+            return false;
+        });
+    }   
+
+    var articletitle='Java垃圾回收机制';
+
+</script>
+
+
+
+
+
+
+
+
+                        <div class="clear">
+                        </div>
+                    </div>                   
+                
+            </div>
+                   
+           <div id="side">
+               
+    <div class="side">
+<div id="panel_Profile" class="panel">
+<ul class="panel_head"><span>个人资料</span></ul>
+<ul class="panel_body profile">
+<div id="blog_userface">
+    <a href="http://my.csdn.net/zsuguangh" target="_blank">
+    <img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/1_zsuguangh.jpg" title="访问我的空间" style="max-width:90%">
+    </a>
+    <br>
+    <span><a href="http://my.csdn.net/zsuguangh" class="user_name" target="_blank">zsuguangh</a></span>
+</div>
+<div class="interact">
+
+    <a href="javascript:void(0);" class="attent" id="span_add_follow" title="[加关注]"></a>
+
+ <a href="javascript:void(0);" class="letter" title="[发私信]" onclick="window.open(&#39;http://msg.csdn.net/letters/model?receiver=zsuguangh&#39;,&#39;_blank&#39;,&#39;height=350,width=700&#39;);_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_sixin&#39;])"></a>  
+</div>
+<div id="blog_medal">
+                <div id="bms_box">
+               </div>
+</div>
+<ul id="blog_rank">
+    <li>访问：<span>424861次</span></li>
+    <li>积分：<span>2872</span> </li>    
+    <li>等级： <span style="position:relative;display:inline-block;z-index:1">
+            <img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/blog5.png" alt="" style="vertical-align: middle;" id="leveImg">
+            <div id="smallTittle" style=" position: absolute;  left: -24px;  top: 25px;  text-align: center;  width: 101px;  height: 32px;  background-color: #fff;  line-height: 32px;  border: 2px #DDDDDD solid;  box-shadow: 0px 2px 2px rgba (0,0,0,0.1);  display: none;   z-index: 999;">
+            <div style="left: 42%;  top: -8px;  position: absolute;  width: 0;  height: 0;  border-left: 10px solid transparent;  border-right: 10px solid transparent;  border-bottom: 8px solid #EAEAEA;"></div>
+            积分：2872 </div>
+        </span>  </li>
+    <li>排名：<span>第11506名</span></li>
+</ul>
+<ul id="blog_statistics">
+    <li>原创：<span>31篇</span></li>
+    <li>转载：<span>70篇</span></li>
+    <li>译文：<span>0篇</span></li>
+    <li>评论：<span>61条</span></li>
+</ul>
+</ul>
+</div>
+
+
+<div class="panel" id="panel_Search">
+    <ul class="panel_head"><span>文章搜索</span></ul>
+    <ul class="panel_body">
+        <form id="frmSearch" action="http://so.csdn.net/search" class="form_search csdn-tracking-statistics" target="_blank" data-mod="popu_306">
+        <span><input id="inputSearch" type="text" class="blogsearch" title="请输入关键字"></span>
+        <input id="btnSubmit" type="button" value="搜索" title="search in blog">
+        <input type="hidden" name="q" id="inputQ">
+        <input type="hidden" name="t" value="blog">
+        <a id="btnSearchBlog" target="_blank"></a>
+        </form>
+    </ul>
+</div>
+
+<script type="text/javascript">
+
+   
+    $(function () {
+        $("#btnSubmit").unbind("click");
+        $("#btnSubmit").click(function () {           
+            search();
+        });
+
+        $("#frmSearch").submit(function () {           
+            search();
+            return false;
+        });
+
+        function search()
+        {
+            if ($("#inputSearch").val() == "") {               
+                alert("请录入搜索关键词！");                         
+                return false;
+            }
+            //var url = "http://so.csdn.net/so/search/s.do?q=" + encodeURIComponent($("#inputSearch").val()) + "&u=" + username + "&t=blog";           
+            var url = "https://www.baidu.com/s?wd=" + encodeURIComponent($("#inputSearch").val()) + "%20site%3Ablog.csdn.net"
+            window.location.href = url;
+        }   
+    });
+</script><div id="panel_Category" class="panel">
+<ul class="panel_head"><span>文章分类</span></ul>
+<ul class="panel_body">    
+                 <li>
+                    <a href="http://blog.csdn.net/zsuguangh/article/category/776734" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">C/C++</a><span>(38)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/zsuguangh/article/category/801169" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">Java</a><span>(5)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/zsuguangh/article/category/766107" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">Linux</a><span>(7)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/zsuguangh/article/category/817603" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">云/分布式计算</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/zsuguangh/article/category/795589" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">操作系统</a><span>(3)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/zsuguangh/article/category/735519" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">数据库</a><span>(16)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/zsuguangh/article/category/764481" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">数据库-Oracle</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/zsuguangh/article/category/779792" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">算法</a><span>(25)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/zsuguangh/article/category/751461" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">系统维护</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/zsuguangh/article/category/812126" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">编程之美&amp;amp;其他题目</a><span>(9)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/zsuguangh/article/category/788314" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">脚本</a><span>(10)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/zsuguangh/article/category/795554" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">设计模式</a><span>(2)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/zsuguangh/article/category/810317" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">面试题</a><span>(6)</span>
+                </li>
+</ul>
+</div><div id="panel_Archive" class="panel">
+<ul class="panel_head"><span>文章存档</span></ul>
+<ul class="panel_body">
+<div id="archive_list"><li><a href="http://blog.csdn.net/zsuguangh/article/month/2011/10">2011年10月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/zsuguangh/article/month/2011/06">2011年06月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/zsuguangh/article/month/2011/05">2011年05月</a><span>(15)</span></li><li><a href="http://blog.csdn.net/zsuguangh/article/month/2011/04">2011年04月</a><span>(15)</span></li><li><a href="http://blog.csdn.net/zsuguangh/article/month/2011/03">2011年03月</a><span>(38)</span></li><span class="hidelist" style="display:none;"><li><a href="http://blog.csdn.net/zsuguangh/article/month/2011/02">2011年02月</a><span>(6)</span></li><li><a href="http://blog.csdn.net/zsuguangh/article/month/2011/01">2011年01月</a><span>(4)</span></li><li><a href="http://blog.csdn.net/zsuguangh/article/month/2010/12">2010年12月</a><span>(8)</span></li><li><a href="http://blog.csdn.net/zsuguangh/article/month/2010/11">2010年11月</a><span>(10)</span></li><li><a href="http://blog.csdn.net/zsuguangh/article/month/2010/10">2010年10月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/zsuguangh/article/month/2010/09">2010年09月</a><span>(1)</span></li></span><div id="archive_list_button" class="list_closed">展开</div></div>
+</ul>
+</div>
+<div id="hotarticls" class="panel">
+<ul class="panel_head">
+    <span>       
+阅读排行    </span>
+</ul>
+
+<ul class="panel_body itemlist">
+<li>
+<a href="http://blog.csdn.net/zsuguangh/article/details/6429592" title="Java垃圾回收机制">Java垃圾回收机制</a><span>(122402)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/zsuguangh/article/details/6226385" title="python3.x 的urllib使用例子">python3.x 的urllib使用例子</a><span>(69076)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/zsuguangh/article/details/6135529" title="使用Vector实现二维数组">使用Vector实现二维数组</a><span>(55417)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/zsuguangh/article/details/6083390" title="ubuntu下vsftpd配置详细篇">ubuntu下vsftpd配置详细篇</a><span>(15142)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/zsuguangh/article/details/6280863" title="中序表达式转后序表达式">中序表达式转后序表达式</a><span>(7745)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/zsuguangh/article/details/6003053" title="图解SSIS（从建立到部署）">图解SSIS（从建立到部署）</a><span>(5385)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/zsuguangh/article/details/6300031" title="解决分配问题的匈牙利算法">解决分配问题的匈牙利算法</a><span>(5067)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/zsuguangh/article/details/6427285" title="Linux 操作系统启动流程">Linux 操作系统启动流程</a><span>(4960)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/zsuguangh/article/details/6154217" title="Main参数介绍及使用">Main参数介绍及使用</a><span>(4093)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/zsuguangh/article/details/6081159" title="SQL SERVER2005建Link Server">SQL SERVER2005建Link Server</a><span>(4000)</span>
+</li>
+</ul>
+</div>
+<div id="hotarticls2" class="panel">
+<ul class="panel_head"><span>评论排行</span></ul>
+<ul class="panel_body itemlist">
+<li>
+<a href="http://blog.csdn.net/zsuguangh/article/details/6429592" title="Java垃圾回收机制">Java垃圾回收机制</a><span>(40)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/zsuguangh/article/details/6338124" title="编程之美2.14扩展问题1 求子数组和的最大值（首尾可以相连）">编程之美2.14扩展问题1 求子数组和的最大值（首尾可以相连）</a><span>(4)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/zsuguangh/article/details/6135529" title="使用Vector实现二维数组">使用Vector实现二维数组</a><span>(3)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/zsuguangh/article/details/6281493" title="赢者树与败者树">赢者树与败者树</a><span>(2)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/zsuguangh/article/details/6339933" title="编程之美2.5 寻找最大的K个数">编程之美2.5 寻找最大的K个数</a><span>(2)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/zsuguangh/article/details/6336855" title="编程之美2.14 求数组的子数组之和的最大值">编程之美2.14 求数组的子数组之和的最大值</a><span>(2)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/zsuguangh/article/details/6000640" title="MSSQL存储过程与函数区别">MSSQL存储过程与函数区别</a><span>(1)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/zsuguangh/article/details/6226385" title="python3.x 的urllib使用例子">python3.x 的urllib使用例子</a><span>(1)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/zsuguangh/article/details/6326933" title="考察继承、虚函数、sizeof、构造函数析构函数的一道面试题">考察继承、虚函数、sizeof、构造函数析构函数的一道面试题</a><span>(1)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/zsuguangh/article/details/5895878" title="转：SQL Server 2008 R2数据挖掘即学即用">转：SQL Server 2008 R2数据挖掘即学即用</a><span>(1)</span>
+</li>
+</ul>
+</div>
+<div id="homepageArticles" class="panel tracking-ad" data-mod="popu_4">
+<ul class="panel_head"><span>推荐文章</span></ul>
+<ul class="panel_body" id="ad_commend">
+<ul>
+<li><a href="http://blog.csdn.net/blogdevteam/article/details/73295305" target="_blank">* CSDN日报20170615 ——《11 年高考结束到 17 年日本修士的心路历程》</a></li>
+<li><a href="http://blog.csdn.net/tangxiaoyin/article/details/73274955" target="_blank">* 一文理清散乱的物联网里开发者必须关注的技术！</a></li>
+<li><a href="http://blog.csdn.net/vipzjyno1/article/details/21039349" target="_blank">* Android APK反编译就这么简单 详解</a></li>
+<li><a href="http://blog.csdn.net/aliceyangxi1987/article/details/73210204" target="_blank">* 如何选择优化器 optimizer</a></li>
+<li><a href="http://blog.csdn.net/u013970991/article/details/73222046" target="_blank">* 性能测试场景设计杂谈</a></li>
+<li><a href="http://blog.csdn.net/yinwenjie/article/details/72909981" target="_blank">* 线程进阶：多任务处理——Java 中的锁</a></li>
+
+</ul></ul>
+</div>
+
+
+<div id="newcomments" class="panel">
+<ul class="panel_head"><span>最新评论</span></ul>
+<ul class="panel_body itemlist">
+    <li>
+   
+         <a href="http://blog.csdn.net/zsuguangh/article/details/6267420#comments">C++指针之对未声明的地址进行访问</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/wangyang0321" class="user_name">wangyang0321</a>:
+给力
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/zsuguangh/article/details/6135529#comments">使用Vector实现二维数组</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/qq_24147709" class="user_name">qq_24147709</a>:
+易懂，谢谢！
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#comments">Java垃圾回收机制</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/h1213135231" class="user_name">h1213135231</a>:
+很好
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#comments">Java垃圾回收机制</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/csdnshenzhen" class="user_name">CSDNShenZhen</a>:
+感谢楼主
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#comments">Java垃圾回收机制</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/csdnshenzhen" class="user_name">CSDNShenZhen</a>:
+学习了很多，谢谢楼主
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#comments">使用Vector实现二维数组</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/lmy1997_1007" class="user_name">少女叉着腰</a>:
+这个二维向量该如何作为参数传递呢？
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#comments">Java垃圾回收机制</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/qq_25391375" class="user_name">M麦神</a>:
+太棒了！
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#comments">使用Vector实现二维数组</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/lvliaoyong0195" class="user_name">lvliaoyong0195</a>:
+谢谢！
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#comments">Java垃圾回收机制</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/u013126379" class="user_name">飞--鹰</a>:
+谢谢楼主。
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/zsuguangh/article/details/6429592#comments">Java垃圾回收机制</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/haovip123" class="user_name">河北-宝哥</a>:
+博主,能转载吗?会附上博主连接的.
+    </p>
+    </li>
+</ul>
+</div>
+    </div>
+    <div class="clear">
+    </div>
+
+
+                   <!-- 广告位开始 -->                    <!-- 广告位结束 -->
+                   <div class="tracking-ad" data-view="true" data-mtp="63" data-order="40" data-con="ad_content_1260" style="width: 200px; height: 200px;">
+                         <div id="nav_show_top_stop" style="width: 200px; height: 200px; z-index: 1000; position: fixed; top: 0px;"><div id="cpro_u2734128"><iframe id="iframeu2734128_0" src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/jcxm(3).html" width="200" height="200" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0;vertical-align:bottom;margin:0;width:200px;height:200px" allowtransparency="true"></iframe></div></div>
+                   </div>
+    <script type="text/javascript">    
+        setTimeout(function () {
+            var naviga_offsetTop = 0;
+            function naviga_stay_top() { var scrollTop = jQuery(document).scrollTop(); if (scrollTop > naviga_offsetTop) { jQuery("#nav_show_top_stop").css({ "position": "fixed" }); jQuery("#nav_show_top_stop").css({ "top": "0px" }); } else { jQuery("#nav_show_top_stop").css({ "position": "fixed" }); jQuery("#nav_show_top_stop").css({ "top": naviga_offsetTop - scrollTop + "px" }); } }
+            function onload_function() { naviga_offsetTop = jQuery("#nav_show_top_stop").position().top; jQuery(window).bind("scroll", naviga_stay_top); jQuery(window).bind("mousewheel", naviga_stay_top); jQuery(document).bind("scroll", naviga_stay_top); jQuery(document).bind("mousewheel", naviga_stay_top); } jQuery(document).ready(onload_function);
+               
+        }, 200);    
+    </script>
+<script type="text/javascript">(window.cproArray = window.cproArray || []).push({ id: "u2734128" });  </script> 
+                    <script src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/c.js" type="text/javascript"></script> 
+
+           </div>   
+
+            <div class="clear">
+            </div>
+        </div>
+
+        
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+    $(function () {
+        function __get_code_toolbar(snippet_id) {
+            return $("<span class='tracking-ad' data-mod='popu_167'><a href='https://code.csdn.net/snippets/"
+                    + snippet_id
+                    + "' target='_blank' title='在CODE上查看代码片'  style='text-indent:0;'><img src='https://code.csdn.net/assets/CODE_ico.png' width=12 height=12 alt='在CODE上查看代码片' style='position:relative;top:1px;left:2px;'/></a></span>"
+                    + "<span class='tracking-ad' data-mod='popu_170'><a href='https://code.csdn.net/snippets/"
+                    + snippet_id
+                    + "/fork' target='_blank' title='派生到我的代码片' style='text-indent:0;'><img src='https://code.csdn.net/assets/ico_fork.svg' width=12 height=12 alt='派生到我的代码片' style='position:relative;top:2px;left:2px;'/></a></span>");
+        }
+        
+        $("[code_snippet_id]").each(function () {
+            __s_id = $(this).attr("code_snippet_id");
+            if (__s_id != null && __s_id != "" && __s_id != 0 && parseInt(__s_id) > 70020) {
+                __code_tool = __get_code_toolbar(__s_id);
+                $(this).prev().find(".tools").append(__code_tool);
+            }
+        });
+
+        $(".bar").show();
+    });
+</script>
+
+
+
+
+
+    </div>
+      <!--new top-->
+    
+
+     
+
+   
+   
+     <!--new top-->
+   
+   
+
+    
+    
+    
+   
+
+   
+
+
+       <script type="text/javascript" src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/MathJax.js"></script>
+          <script type="text/javascript">
+              //$(function () {
+              //    setTimeout(function () {
+              //        var searchtitletags = articletitle + ',' + $("#tags").html();
+              //        searchService({
+              //            index: 'blog',
+              //            query: searchtitletags,
+              //            from: 5,
+              //            size: 5,
+              //            appendTo: '#res',
+              //            url: 'recommend',
+              //            his: 2,
+              //            client: "blog_cf_enhance",
+              //            tmpl: '<dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;"><a href="#{ url }" title="#{ title }" strategy="#{ strategy }">#{ title }</a></dd>'
+              //        });
+              //    }, 1000);
+              //});
+
+         </script>
+    
+    <script src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/csdn_blog_detail.min.js" type="text/javascript"></script><link rel="stylesheet" type="text/css" href="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/pub_footer_2014.css"><div class="pub_fo"><div id="pub_footerall" class="pub_footer_new"><dl><dt></dt> <dd class="foot_sub_menu"><a href="http://www.csdn.net/company/about.html" target="_blank">公司简介</a><span>|</span><a href="http://www.csdn.net/company/recruit.html" target="_blank">招贤纳士</a><span>|</span><a href="http://www.csdn.net/company/marketing.html" target="_blank">广告服务</a><span>|</span><a href="http://www.csdn.net/company/contact.html" target="_blank">联系方式</a><span>|</span><a href="http://www.csdn.net/company/statement.html" target="_blank">版权声明</a><span>|</span><a href="http://www.csdn.net/company/layer.html" target="_blank">法律顾问</a><span>|</span><a href="mailto:webmaster@csdn.net">问题报告</a><span>|</span><a target="_blank" href="http://www.csdn.net/friendlink.html">合作伙伴</a><span>|</span><a href="http://bbs.csdn.net/forums/Service" target="_blank">论坛反馈</a></dd><dd class="foot_contact"><a href="javascript:void(0);" target="_blank" class="qq">网站客服</a><a href="http://wpa.qq.com/msgrd?v=3&amp;uin=2251809102&amp;site=qq&amp;menu=yes" target="_blank" class="qq">杂志客服</a><a href="http://e.weibo.com/csdnsupport/profile" target="_blank" class="weibo">微博客服</a><a href="mailto:webmaster@csdn.net" class="email" title="联系邮箱">webmaster@csdn.net</a><span class="phone" title="服务热线">400-660-0108</span><span class="interval">|</span><span>北京创新乐知信息技术有限公司 版权所有</span><span class="interval">|</span><span>江苏知之为计算机有限公司</span><span class="interval">|</span><span>江苏乐知网络技术有限公司</span></dd><dd class="foot_copyright"><span>京&nbsp;ICP&nbsp;证&nbsp;09002463&nbsp;号</span><span class="interval">|</span><span>Copyright © 1999-2017, CSDN.NET, All Rights Reserved&nbsp;</span><a href="http://www.hd315.gov.cn/beian/view.asp?bianhao=010202001032100010" target="_blank"><img src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/gongshang_logos.gif" alt="GongshangLogo" title=""></a></dd></dl></div></div><div id="note1" class="csdn_note" style="display:none; position:absolute; z-index:9999; width:440px">  <span class="notice_top_arrow"><span class="inner"></span></span>  <div class="box"></div></div><div class="csdn_notice_tip" style="position: absolute; z-index: 9990; width: 170px; left: -72px; top: 788px; display: block;">  <iframe src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/saved_resource(2).html" frameborder="0" scrolling="no" style="z-index:-1;position:absolute;top:0;left:0;width:100%;height:100%;background:transparent"></iframe>  <div class="tip_text">您有<strong>231</strong>条新通知</div>  <a href="javascript:void 0" class="close2"></a></div><script id="noticeScript" type="text/javascript" btnid="header_notice_num" wrapid="note1" count="5" subcount="5" src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/notify.js"></script><input type="hidden" id="aa_g_data_ids">
+        
+    <script type="text/javascript" src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/csdn_public_blog_detail.min.js"></script>
+
+    <script type="text/javascript" src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/showblogmedal.ashx"></script>
+
+     
+    
+
+
+  <div id="a52b5334d" style="width: 1px; height: 1px; display: none;">
+                    <script id="adJs52b5334" src="http://ads.csdn.net/js/opt/52b5334.js?t=0.5496542437670529"></script>
+                    <script>document.getElementById("adJs52b5334").src = "http://ads.csdn.net/js/opt/52b5334.js?t=" + Math.random();</script>
+   </div>
+
+    
+    
+        
+     
+
+    
+          
+    <div class="pop_CA_cover" style="display:none"></div>
+    <div class="pop pop_CA" style="display:none">
+          <div class="CA_header">
+            收藏助手
+            <span class="cancel_icon" id="fapancle" onclick="$(&#39;.pop_CA&#39;).hide();$(&#39;.pop_CA_cover&#39;).hide();"></span>
+          </div>
+          <iframe src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/saved_resource(3).html" id="fa" frameborder="0" width="100%" height="360" scrolling="no"></iframe>
+    </div>
+
+
+        <script type="text/javascript">
+
+            $(function () {
+                var fromjs = $("#fromjs");
+                if (fromjs.length > 0) {
+                    $("#fromjs .markdown_views pre").addClass("prettyprint");
+                    prettyPrint();
+
+                    $('pre.prettyprint code').each(function () {
+                        var lines = $(this).text().split('\n').length;
+                        var $numbering = $('<ul/>').addClass('pre-numbering').hide();
+                        $(this).addClass('has-numbering').parent().append($numbering);
+                        for (i = 1; i <= lines; i++) {
+                            $numbering.append($('<li/>').text(i));
+                        };
+                        $numbering.fadeIn(1700);
+                    });
+
+                    $('.pre-numbering li').css("color", "#999");
+                }
+            });
+           
+            $(".markdown_views a[target!='_blank']").attr("target", "_blank");
+
+            //$(".toc a[target='_blank']").attr("target", "");
+
+            setTimeout(function () {
+                $(".toc a[target='_blank']").attr("target", "");
+            },500);
+
+        </script>
+
+
+   
+ <div id="mask_code"></div><div class="gist_edit"><div class="save_snippets clearfix"><div class="tit"><h3>保存代码片</h3><span>整理和分享保存的代码片，请访问<a href="https://code.csdn.net/snippets_manage" target="_blank">代码笔记</a></span></div><div class="con_form"><ul class="gist_edit_list clearfix"><li><span class="red">*</span><span class="txt">标题</span><input id="form_title" class="form-input" placeholder="Java垃圾回收机制" type="text"></li><li><span class="red">*</span><span class="txt">描述</span><textarea id="form-textarea" class="form-textarea" placeholder="Java垃圾回收机制： http://blog.csdn.net/zsuguangh/article/details/6429592"></textarea></li><li><span class="red">&nbsp;</span><span class="txt">标签</span><div id="divSearchTags"><span class="label blog_tag"><span>java</span><a title="Removing tag" href="javascript:;">x</a></span><span class="label blog_tag"><span>算法</span><a title="Removing tag" href="javascript:;">x</a></span><span class="label blog_tag"><span>jvm</span><a title="Removing tag" href="javascript:;">x</a></span><span class="label blog_tag"><span>string</span><a title="Removing tag" href="javascript:;">x</a></span><span class="label blog_tag"><span>generation</span><a title="Removing tag" href="javascript:;">x</a></span><span class="label blog_tag"><span>工作</span><a title="Removing tag" href="javascript:;">x</a></span><input id="insertTag" class="insertTag" placeholder="请输入标签，按Enter生成(最多5项)" type="text" value="" name="insertTag" maxlength="21" style="color: rgb(51, 51, 51);"><input id="OrganTag" class="OrganTag" type="hidden" name="OrganTag" value="java,算法,jvm,string,generation,工作,"><input id="OldOrganTag" class="OldOrganTag" type="hidden" name="OldOrganTag" value=""><input type="hidden" name="txtSearchTags"></div></li></ul></div><div class="bottom-bar"><a href="javascript:;" class="btn-submit btn-cancel">取消</a><span class="tracking-ad" data-mod="popu_250"><a class="btn-submit btn-confirm" href="javascript:;" target="_blank">确定</a></span></div></div></div><div id="tag-suggest-pop">
+  <div class="relative">
+    <div class="close"></div>
+    <div class="content"></div>
+  </div>
+</div><link rel="stylesheet" type="text/css" media="screen" href="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/ask_float_fonts_css-6b30a53970eb5c3a2a045e3df585b475.css"><div data-mod="popu_64" class="csdn-tracking-statistics" chg-blk="0"><a id="com-quick-reply" title="快速回复" style="top:291px"></a><a id="com-quick-collect" title="我要收藏" style="top:329px"></a><a id="com-d-top-a" style="top: 367px; display: inline;" title="返回顶部" onclick=""></a> </div><div class="pop_edit ask_second comm_ask_second"><h3>提问</h3><span class="ask_float_span">您的问题将会被发布在“<a class="ask_float_channel" href="http://ask.csdn.net/" target="_blank" style="cursor:pointer">技术问答</a>”频道</span><a href="http://blog.csdn.net/zsuguangh/article/details/6429592#" nodetype="close" class="close">×</a><div class="context"><div class="err_div"><span class="err_ico"></span><span class="err_txt">该问题已存在，请勿重复提问</span></div><div class="input_div"><input id="askInputSecond" type="text" style="font-size:14px;" placeholder="问题标题"></div><div class="cm_box"><div class="cm_dialog"></div> <div class="pop_cm cm_add_link"><input type="text" placeholder="链接内容" id="af_cm_link_txt"><input type="text" placeholder="链接地址" id="af_cm_link_url"><input type="text" placeholder="链接提示" id="af_cm_link_tit"><div class="text-right"><span class="btn btn-default btn-sm" id="add_link_btn">插入链接</span> </div> </div><div class="pop_cm cm_add_img"><div class="nav-tabs"><a class="img_tab active" href="http://blog.csdn.net/zsuguangh/article/details/6429592#tab_upload">本地上传</a><a class="img_tab" href="http://blog.csdn.net/zsuguangh/article/details/6429592#tab_weburl">网络图片</a></div><div class="tab_panel active" id="tab_upload"><div class="set_img"><iframe src="./Java垃圾回收机制 - zsuguangh的专栏 - 博客频道 - CSDN.NET_files/upload.html"></iframe></div></div><div class="tab_panel" id="tab_weburl"><input type="text" placeholder="图片地址" id="af_cm_img_url"><input type="text" placeholder="图片说明" id="af_cm_img_alt"><div class="text-right"><span class="btn btn-default btn-sm" id="add_img_btn">插入图片</span> </div></div> </div></div> <textarea id="editor_all" rows="8" style="display: none;"></textarea><div class="editor-toolbar"><i class="separator">|</i><a class="icon-headline" title="标题一（Ctrl+Alt+1）"></a><a class="icon-heading" title="标题二（Ctrl+Alt+2）"></a><a class="icon-bold" title="粗体（Ctrl+B）"></a><a class="icon-italic" title="斜体（Ctrl+I）"></a><i class="separator">|</i><a class="icon-quote-left" title="引用（Ctrl+’）"></a><a class="icon-code" title="插入代码片（Ctrl+,）"></a><a class="icon-list-ul" title="无序列表（Ctrl+L）"></a><a class="icon-list-ol" title="有序列表（Ctrl+Alt+L）"></a><i class="separator">|</i><a class="icon-link" title="添加链接（Ctrl+K）"></a><a class="icon-picture" title="添加图片（Ctrl+Alt+I）"></a><i class="separator">|</i><a class="icon-reply" title="撤退（Ctrl+Z）"></a><a class="icon-share-alt" title="前进（Ctrl+Shift+Z）"></a><i class="separator">|</i><a class="icon-info" href="http://ask.csdn.net/pages/markdown" target="_blank" title="markdown语法参考"></a><a class="icon-preview" title="预览"></a><i class="separator">|</i></div><div class="CodeMirror cm-s-paper CodeMirror-focused"><div style="overflow: hidden; position: relative; width: 3px; height: 0px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none; font-size: 4px;" tabindex="0"></textarea></div><div class="CodeMirror-hscrollbar"><div style="height: 1px;"></div></div><div class="CodeMirror-vscrollbar"><div style="width: 1px;"></div></div><div class="CodeMirror-scrollbar-filler"></div><div class="CodeMirror-gutter-filler"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="min-width: 33px;"><div style="position: relative;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre>&nbsp;<span style="display: inline-block; width: 1px; margin-right: -1px;">&nbsp;</span></pre></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code"></div><div class="CodeMirror-cursor" style="visibility: hidden;">&nbsp;</div><div class="CodeMirror-cursor CodeMirror-secondarycursor" style="visibility: hidden;">&nbsp;</div></div></div></div></div><div style="position: absolute; height: 30px; width: 1px;"></div><div class="CodeMirror-gutters" style="display: none;"></div></div></div><div class="editor-statusbar"><span class="lines">0</span><span class="words">0</span><span class="cursor">0:0</span></div><div class="div_tags clearfix"><div id="divSearchTags" class="tags_con"><input type="text"></div><input type="hidden" name="txtSearchTags"></div><div id="ask2_tagRecomm_div" class="drt_tagRecomm tracking-ad" data-mod="popu_73"><span class="drt_tit">推荐标签：</span></div></div><div class="success"><div class="left_area"><input id="chk_cb" type="checkbox"><span class="wyxs">我要悬赏</span><input id="cb_num" class="cb_num" readonly="true"><span class="phib_rii"><span> 币</span></span></div><a href="http://blog.csdn.net/zsuguangh/article/details/6429592#" nodetype="cancel" class="cancel">取消</a><a href="http://blog.csdn.net/zsuguangh/article/details/6429592#" nodetype="ok" class="ok">发布</a></div></div><div id="common_ask_div_sc" class="searchContainer"><div class="sTitle">可能存在类似的问题：</div><div class="sFooter"><a class="sFirstNewAsk">我想提一个新问题</a></div></div><div style="position:fixed; top:0; left:0; overflow:hidden;"><input style="position:absolute; left:-300px;" type="text" value="" id="focus_retriever" readonly="true"></div></body></html>

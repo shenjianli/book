@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<!-- saved from url=(0034)http://www.importnew.com/1993.html -->
+<html dir="ltr" lang="zh-CN" xmlns:wb="http://open.weibo.com/wb" class=" js rgba borderradius boxshadow textshadow opacity cssanimations cssgradients csstransitions fontface generatedcontent video audio js"><!--<![endif]--><!-- BEGIN head --><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><div class="fit-vids-style">­<style>               .fluid-width-video-wrapper {                 width: 100%;                              position: relative;                       padding: 0;                            }                                                                                   .fluid-width-video-wrapper iframe,        .fluid-width-video-wrapper object,        .fluid-width-video-wrapper embed {           position: absolute;                       top: 0;                                   left: 0;                                  width: 100%;                              height: 100%;                          }                                       </style></div><script src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/shares.php" charset="utf-8"></script>
+
+	<!-- Title -->
+	<title>成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew</title>
+	
+	<!-- Meta Tags -->
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<!-- Favicon & Mobileicon -->
+	<link rel="shortcut icon" href="http://www.importnew.com/wp-content/uploads/2014/12/d02a42d9cb3dec9320e5f550278911c7.ico">
+	<link rel="apple-touch-icon" href="http://www.importnew.com/wp-content/themes/jobbolev4blog/mobileicon.png">
+	
+	<!-- RSS, Atom & Pingbacks -->
+		<link rel="alternate" title="ImportNew RSS Feed" href="http://www.importnew.com/feed">
+		<link rel="alternate" title="RSS .92" href="http://www.importnew.com/feed/rss">
+	<link rel="alternate" title="Atom 0.3" href="http://www.importnew.com/feed/atom">
+	<link rel="pingback" href="http://www.importnew.com/xmlrpc.php">
+	
+	<!-- Theme Hook -->
+	<link rel="stylesheet" id="lightboxStyle-css" href="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/colorbox.css" type="text/css" media="screen">
+<link rel="stylesheet" id="core3.0-css" href="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/shCore.css" type="text/css" media="all">
+<link rel="stylesheet" id="core-Default3.0-css" href="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/shCoreDefault.css" type="text/css" media="all">
+<link rel="stylesheet" id="theme-Default3.0-css" href="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/shThemeDefault.css" type="text/css" media="all">
+<script type="text/javascript" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/jquery.js"></script>
+<script type="text/javascript" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/q2w3-fixed-widget.min.js"></script>
+<script type="text/javascript" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/modernizr.js"></script>
+<script type="text/javascript" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/comment-reply.js"></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.importnew.com/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.importnew.com/wp-includes/wlwmanifest.xml"> 
+<link rel="prev" title="JVM性能优化， Part 2 ―― 编译器" href="http://www.importnew.com/2009.html">
+<link rel="next" title="成为JavaGC专家（2）—如何监控Java垃圾回收机制" href="http://www.importnew.com/2057.html">
+<link rel="shortlink" href="http://www.importnew.com/?p=1993">
+
+<!-- All in One SEO Pack 1.6.15.2 by Michael Torbert of Semper Fi Web Design[465,536] -->
+<meta name="description" content="对于Java开发人员来说，了解垃圾回收机制（GC）有哪些好处呢？首先可以满足作为一名软件工程师的求知欲，其次，深入了解GC如何工作可以帮你写出更好的Java应用。">
+<meta name="keywords" content="gc,javagc专家,jvm">
+<link rel="canonical" href="http://www.importnew.com/1993.html">
+<!-- /all in one seo pack -->
+
+<!-- Comment Rating plugin Version: 2.9.32 by Bob King, http://wealthynetizen.com/, dynamic comment voting & styling. --> 
+<style type="text/css" media="screen">
+   .ckrating_highly_rated {background-color:#FFFFCC !important;}
+   .ckrating_poorly_rated {opacity:0.6;filter:alpha(opacity=60) !important;}
+   .ckrating_hotly_debated {background-color:#FFF0F5 !important;}
+</style>
+
+
+<!-- WP SyntaxHighlighter Ver.1.7.3 CSS for code Begin -->
+<style type="text/css">
+.syntaxhighlighter,
+.syntaxhighlighter a,
+.syntaxhighlighter div,
+.syntaxhighlighter code,
+.syntaxhighlighter table,
+.syntaxhighlighter table td,
+.syntaxhighlighter table tr,
+.syntaxhighlighter table tbody,
+.syntaxhighlighter table thead,
+.syntaxhighlighter table caption,
+.syntaxhighlighter textarea {
+font-size: 12px !important; /* Set the font size in pixels */  
+font-family: "Consolas", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace !important; /* Set the font type */  
+}
+.syntaxhighlighter table caption {
+/* For Title(Caption) */  
+font-size: 14px !important; /* Set the font size in pixels */  
+font-family: "Consolas", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace !important; /* Set the font type */  
+}
+.syntaxhighlighter.nogutter td.code .line {
+/* Set the left padding space when no-gutter in ver. 3.0 */  
+padding-left: 3px !important;
+}
+.syntaxhighlighter {
+/* For Chrome/Safari(WebKit) */  
+/* Hide the superfluous vertical scrollbar in ver. 3.0 */  
+overflow-y: hidden !important;
+padding: 1px !important;
+}
+.widget-area.syntaxhighlighter a,
+.widget-area.syntaxhighlighter div,
+.widget-area.syntaxhighlighter code,
+.widget-area.syntaxhighlighter table,
+.widget-area.syntaxhighlighter table td,
+.widget-area.syntaxhighlighter table tr,
+.widget-area.syntaxhighlighter table tbody,
+.widget-area.syntaxhighlighter table thead,
+.widget-area.syntaxhighlighter table caption,
+.widget-area.syntaxhighlighter textarea {
+/* For Widget */  
+font-size: 14px !important; /* Set the font size in pixels */  
+font-family: "Consolas", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace !important; /* Set the font type */  
+}
+.widget-area table caption {
+/* For Widget */  
+/* For Title(Caption) */  
+font-size: 10px !important; /* Set the font size in pixels */  
+font-family: "Consolas", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace !important; /* Set the font type */  
+}
+</style>
+<!-- WP SyntaxHighlighter Ver.1.7.3 CSS for code End -->
+	
+	<!-- CSS -->
+	<link rel="stylesheet" href="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/style.css" media="screen">
+	<!-- link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Noticia+Text:400,700italic,700,400italic" media="screen" / -->
+	<style>
+				*::selection { background: #0099cc; }
+		*::-moz-selection { background: #0099cc; }
+		body { background: #ffffff  }
+		a, .tabs ul.nav li a:hover, .tabs ul.nav li.active a, .dropcap, .toggle.hover .toggle-title, li.comment cite a:hover, h3.widget-title, .post-meta .meta-title:hover, .the-latest a:hover h4, .aw_socialcounter_widget li a:hover, .aw_tabbed_widget #tab-latest-comments a:hover { color: #0099cc; }
+		a:hover { color: #b30000; }
+		input:focus, textarea:focus { border-color: #0099cc; }
+		#searchsubmit, .highlight, .aw_tabbed_widget .tabs ul.nav li.active a, footer .aw_tabbed_widget .tabs ul.nav li.active a, #top .aw_tabbed_widget .tabs ul.nav li.active a, .aw_tabbed_widget .tabs ul.nav li a:hover, footer .aw_tabbed_widget .tabs ul.nav li a:hover, #top .aw_tabbed_widget .tabs ul.nav li a:hover, .aw_twitter_widget .twitter-icon, .testimonial-icon, #top-closed:hover, .flex-control-nav a:hover, .flex-control-nav a.flex-active { background-color: #0099cc; }
+		.submit { background-color: #0099cc; border-color: #007399; }
+		.submit:hover { background-color: #b30000; border-color: #860000; }
+		#searchsubmit:hover { background-color: #b30000; }
+		.toggle.hover .toggle-icon { border-top-color: #0099cc; }
+		.toggle.hover.active .toggle-icon { border-bottom-color: #0099cc; }
+		.flex-direction-nav li .flex-prev:hover { border-right-color: #0099cc; }
+		.flex-direction-nav li .flex-next:hover { border-left-color: #0099cc; }
+		@media only screen and (min-width: 768px) and (max-width: 959px) {
+			.aw_tabbed_widget .tabs ul.nav li a:hover, .tabs ul.nav li.active a { color: #0099cc; }
+		}
+		@media screen and (max-width: 767px) {
+			.tabs ul.nav li a:hover, .tabs ul.nav li.active a { color: #0099cc; }
+		}
+	</style>
+		
+	<!--[if IE 8]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js"></script>
+    <![endif]-->
+
+	<!-- Links: RSS + Atom Syndication + Pingback etc. -->
+	<link rel="alternate" type="application/rss+xml" title="ImportNew RSS Feed" href="http://www.importnew.com/feed">
+	<link rel="alternate" type="text/xml" title="RSS .92" href="http://www.importnew.com/feed/rss">
+	<link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="http://www.importnew.com/feed/atom">
+	<link rel="pingback" href="http://www.importnew.com/xmlrpc.php">
+    <script src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/wb.js" type="text/javascript" charset="utf-8"></script><script charset="UTF-8" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/query"></script>
+
+<!-- END head -->
+</head>
+
+<!-- BEGIN body -->
+<body class="single single-post postid-1993 single-format-standard chrome"><link href="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/jiathis_counter.css" rel="stylesheet" type="text/css"><link href="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/jiathis_share.css" rel="stylesheet" type="text/css"><iframe frameborder="0" style="position: absolute; display: none; opacity: 0;" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/saved_resource.html"></iframe><div class="jiathis_style" style="position: absolute; z-index: 1000000000; display: none; top: 50%; left: 50%; overflow: auto;"></div><div class="jiathis_style" style="position: absolute; z-index: 1000000000; display: none; overflow: auto;"></div><iframe frameborder="0" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/jiathis_utility.html" style="display: none;"></iframe>
+
+		
+	
+	<!-- BEGIN #top-nav -->
+	<nav id="top-nav" class="menu-nav">
+		
+		<!-- BEGIN .container -->
+		<div class="container">
+
+			            <div class="grid-12">
+            </div>
+			<div class="clear"></div>
+		
+		</div>
+		<!-- END .container -->
+    
+	</nav>
+	<!-- END #top-nav -->
+	
+	  	
+	<!-- BEGIN #wrapper -->
+	<div id="wrapper" class="container">
+
+		<!-- BEGIN header -->
+		<header>
+		
+						
+			<div class="header-wrapper">
+								
+				<!-- BEGIN #logo -->
+				<div id="logo" class="leaderboard-true">
+				
+										<a href="http://www.importnew.com/"><img src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/6c537425c9ad078efe656a346e5facec.png" width="137" height="85" alt="ImportNew"></a>
+									
+				</div>
+				<!-- END #logo -->
+				
+				<!-- BEGIN #leaderboard -->
+				<div id="leaderboard">
+				
+									
+				</div>
+				<!-- END #leaderboard -->
+				
+				<div class="clear"></div>
+			
+			</div>
+			
+						
+			<div class="clear"></div>
+			
+			<!-- BEGIN #main-nav -->
+			<nav id="main-nav" class="grid-12 menu-nav">
+
+				<div class="menu-main-container"><ul id="main-nav-menu" class="menu sf-js-enabled"><li id="menu-item-14265" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-14265"><a href="http://www.importnew.com/">首页</a></li>
+<li id="menu-item-14278" class="menu-item menu-item-type-post_type menu-item-object-page current_page_parent menu-item-14278"><a href="http://www.importnew.com/all-posts">所有文章</a></li>
+<li id="menu-item-858" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-858"><a href="http://www.importnew.com/cat/news">资讯</a></li>
+<li id="menu-item-1120" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1120"><a href="http://www.importnew.com/cat/web-development">Web</a></li>
+<li id="menu-item-1923" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1923"><a href="http://www.importnew.com/cat/architecture">架构</a></li>
+<li id="menu-item-832" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-832"><a href="http://www.importnew.com/cat/basic">基础技术</a></li>
+<li id="menu-item-836" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-836"><a href="http://www.importnew.com/cat/books">书籍</a></li>
+<li id="menu-item-2183" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-2183"><a href="http://www.importnew.com/cat/tutorial">教程</a></li>
+<li id="menu-item-20858" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-20858"><a href="http://group.jobbole.com/category/tech/java/" class="external" rel="nofollow" target="_blank">Java小组</a></li>
+<li id="menu-item-20859" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-20859"><a href="http://hao.jobbole.com/?catid=32" class="external" rel="nofollow" target="_blank">工具资源</a></li>
+</ul><select class="selectnav" id="selectnav1"><option value="">- 导航条 -</option><option value="http://www.importnew.com/">首页</option><option value="http://www.importnew.com/all-posts">所有文章</option><option value="http://www.importnew.com/cat/news">资讯</option><option value="http://www.importnew.com/cat/web-development">Web</option><option value="http://www.importnew.com/cat/architecture">架构</option><option value="http://www.importnew.com/cat/basic">基础技术</option><option value="http://www.importnew.com/cat/books">书籍</option><option value="http://www.importnew.com/cat/tutorial">教程</option><option value="http://group.jobbole.com/category/tech/java/">Java小组</option><option value="http://hao.jobbole.com/?catid=32">工具资源</option></select></div>				
+				<div class="clear"></div>
+            
+			</nav>
+			<!-- END #main-nav -->
+			
+			<div class="clear"></div>
+		
+		</header>
+		<!-- END header -->
+		
+		
+
+<!-- BEGIN .grid-8 -->
+<div class="grid-8">
+
+		
+	<!-- BEGIN .post -->
+<div class="post-1993 post type-post status-publish format-standard hentry category-basic category-tutorial tag-gc tag-javagc tag-jvm odd" id="post-1993">
+	
+	<!-- BEGIN .entry-header -->
+	<div class="entry-header">
+	
+				
+		<h1>成为JavaGC专家（1）—深入浅出Java垃圾回收机制</h1>
+		
+							
+	</div>
+	<!-- BEGIN .entry-header -->
+	
+	<!-- BEGIN .entry-meta -->
+	<div class="entry-meta">
+	
+		<p class="entry-meta-hide-on-mobile">2012/12/27 | 分类： <a href="http://www.importnew.com/cat/basic" title="查看 基础技术 中的全部文章" rel="category tag">基础技术</a>, <a href="http://www.importnew.com/cat/tutorial" title="查看 教程 中的全部文章" rel="category tag">教程</a> | <a href="http://www.importnew.com/1993.html#comments" title="《成为JavaGC专家（1）—深入浅出Java垃圾回收机制》上的评论">5  条评论</a>
+
+		 | 标签： <a href="http://www.importnew.com/tag/gc">GC</a>, <a href="http://www.importnew.com/tag/javagc%e4%b8%93%e5%ae%b6">JavaGC专家</a>, <a href="http://www.importnew.com/tag/jvm">JVM</a></p>
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style" style="display: block; margin: 0 0px; clear: both;"><span class="jiathis_txt">分享到：</span>
+<a class="jiathis_button_tsina" title="分享到微博"><span class="jiathis_txt jtico jtico_tsina"></span></a>
+<a class="jiathis_button_weixin" title="分享到微信"><span class="jiathis_txt jtico jtico_weixin"></span></a>
+<a class="jiathis_button_qzone" title="分享到QQ空间"><span class="jiathis_txt jtico jtico_qzone"></span></a>
+<a class="jiathis_button_fb" title="分享到Facebook"><span class="jiathis_txt jtico jtico_fb"></span></a>
+<a class="jiathis_button_renren" title="分享到人人网"><span class="jiathis_txt jtico jtico_renren"></span></a>
+<a class="jiathis_button_douban" title="分享到豆瓣"><span class="jiathis_txt jtico jtico_douban"></span></a>
+<a class="jiathis_button_readitlater"></a>
+<a class="jiathis_button_evernote" title="分享到印象笔记"><span class="jiathis_txt jtico jtico_evernote"></span></a>
+<a class="jiathis_button_ydnote" title="分享到有道云笔记"><span class="jiathis_txt jtico jtico_ydnote"></span></a>
+<a href="http://www.jiathis.com/share?uid=1745061" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+<a class="jiathis_counter_style"><span class="jiathis_button_expanded jiathis_counter jiathis_bubble_style" id="jiathis_counter_28" title="累计分享256次">256</span></a>
+</div>
+<!-- JiaThis Button END -->
+
+
+	</div>
+	<!-- END .entry-meta -->
+
+	<!-- BEGIN .entry -->
+	<div class="entry">
+
+        
+		<div class="copyright-area">本文作者： <a href="http://www.importnew.com/">ImportNew</a> - <a href="http://www.importnew.com/author/wangxiaojie">王晓杰</a> 未经许可，禁止转载！</div>
+<p>对于Java开发人员来说，了解垃圾回收机制（GC）有哪些好处呢？首先可以满足作为一名软件工程师的求知欲，其次，深入了解GC如何工作可以帮你写出更好的Java应用。</p>
+<p>这仅仅代表我个人的意见，但我坚信一个精通GC的人往往是一个好的Java开发者。如果你对GC的处理过程感兴趣，说明你已经具备较大规模应用的开发经验。如果你曾经想过如何正确的选择GC算法，那意味着你已经完全理解你所开发的应用的特点。当然，我们不能以偏概全，这不能作为评价一个好的开发人员的共通标准。但是，我要说的是，深入理解GC是成为一名伟大的程序员的必经之路。<span id="more-1993"></span></p>
+<p>这是成为JavaGC专家系列文章的第一篇，本篇主要针对GC机制进行介绍，在下一篇中，我们将重点探讨分析GC状态以及来自NHN的GC调优的例子。</p>
+<p>本文的目的是以一种简单的方式向你介绍GC机制。我希望这些文章能够帮到你。实际上，我的学生已经在Twitter上发布了<a href="http://www.cubrid.org/blog/tags/Java/" class="external" rel="nofollow" target="_blank">一些很好的关于Java内核的文章</a>，并且大受欢迎。有兴趣的话，你也可以关注他们。</p>
+<p>回到正题，咱们继续谈垃圾回收，在学习GC之前，你首先应该记住一个单词：“<strong>stop-the-world</strong>”。Stop-the-world会在任何一种GC算法中发生。Stop-the-world意味着 JVM 因为要执行GC而停止了应用程序的执行。当Stop-the-world发生时，除了GC所需的线程以外，所有线程都处于等待状态，直到GC任务完成。GC优化很多时候就是指减少Stop-the-world发生的时间。</p>
+<p><strong>按代的垃圾回收机制</strong></p>
+<p>在Java程序中不能显式地分配和注销内存。有些人把相关的对象设置为null或者调用System.gc()来试图显式地清理内存。设置为null至少没什么坏处，但是调用System.gc()会显著地影响系统性能，必须彻底杜绝（还好，我还没有见到NHN的哪个开发者调用这个方法）。</p>
+<p>在Java中，开发人员无法直接在程序代码中清理内存，而是由垃圾回收器自动寻找不必要的垃圾对象，并且清理掉他们。垃圾回收器会在下面两种假设（hypotheses）成立的情况下被创建（称之为假设不如改为推测（suppositions）或者前提（preconditions））。</p>
+<ul>
+<li>大多数对象会很快变得不可达</li>
+<li>只有很少的由老对象（创建时间较长的对象）指向新生对象的引用</li>
+</ul>
+<p>这些假设我们称之为<strong>弱年代假设</strong>（ <strong>weak generational hypothesis</strong>）。为了强化这一假设，HotSpot虚拟机将其物理上划分为两个–新生代（<strong>young generation</strong>）和老年代（<strong>old generation</strong>）。<br>
+<strong>新生代（Young generation）: </strong>绝大多数最新被创建的对象会被分配到这里，由于大部分对象在创建后会很快变得不可到达，所以很多对象被创建在新生代，然后消失。对象从这个区域消失的过程我们称之为”<strong>minor GC</strong>“。</p>
+<p><strong>老年代（Old generation）:</strong> 对象没有变得不可达，并且从新生代中存活下来，会被拷贝到这里。其所占用的空间要比新生代多。也正由于其相对较大的空间，发生在老年代上的GC要比新生代少得多。对象从老年代中消失的过程，我们称之为”<strong>major GC</strong>“（或者”<strong>full GC</strong>“）</p>
+<p>请看下面这个图表。</p>
+<p style="text-align: center;"><a href="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/Figure-1-GC-Area-Data-Flow.png" rel="lightbox[1993]" title="Figure 1 GC Area &amp; Data Flow" class="cboxElement"><img class="size-full wp-image-1994" title="Figure 1 GC Area &amp; Data Flow" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/Figure-1-GC-Area-Data-Flow.png" alt="" width="352" height="307"></a></p>
+<p style="text-align: center;"><strong style="text-align: center;">&nbsp;图1 : GC 空间 &amp; 数据流</strong></p>
+<p>上图中的持久代（ <strong>permanent generation</strong> ）也被称为<strong>方法区</strong>（<strong>method area</strong>）。他用来保存类常量以及字符串常量。因此，这个区域不是用来永久的存储那些从老年代存活下来的对象。这个区域也可能发生GC。并且发生在这个区域上的GC事件也会被算为major GC。</p>
+<p>有些人可能会问：<br>
+<strong>如果老年代的对象需要引用一个新生代的对象，会发生什么呢？</strong><br>
+为了解决这个问题，老年代中存在一个”<strong>card table</strong>“，他是一个512<em> byte</em>大小的块。所有老年代的对象指向新生代对象的引用都会被记录在这个表中。当针对新生代执行GC的时候，只需要查询card table来决定是否可以被收集，而不用查询整个老年代。这个card table由一个<strong>write barrier</strong>来管理。write barrier给GC带来了很大的性能提升，虽然由此可能带来一些开销，但GC的整体时间被显著的减少。</p>
+<p><a href="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/Figure2-Card-Table-Structure.png" rel="lightbox[1993]" title="Figure2 Card Table Structure" class="cboxElement"><img class="size-full wp-image-1995 aligncenter" title="Figure2 Card Table Structure" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/Figure2-Card-Table-Structure.png" alt="" width="374" height="225"></a></p>
+<p style="text-align: center;" align="center"><strong>图 2: Card Table 结构</strong></p>
+<p style="text-align: left;" align="center">&nbsp;<strong>新生代的构成</strong></p>
+<p>为了更好地理解GC，我们现在来学习新生代，新生代是用来保存那些第一次被创建的对象，他可以被分为三个空间</p>
+<ul>
+<li>&nbsp;一个伊甸园空间（<strong>Eden </strong>）</li>
+<li>&nbsp;两个幸存者空间（<strong>Survivor</strong> ）</li>
+</ul>
+<p>一共有三个空间，其中包含两个幸存者空间。每个空间的执行顺序如下：</p>
+<ol>
+<li>绝大多数刚刚被创建的对象会存放在伊甸园空间。</li>
+<li>在伊甸园空间执行了第一次GC之后，存活的对象被移动到其中一个幸存者空间。</li>
+<li>&nbsp; 此后，在伊甸园空间执行GC之后，存活的对象会被堆积在同一个幸存者空间。</li>
+<li>&nbsp;当一个幸存者空间饱和，还在存活的对象会被移动到另一个幸存者空间。之后会清空已经饱和的那个幸存者空间。</li>
+<li>在以上的步骤中重复几次依然存活的对象，就会被移动到老年代。</li>
+</ol>
+<p>如果你仔细观察这些步骤就会发现，其中一个幸存者空间必须保持是空的。如果两个幸存者空间都有数据，或者两个空间都是空的，那一定标志着你的系统出现了某种错误。<br>
+通过频繁的minor GC将数据移动到老年代的过程可以用下图来描述：</p>
+<p style="text-align: center;"><a href="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/Figure-3-Before-After-a-GC.png" rel="lightbox[1993]" title="Figure 3 Before &amp; After a GC" class="cboxElement"><img class="size-full wp-image-2028 aligncenter" title="Figure 3 Before &amp; After a GC" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/Figure-3-Before-After-a-GC.png" alt="" width="382" height="715"></a></p>
+<p style="text-align: center;" align="center"><strong>图 3: GC执行前后对比</strong></p>
+<p style="text-align: left;" align="center">需要注意的是HotSpot虚拟机使用了两种技术来加快内存分配。他们分别是是”<strong>bump-the-pointer</strong>“和“<strong>TLABs</strong><strong>（Thread-Local Allocation Buffers）”。</strong></p>
+<p style="text-align: left;" align="center"><strong>Bump-the-pointer</strong>技术跟踪在伊甸园空间创建的最后一个对象。这个对象会被放在伊甸园空间的顶部。如果之后再需要创建对象，只需要检查伊甸园空间是否有足够的剩余空间。如果有足够的空间，对象就会被创建在伊甸园空间，并且被放置在顶部。这样以来，每次创建新的对象时，只需要检查最后被创建的对象。这将极大地加快内存分配速度。但是，如果我们在多线程的情况下，事情将截然不同。如果想要以线程安全的方式以多线程在伊甸园空间存储对象，不可避免的需要加锁，而这将极大地的影响性能。<strong>TLABs</strong> 是HotSpot虚拟机针对这一问题的解决方案。该方案为每一个线程在伊甸园空间分配一块独享的空间，这样每个线程只访问他们自己的TLAB空间，再与bump-the-pointer技术结合可以在不加锁的情况下分配内存。<br>
+以上是针对新生代空间GC技术的简要介绍，你不需要刻意记住我刚刚提到的两种技术。不知道他们不会对你产生什么影响，但是请务必记住在对象刚刚被创建之后，是保存在伊甸园空间的。那些长期存活的对象会经由幸存者空间转存在老年代空间。</p>
+<p style="text-align: left;" align="center"><strong>老年代GC处理机制</strong></p>
+<p>老年代空间的GC事件基本上是在空间已满时发生，执行的过程根据GC类型不同而不同，因此，了解不同的GC类型将有助于你理解本节的内容。<br>
+JDK7一共有5种GC类型：</p>
+<ol start="1">
+<li>Serial GC</li>
+<li>Parallel GC</li>
+<li>Parallel Old GC (Parallel Compacting GC)</li>
+<li>Concurrent Mark &amp; Sweep GC &nbsp;(or “CMS”)</li>
+<li>Garbage First (G1) GC</li>
+</ol>
+<p style="text-align: left;" align="center">其中，Serial GC不应该被用在服务器上。这种GC类型在单核CPU的桌面电脑时代就存在了。使用Serial GC会显著的降低应用的性能指标。<br>
+现在，让我们共同学习每一种GC类型</p>
+<p><strong>1. Serial GC (-XX:+UseSerialGC)</strong></p>
+<p>新生代空间的GC方式我们在前面已经介绍过了，在老年代空间中的GC采取称之为”<strong>mark-sweep-compact</strong>“的算法。</p>
+<ol start="1">
+<li>算法的第一步是标记老年代中依然存活对象。（标记）</li>
+<li>第二步，从头开始检查堆内存空间，并且只留下依然幸存的对象。（清理）</li>
+</ol>
+<p>最后一步，从头开始，顺序地填满堆内存空间，并且将对内存空间分成两部分：一个保存着对象，另一个空着（压缩）。</p>
+<p><strong>2. Parallel GC (-XX:+UseParallelGC)</strong></p>
+<p style="text-align: center;"><a href="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/Figure-4-Difference-between-the-Serial-GC-and-Parallel-GC.png" rel="lightbox[1993]" title="Figure 4 Difference between the Serial GC and Parallel GC" class="cboxElement"><img class="size-full wp-image-2029 aligncenter" title="Figure 4 Difference between the Serial GC and Parallel GC" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/Figure-4-Difference-between-the-Serial-GC-and-Parallel-GC.png" alt="" width="645" height="211"></a></p>
+<p style="text-align: center;"><strong>图 4: Serial GC 与 Parallel GC的区别</strong></p>
+<p>从上图中，你可以轻易地看出serial GC和parallel GC的区别，serial GC只使用一个线程执行GC，而parallel GC使用多个线程，因此parallel GC更高效。这种GC在内存充足以及多核的情况下会很有用，因此我们也称之为”<strong>throughput GC</strong>“。</p>
+<p><strong>3. Parallel Old GC(-XX:+UseParallelOldGC)</strong></p>
+<p><strong></strong>Parallel Old GC在JDK5之后出现。与parallel GC相比，唯一的区别在于针对老年代的GC算法。Parallel Old GC分为三步：标记-汇总-压缩（<em>mark – summary – compaction</em>）。汇总（<em>summary</em>）步骤与清理（sweep）的不同之处在于，其将依然幸存的对象分发到GC预先处理好的不同区域，算法相对清理来说略微复杂一点。</p>
+<p><strong>4. CMS GC (-XX:+UseConcMarkSweepGC)</strong></p>
+<p><a href="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/Figure-5-Serial-GC-CMS-GC.png" rel="lightbox[1993]" title="Figure 5 Serial GC &amp; CMS GC" class="cboxElement"><img class="size-full wp-image-2030 aligncenter" title="Figure 5 Serial GC &amp; CMS GC" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/Figure-5-Serial-GC-CMS-GC.png" alt="" width="683" height="420"></a></p>
+<p style="text-align: center;" align="center"><strong>图 5: Serial GC &amp; CMS GC</strong></p>
+<p style="text-align: left;" align="center">就像你从上图看到的那样, CMS GC比我之前解释的各种算法都要复杂很多。第一步初始化标记（initial mark） 比较简单。这一步骤只是查找那些距离类加载器最近的幸存对象。因此，停顿的时间非常短暂。在之后的并行标记（ <em>concurrent mark</em> ）步骤，所有被幸存对象引用的对象会被确认是否已经被追踪和校验。这一步的不同之处在于，在标记的过程中，其他的线程依然在执行。在重新标记（<em>remark</em>）步骤，会再次检查那些在并行标记步骤中增加或者删除的与幸存对象引用的对象。最后，在并行交换（ <em>concurrent sweep</em> ）步骤，转交垃圾回收过程处理。垃圾回收工作会在其他线程的执行过程中展开。一旦采取了这种GC类型，由GC导致的暂停时间会极其短暂。CMS GC也被称为低延迟GC。它经常被用在那些对于响应时间要求十分苛刻的应用之上。</p>
+<p>当然，这种GC类型在拥有stop-the-world时间很短的优点的同时，也有如下缺点：</p>
+<ul>
+<li>&nbsp;它会比其他GC类型占用更多的内存和CPU</li>
+<li>&nbsp;默认情况下不支持压缩步骤</li>
+</ul>
+<p style="text-align: left;" align="center">在使用这个GC类型之前你需要慎重考虑。如果因为内存碎片过多而导致压缩任务不得不执行，那么stop-the-world的时间要比其他任何GC类型都长，你需要考虑压缩任务的发生频率以及执行时间。</p>
+<p style="text-align: left;" align="center"><strong>5. G1 GC</strong></p>
+<p style="text-align: left;" align="center">最后，我们来学习垃圾回收优先（G1）GC类型。</p>
+<p style="text-align: left;" align="center"><a href="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/Figure-6-Layout-of-G1-GC.png" rel="lightbox[1993]" title="Figure 6 Layout of G1 GC" class="cboxElement"><img class="size-full wp-image-2031 aligncenter" title="Figure 6 Layout of G1 GC" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/Figure-6-Layout-of-G1-GC.png" alt="" width="153" height="169"></a></p>
+<p style="text-align: center;" align="center"><strong>图 6: &nbsp;G1 GC的结构</strong></p>
+<p>&nbsp;如果你想要理解G1，首先你要忘记你所学过的新生代和老年代的概念。正如你在上图所看到的，每个对象被分配到不同的格子，随后GC执行。当一个区域装满之后，对象被分配到另一个区域，并执行GC。这中间不再有从新生代移动到老年代的三个步骤。这个类型是为了替代CMS GC而被创建的，因为CMS GC在长时间持续运作时会产生很多问题。</p>
+<p>G1最大的好处是性能，他比我们在上面讨论过的任何一种GC都要快。但是在JDK 6中，他还只是一个早期试用版本。在JDK7之后才由官方正式发布。就我个人看来，NHN在将JDK 7正式投入商用之前需要很长的一段测试期（至少一年）。因此你可能需要再等一段时间。并且，我也听过几次使用了JDK 6中的G1而导致Java虚拟机宕机的事件。请耐心的等到它更稳定吧。</p>
+<p>下一次我将讨论GC优化相关的问题，但是在此之前我要先明确一件事情，假如应用中创建的所有对象的大小和类型都是统一的，那么公司使用的WAS的GC参数可以是相同的。但是WAS所创建对象的大小和生命周期根据服务以及硬件的不同而不同。换句话说，不能因为某个应用使用的GC参数“A”，就说明同样的参数也能给其他服务带来最佳的效果。而是要因地制宜，有的放矢。我们需要找到适合每个WAS线程的参数，并且持续的监控和优化每个设备上的WAS实例。这并不是我的一家之谈，而是负责Oracle Java虚拟机研发的工程师在 JavaOne 2010上已经讨论过的。</p>
+<p>本文中我们简略的介绍了Java的GC机制，请继续关于我们的后续文章，我们将会讨论<strong>如何监控</strong><strong>Java GC状态以及优化GC。</strong></p>
+<p><strong></strong>另外，我特别推荐一本2011年12月发布的《Java性能》（<a href="http://amzn.com/0137142528" class="external" rel="nofollow" target="_blank">Amazon</a>,也可以通过safari在线阅读），还有在Oracle官网发布的白皮书《Java <em>HotSpotTM</em><em>虚拟机内存管理</em>》（这本书与Java性能优化不是同一本） 作者Sangmin Lee, NHN公司，性能工程师实验室高级工程师。</p>
+<p>&nbsp;</p>
+<p><strong>英文原文：<a href="http://www.cubrid.org/blog/dev-platform/understanding-java-garbage-collection/" class="external" rel="nofollow" target="_blank">cubrid</a>，编译：<a href="http://www.importnew.com/">ImportNew</a>-<a href="http://www.importnew.com/author/wangxiaojie">王晓杰</a></strong></p>
+<p><strong>译文地址： <a href="http://www.importnew.com/1993.html">http://www.importnew.com/1993.html</a></strong></p>
+<p><span style="color: #ff0000;">【如需转载，请在正文中标注并保留原文链接、译文链接和译者等信息，谢谢合作！】</span></p>
+
+        
+        
+        <!-- BEGIN #author-bio -->
+
+<div id="author-bio">
+	
+	<h3 class="widget-title">
+	关于作者： <a href="http://www.importnew.com/author/wangxiaojie">王晓杰</a>
+	</h3>
+	<div class="alignleft">
+		<a href="http://www.importnew.com/author/wangxiaojie">
+			<img src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/3.thumbnail.jpg" alt="王晓杰" width="50" height="50" class="photo">		</a>
+	</div>
+	<p>王晓杰。已过而立之年，毕业于北京工业大学，计算机科学与技术学士学位。
+PMP，SCJP，SCWCD。
+目前就职于高森明晨信息科技有限公司，任助理产品总监。
+潜心学习中，目前主要方向为Java分布式系统架构，Java虚拟机，Android应用。
+平时喜爱打篮球和厨艺。</p>
+	<p>
+		<a style="text-decoration: none;" href="http://www.importnew.com/author/wangxiaojie">查看王晓杰的更多文章 &gt;&gt; </a>
+	</p>
+	<div class="clear"></div>
+	
+</div>
+
+<!-- END #author-bio -->
+	</div>
+	<!-- END .entry -->
+
+
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style_24x24">
+<a class="jiathis_button_tsina" title="分享到微博"><span class="jiathis_txt jtico jtico_tsina"></span></a>
+<a class="jiathis_button_weixin" title="分享到微信"><span class="jiathis_txt jtico jtico_weixin"></span></a>
+<a class="jiathis_button_qzone" title="分享到QQ空间"><span class="jiathis_txt jtico jtico_qzone"></span></a>
+<a class="jiathis_button_fb" title="分享到Facebook"><span class="jiathis_txt jtico jtico_fb"></span></a>
+<a class="jiathis_button_renren" title="分享到人人网"><span class="jiathis_txt jtico jtico_renren"></span></a>
+<a class="jiathis_button_douban" title="分享到豆瓣"><span class="jiathis_txt jtico jtico_douban"></span></a>
+<a class="jiathis_button_googleplus" title="分享到Google+"><span class="jiathis_txt jtico jtico_googleplus"></span></a>
+<a class="jiathis_button_readitlater"></a>
+<a class="jiathis_button_evernote" title="分享到印象笔记"><span class="jiathis_txt jtico jtico_evernote"></span></a>
+<a class="jiathis_button_ydnote" title="分享到有道云笔记"><span class="jiathis_txt jtico jtico_ydnote"></span></a>
+<a href="http://www.jiathis.com/share?uid=1745061" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis external" target="_blank" rel="nofollow"></a>
+<a class="jiathis_counter_style"><span class="jiathis_button_expanded jiathis_counter jiathis_bubble_style" id="jiathis_counter_57" title="累计分享256次">256</span></a>
+</div>
+
+
+<script type="text/javascript">
+var jiathis_config={
+	data_track_clickback:false,
+	title:"《成为JavaGC专家（1）—深入浅出Java垃圾回收机制》",
+	summary:"对于Java开发人员来说，了解垃圾回收机制（GC）有哪些好处呢？首先可以满足作为一名软件工程师的求知欲，其次，深入了解GC如何工作可以帮你写出更好的Java应用。
+
+这仅仅代表我个人的意见，但我坚信一个精通GC的人往往是一个好的Java开发者。如果你对GC的处理过程感兴趣，说明你已经具备较大规模应用的开发经验。如果你曾经想过如何正确的选择GC算法，那意味着你已经完全理解你所开发的应用的特点。当然，我们不能以偏概全，这不能作为评价一个好的开发人员的共通标准。但是，我要说的是，深入理解GC是成为一名伟大的程序员的必经之路。
+",
+	pic:"http://incdn1.b0.upaiyun.com/2012/12/Figure-3-Before-After-a-GC.png",
+	appkey:{
+                "tsina":2284713194 //for importnew
+        },
+	ralateuid:{
+		"tsina":2991905905 //for importnew
+	},
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/jia.js" charset="utf-8"></script><script type="text/javascript" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/plugin.client.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+<br><br>
+<div id="text-13">			<div class="textwidget"><p><a href="http://blog.jobbole.com/106093/" target="_blank" class="external" rel="nofollow"><img src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/bfdcef89gw1f9cf7iwi24j20h802sjrz.jpg"></a></p>
+</div>
+		</div>
+</div>
+<!-- END .post -->	
+	
+<script type="text/javascript">
+window._wp_rp_static_base_url = "http://dtmvdvtzf8rz0.cloudfront.net/static/";
+
+</script>
+<h3 class="related_post_title">相关文章</h3><ul class="related_post wp_rp" style="visibility:visible;"><li position="0"><a href="http://www.importnew.com/2057.html">成为JavaGC专家（2）—如何监控Java垃圾回收机制</a></li><li position="1"><a href="http://www.importnew.com/23752.html">JVM（3）：Java GC算法 垃圾收集器</a></li><li position="2"><a href="http://www.importnew.com/23186.html">JVM初探——使用堆外内存减少Full GC</a></li><li position="3"><a href="http://www.importnew.com/23146.html">JVM GC参数以及GC算法的应用</a></li><li position="4"><a href="http://www.importnew.com/22996.html">JVM内存管理–GC算法精解（五分钟让你彻底明白标记/清除算法）</a></li><li position="5"><a href="http://www.importnew.com/22886.html">JVM 调优 —— GC 长时间停顿问题及解决方法</a></li><li position="6"><a href="http://www.importnew.com/16327.html">JVM 优化经验总结</a></li><li position="7"><a href="http://www.importnew.com/11336.html">高吞吐低延迟Java应用的垃圾回收优化</a></li><li position="8"><a href="http://www.importnew.com/10910.html">Linux HotSopt虚拟机GC线程的CPU占用率</a></li><li position="9"><a href="http://www.importnew.com/10570.html">如何估算内存消耗</a></li></ul>
+
+			
+	
+<!-- BEGIN #respond -->
+<div id="respond">
+
+	<h3 class="widget-title">发表评论</h3>
+	
+	<!-- BEGIN .cancel-comment-reply -->
+	<p class="cancel-comment-reply">
+		
+		<a rel="nofollow" id="cancel-comment-reply-link" href="http://www.importnew.com/1993.html#respond" style="display:none;">点击这里取消回复。</a>		
+	</p>
+	<!-- END .cancel-comment-reply -->
+
+		
+	<!-- BEGIN #comment-form -->
+	<form action="http://www.importnew.com/wp-comments-post.php" method="post" id="comment-form">
+		
+		<fieldset>
+		
+			<legend class="none">Comment form</legend>
+			
+			<!-- BEGIN .container -->
+			<div class="container">
+			
+							
+				<div class="grid-4 margin-20">
+					<label for="author">Name<span class="red">*</span></label>
+				</div>
+				
+				<div class="grid-4 margin-20">
+					<div class="input-wrapper"><input type="text" name="author" id="author" value="" tabindex="1" size="30" class="required" placeholder="姓名"></div>
+				</div>
+				<div class="clear"></div>
+				
+				<div class="grid-4 margin-20">
+					<label for="email">邮箱<span class="red">*</span></label>
+				</div>
+				
+				<div class="grid-4 margin-20">
+					<div class="input-wrapper"><input type="email" name="email" id="email" value="" tabindex="2" size="30" class="required email" placeholder="请填写邮箱"></div>
+				</div>
+				<div class="clear"></div>
+				
+				<div class="grid-4 margin-20">
+					<label for="url">网站 (请以 http://开头)</label>
+				</div>
+				
+				<div class="grid-4 margin-20">
+					<div class="input-wrapper"><input type="url" name="url" id="url" value="" tabindex="3" size="30" placeholder="请填写网站地址"></div>
+				</div>
+				<div class="clear"></div>
+				
+								
+				<div class="grid-8 margin-20">
+					<label for="comment" class="none margin-20">评论内容<span class="red">*</span></label>
+					<div class="input-wrapper"><textarea name="comment" id="comment" rows="20" cols="30" class="required" tabindex="4" onkeydown="if(event.ctrlKey &amp;&amp; event.keyCode==13){document.getElementById(&#39;comment-form-submit&#39;).click(); return false;}" placeholder="请填写评论内容"></textarea></div>
+				</div>
+				<div class="clear"></div>
+				
+			</div>
+			<!-- END .container -->
+			
+			<p>(<span class="red">*</span>) 表示必填项</p>
+			<p></p><div class="submit-wrapper"><a id="comment-form-submit" class="submit">提交评论</a></div><p></p>
+			<input type="hidden" name="comment_post_ID" value="1993" id="comment_post_ID">
+<input type="hidden" name="comment_parent" id="comment_parent" value="0">
+			<p style="display: none;"><input type="hidden" id="akismet_comment_nonce" name="akismet_comment_nonce" value="5c2d713cd1"></p>			
+		</fieldset>
+		
+	</form>
+	<!-- END #comment-form -->
+	
+	
+</div>
+<!-- END #respond -->
+
+	<h3 id="comments" class="widget-title">5 条评论</h3>
+	
+	<!-- BEGIN .commentlist -->
+	<ol class="commentlist">
+	
+				<li class="comment even thread-even depth-1" id="comment-1023">
+				<div id="div-comment-1023" class="comment-body">
+				<div class="comment-author vcard">
+				<cite class="fn">fair_jm</cite> <span class="says">说道：</span>		</div>
+
+		<div class="comment-meta commentmetadata"><a href="http://www.importnew.com/1993.html#comment-1023">
+			2013/03/02 下午 3:46</a>		</div>
+
+		<p>哎…mark-sweep-compact 最后的一部是不是copy算法?? 留两块空间 把from的移动到to的 然后from和to交换角色? 说的有点太短了没看懂….</p>
+<p> <img style="padding: 0px; border: none; cursor: pointer;" onmouseover="this.width=this.width*1.3" onmouseout="this.width=this.width/1.2" id="up-1023" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/1_14_up.png" alt="Thumb up" onclick="javascript:ckratingKarma(&#39;1023&#39;, &#39;add&#39;, &#39;www.importnew.com/wp-content/plugins/comment-rating/&#39;, &#39;1_14_&#39;);" title="赞同"> <span id="karma-1023-up" style="font-size:12px; color:#009933;">0</span>&nbsp;<img style="padding: 0px; border: none; cursor: pointer;" onmouseover="this.width=this.width*1.3" onmouseout="this.width=this.width/1.2" id="down-1023" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/1_14_down.png" alt="Thumb down" onclick="javascript:ckratingKarma(&#39;1023&#39;, &#39;subtract&#39;, &#39;www.importnew.com/wp-content/plugins/comment-rating/&#39;, &#39;1_14_&#39;)" title="反对"> <span id="karma-1023-down" style="font-size:12px; color:#990033;">0</span></p>
+		<div class="reply">
+		<a class="comment-reply-link" href="http://www.importnew.com/1993.html?replytocom=1023#respond" onclick="return addComment.moveForm(" div-comment-1023",="" "1023",="" "respond",="" "1993")"="">回复</a>		</div>
+				</div>
+		</li>
+		<li class="comment odd alt thread-odd thread-alt depth-1" id="comment-2487">
+				<div id="div-comment-2487" class="comment-body">
+				<div class="comment-author vcard">
+				<cite class="fn">neatman</cite> <span class="says">说道：</span>		</div>
+
+		<div class="comment-meta commentmetadata"><a href="http://www.importnew.com/1993.html#comment-2487">
+			2013/06/17 下午 5:59</a>		</div>
+
+		<p>文中新生代的构成部分，提到的：“当一个幸存者空间饱和，还在存活的对象会被移动到另一个幸存者空间。之后会清空已经饱和的那个幸存者空间。”这句话与官方文档http://www.oracle.com/technetwork/java/javase/gc-tuning-6-140523.html中说的不一致。<br>
+文档中原话是：“The young generation consists of eden and two survivor spaces. Most objects are initially allocated in eden. One survivor space is empty at any time, and serves as the destination of any live objects in eden and the other survivor space during the next copying collection. Objects are copied between survivor spaces in this way until they are old enough to be tenured (copied to the tenured generation).”</p>
+<p> <img style="padding: 0px; border: none; cursor: pointer;" onmouseover="this.width=this.width*1.3" onmouseout="this.width=this.width/1.2" id="up-2487" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/1_14_up.png" alt="Thumb up" onclick="javascript:ckratingKarma(&#39;2487&#39;, &#39;add&#39;, &#39;www.importnew.com/wp-content/plugins/comment-rating/&#39;, &#39;1_14_&#39;);" title="赞同"> <span id="karma-2487-up" style="font-size:12px; color:#009933;">3</span>&nbsp;<img style="padding: 0px; border: none; cursor: pointer;" onmouseover="this.width=this.width*1.3" onmouseout="this.width=this.width/1.2" id="down-2487" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/1_14_down.png" alt="Thumb down" onclick="javascript:ckratingKarma(&#39;2487&#39;, &#39;subtract&#39;, &#39;www.importnew.com/wp-content/plugins/comment-rating/&#39;, &#39;1_14_&#39;)" title="反对"> <span id="karma-2487-down" style="font-size:12px; color:#990033;">0</span></p>
+		<div class="reply">
+		<a class="comment-reply-link" href="http://www.importnew.com/1993.html?replytocom=2487#respond" onclick="return addComment.moveForm(" div-comment-2487",="" "2487",="" "respond",="" "1993")"="">回复</a>		</div>
+				</div>
+		</li>
+		<li class="comment even thread-even depth-1" id="comment-2488">
+				<div id="div-comment-2488" class="comment-body">
+				<div class="comment-author vcard">
+				<cite class="fn">neatman</cite> <span class="says">说道：</span>		</div>
+
+		<div class="comment-meta commentmetadata"><a href="http://www.importnew.com/1993.html#comment-2488">
+			2013/06/17 下午 6:03</a>		</div>
+
+		<p>为刚才的疑问做补充：文中“新生代的构成部分”的“每个空间的执行顺序”里的3,4两句话与上面我引用的官方文档的原话不一致，上面漏了3了。</p>
+<p> <img style="padding: 0px; border: none; cursor: pointer;" onmouseover="this.width=this.width*1.3" onmouseout="this.width=this.width/1.2" id="up-2488" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/1_14_up.png" alt="Thumb up" onclick="javascript:ckratingKarma(&#39;2488&#39;, &#39;add&#39;, &#39;www.importnew.com/wp-content/plugins/comment-rating/&#39;, &#39;1_14_&#39;);" title="赞同"> <span id="karma-2488-up" style="font-size:12px; color:#009933;">0</span>&nbsp;<img style="padding: 0px; border: none; cursor: pointer;" onmouseover="this.width=this.width*1.3" onmouseout="this.width=this.width/1.2" id="down-2488" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/1_14_down.png" alt="Thumb down" onclick="javascript:ckratingKarma(&#39;2488&#39;, &#39;subtract&#39;, &#39;www.importnew.com/wp-content/plugins/comment-rating/&#39;, &#39;1_14_&#39;)" title="反对"> <span id="karma-2488-down" style="font-size:12px; color:#990033;">1</span></p>
+		<div class="reply">
+		<a class="comment-reply-link" href="http://www.importnew.com/1993.html?replytocom=2488#respond" onclick="return addComment.moveForm(" div-comment-2488",="" "2488",="" "respond",="" "1993")"="">回复</a>		</div>
+				</div>
+		</li>
+		<li class="comment odd alt thread-odd thread-alt depth-1" id="comment-419998">
+				<div id="div-comment-419998" class="comment-body">
+				<div class="comment-author vcard">
+				<cite class="fn"><a href="http://iamacoer.net/" rel="external nofollow" class="url external" target="_blank">jacobzheng</a></cite> <span class="says">说道：</span>		</div>
+
+		<div class="comment-meta commentmetadata"><a href="http://www.importnew.com/1993.html#comment-419998">
+			2015/05/17 下午 4:37</a>		</div>
+
+		<p>我觉得将concurrent翻译为并发更加准确。<br>
+并行和并发是两个概念。</p>
+<p> <img style="padding: 0px; border: none; cursor: pointer;" onmouseover="this.width=this.width*1.3" onmouseout="this.width=this.width/1.2" id="up-419998" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/1_14_up.png" alt="Thumb up" onclick="javascript:ckratingKarma(&#39;419998&#39;, &#39;add&#39;, &#39;www.importnew.com/wp-content/plugins/comment-rating/&#39;, &#39;1_14_&#39;);" title="赞同"> <span id="karma-419998-up" style="font-size:12px; color:#009933;">1</span>&nbsp;<img style="padding: 0px; border: none; cursor: pointer;" onmouseover="this.width=this.width*1.3" onmouseout="this.width=this.width/1.2" id="down-419998" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/1_14_down.png" alt="Thumb down" onclick="javascript:ckratingKarma(&#39;419998&#39;, &#39;subtract&#39;, &#39;www.importnew.com/wp-content/plugins/comment-rating/&#39;, &#39;1_14_&#39;)" title="反对"> <span id="karma-419998-down" style="font-size:12px; color:#990033;">0</span></p>
+		<div class="reply">
+		<a class="comment-reply-link" href="http://www.importnew.com/1993.html?replytocom=419998#respond" onclick="return addComment.moveForm(" div-comment-419998",="" "419998",="" "respond",="" "1993")"="">回复</a>		</div>
+				</div>
+		</li>
+		<li class="comment even thread-even depth-1" id="comment-453969">
+				<div id="div-comment-453969" class="comment-body">
+				<div class="comment-author vcard">
+				<cite class="fn">Aceslup</cite> <span class="says">说道：</span>		</div>
+
+		<div class="comment-meta commentmetadata"><a href="http://www.importnew.com/1993.html#comment-453969">
+			2015/08/03 下午 7:53</a>		</div>
+
+		<p>很感谢说明。</p>
+<p> <img style="padding: 0px; border: none; cursor: pointer;" onmouseover="this.width=this.width*1.3" onmouseout="this.width=this.width/1.2" id="up-453969" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/1_14_up.png" alt="Thumb up" onclick="javascript:ckratingKarma(&#39;453969&#39;, &#39;add&#39;, &#39;www.importnew.com/wp-content/plugins/comment-rating/&#39;, &#39;1_14_&#39;);" title="赞同"> <span id="karma-453969-up" style="font-size:12px; color:#009933;">0</span>&nbsp;<img style="padding: 0px; border: none; cursor: pointer;" onmouseover="this.width=this.width*1.3" onmouseout="this.width=this.width/1.2" id="down-453969" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/1_14_down.png" alt="Thumb down" onclick="javascript:ckratingKarma(&#39;453969&#39;, &#39;subtract&#39;, &#39;www.importnew.com/wp-content/plugins/comment-rating/&#39;, &#39;1_14_&#39;)" title="反对"> <span id="karma-453969-down" style="font-size:12px; color:#990033;">0</span></p>
+		<div class="reply">
+		<a class="comment-reply-link" href="http://www.importnew.com/1993.html?replytocom=453969#respond" onclick="return addComment.moveForm(" div-comment-453969",="" "453969",="" "respond",="" "1993")"="">回复</a>		</div>
+				</div>
+		</li>
+	
+	</ol>
+
+	<!-- END .commentlist -->
+
+		
+ 
+
+
+
+		
+				
+	<!-- BEGIN .navigation -->
+	<div class="navigation margin-20">
+	
+		<div class="alignleft"><a href="http://www.importnew.com/2009.html" rel="prev">« JVM性能优化， Part 2 ―― 编译器</a></div>
+		<div class="alignright"><a href="http://www.importnew.com/2057.html" rel="next">成为JavaGC专家（2）—如何监控Java垃圾回收机制 »</a></div>
+		<div class="clear"></div>
+
+	</div>
+	<!-- END .navigation -->
+	
+		
+</div>
+<!-- END .grid-8 -->
+
+<!-- BEGIN #sidebar -->
+<div id="sidebar" class="grid-4">
+
+	<div id="search-3" class="widget widget_search"><!-- BEGIN #searchform -->
+<form method="get" id="searchform" action="http://www.importnew.com/">
+
+	<label class="none" for="s">Search for:</label>
+	<div class="input-wrapper"><input type="text" value="" name="s" id="s" placeholder="Search"></div>
+	<input type="submit" id="searchsubmit" value="Search">
+	
+</form>
+<!-- END #searchform --></div><div id="text-14" class="widget widget_text">			<div class="textwidget"><p><a href="http://blog.jobbole.com/84342/?utm_source=www.importnew.com&amp;utm_medium=rightBanner-1&amp;utm_content=2015.9.16" target="_blank" class="external" rel="nofollow"><img src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/e5298966gw1evyjrd4iqcj208c03c0t0.jpg"></a></p>
+</div>
+		</div><div id="aw_tabbed_widget-2" class="widget aw_tabbed_widget"><div class="tabs"><ul class="nav clearfix"><li class="active"><a id="link-most-discussed" href="http://www.importnew.com/1993.html#tab-most-discussed" title="本周热门文章">本周热门文章</a></li><li><a id="link-latest-comments" href="http://www.importnew.com/1993.html#tab-latest-comments" title="本月热门">本月热门</a></li><li><a id="link-tags" href="http://www.importnew.com/1993.html#tab-tags" title="热门标签">热门标签</a></li></ul><div id="tab-most-discussed" class="tab" style="display: block;"><div class="floated-thumb">							
+							
+							<!-- BEGIN .post-meta -->
+							<div class="post-meta  no-thumb">
+							
+								<p>
+								    <span class="numb">0</span>
+								    <a class="meta-title" target="_blank" href="http://www.importnew.com/25034.html" title="图解集合 3 : CopyOnWriteArrayList">图解集合 3 : CopyOnWriteArray...</a><br>
+								</p>
+									
+							</div>
+							<!-- END .post-meta -->
+							
+							<div class="clear"></div>
+							
+													
+							
+							<!-- BEGIN .post-meta -->
+							<div class="post-meta  no-thumb">
+							
+								<p>
+								    <span class="numb">1</span>
+								    <a class="meta-title" target="_blank" href="http://www.importnew.com/25046.html" title="Netty Client 重连实现">Netty Client 重连实现</a><br>
+								</p>
+									
+							</div>
+							<!-- END .post-meta -->
+							
+							<div class="clear"></div>
+							
+													
+							
+							<!-- BEGIN .post-meta -->
+							<div class="post-meta  no-thumb">
+							
+								<p>
+								    <span class="numb">2</span>
+								    <a class="meta-title" target="_blank" href="http://www.importnew.com/25114.html" title="Mysql Java 驱动代码阅读笔记及 JDBC 规范笔记">Mysql Java 驱动代码阅读笔记及...</a><br>
+								</p>
+									
+							</div>
+							<!-- END .post-meta -->
+							
+							<div class="clear"></div>
+							
+													
+							
+							<!-- BEGIN .post-meta -->
+							<div class="post-meta  no-thumb">
+							
+								<p>
+								    <span class="numb">3</span>
+								    <a class="meta-title" target="_blank" href="http://www.importnew.com/25049.html" title="图解集合 4 ：HashMap">图解集合 4 ：HashMap</a><br>
+								</p>
+									
+							</div>
+							<!-- END .post-meta -->
+							
+							<div class="clear"></div>
+							
+													
+							
+							<!-- BEGIN .post-meta -->
+							<div class="post-meta  no-thumb">
+							
+								<p>
+								    <span class="numb">4</span>
+								    <a class="meta-title" target="_blank" href="http://www.importnew.com/25060.html" title="JNI 探秘 — 你不知道的 FileInputStream 的秘密">JNI 探秘 — 你不知道的 FileInpu...</a><br>
+								</p>
+									
+							</div>
+							<!-- END .post-meta -->
+							
+							<div class="clear"></div>
+							
+													
+							
+							<!-- BEGIN .post-meta -->
+							<div class="post-meta  no-thumb">
+							
+								<p>
+								    <span class="numb">5</span>
+								    <a class="meta-title" target="_blank" href="http://www.importnew.com/25065.html" title="JNI 探秘 — FileInputStream 的 read 方法详解">JNI 探秘 — FileInputStream ...</a><br>
+								</p>
+									
+							</div>
+							<!-- END .post-meta -->
+							
+							<div class="clear"></div>
+							
+													
+							
+							<!-- BEGIN .post-meta -->
+							<div class="post-meta  no-thumb">
+							
+								<p>
+								    <span class="numb">6</span>
+								    <a class="meta-title" target="_blank" href="http://www.importnew.com/25070.html" title="图解集合 5 ：不正确地使用HashMap引发死循环及元素丢失">图解集合 5 ：不正确地使用HashMa...</a><br>
+								</p>
+									
+							</div>
+							<!-- END .post-meta -->
+							
+							<div class="clear"></div>
+							
+													
+							
+							<!-- BEGIN .post-meta -->
+							<div class="post-meta  no-thumb">
+							
+								<p>
+								    <span class="numb">7</span>
+								    <a class="meta-title" target="_blank" href="http://www.importnew.com/25089.html" title="TThreadedSelectorServer 介绍及 Direct Memory OOM 分析">TThreadedSelectorServer 介绍及 Dir...</a><br>
+								</p>
+									
+							</div>
+							<!-- END .post-meta -->
+							
+							<div class="clear"></div>
+							
+													
+							
+							<!-- BEGIN .post-meta -->
+							<div class="post-meta  no-thumb">
+							
+								<p>
+								    <span class="numb">8</span>
+								    <a class="meta-title" target="_blank" href="http://www.importnew.com/25103.html" title="图解集合 6 : LinkedHashMap">图解集合 6 : LinkedHashMap</a><br>
+								</p>
+									
+							</div>
+							<!-- END .post-meta -->
+							
+							<div class="clear"></div>
+							
+													
+							
+							<!-- BEGIN .post-meta -->
+							<div class="post-meta  no-thumb">
+							
+								<p>
+								    <span class="numb">9</span>
+								    <a class="meta-title" target="_blank" href="http://www.importnew.com/25125.html" title="图解集合 8 : 红黑树的移除节点操作">图解集合 8 : 红黑树的移除节点...</a><br>
+								</p>
+									
+							</div>
+							<!-- END .post-meta -->
+							
+							<div class="clear"></div>
+							
+						</div></div><div id="tab-latest-comments" class="tab" style="display: none;"><div class="floated-thumb">							
+											
+							<!-- BEGIN .post-meta -->
+							<div class="post-meta  no-thumb">
+							
+								<p>
+								    <span class="numb">0</span>
+								    <a class="meta-title" target="_blank" href="http://www.importnew.com/25023.html" title="图解集合 2 ：LinkedList">图解集合 2 ：LinkedList</a><br>
+								</p>
+									
+							</div>
+							<!-- END .post-meta -->
+							
+							<div class="clear"></div>
+							
+													
+											
+							<!-- BEGIN .post-meta -->
+							<div class="post-meta  no-thumb">
+							
+								<p>
+								    <span class="numb">1</span>
+								    <a class="meta-title" target="_blank" href="http://www.importnew.com/24875.html" title="Spring Boot 启动流程详解（一）">Spring Boot 启动流程详解（一）</a><br>
+								</p>
+									
+							</div>
+							<!-- END .post-meta -->
+							
+							<div class="clear"></div>
+							
+													
+											
+							<!-- BEGIN .post-meta -->
+							<div class="post-meta  no-thumb">
+							
+								<p>
+								    <span class="numb">2</span>
+								    <a class="meta-title" target="_blank" href="http://www.importnew.com/24689.html" title="一个轻量级分布式 RPC 框架 -- NettyRpc ">一个轻量级分布式 RPC 框架 -- N...</a><br>
+								</p>
+									
+							</div>
+							<!-- END .post-meta -->
+							
+							<div class="clear"></div>
+							
+													
+											
+							<!-- BEGIN .post-meta -->
+							<div class="post-meta  no-thumb">
+							
+								<p>
+								    <span class="numb">3</span>
+								    <a class="meta-title" target="_blank" href="http://www.importnew.com/24731.html" title="Spring9 : Autowire（自动装配）机制">Spring9 : Autowire（自动装配...</a><br>
+								</p>
+									
+							</div>
+							<!-- END .post-meta -->
+							
+							<div class="clear"></div>
+							
+													
+											
+							<!-- BEGIN .post-meta -->
+							<div class="post-meta  no-thumb">
+							
+								<p>
+								    <span class="numb">4</span>
+								    <a class="meta-title" target="_blank" href="http://www.importnew.com/24930.html" title="图解集合7：红黑树概念、红黑树的插入及旋转操作详细解读 ">图解集合7：红黑树概念、红黑树的插...</a><br>
+								</p>
+									
+							</div>
+							<!-- END .post-meta -->
+							
+							<div class="clear"></div>
+							
+													
+											
+							<!-- BEGIN .post-meta -->
+							<div class="post-meta  no-thumb">
+							
+								<p>
+								    <span class="numb">5</span>
+								    <a class="meta-title" target="_blank" href="http://www.importnew.com/25034.html" title="图解集合 3 : CopyOnWriteArrayList">图解集合 3 : CopyOnWriteArray...</a><br>
+								</p>
+									
+							</div>
+							<!-- END .post-meta -->
+							
+							<div class="clear"></div>
+							
+													
+											
+							<!-- BEGIN .post-meta -->
+							<div class="post-meta  no-thumb">
+							
+								<p>
+								    <span class="numb">6</span>
+								    <a class="meta-title" target="_blank" href="http://www.importnew.com/24804.html" title="怎样写一个 RefererFilter ">怎样写一个 RefererFilter </a><br>
+								</p>
+									
+							</div>
+							<!-- END .post-meta -->
+							
+							<div class="clear"></div>
+							
+													
+											
+							<!-- BEGIN .post-meta -->
+							<div class="post-meta  no-thumb">
+							
+								<p>
+								    <span class="numb">7</span>
+								    <a class="meta-title" target="_blank" href="http://www.importnew.com/24896.html" title="java 调试技能之 dubbo 调试 -- telnet">java 调试技能之 dubbo 调试 -- t...</a><br>
+								</p>
+									
+							</div>
+							<!-- END .post-meta -->
+							
+							<div class="clear"></div>
+							
+													
+											
+							<!-- BEGIN .post-meta -->
+							<div class="post-meta  no-thumb">
+							
+								<p>
+								    <span class="numb">8</span>
+								    <a class="meta-title" target="_blank" href="http://www.importnew.com/24706.html" title="在 Eclipse 里使用 PlantUML ">在 Eclipse 里使用 PlantUML </a><br>
+								</p>
+									
+							</div>
+							<!-- END .post-meta -->
+							
+							<div class="clear"></div>
+							
+													
+											
+							<!-- BEGIN .post-meta -->
+							<div class="post-meta  no-thumb">
+							
+								<p>
+								    <span class="numb">9</span>
+								    <a class="meta-title" target="_blank" href="http://www.importnew.com/24736.html" title="log4j2 不使用配置文件，动态生成 logger 对象">log4j2 不使用配置文件，动态生成 log...</a><br>
+								</p>
+									
+							</div>
+							<!-- END .post-meta -->
+							
+							<div class="clear"></div>
+							
+						</div></div><div id="tab-tags" class="tab" style="display: none;"><p><a href="http://www.importnew.com/tag/android23days" class="tag-link-240" title="8 个话题" style="font-size: 8.5645161290323px;">android23days</a>
+<a href="http://www.importnew.com/tag/android" class="tag-link-36" title="66 个话题" style="font-size: 18.5px;">Android开发</a>
+<a href="http://www.importnew.com/tag/aop" class="tag-link-204" title="18 个话题" style="font-size: 12.290322580645px;">AOP</a>
+<a href="http://www.importnew.com/tag/arraylist" class="tag-link-314" title="7 个话题" style="font-size: 8px;">ArrayList</a>
+<a href="http://www.importnew.com/tag/concurrenthashmap" class="tag-link-355" title="13 个话题" style="font-size: 10.822580645161px;">ConcurrentHashMap</a>
+<a href="http://www.importnew.com/tag/eclipse" class="tag-link-81" title="30 个话题" style="font-size: 14.661290322581px;">Eclipse</a>
+<a href="http://www.importnew.com/tag/gc" class="tag-link-87" title="39 个话题" style="font-size: 15.903225806452px;">GC</a>
+<a href="http://www.importnew.com/tag/gson" class="tag-link-643" title="7 个话题" style="font-size: 8px;">Gson</a>
+<a href="http://www.importnew.com/tag/guava" class="tag-link-554" title="11 个话题" style="font-size: 10.032258064516px;">Guava</a>
+<a href="http://www.importnew.com/tag/hadoop" class="tag-link-140" title="13 个话题" style="font-size: 10.822580645161px;">Hadoop</a>
+<a href="http://www.importnew.com/tag/hashmap" class="tag-link-284" title="30 个话题" style="font-size: 14.661290322581px;">HashMap</a>
+<a href="http://www.importnew.com/tag/hashset" class="tag-link-60" title="9 个话题" style="font-size: 9.1290322580645px;">HashSet</a>
+<a href="http://www.importnew.com/tag/hbase" class="tag-link-128" title="14 个话题" style="font-size: 11.161290322581px;">HBase</a>
+<a href="http://www.importnew.com/tag/hibernate" class="tag-link-109" title="14 个话题" style="font-size: 11.161290322581px;">Hibernate</a>
+<a href="http://www.importnew.com/tag/intellij" class="tag-link-213" title="8 个话题" style="font-size: 8.5645161290323px;">IntelliJ</a>
+<a href="http://www.importnew.com/tag/io" class="tag-link-70" title="13 个话题" style="font-size: 10.822580645161px;">io</a>
+<a href="http://www.importnew.com/tag/java" class="tag-link-35" title="127 个话题" style="font-size: 21.661290322581px;">Java</a>
+<a href="http://www.importnew.com/tag/java-8" class="tag-link-50" title="32 个话题" style="font-size: 15px;">java 8</a>
+<a href="http://www.importnew.com/tag/java8" class="tag-link-354" title="33 个话题" style="font-size: 15.112903225806px;">java8</a>
+<a href="http://www.importnew.com/tag/java9" class="tag-link-436" title="9 个话题" style="font-size: 9.1290322580645px;">Java9</a>
+<a href="http://www.importnew.com/tag/javaee" class="tag-link-379" title="7 个话题" style="font-size: 8px;">javaee</a>
+<a href="http://www.importnew.com/tag/javaee%e4%b8%8emaven%e6%95%99%e7%a8%8b" class="tag-link-462" title="7 个话题" style="font-size: 8px;">JavaEE与Maven教程</a>
+<a href="http://www.importnew.com/tag/java-nio" class="tag-link-750" title="13 个话题" style="font-size: 10.822580645161px;">Java NIO</a>
+<a href="http://www.importnew.com/tag/java%e4%b9%b1%e7%a0%81" class="tag-link-807" title="8 个话题" style="font-size: 8.5645161290323px;">Java乱码</a>
+<a href="http://www.importnew.com/tag/java%e7%bc%96%e7%a8%8b%e5%85%a5%e9%97%a8" class="tag-link-639" title="24 个话题" style="font-size: 13.645161290323px;">Java编程入门</a>
+<a href="http://www.importnew.com/tag/java%e8%99%9a%e6%8b%9f%e6%9c%ba" class="tag-link-671" title="7 个话题" style="font-size: 8px;">java虚拟机</a>
+<a href="http://www.importnew.com/tag/jdbc" class="tag-link-122" title="16 个话题" style="font-size: 11.725806451613px;">JDBC</a>
+<a href="http://www.importnew.com/tag/jdk" class="tag-link-44" title="12 个话题" style="font-size: 10.370967741935px;">JDK</a>
+<a href="http://www.importnew.com/tag/jpa" class="tag-link-161" title="8 个话题" style="font-size: 8.5645161290323px;">JPA</a>
+<a href="http://www.importnew.com/tag/jsoup" class="tag-link-703" title="9 个话题" style="font-size: 9.1290322580645px;">Jsoup</a>
+<a href="http://www.importnew.com/tag/junit" class="tag-link-337" title="8 个话题" style="font-size: 8.5645161290323px;">JUnit</a>
+<a href="http://www.importnew.com/tag/jvm" class="tag-link-80" title="132 个话题" style="font-size: 21.774193548387px;">JVM</a>
+<a href="http://www.importnew.com/tag/lambda" class="tag-link-92" title="9 个话题" style="font-size: 9.1290322580645px;">Lambda</a>
+<a href="http://www.importnew.com/tag/linkedhashmap" class="tag-link-306" title="7 个话题" style="font-size: 8px;">LinkedHashMap</a>
+<a href="http://www.importnew.com/tag/log4j" class="tag-link-117" title="7 个话题" style="font-size: 8px;">log4j</a>
+<a href="http://www.importnew.com/tag/mapreduce" class="tag-link-106" title="7 个话题" style="font-size: 8px;">MapReduce</a>
+<a href="http://www.importnew.com/tag/maven" class="tag-link-385" title="16 个话题" style="font-size: 11.725806451613px;">maven</a>
+<a href="http://www.importnew.com/tag/mybatis" class="tag-link-820" title="25 个话题" style="font-size: 13.758064516129px;">Mybatis</a>
+<a href="http://www.importnew.com/tag/netty" class="tag-link-130" title="19 个话题" style="font-size: 12.516129032258px;">Netty</a>
+<a href="http://www.importnew.com/tag/nio" class="tag-link-69" title="18 个话题" style="font-size: 12.290322580645px;">nio</a>
+<a href="http://www.importnew.com/tag/oracle" class="tag-link-153" title="9 个话题" style="font-size: 9.1290322580645px;">oracle</a>
+<a href="http://www.importnew.com/tag/orm" class="tag-link-451" title="10 个话题" style="font-size: 9.5806451612903px;">ORM</a>
+<a href="http://www.importnew.com/tag/redis" class="tag-link-772" title="10 个话题" style="font-size: 9.5806451612903px;">redis</a>
+<a href="http://www.importnew.com/tag/restful" class="tag-link-196" title="12 个话题" style="font-size: 10.370967741935px;">RESTful</a>
+<a href="http://www.importnew.com/tag/scala" class="tag-link-89" title="18 个话题" style="font-size: 12.290322580645px;">Scala</a>
+<a href="http://www.importnew.com/tag/servlet" class="tag-link-320" title="9 个话题" style="font-size: 9.1290322580645px;">Servlet</a>
+<a href="http://www.importnew.com/tag/socket" class="tag-link-559" title="11 个话题" style="font-size: 10.032258064516px;">Socket</a>
+<a href="http://www.importnew.com/tag/solr" class="tag-link-429" title="10 个话题" style="font-size: 9.5806451612903px;">solr</a>
+<a href="http://www.importnew.com/tag/spring" class="tag-link-53" title="137 个话题" style="font-size: 22px;">Spring</a>
+<a href="http://www.importnew.com/tag/spring4" class="tag-link-771" title="8 个话题" style="font-size: 8.5645161290323px;">Spring4</a>
+<a href="http://www.importnew.com/tag/spring-boot" class="tag-link-779" title="7 个话题" style="font-size: 8px;">spring boot</a>
+<a href="http://www.importnew.com/tag/springmvc" class="tag-link-614" title="20 个话题" style="font-size: 12.741935483871px;">SpringMVC</a>
+<a href="http://www.importnew.com/tag/spring-mvc" class="tag-link-443" title="13 个话题" style="font-size: 10.822580645161px;">Spring MVC</a>
+<a href="http://www.importnew.com/tag/string" class="tag-link-252" title="33 个话题" style="font-size: 15.112903225806px;">String</a>
+<a href="http://www.importnew.com/tag/synchronized" class="tag-link-737" title="8 个话题" style="font-size: 8.5645161290323px;">synchronized</a>
+<a href="http://www.importnew.com/tag/threadlocal" class="tag-link-376" title="12 个话题" style="font-size: 10.370967741935px;">ThreadLocal</a>
+<a href="http://www.importnew.com/tag/tomcat" class="tag-link-225" title="21 个话题" style="font-size: 12.967741935484px;">Tomcat</a>
+<a href="http://www.importnew.com/tag/volatile" class="tag-link-433" title="10 个话题" style="font-size: 9.5806451612903px;">volatile</a>
+<a href="http://www.importnew.com/tag/web-service" class="tag-link-103" title="7 个话题" style="font-size: 8px;">Web Service</a>
+<a href="http://www.importnew.com/tag/zookeeper" class="tag-link-828" title="10 个话题" style="font-size: 9.5806451612903px;">Zookeeper</a>
+<a href="http://www.importnew.com/tag/%e4%ba%8b%e5%8a%a1" class="tag-link-339" title="9 个话题" style="font-size: 9.1290322580645px;">事务</a>
+<a href="http://www.importnew.com/tag/%e5%86%85%e5%ad%98%e7%ae%a1%e7%90%86" class="tag-link-273" title="18 个话题" style="font-size: 12.290322580645px;">内存管理</a>
+<a href="http://www.importnew.com/tag/%e5%88%86%e5%b8%83%e5%bc%8f" class="tag-link-598" title="9 个话题" style="font-size: 9.1290322580645px;">分布式</a>
+<a href="http://www.importnew.com/tag/%e5%8a%a8%e6%80%81%e4%bb%a3%e7%90%86" class="tag-link-644" title="7 个话题" style="font-size: 8px;">动态代理</a>
+<a href="http://www.importnew.com/tag/%e5%8f%82%e6%95%b0%e5%a4%aa%e5%a4%9a%e6%80%8e%e4%b9%88%e5%8a%9e" class="tag-link-470" title="8 个话题" style="font-size: 8.5645161290323px;">参数太多怎么办</a>
+<a href="http://www.importnew.com/tag/%e5%8f%8d%e5%b0%84" class="tag-link-301" title="10 个话题" style="font-size: 9.5806451612903px;">反射</a>
+<a href="http://www.importnew.com/tag/%e5%9e%83%e5%9c%be%e5%9b%9e%e6%94%b6" class="tag-link-575" title="15 个话题" style="font-size: 11.387096774194px;">垃圾回收</a>
+<a href="http://www.importnew.com/tag/%e5%9f%ba%e7%a1%80%e6%8a%80%e6%9c%af" class="tag-link-58" title="65 个话题" style="font-size: 18.387096774194px;">基础技术</a>
+<a href="http://www.importnew.com/tag/%e5%a4%9a%e7%ba%bf%e7%a8%8b" class="tag-link-46" title="22 个话题" style="font-size: 13.193548387097px;">多线程</a>
+<a href="http://www.importnew.com/tag/%e5%ad%97%e7%ac%a6%e4%b8%b2" class="tag-link-636" title="8 个话题" style="font-size: 8.5645161290323px;">字符串</a>
+<a href="http://www.importnew.com/tag/%e5%ad%97%e8%8a%82%e7%a0%81" class="tag-link-38" title="8 个话题" style="font-size: 8.5645161290323px;">字节码</a>
+<a href="http://www.importnew.com/tag/%e5%ae%89%e5%85%a8" class="tag-link-235" title="7 个话题" style="font-size: 8px;">安全</a>
+<a href="http://www.importnew.com/tag/%e5%b7%a5%e5%85%b7" class="tag-link-126" title="7 个话题" style="font-size: 8px;">工具</a>
+<a href="http://www.importnew.com/tag/%e5%b9%b6%e5%8f%91" class="tag-link-401" title="49 个话题" style="font-size: 17.032258064516px;">并发</a>
+<a href="http://www.importnew.com/tag/%e5%b9%b6%e5%8f%91%e7%bc%96%e7%a8%8b" class="tag-link-64" title="26 个话题" style="font-size: 13.983870967742px;">并发编程</a>
+<a href="http://www.importnew.com/tag/%e5%ba%8f%e5%88%97%e5%8c%96" class="tag-link-298" title="11 个话题" style="font-size: 10.032258064516px;">序列化</a>
+<a href="http://www.importnew.com/tag/%e5%bc%82%e5%b8%b8%e5%a4%84%e7%90%86" class="tag-link-214" title="18 个话题" style="font-size: 12.290322580645px;">异常处理</a>
+<a href="http://www.importnew.com/tag/%e6%80%a7%e8%83%bd" class="tag-link-47" title="17 个话题" style="font-size: 12.064516129032px;">性能</a>
+<a href="http://www.importnew.com/tag/%e6%80%a7%e8%83%bd%e4%bc%98%e5%8c%96" class="tag-link-88" title="17 个话题" style="font-size: 12.064516129032px;">性能优化</a>
+<a href="http://www.importnew.com/tag/%e6%80%a7%e8%83%bd%e8%b0%83%e4%bc%98" class="tag-link-282" title="9 个话题" style="font-size: 9.1290322580645px;">性能调优</a>
+<a href="http://www.importnew.com/tag/%e6%95%99%e7%a8%8b" class="tag-link-156" title="17 个话题" style="font-size: 12.064516129032px;">教程</a>
+<a href="http://www.importnew.com/tag/%e6%95%b0%e6%8d%ae%e7%bb%93%e6%9e%84" class="tag-link-283" title="12 个话题" style="font-size: 10.370967741935px;">数据结构</a>
+<a href="http://www.importnew.com/tag/%e6%97%a5%e5%bf%97" class="tag-link-29" title="10 个话题" style="font-size: 9.5806451612903px;">日志</a>
+<a href="http://www.importnew.com/tag/%e6%9e%b6%e6%9e%84" class="tag-link-139" title="9 个话题" style="font-size: 9.1290322580645px;">架构</a>
+<a href="http://www.importnew.com/tag/%e6%b3%9b%e5%9e%8b" class="tag-link-246" title="15 个话题" style="font-size: 11.387096774194px;">泛型</a>
+<a href="http://www.importnew.com/tag/%e6%b3%a8%e8%a7%a3" class="tag-link-360" title="13 个话题" style="font-size: 10.822580645161px;">注解</a>
+<a href="http://www.importnew.com/tag/%e6%b5%8b%e8%af%95" class="tag-link-237" title="8 个话题" style="font-size: 8.5645161290323px;">测试</a>
+<a href="http://www.importnew.com/tag/%e6%b8%b8%e6%88%8f" class="tag-link-184" title="9 个话题" style="font-size: 9.1290322580645px;">游戏</a>
+<a href="http://www.importnew.com/tag/%e6%ba%90%e7%a0%81%e5%88%86%e6%9e%90" class="tag-link-280" title="7 个话题" style="font-size: 8px;">源码分析</a>
+<a href="http://www.importnew.com/tag/%e7%ae%97%e6%b3%95" class="tag-link-270" title="8 个话题" style="font-size: 8.5645161290323px;">算法</a>
+<a href="http://www.importnew.com/tag/%e7%b1%bb%e5%8a%a0%e8%bd%bd" class="tag-link-556" title="7 个话题" style="font-size: 8px;">类加载</a>
+<a href="http://www.importnew.com/tag/%e7%ba%bf%e7%a8%8b" class="tag-link-374" title="11 个话题" style="font-size: 10.032258064516px;">线程</a>
+<a href="http://www.importnew.com/tag/%e7%ba%bf%e7%a8%8b%e6%b1%a0" class="tag-link-297" title="13 个话题" style="font-size: 10.822580645161px;">线程池</a>
+<a href="http://www.importnew.com/tag/%e7%bc%93%e5%ad%98" class="tag-link-353" title="9 个话题" style="font-size: 9.1290322580645px;">缓存</a>
+<a href="http://www.importnew.com/tag/%e8%99%9a%e6%8b%9f%e6%9c%ba" class="tag-link-685" title="11 个话题" style="font-size: 10.032258064516px;">虚拟机</a>
+<a href="http://www.importnew.com/tag/%e8%ae%be%e8%ae%a1%e6%a8%a1%e5%bc%8f" class="tag-link-30" title="52 个话题" style="font-size: 17.258064516129px;">设计模式</a>
+<a href="http://www.importnew.com/tag/%e8%b5%84%e8%ae%af" class="tag-link-108" title="9 个话题" style="font-size: 9.1290322580645px;">资讯</a>
+<a href="http://www.importnew.com/tag/%e9%9b%86%e5%90%88" class="tag-link-311" title="15 个话题" style="font-size: 11.387096774194px;">集合</a>
+<a href="http://www.importnew.com/tag/%e9%9d%a2%e8%af%95" class="tag-link-31" title="23 个话题" style="font-size: 13.41935483871px;">面试</a>
+<a href="http://www.importnew.com/tag/%e9%9d%a2%e8%af%95%e9%a2%98" class="tag-link-27" title="11 个话题" style="font-size: 10.032258064516px;">面试题</a></p></div></div></div><div id="text-18" class="widget widget_text">			<div class="textwidget"><p><a href="http://date.jobbole.com/?utm_source=www.importnew.com&amp;utm_medium=rightBanner-2&amp;utm_content=2015.9.16" target="_blank" class="external" rel="nofollow"><img src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/bfdcef89gw1esk2g5dvq1j208c03cglu.jpg"></a></p>
+</div>
+		</div><div id="recent_comments_widget-2" class="widget recent_comments_widget">		<h3 class="widget-title">最新评论</h3>
+		<ul>
+		
+					
+			<li id="rc-comment-560449" class="rc-item rc-comment rc-clearfix">
+				<img class="rc-avatar rc-left" width="32" height="32" alt="" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/cb962c0fddc4ba5282bbf2996f3ee0d2.png">
+				<div class="rc-info">
+				Re:
+				<a class="rc-post" target="_blank" href="http://www.importnew.com/13032.html#comment-560449" rel="nofollow">如何使用bloomfilter构建大型Jav...</a>
+				</div>
+				<div class="rc-timestamp"></div>
+				<div class="rc-excerpt">
+				厉害								<span class="rc-reviewer"> it老刘</span>
+								</div>
+			</li>
+			
+						
+			<li id="rc-comment-560446" class="rc-item rc-comment rc-clearfix">
+				<img class="rc-avatar rc-left" width="32" height="32" alt="" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/cb962c0fddc4ba5282bbf2996f3ee0d2.png">
+				<div class="rc-info">
+				Re:
+				<a class="rc-post" target="_blank" href="http://www.importnew.com/21577.html#comment-560446" rel="nofollow">如何实现一个应用级缓存（下）</a>
+				</div>
+				<div class="rc-timestamp"></div>
+				<div class="rc-excerpt">
+				学习								<span class="rc-reviewer"> it老刘</span>
+								</div>
+			</li>
+			
+						
+			<li id="rc-comment-560445" class="rc-item rc-comment rc-clearfix">
+				<img class="rc-avatar rc-left" width="32" height="32" alt="" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/cb962c0fddc4ba5282bbf2996f3ee0d2.png">
+				<div class="rc-info">
+				Re:
+				<a class="rc-post" target="_blank" href="http://www.importnew.com/22223.html#comment-560445" rel="nofollow">Java虚拟机学习（2）：垃圾收集...</a>
+				</div>
+				<div class="rc-timestamp"></div>
+				<div class="rc-excerpt">
+				学习								<span class="rc-reviewer"> it老刘</span>
+								</div>
+			</li>
+			
+						
+			<li id="rc-comment-560443" class="rc-item rc-comment rc-clearfix">
+				<img class="rc-avatar rc-left" width="32" height="32" alt="" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/cb962c0fddc4ba5282bbf2996f3ee0d2.png">
+				<div class="rc-info">
+				Re:
+				<a class="rc-post" target="_blank" href="http://www.importnew.com/22019.html#comment-560443" rel="nofollow">也谈IO模型</a>
+				</div>
+				<div class="rc-timestamp"></div>
+				<div class="rc-excerpt">
+				厉害								<span class="rc-reviewer"> it老刘</span>
+								</div>
+			</li>
+			
+						
+			<li id="rc-comment-560442" class="rc-item rc-comment rc-clearfix">
+				<img class="rc-avatar rc-left" width="32" height="32" alt="" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/cb962c0fddc4ba5282bbf2996f3ee0d2.png">
+				<div class="rc-info">
+				Re:
+				<a class="rc-post" target="_blank" href="http://www.importnew.com/25034.html#comment-560442" rel="nofollow">图解集合 3 : CopyOnWriteArr...</a>
+				</div>
+				<div class="rc-timestamp"></div>
+				<div class="rc-excerpt">
+				厉害								<span class="rc-reviewer"> it老刘</span>
+								</div>
+			</li>
+			
+						
+			<li id="rc-comment-560440" class="rc-item rc-comment rc-clearfix">
+				<img class="rc-avatar rc-left" width="32" height="32" alt="" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/cb962c0fddc4ba5282bbf2996f3ee0d2.png">
+				<div class="rc-info">
+				Re:
+				<a class="rc-post" target="_blank" href="http://www.importnew.com/22064.html#comment-560440" rel="nofollow">我的Java后端书架 (2016年暖冬...</a>
+				</div>
+				<div class="rc-timestamp"></div>
+				<div class="rc-excerpt">
+				总结的很全								<span class="rc-reviewer"> it老刘</span>
+								</div>
+			</li>
+			
+						
+			<li id="rc-comment-560393" class="rc-item rc-comment rc-clearfix">
+				<img class="rc-avatar rc-left" width="32" height="32" alt="" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/cb962c0fddc4ba5282bbf2996f3ee0d2.png">
+				<div class="rc-info">
+				Re:
+				<a class="rc-post" target="_blank" href="http://www.importnew.com/25023.html#comment-560393" rel="nofollow">图解集合 2 ：LinkedList</a>
+				</div>
+				<div class="rc-timestamp"></div>
+				<div class="rc-excerpt">
+				原文：这段话，关于垃圾回收，引用计数法这个地方，认为的不对。（所以这块Entry会被当做”垃圾”对待...								<span class="rc-reviewer"> Richaaaard</span>
+								</div>
+			</li>
+			
+						
+			<li id="rc-comment-560372" class="rc-item rc-comment rc-clearfix">
+				<img class="rc-avatar rc-left" width="32" height="32" alt="" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/cb962c0fddc4ba5282bbf2996f3ee0d2.png">
+				<div class="rc-info">
+				Re:
+				<a class="rc-post" target="_blank" href="http://www.importnew.com/24930.html#comment-560372" rel="nofollow">图解集合7：红黑树概念、红黑树...</a>
+				</div>
+				<div class="rc-timestamp"></div>
+				<div class="rc-excerpt">
+				后记上面的 “3.根节点到所有叶子节点经过的黑色节点都是2个”是不是笔误了，应该是“3.根节点到所有...								<span class="rc-reviewer"> 谭宇超</span>
+								</div>
+			</li>
+			
+					
+		</ul>
+        </div><div id="text-19" class="widget widget_text">			<div class="textwidget"><p><a href="http://fanyi.jobbole.com/" target="_blank" class="external" rel="nofollow"><img src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/bfdcef89gw1esnyzyrczej208c03cgm3.jpg"></a></p>
+</div>
+		</div>	
+	<!-- BEGIN .container -->
+	<div class="container">
+	
+		<!-- BEGIN .grid-2 -->
+		<div class="grid-2">
+			
+						
+		</div>
+		<!-- END .grid-2 -->
+		
+		<!-- BEGIN .grid-2 -->
+		<div class="grid-2">
+			
+						
+		</div>
+		<!-- END .grid-2 -->
+		
+		<div class="clear"></div>
+			
+	</div>
+	<!-- END .container -->
+
+</div>
+<!-- END #sidebar -->
+<div class="clear"></div>	
+
+
+</div>
+<!-- END #wrapper -->
+
+<!-- BEGIN footer -->
+<footer>
+
+	<!-- BEGIN .container -->
+	<div class="container">
+		
+		<!-- BEGIN .grid-4 -->
+		<div class="grid-4">
+			
+			<div id="text-15" class="widget widget_text"><h3 class="widget-title">关于ImportNew</h3>			<div class="textwidget"><p>ImportNew 专注于 Java 技术分享。于2012年11月11日 11:11正式上线。是的，这是一个很特别的时刻 :) </p>
+<p>ImportNew 由两个 Java 关键字 import 和 new 组成，意指：Java 开发者学习新知识的网站。 import 可认为是学习和吸收， new 则可认为是新知识、新技术圈子和新朋友……</p>
+<div id="aw_socialcounter_widget-2" class="widget aw_socialcounter_widget">
+<ul>
+<li>
+<a target="_blank" href="http://weibo.com/importnew" class="external" rel="nofollow"><img class="alignleft" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/sina_32.png" alt="关注我们的新浪微博" title="关注我们的新浪微博"></a><p></p>
+<div class="view-rss"><a target="_blank" href="http://www.importnew.com/feed/" class="rss-link"><img class="alignleft" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/rss_32.png" alt="RSS订阅" title="RSS订阅"></a></div>
+</li>
+</ul>
+</div>
+</div>
+		</div>			
+		</div>
+		<!-- END .grid-4 -->
+		
+		<!-- BEGIN .grid-4 -->
+		<div class="grid-4">
+			
+			<div id="text-17" class="widget widget_text"><h3 class="widget-title">联系我们</h3>			<div class="textwidget"><p>Email：<a href="mailto:ImportNew.com@gmail.com">ImportNew.com@gmail.com</a><br>
+新浪微博：<a href="http://weibo.com/importnew" target="_blank" class="external" rel="nofollow">@ImportNew</a><br>
+推荐微信号<br>
+<img src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/ImportNew_weixin.png" width="100" height="110"><img src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/android_weixin.png" width="100" height="110"><img src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/Linux_weixin.png" width="100" height="110"></p>
+<p>反馈建议：ImportNew.com@gmail.com<br>
+广告与商务合作QQ：2302462408 </p>
+</div>
+		</div>			
+		</div>
+		<!-- END .grid-4 -->
+		
+		<!-- BEGIN .grid-4 -->
+		<div class="grid-4">
+			
+			<div id="text-16" class="widget widget_text"><h3 class="widget-title">推荐关注</h3>			<div class="textwidget"><p><a href="http://group.jobbole.com/?utm_source=www.importnew.com&amp;utm_medium=bottomText" target="_blank" class="external" rel="nofollow">小组</a> – 好的话题、有启发的回复、值得信赖的圈子<br>
+<a href="http://top.jobbole.com/?utm_source=www.importnew.com&amp;utm_medium=bottomText" target="_blank" class="external" rel="nofollow">头条</a> – 写了文章？看干货？去头条！<br>
+<a href="http://date.jobbole.com/?utm_source=www.importnew.com&amp;utm_medium=bottomText" target="_blank" class="external" rel="nofollow">相亲</a> – 为IT单身男女服务的征婚传播平台<br>
+<a href="http://hao.jobbole.com/?utm_source=www.importnew.com&amp;utm_medium=bottomText" target="_blank" class="external" rel="nofollow">资源</a> – 优秀的工具资源导航<br>
+<a href="http://fanyi.jobbole.com/?utm_source=www.importnew.com&amp;utm_medium=bottomText" target="_blank" class="external" rel="nofollow">翻译</a> – 活跃 &amp; 专业的翻译小组<br>
+<a href="http://blog.jobbole.com/?utm_source=www.importnew.com&amp;utm_medium=bottomText" target="_blank" class="external" rel="nofollow">博客</a> – 国内外的精选博客文章<br>
+<a href="http://design.jobbole.com/?utm_source=www.importnew.com&amp;utm_medium=bottomText" target="_blank" class="external" rel="nofollow">设计</a> – UI,网页，交互和用户体验<br>
+<a href="http://web.jobbole.com/?utm_source=www.importnew.com&amp;utm_medium=bottomText" target="_blank" class="external" rel="nofollow">前端</a> – JavaScript, HTML5, CSS<br>
+<a href="http://android.jobbole.com/?utm_source=www.importnew.com&amp;utm_medium=bottomText" target="_blank" class="external" rel="nofollow">安卓</a> – 专注Android技术分享<br>
+<a href="http://ios.jobbole.com/?utm_source=www.importnew.com&amp;utm_medium=bottomText" target="_blank" class="external" rel="nofollow">iOS</a> – 专注iOS技术分享<br>
+<a href="http://www.importnew.com/?utm_source=www.importnew.com&amp;utm_medium=bottomText" target="_blank">Java</a> – 专注Java技术分享<br>
+<a href="http://python.jobbole.com/?utm_source=www.importnew.com&amp;utm_medium=bottomText" target="_blank" class="external" rel="nofollow">Python</a> – 专注Python技术分享</p>
+</div>
+		</div>			
+		</div>
+		<!-- END .grid-4 -->
+		
+		<div class="clear"></div>
+	
+	</div>
+	<!-- END .container -->
+
+	<!-- BEGIN #bottom -->
+	<div id="bottom">
+	
+		<!-- BEGIN .container -->
+		<div class="container">
+		
+			<!-- BEGIN .grid-12 -->
+			<div class="grid-12">
+	
+				<p>© 2017 ImportNew</p>
+			
+			</div>
+			<!-- END .grid-12 -->
+			
+			<div class="clear"></div>
+						
+		</div>
+		<!-- END .container -->
+		
+	</div>
+	<!-- END #bottom -->
+	
+</footer>
+<!-- END footer -->
+
+
+	
+<!-- Lightbox Plus v2.3 - 2011.08.11 - Message: 0-->
+<script type="text/javascript">
+jQuery(document).ready(function($){
+  $("a[rel*=lightbox]").colorbox({opacity:0.8});
+});
+</script>
+<link rel="stylesheet" id="wp_rp_scrollup-css" href="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/scrollup.css" type="text/css" media="all">
+<script type="text/javascript" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/ck-karma.js"></script>
+<script type="text/javascript" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/jquery.colorbox-min.js"></script>
+<script type="text/javascript">
+/* <![CDATA[ */
+var viewsCacheL10n = {"admin_ajax_url":"http:\/\/www.importnew.com\/wp-admin\/admin-ajax.php","post_id":"1993"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/postviews-cache.js"></script>
+<script type="text/javascript" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/ready.js"></script>
+<script type="text/javascript" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/easing.js"></script>
+<script type="text/javascript" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/superfish.js"></script>
+<script type="text/javascript" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/validate.js"></script>
+<script type="text/javascript" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/touchwipe.js"></script>
+<script type="text/javascript" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/caroufredsel.js"></script>
+<script type="text/javascript" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/flexslider.js"></script>
+<script type="text/javascript" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/jplayer.js"></script>
+<script type="text/javascript" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/fitvids.js"></script>
+<script type="text/javascript" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/selectnav.js"></script>
+<script type="text/javascript" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/effects.js"></script>
+<script type="text/javascript" src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/scrollup.js"></script>
+
+
+<div id="full-btm" style="position:fixed; left:50%; top:550px;  z-index:100; text-align:center; cursor:pointer;">
+<a><img src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/back-btm.png" width="20" border="0" alt="跳到底部" title="跳到底部"></a>
+</div>
+
+<script type="text/javascript">
+jQuery('#full-btm').click(function(){
+    jQuery('html, body').animate({scrollTop:jQuery(document).height()}, 'slow');
+    return false;
+});
+</script>
+
+<div id="full-top" style="position:fixed; left:50%; top:520px; margin-left:495px; z-index:100; text-align:center; cursor:pointer;">
+<a><img src="./成为JavaGC专家Part I -- 深入浅出Java垃圾回收机制 - ImportNew_files/back-top.png" width="20" border="0" alt="返回顶部" title="返回顶部"></a>
+</div>
+
+<script type="text/javascript">
+jQuery('#full-top').click(function(){
+    jQuery('html, body').animate({scrollTop:0}, 'slow');
+    return false;
+});
+</script>
+
+<!-- script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','/_assets/js/analytics.js','ga');
+
+    ga('create', 'UA-15621043-1', 'jobbole.com');
+    ga('send', 'pageview');
+
+</script -->
+
+
+<!-- END body -->
+
+
+<!-- END html -->
+<!-- Performance optimized by W3 Total Cache. Learn more: http://www.w3-edge.com/wordpress-plugins/
+
+ Served from: importnew.com @ 2017-06-17 21:06:26 by W3 Total Cache --><div id="cboxOverlay" style="display: none;"></div><div id="colorbox" class="" style="padding-bottom: 50px; padding-right: 50px; display: none;"><div id="cboxWrapper"><div><div id="cboxTopLeft" style="float: left;"></div><div id="cboxTopCenter" style="float: left;"></div><div id="cboxTopRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxMiddleLeft" style="float: left;"></div><div id="cboxContent" style="float: left;"><div id="cboxLoadedContent" style="width: 0px; height: 0px; overflow: hidden; float: left;"></div><div id="cboxLoadingOverlay" style="float: left;"></div><div id="cboxLoadingGraphic" style="float: left;"></div><div id="cboxTitle" style="float: left;"></div><div id="cboxCurrent" style="float: left;"></div><div id="cboxNext" style="float: left;"></div><div id="cboxPrevious" style="float: left;"></div><div id="cboxSlideshow" style="float: left;"></div><div id="cboxClose" style="float: left;"></div></div><div id="cboxMiddleRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxBottomLeft" style="float: left;"></div><div id="cboxBottomCenter" style="float: left;"></div><div id="cboxBottomRight" style="float: left;"></div></div></div><div style="position: absolute; width: 9999px; visibility: hidden; display: none;"></div></div></body></html>
