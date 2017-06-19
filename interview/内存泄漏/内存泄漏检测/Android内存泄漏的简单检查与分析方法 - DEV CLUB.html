@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<!-- saved from url=(0048)http://dev.qq.com/topic/57d14047603a5bf1242ad01b -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <!-- meta -->
+  
+  <meta name="description" content="DEV Club 开发者社区">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="keywords" content="Android, iOS, Native React, 终端开发">
+  <!-- see http://smerity.com/articles/2013/where_did_all_the_http_referrers_go.html -->
+  <meta name="referrer" content="always">
+
+  
+  <meta name="author" content="ellisxu">
+  
+
+  <link title="RSS" type="application/rss+xml" rel="alternate" href="http://dev.qq.com/rss">
+
+  
+  <link rel="icon" href="http://dev.qq.com/public/images/bugly_b.ico" type="image/x-icon">
+  
+
+  <!-- style -->
+  <link rel="stylesheet" href="./Android内存泄漏的简单检查与分析方法 - DEV CLUB_files/index.min.18d16d69.min.css" media="all">
+
+  
+
+  <!-- scripts -->
+  <script src="./Android内存泄漏的简单检查与分析方法 - DEV CLUB_files/index.min.94e6e43e.min.js.下载"></script>
+
+
+  
+  <title>Android内存泄漏的简单检查与分析方法 - DEV CLUB</title>
+  
+  <meta content="_csrf" name="csrf-param">
+  <meta content="e6jnUevO-uiKLDrEe1TSN2tV6q2MljOiNSCk" name="csrf-token">
+<style type="text/css">
+:root #content > #center > .dose > .dosesingle,
+:root #content > #right > .dose > .dosesingle
+{ display: none !important; }</style></head>
+<body>
+<!-- navbar -->
+<div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="http://dev.qq.com/">
+        
+          DEV CLUB
+        
+      </a>
+
+      <form id="search_form" class="navbar-search" action="http://dev.qq.com/search" method="get">
+        <input type="text" id="search_text" name="text" class="search-query span3" value="">
+      </form>
+      <ul class="nav pull-right">
+        
+        <!--<li><a href='/'>首页</a></li>-->
+        
+        <!--
+        <li><a href='/getstart'>新手入门</a></li>
+        <li><a href='/api'>API</a></li>
+        -->
+        
+        
+        <!--
+        <li><a href='/signup'>注册</a></li>
+        -->
+        <li><a href="http://dev.qq.com/sign/in">登录</a></li>
+        
+      </ul>
+      <!--<a class="btn btn-navbar" id="responsive-sidebar-trigger">-->
+        <!--<span class="icon-bar"></span>-->
+        <!--<span class="icon-bar"></span>-->
+        <!--<span class="icon-bar"></span>-->
+      <!--</a>-->
+    </div>
+  </div>
+</div>
+<div id="main">
+  <div id="sidebar">
+  <div class="panel">
+    <div class="header">
+      <span class="col_fade">作者</span>
+    </div>
+    <div class="inner">
+      <div class="user_card">
+  <div>
+    <a class="user_avatar" href="http://dev.qq.com/user/115290">
+      <img src="./Android内存泄漏的简单检查与分析方法 - DEV CLUB_files/200x200landi.jpg" title="115290">
+    </a>
+    <span class="user_name"><a class="dark" href="http://dev.qq.com/user/115290">Bugly_Tony</a></span>
+
+    <div class="board clearfix">
+      <div class="floor">
+        <span class="big">积分: 640 </span>
+      </div>
+    </div>
+    <div class="space clearfix"></div>
+    <span class="signature">
+        “
+        
+            这家伙很懒，什么个性签名都没有留下。
+        
+        ”
+    </span>
+  </div>
+</div>
+
+
+
+    </div>
+  </div>
+
+  
+    
+  
+
+  <div class="panel">
+    <div class="header">
+      <span class="col_fade">作者其它话题</span>
+    </div>
+    <div class="inner">
+      
+      <ul class="unstyled">
+        <li>
+  <div><a class="dark topic_title" href="http://dev.qq.com/topic/57a31921ac3a1fb613dd40f3" title="Android Patch 方案与持续交付">Android Patch 方案与持续交付</a>
+  </div>
+</li>
+<li>
+  <div><a class="dark topic_title" href="http://dev.qq.com/topic/57ac4a0ea374c75371c08ce8" title="Android进程保活招式大全">Android进程保活招式大全</a>
+  </div>
+</li>
+<li>
+  <div><a class="dark topic_title" href="http://dev.qq.com/topic/5811d3e3ab10c62013697408" title="Android ListView与RecyclerView对比浅析--缓存机制">Android ListView与RecyclerView对比浅析--缓存机制</a>
+  </div>
+</li>
+<li>
+  <div><a class="dark topic_title" href="http://dev.qq.com/topic/59267f94eb3f11cc2e12f503" title="Android中导致内存泄漏的竟然是它----Dialog">Android中导致内存泄漏的竟然是它----Dialog</a>
+  </div>
+</li>
+<li>
+  <div><a class="dark topic_title" href="http://dev.qq.com/topic/5923ef85bdc9739041a4a798" title="浅析Android的窗口">浅析Android的窗口</a>
+  </div>
+</li>
+
+      </ul>
+      
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="header">
+      <span class="col_fade">无人回复的话题</span>
+    </div>
+    <div class="inner">
+      
+      <ul class="unstyled">
+        <li>
+  <div><a class="dark topic_title" href="http://dev.qq.com/topic/59433c6507e8c1c327040dff" title="自定义错误上报的奇怪问题">自定义错误上报的奇怪问题</a>
+  </div>
+</li>
+<li>
+  <div><a class="dark topic_title" href="http://dev.qq.com/topic/5941dd69096a99944430c60b" title="产品使用了bugly更新，一些客户反应下载速度非常慢">产品使用了bugly更新，一些客户反应下载速度非常慢</a>
+  </div>
+</li>
+<li>
+  <div><a class="dark topic_title" href="http://dev.qq.com/topic/59410fadb0b3e1c227fb4e0a" title="Warning:ignoreWarning is false, but we found a new AndroidComponent">Warning:ignoreWarning is false, but we found a new AndroidComponent</a>
+  </div>
+</li>
+<li>
+  <div><a class="dark topic_title" href="http://dev.qq.com/topic/5940c11ad74bc60e308c05fb" title="assembleRelease的时候没有mapping文件，这是为什么呢">assembleRelease的时候没有mapping文件，这是为什么呢</a>
+  </div>
+</li>
+<li>
+  <div><a class="dark topic_title" href="http://dev.qq.com/topic/59409c1dd74bc60e308c05f8" title="上传补丁包出问题，说文件格式不对，main.js.zip">上传补丁包出问题，说文件格式不对，main.js.zip</a>
+  </div>
+</li>
+
+      </ul>
+      
+    </div>
+  </div>
+</div>
+
+<div id="content">
+  <div class="panel">
+    <div class="header topic_header">
+      <span class="topic_full_title">
+
+        
+
+
+        Android内存泄漏的简单检查与分析方法
+      </span>
+      <div class="changes">
+        <span>
+          发布于 9 个月前
+        </span>
+        <span>
+          作者 <a href="http://dev.qq.com/user/115290">Bugly_Tony</a>
+        </span>
+        <span>
+          240682 次浏览
+        </span>
+        
+        
+          <span> 来自 技术</span>
+        
+
+        <!---->
+
+      </div>
+      
+    </div>
+    <div class="inner topic">
+      
+      <div class="topic_content">
+        <div class="markdown-text"><h2>导语</h2>
+<p>内存泄漏问题大约是Android开发者最烦恼的问题之一了，项目中连续遇到几个内存泄漏问题，这里简单总结下检查分析内存泄漏的一些工具与方法。</p>
+<h2>一、什么是内存泄漏？</h2>
+<p>大家都知道，java是有垃圾回收机制的，这使得java程序员比C++程序员轻松了许多，存储申请了，不用心心念念要加一句释放，java虚拟机会派出一些回收线程兢兢业业不定时地回收那些不再被需要的内存空间（注意回收的不是对象本身，而是对象占据的内存空间）。</p>
+<p><strong>Q1：什么叫不再被需要的内存空间？</strong></p>
+<p>**答：**Java没有指针，全凭引用来和对象进行关联，通过引用来操作对象。如果一个对象没有与任何引用关联，那么这个对象也就不太可能被使用到了，回收器便是把这些“无任何引用的对象”作为目标，回收了它们占据的内存空间。</p>
+<p><strong>Q2：如何分辨为对象无引用？</strong></p>
+<p>**答：**2种方法</p>
+<ol>
+<li>
+<p><strong>引用计数法</strong>
+直接计数，简单高效，Python便是采用该方法。但是如果出现 两个对象相互引用，即使它们都无法被外界访问到，计数器不为0它们也始终不会被回收。为了解决该问题，java采用的是b方法。</p>
+</li>
+<li>
+<p><strong>可达性分析法</strong>
+这个方法设置了一系列的“GC Roots”对象作为索引起点，如果一个对象 与起点对象之间均无可达路径，那么这个不可达的对象就会成为回收对象。这种方法处理 两个对象相互引用的问题，如果两个对象均没有外部引用，会被判断为不可达对象进而被回收（如下图）。</p>
+</li>
+</ol>
+<p><img src="./Android内存泄漏的简单检查与分析方法 - DEV CLUB_files/1.png" alt=""></p>
+<p><strong>Q3：有了回收机制，放心大胆用不会有内存泄漏？</strong></p>
+<p>**答：**答案当然是No！</p>
+<p>虽然垃圾回收器会帮我们干掉大部分无用的内存空间，但是对于还保持着引用，但逻辑上已经不会再用到的对象，垃圾回收器不会回收它们。这些对象积累在内存中，直到程序结束，就是我们所说的“内存泄漏”。</p>
+<p>当然了，用户对单次的内存泄漏并没有什么感知，但当泄漏积累到内存都被消耗完，就会导致卡顿，崩溃。</p>
+<h2>二、发现内存泄漏</h2>
+<p>内存泄漏不可小视，在Android开发中，比如说一个Activity页面会占用许多资源开销，如果页面发生泄漏，关闭以后页面没有能被系统回收，对应用程序的伤害是很大的。</p>
+<p><strong>Q1：在Android开发测试中一般如何发现内存泄漏的发生呢？</strong></p>
+<p><strong>答：</strong></p>
+<p><strong>方法1：反复操作观察内存变化</strong></p>
+<p>内存泄漏常见变现为程序使用时间越长，内存占用越多。那我们通过反复操作应用，比如反复点开/关闭页面，观察内存变化状况是否一点点上涨，可以粗略地判断是否有内存泄漏</p>
+<p><strong>1.通过 DDMS 中的 heap 工具，可以查看应用内存的使用情况</strong></p>
+<p><img src="./Android内存泄漏的简单检查与分析方法 - DEV CLUB_files/2.png" alt=""></p>
+<p><strong>2.Android studio也可以方便查看</strong></p>
+<p><img src="./Android内存泄漏的简单检查与分析方法 - DEV CLUB_files/3.jpg" alt=""></p>
+<p><strong>方法2：通过代码检测Activity泄漏</strong></p>
+<p><strong>基本思路：</strong></p>
+<p>1）debug版本可以起一个长期工作的线程LeakThread在后台专门做泄漏检测</p>
+<p>2）向Application注册一个 页面生命周期 的监听：application.registerActivityLifecycleCallbacks</p>
+<p>3）在监听类中对 onActivityDestoryed(Activity activity) 的事件回调做处理：</p>
+<p>如果一个Activity走到onDestroy，那么这个Activity对象就是需要被回收的目标。</p>
+<p>我们声明一个检测对象的弱引用ref = new WeakReference&lt;Object&gt;(activity)。</p>
+<p>**PS：**与强引用和软引用相比，弱引用不会被回收器当做一个“有效”的引用，不会影响其引用对象的释放。实际上，垃圾回收器会毫不犹豫地回收只有弱引用的对象~</p>
+<p>4）在 LeakThread中我们每隔一段时间检测一下ref.get() 是否为空，为空说明activity已被释放。不为空可以手动触一次发gc；如果超过一段时间，比如50s，页面对象还未被清理，我们可以推断内存泄漏的发生.</p>
+<p>5）当内存泄漏发生时，提示给开发者，并自动dump出.prof文件。</p>
+<p>因为代码检测不是这里的重点，代码就不贴了，只记思路。</p>
+<h2>三、分析内存泄漏（DDMS dump + MAT分析）</h2>
+<p>发现可能出现内存泄漏时，我们需要对.prof文件进行分析，方能快速定位到是哪个倒霉家伙导致了内存泄漏</p>
+<h4>3.1、如何dump出.prof文件？（可参照前文图片）</h4>
+<ol>
+<li>
+<p>打开DDMS ，Eclipse 可以切到DDMS视图，Android studio可以从Tools-Android-Android device monitor进入DDMS</p>
+</li>
+<li>
+<p>找到app的进程，在进程上方点击“update heap”按钮，可以先主动出发一次GC，待内存占用数据稍微稳定下来后 点击“Dump HProf File”，便可以导出.prof文件</p>
+</li>
+</ol>
+<h4>3.2：导出.prof文件后如何分析？</h4>
+<p>Android studio可以直接打开prof文件。点开Analyzer Tasks的面板，点击右上角的开始按钮。</p>
+<p><img src="./Android内存泄漏的简单检查与分析方法 - DEV CLUB_files/4.jpg" alt=""></p>
+<p>分析完成后，发生内存泄漏的页面对象会出现在Analysis Results面板-Leak Activityes的目录下。</p>
+<p><strong>如图，原来泄漏发生是LoadingRoomActivity的锅！</strong></p>
+<p><img src="./Android内存泄漏的简单检查与分析方法 - DEV CLUB_files/5.jpg" alt=""></p>
+<h4>3.3 进一步分析泄漏的原因，你会需要一个好用的内存分析工具：MAT</h4>
+<p>在官网可以下载到它：</p>
+<blockquote>
+<p><a href="http://www.eclipse.org/mat/downloads.php" target="_blank">http://www.eclipse.org/mat/downloads.php</a></p>
+</blockquote>
+<p>虽然MAT不会准确告诉你你的代码哪泄漏了，但是它会给你发现哪泄露的数据和线索。</p>
+<h5>3.3.1 打开.hprof前可能遇到的问题：</h5>
+<p>在MAT中打开.prof页面，你可能会遇到一点小挫折：</p>
+<p><img src="./Android内存泄漏的简单检查与分析方法 - DEV CLUB_files/6.png" alt=""></p>
+<p>如上图，可能会弹出 ‘Parsing heap dump from xxx has encountered a proplem’ 的错误弹窗</p>
+<p>这是因为文件版本和编辑器能支持的版本有冲突的原因。</p>
+<p><strong>解决方案如下：</strong></p>
+<p>Sdk安装目录下platform-tools里有一个hprof-conv工具可以解决该问题。在cmd控制台执行：</p>
+<pre class="prettyprint"><code><span class="pln">hprof</span><span class="pun">-</span><span class="pln">conv input</span><span class="pun">.</span><span class="pln">hprof output</span><span class="pun">.</span><span class="pln">hprof</span></code></pre><p>重新再MAT打开output.hprof 就可以打开了~</p>
+<p>值得一提的是，如果你dump出的文件太大的话，也有可能发现打不开的现象，这时候，打开安装MAT目录下的MemoryAnalyzer.ini 把-XmX改大些重启即可。但是也不要改得比你机器的可用内存还大，不能太贪心哈哈~</p>
+<p><img src="./Android内存泄漏的简单检查与分析方法 - DEV CLUB_files/7.png" alt=""></p>
+<h5>3.3.2 打开.phrof文件后的分析</h5>
+<p>通过MAT打开.phrof文件后，会弹出Overview 和 Leak Suspects 2个标签页。</p>
+<p><strong>Leak Suspects标签页可见如下图：</strong></p>
+<p><img src="./Android内存泄漏的简单检查与分析方法 - DEV CLUB_files/8.png" alt=""></p>
+<p><strong>Leak Suspects视图展示了app内存占用的比例，浅色是空闲的内存，其他是内存占用的空间。每块内存对应的问题也都列在下面。点开每个Problem Suspect下的details，可以看到有哪些类的实例占用了内存和占用大小等信息~</strong></p>
+<p><img src="./Android内存泄漏的简单检查与分析方法 - DEV CLUB_files/9.png" alt=""></p>
+<p><strong>此时我们已经有了怀疑的目标，为了更清晰地查看，我们可以回到Overview页面，打开Histogram页面：</strong></p>
+<p><img src="./Android内存泄漏的简单检查与分析方法 - DEV CLUB_files/10.png" alt=""></p>
+<p><strong>在打开的Histogram标签页中，我们填入检测对象，在列出的匹配项中过滤掉对象的非强引用。</strong></p>
+<p><img src="./Android内存泄漏的简单检查与分析方法 - DEV CLUB_files/11.jpg" alt=""></p>
+<p><strong>到这里我们就可以看到，是哪个坏蛋hold住了你的对象了。MAT能够给到的支持也就到这里，接下来，还是需要你根据这些线索到代码中寻找判别和修正了~``</strong></p>
+<p><img src="./Android内存泄漏的简单检查与分析方法 - DEV CLUB_files/12.png" alt=""></p>
+</div>
+      </div>
+      
+      
+    </div>
+  </div>
+  
+  
+</div>
+
+<div class="replies_history" style="display: none;">
+  <div class="inner_content"></div>
+  <div class="anchor"></div>
+</div>
+
+<!-- 预览模态对话框 -->
+<div class="modal fade" id="preview-modal">
+  <div class="modal-body" style="max-height: initial;">
+    <img src="http://dev.qq.com/topic/57d14047603a5bf1242ad01b" alt="点击内容或者外部自动关闭图片预览" id="preview-image">
+  </div>
+</div>
+
+<!-- Display QrCodes -->
+<div class="modal fade" id="qrcode-modal">
+  <div class="modal-body" style="max-height: initial;text-align: center;">
+    <img src="http://dev.qq.com/topic/57d14047603a5bf1242ad01b" alt="点击内容或者外部自动关闭图片预览" id="qrcode-image" style="display: none;">
+    <div class="cs_loading_mask" id="qrcode-loading">
+      <div class="cs_loading_item">
+        <div class="loader">
+          <div class="loader-inner line-scale">
+            <div></div><div></div><div></div><div></div><div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- markdown editor current_user &&  -->
+<script src="./Android内存泄漏的简单检查与分析方法 - DEV CLUB_files/editor.min.de7717d0.min.js.下载"></script>
+
+
+<script src="./Android内存泄漏的简单检查与分析方法 - DEV CLUB_files/topic.min.b8bf092e.min.js.下载"></script>
+
+<script>
+  var desc = '';
+  
+    desc = '## 导语 内存泄漏问题大约是Android开发者最烦恼的问题之一了，项目中连续遇到几个内存泄漏问题，这里简单总结下检查分析内存泄漏的一些工具与方法。## 一、什么是内存泄漏？大家都知道，java是有';
+  
+  var config = {
+    img_url: 'https://cdn.bugly.qq.com/BuglyLogo/200x200landi.jpg',
+    link: window.location.href,
+    desc: desc,
+    title: 'Android内存泄漏的简单检查与分析方法'
+  }
+
+  var onBridgeReady = function() {
+    if(!WeixinJSBridge) {
+      return;
+    }
+
+    WeixinJSBridge.invoke("showOptionMenu");
+    // 发送给好友
+    WeixinJSBridge.on('menu:share:appmessage', function() {
+      WeixinJSBridge.invoke('sendAppMessage', config, function(res) {
+
+      });
+    });
+    // 发送到朋友圈
+    WeixinJSBridge.on('menu:share:timeline', function() {
+      WeixinJSBridge.invoke('shareTimeline', config, function(res) {
+
+      });
+    });
+  }
+
+  function initWeixinJSApi() {
+    if (typeof WeixinJSBridge == "undefined") {
+      if (document.addEventListener) {
+        document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+      } else if (document.attachEvent) {
+        document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+        document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+      }
+    } else {
+      onBridgeReady();
+    }
+  }
+  initWeixinJSApi();
+</script>
+
+
+
+</div><div class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="editorToolImageTitle" aria-hidden="true"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="editorToolImageTitle">图片</h3></div><div class="modal-body"><div class="upload-img" style="height: 50px; padding: 60px 0px; text-align: center; border: 4px dashed rgb(221, 221, 221);"><div class="button webuploader-container" style="width: 86px; height: 40px; margin: 0px auto;"><div class="webuploader-pick">上传图片</div><div id="rt_rt_1bivr9ocs18cj6o4881voc1p331" style="position: absolute; overflow: hidden; bottom: auto; right: auto; width: 86px; height: 40px; top: 0px; left: 0px;"><input type="file" name="file" class="webuploader-element-invisible" accept="image/*"><label style="opacity: 0; width: 100%; height: 100%; display: block; cursor: pointer; background: rgb(255, 255, 255);"></label></div></div><span class="tip" style="display: none;"></span><div class="alert alert-error hide"></div></div></div></div><div class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="editorToolImageTitle" aria-hidden="true"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3 id="editorToolImageTitle">添加连接</h3></div><div class="modal-body"><form class="form-horizontal"><div class="control-group"><label class="control-label">标题</label><div class="controls"><input type="text" name="title" placeholder="Title"></div></div><div class="control-group"><label class="control-label">连接</label><div class="controls"><input type="text" name="link" value="http://" placeholder="Link"></div></div></form></div><div class="modal-footer"><button class="btn btn-primary" role="save">确定</button></div></div>
+<!--<div id='backtotop'>回到顶部</div>  Edited by faninx -->
+<div id="backtotop" style="top: 381px; right: 0px; display: block;">
+    <img src="./Android内存泄漏的简单检查与分析方法 - DEV CLUB_files/icon_top.png">
+</div>
+<div id="footer">
+  <div id="footer_main">
+    <div class="links">
+      <a class="dark" href="http://dev.qq.com/about">关于</a>
+      <span class="seperator">|</span>
+      <a class="dark" href="https://bugly.qq.com/contact">联系我们</a>
+    </div>
+    <p>Copyright © 1998 - 2016 Tencent. All Rights Reserved. </p>
+    <p>腾讯公司 版权所有</p>
+  </div>
+</div>
+<div id="sidebar-mask"></div>
+
+
+
+</body></html>
