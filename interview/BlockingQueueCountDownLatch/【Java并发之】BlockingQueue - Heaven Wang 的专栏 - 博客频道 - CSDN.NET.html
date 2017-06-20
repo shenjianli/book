@@ -1,0 +1,1562 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0057)http://blog.csdn.net/suifeng3051/article/details/48807423 -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">  
+
+            <link rel="canonical" href="http://blog.csdn.net/suifeng3051/article/details/48807423"> 
+ <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="http://blog.csdn.net/suifeng3051/article/details/48807423#">
+
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848"> 
+       
+    <title>【Java并发之】BlockingQueue - Heaven Wang 的专栏
+        - 博客频道 - CSDN.NET</title>
+    
+    <meta name="description" content="本文主要讲的是并发包中涉及到的集合，关于普通集合，请参考【java 集合概览】一、什么是BlockingQueueBlockingQueue即阻塞队列，从阻塞这个词可以看出，在某些情况下对阻塞队列的访问可能会造成阻塞。被阻塞的情况主要有如下两种：1. 当队列满了的时候进行入队列操作2. 当队列空了的时候进行出队列操作因此，当一个线程试图对一个已经满了的队列进行入队列操作时，它将会被阻塞，除非有另">
+
+    <meta name="keywords" content="Java并发,BlockQueue,Java高级">
+
+   
+    <script type="text/javascript" async="" src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/acom"></script><script src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/hm.js.下载"></script><script src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/blog_static_head.min.js.下载" type="text/javascript"></script>
+
+    
+        <!--new top-->
+       
+       
+        <!--new top-->
+    
+      <!-- ad begin -->
+         
+    <!-- ad end-->
+
+    <link rel="Stylesheet" type="text/css" href="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/style.css">
+
+    
+
+    <link id="RSSLink" title="RSS" type="application/rss+xml" rel="alternate" href="http://blog.csdn.net/suifeng3051/rss/list">
+    <link rel="shortcut icon" href="http://c.csdnimg.cn/public/favicon.ico">
+    <link type="text/css" rel="stylesheet" href="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/default.css">
+ 
+
+
+
+
+    <link href="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/csdn_public_blog_detail.min.css" type="text/css" rel="stylesheet">
+     
+         <link rel="stylesheet" href="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/csdn_blog_detail.min.css">
+
+  
+
+
+    <!-- 请置于所有广告位代码之前 --> 
+            <script src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/ds.js.下载"></script><style type="text/css">
+:root #header + #content > #left > #rlblock_left
+{ display: none !important; }</style>
+
+<script src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/share.js.下载"></script><link href="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/bdsstyle.css" rel="stylesheet" type="text/css"><script src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/wxLogin.js.下载"></script><link rel="stylesheet" type="text/css" href="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/style(1).css"><link type="text/css" rel="stylesheet" href="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/style(2).css"><script src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/logger.js.下载"></script><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Hover_Arrow {position: absolute; width: 15px; height: 11px; cursor: pointer}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 2px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 2px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; color: #666666}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: 1em}
+.MathJax_MenuRadioCheck.RTL {right: 1em; left: auto}
+.MathJax_MenuLabel {padding: 2px 2em 4px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #CCCCCC; margin: 4px 1px 0px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: Highlight; color: HighlightText}
+.MathJax_Menu_Close {position: absolute; width: 31px; height: 31px; top: -15px; left: -15px}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><link rel="stylesheet" href="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/share_style0_16.css"></head>
+
+
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/o.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div><div id="MathJax_Message" style="display: none;"></div><iframe frameborder="0" style="display: none;" src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/saved_resource.html"></iframe><div class="csdn-toolbar csdn-toolbar-skin-black ">        <div class="container row center-block ">          <div class="col-md-3 pull-left logo clearfix"><a href="http://www.csdn.net/?ref=toolbar" title="CSDN首页" target="_blank" class="icon"></a><a title="频道首页" href="http://blog.csdn.net/?ref=toolbar_logo" class="img blog-icon"></a></div>          <div class="pull-right login-wrap unlogin">            <ul class="btns">              <li class="loginlink"><a href="https://passport.csdn.net/account/login?ref=toolbar" target="_top">登录&nbsp;</a>|<a target="_top" href="http://passport.csdn.net/account/mobileregister?ref=toolbar&amp;action=mobileRegister">&nbsp;注册</a></li>              <li class="search">                <div class="icon on-search-icon">                  <div class="wrap">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <form action="http://so.csdn.net/search" id="toolbar_search" method="get" target="_blank">                      <input type="hidden" value="toolbar" name="ref" accesskey="2">                      <div class="border">                        <input placeholder="搜索" type="text" value="" name="q" accesskey="2"><span class="icon-enter-sm"></span>                      </div>                    </form>                  </div>                </div>              </li>              <li class="favor">                <div class="icon on-favor-icon">                  <div class="wrap">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <div style="display:none;" class="favor-success"><span class="msg">收藏成功</span>                      <div class="btns"><span class="btn btn-primary ok">确定</span></div>                    </div>                    <div style="display:none;" class="favor-failed"><span class="icon-danger-lg"></span><span class="msg">收藏失败，请重新收藏</span>                      <div class="btns"><span class="btn btn-primary ok">确定</span></div>                    </div>                    <form role="form" class="form-horizontal favor-form">                      <div class="form-group">                        <div class="clearfix">                          <label for="input-title" class="col-sm-2 control-label"><span class="red_txt">*</span>标题</label>                          <div class="col-sm-10">                            <input id="inputTitle" type="text" placeholder="" class="title form-control">                          </div>                        </div>                        <div class="alert alert-danger"><strong></strong>标题不能为空</div>                      </div>                      <div class="form-group" style="display:none;">                        <label for="input-url" class="col-sm-2 control-label">网址</label>                        <div class="col-sm-10">                          <input id="input-url" type="text" placeholder="" class="url form-control">                        </div>                      </div>                      <div class="form-group">                        <label for="input-tag" class="col-sm-2 tag control-label">标签</label>                        <div class="col-sm-10">                          <input id="input-tag" type="text" class="form-control tag">                        </div>                      </div>                      <div class="form-group">                        <label for="input-description" class="description col-sm-2 control-label">位置</label>                        <div class="col-sm-10">                          <div class="my_lib_box">                            个人主页&nbsp;-&nbsp;<a href="http://my.csdn.net/" target="_blank">我的知识</a>                          </div>                          <div class="checkbox">                            <div class="pull-left">                              <label>                                <input type="checkbox" name="share" class="save_lib_map" checked="checked">同时保存至：                              </label>                            </div>                            <div class="pull-left">                              <div class="dropdown">                                <button id="toolbar_sele_map" type="button">                                  选择知识图谱                                  <i class="fa fa-chevron-down"></i>                                </button>                                <div class="top_arr"></div>                                <div class="outside">                                  <ul class="dropdown-menu" id="toolbar_Design_knowledge"><li>选择知识图谱</li></ul>                                </div>                              </div>                            </div>                            <div class="pull-left new_txt">                              <a href="http://lib.csdn.net/my/create/structure" target="_blank">新建？</a>                            </div>                          </div>                        </div>                      </div>                      <div class="form-group">                        <div class="col-sm-offset-2 col-sm-10 ft">                          <div class="col-sm-4 pull-left" style="display:none">                            <div class="checkbox">                              <label>                                <input type="checkbox" name="share" checked="checked" class="share">公开                              </label>                            </div>                          </div>                          <div class="col-sm-8 pull-right favor-btns">                            <button type="button" class="cancel btn btn-default">取消</button>                            <button type="submit" class="submit btn btn-primary">收藏</button>                          </div>                        </div>                      </div>                    </form>                  </div>                </div>              </li>              <li class="notify">                <div style="display:none" class="number"></div>                <div style="display:none" class="icon-hasnotes-sm"></div>                <div id="header_notice_num"></div>                <div class="icon on-notify-icon">                  <div class="wrap">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <div id="note1" class="csdn_note">                      <div class="box"></div>                    <iframe src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/saved_resource(1).html" frameborder="0" allowtransparency="true" style="z-index:-1;position:absolute;top:0;left:0;width:100%;height:100%;background:transparent"></iframe></div>                  </div>                </div>              </li>              <li class="ugc">                <div class="icon on-ugc-icon">                  <div class="wrap clearfix">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <dl>                      <dt><a href="http://geek.csdn.net/news/expert?ref=toolbar" target="_blank" class="p-news clearfix" style="display:none;"><em class="icon"></em><span>分享资讯</span></a></dt>                      <dt style="border: none;"><a href="http://u.download.csdn.net/upload?ref=toolbar" target="_blank" class="p-doc clearfix"><em class="icon"></em><span>传PPT/文档</span></a></dt>                      <dt><a href="http://bbs.csdn.net/topics/new?ref=toolbar" target="_blank" class="p-ask clearfix"><em class="icon"></em><span>提问题</span></a></dt>                      <dt><a href="http://write.blog.csdn.net/postedit?ref=toolbar" target="_blank" class="p-blog clearfix"><em class="icon"></em><span>写博客</span></a></dt>                      <dt><a href="http://u.download.csdn.net/upload?ref=toolbar" target="_blank" class="p-src clearfix"><em class="icon"></em><span>传资源</span></a></dt>                      <dt><a href="https://code.csdn.net/projects/new?ref=toolbar" target="_blank" class="c-obj clearfix"><em class="icon"></em><span>创建项目</span></a></dt>                      <dt><a href="https://code.csdn.net/snippets/new?ref=toolbar" target="_blank" class="c-code clearfix"><em class="icon"></em><span>创建代码片</span></a></dt>                    </dl>                  </div>                </div>              </li>              <li class="profile">                <div class="icon on-profile-icon"><img src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/100x100.jpg" class="curr-icon-img">                  <div class="wrap clearfix">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <div class="bd">                      <dl class="clearfix">                        <dt class="pull-left img"><a target="_blank" href="http://my.csdn.net/?ref=toolbar" class="avatar"><img src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/100x100.jpg"></a></dt>                        <dd class="info" style="border: none;"><a target="_blank" href="http://my.csdn.net/?ref=toolbar" class="nickname"></a><a class="set-nick" href="https://passport.csdn.net/account/profile">设置昵称<span class="write-icon"></span></a><span class="dec"><a class="fill-dec" href="http://my.csdn.net/" target="_blank">编辑自我介绍，让更多人了解你<span class="write-icon"></span></a></span></dd>                      </dl>                    </div>                    <div class="ft clearfix"><a target="_blank" href="http://my.csdn.net/my/account/changepwd?ref=toolbar" class="pull-left"><span class="icon-cog"></span>帐号设置</a><a href="https://passport.csdn.net/account/logout?ref=toolbar" target="_top" class="pull-left" style="margin-left:132px; width:18px; height:27px; white-space:nowrap; overflow:hidden;"><span class="icon-signout"></span><span class="out">退出</span></a></div>                  </div>                </div>              </li>              <li class="apps">                <div id="chasnew123" class="hasnew" style="display: none;"></div>                <div id="cappsarea123" class="icon on-apps-icon">                  <div class="wrap clearfix">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                  <div class="detail">                    <dl>                      <dt>                        <h5>社区</h5>                      </dt>                      <dd> <a href="http://blog.csdn.net/?ref=toolbar" target="_blank">博客</a></dd>                      <dd> <a href="http://bbs.csdn.net/?ref=toolbar" target="_blank">论坛</a></dd>                      <dd> <a href="http://download.csdn.net/?ref=toolbar" target="_blank">下载</a></dd>                      <dd> <a href="http://lib.csdn.net/?ref=toolbar" target="_blank">知识库</a></dd>                      <dd><a href="http://ask.csdn.net/?ref=toolbar" target="_blank">技术问答</a></dd>                      <dd><a href="http://geek.csdn.net/?ref=toolbar" target="_blank">极客头条</a></dd>                      <dd style="display:none"> <a href="http://hero.csdn.net/?ref=toolbar" target="_blank">英雄会</a></dd>                    </dl>                  </div>                  <div class="detail">                    <dl>                      <dt>                        <h5>服务</h5>                      </dt>                      <dd style="display:none"> <a href="http://job.csdn.net/?ref=toolbar" target="_blank">JOB<img src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/new.gif" style="display: none; margin-top: -26px; width: 23px;"></a></dd>                      <dd> <a href="http://edu.csdn.net/?ref=toolbar" target="_blank">学院<img src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/new.gif" style="display: none; margin-top: -26px; width: 23px;"></a></dd>                      <dd> <a href="https://code.csdn.net/?ref=toolbar" target="_blank">CODE</a></dd>                      <dd> <a href="http://huiyi.csdn.net/?ref=toolbar" target="_blank">活动</a></dd>                      <dd> <a href="http://www.csto.com/?ref=toolbar" target="_blank">CSTO</a></dd>                      <dd> <a href="http://mall.csdn.net/?ref=toolbar" target="_blank">C币兑换<img src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/new.gif" style="display: none; margin-top: -26px; width: 23px;"></a></dd>                    </dl>                  </div>                  <div class="detail last">                    <dl>                      <dt>                        <h5>俱乐部</h5>                      </dt>                      <dd> <a href="http://cto.csdn.net/?ref=toolbar" target="_blank">CTO俱乐部</a></dd>                      <dd> <a href="http://student.csdn.net/?ref=toolbar" target="_blank">高校俱乐部</a></dd>                    </dl>                  </div>                </div>              </div>            </li>            </ul>          </div>        </div>    </div>
+        <div class="tracking-ad" data-view="true" data-mod="ad_popu_72" data-mtp="62" data-order="40" data-con="ad_content_2072">
+                     <script id="popuLayer_js_q" src="http://ads.csdn.net/js/popuLayer.js" defer="defer" type="text/javascript"></script>
+                <div id="layerd" style="position: fixed;bottom:0px;right:0px;line-height:0px;z-index:1000">
+    	                <div class="J_close layer_close" style="display:;background-color:#efefef;padding:0px;color:#333;font:12px/24px Helvetica,Tahoma,Arial,sans-serif;text-align:right;">关闭</div><!-- 广告占位容器 --><div id="cpro_u2895327"><iframe id="iframeu2895327_0" src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/acom.html" width="300" height="250" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0;vertical-align:bottom;margin:0;width:300px;height:250px" allowtransparency="true"></iframe></div></div>
+                <script>  document.getElementById("popuLayer_js_q").onload = function () { var styObjd = styObj = { width: "300px", "height": parseInt(250) + 28 }; window.CSDN.Layer.PopuLayer("#layerd", { storageName: "layerd", styleObj: styObjd, total: 50, expoire: 1000 * 60 }); }</script><!-- 投放代码 --><script type="text/javascript">                /*服务器频道首页置顶Banner960*90，创建于2014-7-3*/    (window.cproArray = window.cproArray || []).push({ id: "u2895327" });  </script>  <script src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/c.js.下载" type="text/javascript"></script>
+     
+        </div>
+
+    <!-- 广告位开始 -->
+        
+    <!-- 广告位结束 -->
+
+    
+   
+      <!--new top-->
+    <script id="toolbar-tpl-scriptId" fixed="true" prod="blog" skin="black" src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/html.js.下载" type="text/javascript"></script>
+     <!--new top-->
+    <div id="container">
+        <div id="header">
+    <div class="header">
+        <div id="blog_title">
+            <h2>
+                <a href="http://blog.csdn.net/suifeng3051">Heaven Wang 的专栏</a></h2>
+            <h3></h3>
+            <div class="clear">
+            </div>
+        </div>
+        <div class="clear">
+        </div>
+        
+     
+    </div>
+</div>
+<div id="navigator">
+    <div class="navigator_bg">
+    </div>
+    <div class="navigator">
+        <ul>           
+                <li id="btnContents"><a href="http://blog.csdn.net/suifeng3051?viewmode=contents"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_mulu&#39;])">
+                    <img src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/ico_list.gif">目录视图</span></a></li>
+                <li id="btnView"><a href="http://blog.csdn.net/suifeng3051?viewmode=list"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_zhaiyao&#39;])">
+                    <img src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/ico_summary.gif">摘要视图</span></a></li>
+                <li id="btnRss"><a href="http://blog.csdn.net/suifeng3051/rss/list"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_RSS&#39;])">
+                    <img src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/ico_rss.gif">订阅</span></a></li>                
+            
+
+            </ul>
+    </div>
+</div>
+<script type="text/javascript">
+    var username = "suifeng3051";
+    var _blogger = username;
+    var blog_address = "http://blog.csdn.net/suifeng3051";
+    var static_host = "http://static.blog.csdn.net";
+    var currentUserName = "";  
+</script>
+
+        <div id="body">
+            <div id="main">
+                <div class="main">
+                        <div class="ad_class">
+<div class="notice tracking-ad" data-mod="popu_3"> 
+
+
+<a href="http://blog.csdn.net/blogdevteam/article/details/72917467" target="_blank">
+<font color="red"><strong>征文 | 从高考，到程序员</strong></font></a>
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="http://blog.csdn.net/blogdevteam/article/details/73467884" target="_blank">
+<font color="blue"><strong>CSDN日报20170617 ——《深度学习，先跟上再说》</strong></font></a>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+<a href="http://blog.csdn.net/turingbooks/article/details/73480804" target="_blank">
+<font color="red"><strong>6 月书讯 | 最受欢迎的 SQL 入门书重磅升级</strong></font></a>
+
+
+</div>                        </div>
+                        
+
+
+
+  
+
+
+
+
+
+
+<script type="text/javascript" src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/category.js.下载"></script>
+
+  <script type="text/ecmascript">
+      window.quickReplyflag = true;
+           
+            var isBole = false;
+            
+      
+      var fasrc="http://my.csdn.net/my/favorite/miniadd?t=%e3%80%90Java%e5%b9%b6%e5%8f%91%e4%b9%8b%e3%80%91BlockingQueue&u=http://blog.csdn.net/suifeng3051/article/details/48807423"
+
+    </script>
+<div id="article_details" class="details">
+    <div class="article_title">   
+         <span class="ico ico_type_Original"></span>
+
+
+    <h1>
+        <span class="link_title"><a href="http://blog.csdn.net/suifeng3051/article/details/48807423">
+        【Java并发之】BlockingQueue            
+        </a></span>
+    </h1>
+</div>
+
+   
+
+        <div class="article_manage clearfix">
+        <div class="article_l">
+            <span class="link_categories">
+            标签：
+              <a href="http://www.csdn.net/tag/Java%e5%b9%b6%e5%8f%91" target="_blank" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_tag&#39;]);">Java并发</a><a href="http://www.csdn.net/tag/BlockQueue" target="_blank" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_tag&#39;]);">BlockQueue</a><a href="http://www.csdn.net/tag/Java%e9%ab%98%e7%ba%a7" target="_blank" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_tag&#39;]);">Java高级</a><a href="http://www.csdn.net/tag/Java%e5%a4%9a%e7%ba%bf%e7%a8%8b" target="_blank" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_tag&#39;]);">Java多线程</a>
+            </span>
+        </div>
+        <div class="article_r">
+            <span class="link_postdate">2015-10-23 11:50</span>
+            <span class="link_view" title="阅读次数">4318人阅读</span>
+            <span class="link_comments" title="评论次数"> <a href="http://blog.csdn.net/suifeng3051/article/details/48807423#comments" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_pinglun&#39;])">评论</a>(0)</span>
+            <span class="link_collect tracking-ad" data-mod="popu_171"> <a href="javascript:void(0);" onclick="javascript:collectArticle(&#39;%e3%80%90Java%e5%b9%b6%e5%8f%91%e4%b9%8b%e3%80%91BlockingQueue&#39;,&#39;48807423&#39;);return false;" title="收藏" target="_blank">收藏</a></span>
+             <span class="link_report"> <a href="http://blog.csdn.net/suifeng3051/article/details/48807423#report" onclick="javascript:report(48807423,2);return false;" title="举报">举报</a></span>
+
+        </div>
+    </div>
+    <div class="embody" style="display:none" id="embody">
+        <span class="embody_t">本文章已收录于：</span>
+        <div class="embody_c" id="lib" value="{&quot;err&quot;:0,&quot;msg&quot;:&quot;ok&quot;,&quot;data&quot;:[]}"></div>
+    </div>
+    <style type="text/css">        
+            .embody{
+                padding:10px 10px 10px;
+                margin:0 -20px;
+                border-bottom:solid 1px #ededed;                
+            }
+            .embody_b{
+                margin:0 ;
+                padding:10px 0;
+            }
+            .embody .embody_t,.embody .embody_c{
+                display: inline-block;
+                margin-right:10px;
+            }
+            .embody_t{
+                font-size: 12px;
+                color:#999;
+            }
+            .embody_c{
+                font-size: 12px;
+            }
+            .embody_c img,.embody_c em{
+                display: inline-block;
+                vertical-align: middle;               
+            }
+             .embody_c img{               
+                width:30px;
+                height:30px;
+            }
+            .embody_c em{
+                margin: 0 20px 0 10px;
+                color:#333;
+                font-style: normal;
+            }
+    </style>
+    <script type="text/javascript">
+        $(function () {
+            try
+            {
+                var lib = eval("("+$("#lib").attr("value")+")");
+                var html = "";
+                if (lib.err == 0) {
+                    $.each(lib.data, function (i) {
+                        var obj = lib.data[i];
+                        //html += '<img src="' + obj.logo + '"/>' + obj.name + "&nbsp;&nbsp;";
+                        html += ' <a href="' + obj.url + '" target="_blank">';
+                        html += ' <img src="' + obj.logo + '">';
+                        html += ' <em><b>' + obj.name + '</b></em>';
+                        html += ' </a>';
+                    });
+                    if (html != "") {
+                        setTimeout(function () {
+                            $("#lib").html(html);                      
+                            $("#embody").show();
+                        }, 100);
+                    }
+                }      
+            } catch (err)
+            { }
+            
+        });
+    </script>
+      <div class="category clearfix">
+        <div class="category_l">
+           <img src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/category_icon.jpg">
+            <span>分类：</span>
+        </div>
+        <div class="category_r">
+                    <label onclick="GetCategoryArticles(&#39;5848629&#39;,&#39;suifeng3051&#39;,&#39;top&#39;,&#39;48807423&#39;);">
+                        <span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_fenlei&#39;]);">Java高级技术<em>（12）</em></span>
+                      <img class="arrow-down" src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/arrow_triangle _down.jpg" style="display:inline;">
+                      <img class="arrow-up" src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/arrow_triangle_up.jpg" style="display:none;">
+                        <div class="subItem">
+                            <div class="subItem_t"><a href="http://blog.csdn.net/suifeng3051/article/category/5848629" target="_blank">作者同类文章</a><i class="J_close">X</i></div>
+                            <ul class="subItem_l" id="top_5848629">                            
+                            </ul>
+                        </div>
+                    </label>                    
+        </div>
+    </div>
+        <div class="bog_copyright">         
+            <p class="copyright_p">版权声明：本文为博主原创文章，未经博主允许不得转载。</p>
+        </div>
+
+  
+
+  
+  
+     
+
+
+<div style="clear:both"></div><div style="border:solid 1px #ccc; background:#eee; float:left; min-width:200px;padding:4px 10px;"><p style="text-align:right;margin:0;"><span style="float:left;">目录<a href="http://blog.csdn.net/suifeng3051/article/details/48807423#" title="系统根据文章中H1到H6标签自动生成文章目录">(?)</a></span><a href="http://blog.csdn.net/suifeng3051/article/details/48807423#" onclick="javascript:return openct(this);" title="展开">[+]</a></p><ol style="display:none;margin-left:14px;padding-left:14px;line-height:160%;"><li><a href="http://blog.csdn.net/suifeng3051/article/details/48807423#t0">一什么是BlockingQueue</a></li><li><a href="http://blog.csdn.net/suifeng3051/article/details/48807423#t1">二BlockingQueue的用法</a></li><li><a href="http://blog.csdn.net/suifeng3051/article/details/48807423#t2">三BlockingQueue接口中的方法</a></li><li><a href="http://blog.csdn.net/suifeng3051/article/details/48807423#t3">四BlockingQueue的实现类</a></li><ol><li><a href="http://blog.csdn.net/suifeng3051/article/details/48807423#t4">1 ArrayBlockingQueue</a></li><li><a href="http://blog.csdn.net/suifeng3051/article/details/48807423#t5">2 DelayQueue</a></li><ol><li><a href="http://blog.csdn.net/suifeng3051/article/details/48807423#t6">例1为一个对象指定过期时间</a></li><li><a href="http://blog.csdn.net/suifeng3051/article/details/48807423#t7">例2把所有考试的学生看做是一个DelayQueue谁先做完题目释放谁</a></li></ol><li><a href="http://blog.csdn.net/suifeng3051/article/details/48807423#t8">3 LinkedBlockingQueue</a></li><li><a href="http://blog.csdn.net/suifeng3051/article/details/48807423#t9">4 PriorityBlockingQueue</a></li><li><a href="http://blog.csdn.net/suifeng3051/article/details/48807423#t10">5 SynchronousQueue</a></li></ol></ol></div><div style="clear:both"></div><div id="article_content" class="article_content tracking-ad" data-mod="popu_307" data-dsm="post">
+        <div class="markdown_views"><p>本文主要讲的是并发包中涉及到的集合，关于普通集合，请参考【<a href="http://blog.csdn.net/suifeng3051/article/details/49250819" target="_blank">java 集合概览</a>】</p>
+
+<h2 id="一什么是blockingqueue"><a name="t0" target="_blank"></a>一、什么是BlockingQueue</h2>
+
+<p><strong>BlockingQueue</strong>即阻塞队列，从阻塞这个词可以看出，在某些情况下对阻塞队列的访问可能会造成阻塞。被阻塞的情况主要有如下两种：</p>
+
+<pre><code>1. 当队列满了的时候进行入队列操作
+2. 当队列空了的时候进行出队列操作
+</code></pre>
+
+<p>因此，当一个线程试图对一个已经满了的队列进行入队列操作时，它将会被阻塞，除非有另一个线程做了出队列操作；同样，当一个线程试图对一个空队列进行出队列操作时，它将会被阻塞，除非有另一个线程进行了入队列操作。</p>
+
+<p>在<a href="http://lib.csdn.net/base/java" class="replace_word" title="Java 知识库" target="_blank" style="color:#df3434; font-weight:bold;">Java</a>中，BlockingQueue的接口位于<code>java.util.concurrent</code> 包中(在Java5版本开始提供)，由上面介绍的阻塞队列的特性可知，阻塞队列是线程安全的。</p>
+
+
+
+<h2 id="二blockingqueue的用法"><a name="t1" target="_blank"></a>二、BlockingQueue的用法</h2>
+
+<p>阻塞队列主要用在生产者/消费者的场景，下面这幅图展示了一个线程生产、一个线程消费的场景：</p>
+
+<p><img src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/20150929153140497" alt="这里写图片描述" title=""></p>
+
+<p>负责生产的线程不断的制造新对象并插入到阻塞队列中，直到达到这个队列的上限值。队列达到上限值之后生产线程将会被阻塞，直到消费的线程对这个队列进行消费。同理，负责消费的线程不断的从队列中消费对象，直到这个队列为空，当队列为空时，消费线程将会被阻塞，除非队列中有新的对象被插入。</p>
+
+
+
+<h2 id="三blockingqueue接口中的方法"><a name="t2" target="_blank"></a>三、BlockingQueue接口中的方法</h2>
+
+<p>阻塞队列一共有四套方法分别用来进行<code>insert</code>、<code>remove</code>和<code>examine</code>，当每套方法对应的操作不能马上执行时会有不同的反应，下面这个表格就分类列出了这些方法： <br>
+asdf</p>
+
+<table>
+<thead>
+<tr>
+  <th>-</th>
+  <th>Throws Exception</th>
+  <th>Special Value</th>
+  <th>Blocks</th>
+  <th>Times Out</th>
+</tr>
+</thead>
+<tbody><tr>
+  <td>Insert</td>
+  <td>add(o)</td>
+  <td>offer(o)</td>
+  <td>put(o)</td>
+  <td>offer(o, timeout, timeunit)</td>
+</tr>
+<tr>
+  <td>Remove</td>
+  <td>remove(o)</td>
+  <td>poll()</td>
+  <td>take()</td>
+  <td>poll(timeout, timeunit)</td>
+</tr>
+<tr>
+  <td>Examine</td>
+  <td>element()</td>
+  <td>peek()</td>
+  <td></td>
+  <td></td>
+</tr>
+</tbody></table>
+
+
+<p>这四套方法对应的特点分别是：</p>
+
+<pre><code>1. ThrowsException：如果操作不能马上进行，则抛出异常
+2. SpecialValue：如果操作不能马上进行，将会返回一个特殊的值，一般是true或者false
+3. Blocks:如果操作不能马上进行，操作会被阻塞
+4. TimesOut:如果操作不能马上进行，操作会被阻塞指定的时间，如果指定时间没执行，则返回一个特殊值，一般是true或者false
+</code></pre>
+
+<p>需要注意的是，我们不能向BlockingQueue中插入<code>null</code>，否则会报<code>NullPointerException</code>。</p>
+
+
+
+<h2 id="四blockingqueue的实现类"><a name="t3" target="_blank"></a>四、BlockingQueue的实现类</h2>
+
+<p>BlockingQueue只是<code>java.util.concurrent</code>包中的一个接口，而在具体使用时，我们用到的是它的实现类，当然这些实现类也位于<code>java.util.concurrent</code>包中。在Java6中，BlockingQueue的实现类主要有以下几种：</p>
+
+<pre><code>1. ArrayBlockingQueue
+2. DelayQueue
+3. LinkedBlockingQueue
+4. PriorityBlockingQueue
+5. SynchronousQueue
+</code></pre>
+
+<p>下面我们就分别介绍这几个实现类。</p>
+
+
+
+<h3 id="41-arrayblockingqueue"><a name="t4" target="_blank"></a>4.1 ArrayBlockingQueue</h3>
+
+<p><strong>ArrayBlockingQueue</strong>是一个有边界的阻塞队列，它的内部实现是一个数组。有边界的意思是它的容量是有限的，我们必须在其初始化的时候指定它的容量大小，容量大小一旦指定就不可改变。</p>
+
+<p>ArrayBlockingQueue是以先进先出的方式存储数据，最新插入的对象是尾部，最新移出的对象是头部。下面是一个初始化和使用ArrayBlockingQueue的例子：</p>
+
+<pre><code>BlockingQueue queue = new ArrayBlockingQueue(1024);
+queue.put("1");
+Object object = queue.take();
+</code></pre>
+
+
+
+<h3 id="42-delayqueue"><a name="t5" target="_blank"></a>4.2 DelayQueue</h3>
+
+<p><strong>DelayQueue</strong>阻塞的是其内部元素，DelayQueue中的元素必须实现 <code>java.util.concurrent.Delayed</code>接口，这个接口的定义非常简单：</p>
+
+<pre><code>public interface Delayed extends Comparable&lt;Delayed&gt; {
+long getDelay(TimeUnit unit);
+}
+</code></pre>
+
+<p><code>getDelay()</code>方法的返回值就是队列元素被释放前的保持时间，如果返回<code>0</code>或者一个<code>负值</code>，就意味着该元素已经到期需要被释放，此时DelayedQueue会通过其<code>take()</code>方法释放此对象。</p>
+
+<p>从上面Delayed 接口定义可以看到，它还继承了<code>Comparable</code>接口，这是因为DelayedQueue中的元素需要进行排序，一般情况，我们都是按元素过期时间的优先级进行排序。</p>
+
+
+
+<h4 id="例1为一个对象指定过期时间"><a name="t6" target="_blank"></a>例1：为一个对象指定过期时间</h4>
+
+<p>首先，我们先定义一个元素，这个元素要实现Delayed接口</p>
+
+<pre><code>public class DelayedElement implements Delayed {
+  private long expired;
+  private long delay;
+  private String name;
+
+  DelayedElement(String elementName, long delay) {
+         this. name = elementName;
+         this. delay= delay;
+         expired = ( delay + System. currentTimeMillis());
+  }
+
+  @Override
+  public int compareTo(Delayed o) {
+        DelayedElement cached=(DelayedElement) o;
+         return cached.getExpired()&gt; expired?1:-1;
+  }
+
+  @Override
+  public long getDelay(TimeUnit unit) {
+
+         return ( expired - System. currentTimeMillis());
+  }
+
+  @Override
+  public String toString() {
+         return "DelayedElement [delay=" + delay + ", name=" + name + "]";
+  }
+
+  public long getExpired() {
+         return expired;
+  }
+
+}
+</code></pre>
+
+<p>设置这个元素的过期时间为3s</p>
+
+<pre><code>public class DelayQueueExample {
+  public static void main(String[] args) throws InterruptedException {
+        DelayQueue&lt;DelayedElement&gt; queue= new DelayQueue&lt;&gt;();
+        DelayedElement ele= new DelayedElement( "cache 3 seconds",3000);
+         queue.put( ele);
+        System. out.println( queue.take());
+
+  }
+</code></pre>
+
+<p>}</p>
+
+<p>运行这个main函数，我们可以发现，我们需要等待3s之后才会打印这个对象。</p>
+
+<p>其实DelayQueue应用场景很多，比如定时关闭连接、缓存对象，超时处理等各种场景，下面我们就拿学生考试为例让大家更深入的理解DelayQueue的使用。</p>
+
+
+
+<h4 id="例2把所有考试的学生看做是一个delayqueue谁先做完题目释放谁"><a name="t7" target="_blank"></a>例2：把所有考试的学生看做是一个DelayQueue，谁先做完题目释放谁</h4>
+
+<p>首先，我们构造一个学生对象</p>
+
+<pre><code>public class Student implements Runnable,Delayed{
+  private String name;  //姓名
+  private long costTime;//做试题的时间
+  private long finishedTime;//完成时间
+
+  public Student(String name, long costTime) {
+         this. name = name;
+         this. costTime= costTime;
+         finishedTime = costTime + System. currentTimeMillis();
+  }
+
+  @Override
+  public void run() {
+        System. out.println( name + " 交卷,用时" + costTime /1000);
+  }
+
+  @Override
+  public long getDelay(TimeUnit unit) {
+         return ( finishedTime - System. currentTimeMillis());
+  }
+
+  @Override
+  public int compareTo(Delayed o) {
+        Student other = (Student) o;
+         return costTime &gt;= other. costTime?1:-1;
+  }
+
+}
+</code></pre>
+
+<p>然后在构造一个教师对象对学生进行考试</p>
+
+<pre><code>public class Teacher {
+  static final int STUDENT_SIZE = 30;
+  public static void main(String[] args) throws InterruptedException {
+        Random r = new Random();
+        //把所有学生看做一个延迟队列
+        DelayQueue&lt;Student&gt; students = new DelayQueue&lt;Student&gt;();
+        //构造一个线程池用来让学生们“做作业”
+        ExecutorService exec = Executors.newFixedThreadPool(STUDENT_SIZE);
+         for ( int i = 0; i &lt; STUDENT_SIZE; i++) {
+               //初始化学生的姓名和做题时间
+               students.put( new Student( "学生" + (i + 1), 3000 + r.nextInt(10000)));
+        }
+        //开始做题
+        while(! students.isEmpty()){
+               exec.execute( students.take());
+        }
+         exec.shutdown();
+  }
+}
+</code></pre>
+
+<p>我们看一下运行结果：</p>
+
+<pre><code>学生2 交卷,用时3
+学生1 交卷,用时5
+学生5 交卷,用时7
+学生4 交卷,用时8
+学生3 交卷,用时11
+</code></pre>
+
+<p>通过运行结果我们可以发现，每个学生在指定开始时间到达之后就会“交卷”（<strong><em>取决于getDelay()方法</em></strong>），并且是先做完的先交卷（<strong><em>取决于compareTo()</em></strong>方法）。</p>
+
+<p>通过查看其源码可以看到，DelayQueue内部实现用的是PriorityQueue和一个Lock：</p>
+
+<p><img src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/20150929161100620" alt="这里写图片描述" title=""></p>
+
+
+
+<h3 id="43-linkedblockingqueue"><a name="t8" target="_blank"></a>4.3 LinkedBlockingQueue</h3>
+
+<p><strong>LinkedBlockingQueue</strong>阻塞队列大小的配置是可选的，如果我们初始化时指定一个大小，它就是有边界的，如果不指定，它就是无边界的。说是无边界，其实是采用了默认大小为<code>Integer.MAX_VALUE</code>的容量 。它的内部实现是一个链表。</p>
+
+<p>和ArrayBlockingQueue一样，LinkedBlockingQueue 也是以先进先出的方式存储数据，最新插入的对象是尾部，最新移出的对象是头部。下面是一个初始化和使LinkedBlockingQueue的例子：</p>
+
+<pre><code>BlockingQueue&lt;String&gt; unbounded = new LinkedBlockingQueue&lt;String&gt;();
+BlockingQueue&lt;String&gt; bounded   = new LinkedBlockingQueue&lt;String&gt;(1024);
+bounded.put("Value");
+String value = bounded.take();
+</code></pre>
+
+
+
+<h3 id="44-priorityblockingqueue"><a name="t9" target="_blank"></a>4.4 PriorityBlockingQueue</h3>
+
+<p><strong>PriorityBlockingQueue</strong>是一个没有边界的队列，它的排序规则和 <code>java.util.PriorityQueue</code>一样。需要注意，PriorityBlockingQueue中允许插入null对象。</p>
+
+<p>所有插入PriorityBlockingQueue的对象必须实现 <code>java.lang.Comparable</code>接口，队列优先级的排序规则就是按照我们对这个接口的实现来定义的。</p>
+
+<p>另外，我们可以从PriorityBlockingQueue获得一个迭代器Iterator，但这个迭代器并不保证按照优先级顺序进行迭代。</p>
+
+<p>下面我们举个例子来说明一下，首先我们定义一个对象类型，这个对象需要实现Comparable接口：</p>
+
+<pre><code>public class PriorityElement implements Comparable&lt;PriorityElement&gt; {
+private int priority;//定义优先级
+PriorityElement(int priority) {
+    //初始化优先级
+    this.priority = priority;
+}
+@Override
+public int compareTo(PriorityElement o) {
+    //按照优先级大小进行排序
+    return priority &gt;= o.getPriority() ? 1 : -1;
+}
+public int getPriority() {
+    return priority;
+}
+public void setPriority(int priority) {
+    this.priority = priority;
+}
+@Override
+public String toString() {
+    return "PriorityElement [priority=" + priority + "]";
+}
+}
+</code></pre>
+
+<p>然后我们把这些元素随机设置优先级放入队列中</p>
+
+<pre><code>public class PriorityBlockingQueueExample {
+public static void main(String[] args) throws InterruptedException {
+    PriorityBlockingQueue&lt;PriorityElement&gt; queue = new PriorityBlockingQueue&lt;&gt;();
+    for (int i = 0; i &lt; 5; i++) {
+        Random random=new Random();
+        PriorityElement ele = new PriorityElement(random.nextInt(10));
+        queue.put(ele);
+    }
+    while(!queue.isEmpty()){
+        System.out.println(queue.take());
+    }
+}
+}
+</code></pre>
+
+<p>看一下运行结果：</p>
+
+<pre><code>PriorityElement [priority=3]
+PriorityElement [priority=4]
+PriorityElement [priority=5]
+PriorityElement [priority=8]
+PriorityElement [priority=9]
+</code></pre>
+
+
+
+<h3 id="45-synchronousqueue"><a name="t10" target="_blank"></a>4.5 SynchronousQueue</h3>
+
+<p><strong>SynchronousQueue</strong>队列内部仅允许容纳一个元素。当一个线程插入一个元素后会被阻塞，除非这个元素被另一个线程消费。  </p></div>
+        <script type="text/javascript">
+            $(function () {
+                $('pre.prettyprint code').each(function () {
+                    var lines = $(this).text().split('\n').length;
+                    var $numbering = $('<ul></ul>').addClass('pre-numbering').hide();
+                    $(this).addClass('has-numbering').parent().append($numbering);
+                    for (i = 1; i <= lines; i++) {
+                        $numbering.append($('<li></li>').text(i));
+                    };
+                    $numbering.fadeIn(1700);
+                });
+            });
+        </script>
+   
+</div>
+
+
+
+
+<!-- Baidu Button BEGIN -->
+
+
+
+
+<div class="bdsharebuttonbox tracking-ad bdshare-button-style0-16" style="float: right;" data-mod="popu_172" data-bd-bind="1497938182363">
+<a href="http://blog.csdn.net/suifeng3051/article/details/48807423#" class="bds_more" data-cmd="more" style="background-position:0 0 !important; background-image: url(http://bdimg.share.baidu.com/static/api/img/share/icons_0_16.png?v=d754dcc0.png) !important" target="_blank"></a>
+<a href="http://blog.csdn.net/suifeng3051/article/details/48807423#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间" style="background-position:0 -52px !important" target="_blank"></a>
+<a href="http://blog.csdn.net/suifeng3051/article/details/48807423#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博" style="background-position:0 -104px !important" target="_blank"></a>
+<a href="http://blog.csdn.net/suifeng3051/article/details/48807423#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博" style="background-position:0 -260px !important" target="_blank"></a>
+<a href="http://blog.csdn.net/suifeng3051/article/details/48807423#" class="bds_renren" data-cmd="renren" title="分享到人人网" style="background-position:0 -208px !important" target="_blank"></a>
+<a href="http://blog.csdn.net/suifeng3051/article/details/48807423#" class="bds_weixin" data-cmd="weixin" title="分享到微信" style="background-position:0 -1612px !important" target="_blank"></a>
+</div>
+<script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "1", "bdMiniList": false, "bdPic": "", "bdStyle": "0", "bdSize": "16" }, "share": {} }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+<!-- Baidu Button END -->
+
+   
+
+    
+<!--172.16.140.13-->
+
+<!-- Baidu Button BEGIN -->
+<script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=1536434" src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/bds_s_v2.js.下载"></script>
+
+<script type="text/javascript">
+    document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+</script>
+<!-- Baidu Button END -->
+
+
+
+ 
+
+
+        <div id="digg" articleid="48807423">
+            <dl id="btnDigg" class="digg digg_disable" onclick="btndigga();">
+               
+                 <dt>顶</dt>
+                <dd>1</dd>
+            </dl>
+           
+              
+            <dl id="btnBury" class="digg digg_disable" onclick="btnburya();">
+              
+                  <dt>踩</dt>
+                <dd>0</dd>               
+            </dl>
+            
+        </div>
+     <div class="tracking-ad" data-mod="popu_222"><a href="javascript:void(0);" target="_blank">&nbsp;</a>   </div>
+    <div class="tracking-ad" data-mod="popu_223"> <a href="javascript:void(0);" target="_blank">&nbsp;</a></div>
+    <script type="text/javascript">
+                function btndigga() {
+                    $(".tracking-ad[data-mod='popu_222'] a").click();
+                }
+                function btnburya() {
+                    $(".tracking-ad[data-mod='popu_223'] a").click();
+                }
+            </script>
+
+   <ul class="article_next_prev">
+                <li class="prev_article"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_shangyipian&#39;]);location.href=&#39;/suifeng3051/article/details/49332353&#39;;">上一篇</span><a href="http://blog.csdn.net/suifeng3051/article/details/49332353" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_shangyipian&#39;])">Trident State 详解</a></li>
+                <li class="next_article"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_xiayipian&#39;]);location.href=&#39;/suifeng3051/article/details/49364677&#39;;">下一篇</span><a href="http://blog.csdn.net/suifeng3051/article/details/49364677" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_xiayipian&#39;])">Hadoop核心之MapReduce架构设计</a></li>
+    </ul>
+
+    <div style="clear:both; height:10px;"></div>
+
+
+            <div class="similar_article">
+                    <h4></h4>
+                    <div class="similar_c" style="margin:20px 0px 0px 0px">
+                        <div class="similar_c_t">
+                          &nbsp;&nbsp;相关文章推荐
+                        </div>
+                   
+                        <div class="similar_wrap tracking-ad" data-mod="popu_36" style="max-height:195px;">                       
+                            <ul class="similar_list fl">    
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/brandohero/article/details/41637097" title="【并发问题】java BlockingQueue、ConcurrentHashMap的详解" strategy="" target="_blank" style="width: 290px;">【并发问题】java BlockingQueue、ConcurrentHashMap的详解</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/tiantongxa/article/details/7623077" title="（13）多线程与并发库之java5阻塞队列(BlockingQueue)的应用----子线程循环10次，接着主线程循环100次，接着又回到子线程循环10次，接着再回到主线程循环100次，如此循环50次" strategy="" target="_blank" style="width: 290px;">（13）多线程与并发库之java5阻塞队列(BlockingQueue)的应用----子线程循环10次，接着主线程循环100次，接着又回到子线程循环10次，接着再回到主线程循环100次，如此循环50次</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://810364804.iteye.com/blog/2119580" title="Java并发编程 BlockingQueue" strategy="" target="_blank" style="width: 290px;">Java并发编程 BlockingQueue</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/zhouxinyubest/article/details/20480507" title="Java并发之BlockingQueue" strategy="" target="_blank" style="width: 290px;">Java并发之BlockingQueue</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://soledede.iteye.com/blog/2205288" title="Java多线程-工具篇-BlockingQueue " strategy="" target="_blank" style="width: 290px;">Java多线程-工具篇-BlockingQueue </a>
+                                   </li>
+                            </ul>
+                              <ul class="similar_list fr">      
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/pentiumchen/article/details/43644595" title="乱弹java并发（一）-- BlockingQueue" strategy="" target="_blank" style="width: 290px;">乱弹java并发（一）-- BlockingQueue</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://xwk.iteye.com/blog/2125732" title="Java4Android之BlockingQueue" strategy="" target="_blank" style="width: 290px;">Java4Android之BlockingQueue</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/qq_15969757/article/details/70054980" title="JAVA并发之BlockingQueue阻塞队列" strategy="" target="_blank" style="width: 290px;">JAVA并发之BlockingQueue阻塞队列</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/xxssyyyyssxx/article/details/50401550" title="Java并发库（十九）：同步集合类的使用BlockingQueue、" strategy="" target="_blank" style="width: 290px;">Java并发库（十九）：同步集合类的使用BlockingQueue、</a>
+                                   </li>
+                                   <li>
+                                       <em>•</em>
+                                       <a href="http://blog.csdn.net/truelove12358/article/details/53484705" title="(java多线程并发)控制并发线程数的Semaphore、ScheduledThreadPoolExcutor、BlockingQueue、ReadWriteLock" strategy="" target="_blank" style="width: 290px;">(java多线程并发)控制并发线程数的Semaphore、ScheduledThreadPoolExcutor、BlockingQueue、ReadWriteLock</a>
+                                   </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>   
+      
+</div>
+
+     <div>
+           
+
+       
+                           
+            <!-- 广告位：PC端-博客内容页-banner1-960*90 --> 
+            <script> 
+                (function() { 
+                    var s = "_" + Math.random().toString(36).slice(2); 
+                    document.write('<div id="' + s + '"></div>'); 
+                    (window.slotbydup=window.slotbydup || []).push({ 
+                        id: '4228013', 
+                        container: s, 
+                        size: '0,0', 
+                        display: 'inlay-fix' 
+                    }); 
+                })(); 
+            </script><div id="_jhmzzzsfaw8"></div><script charset="utf-8" src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/acom(1)"></script><script type="text/javascript">
+    /*测试-博客内容页下方Banner1-960*90*/
+    var cpro_id = "u2998112";
+</script>
+<script type="text/javascript" src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/c.js.下载"></script><div id="BAIDU_SSP__wrapper_u2998112_0"><iframe id="iframeu2998112_0" src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/acom(2).html" width="960" height="90" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0;vertical-align:bottom;margin:0;width:960px;height:90px" allowtransparency="true"></iframe></div>
+
+    </div>
+
+<div id="suggest">
+
+</div>
+         <script language="javascript" type="text/javascript">     
+             $(function(){
+                 $.get("/suifeng3051/svc/GetSuggestContent/48807423",function(data){
+                     $("#suggest").html(data);
+                 });     
+             });             
+         </script>  
+
+
+<style>
+.blog-ass-articl dd {
+color: #369;
+width: 99%; /*修改行*/
+float: left;
+overflow: hidden;
+font: normal normal 12px/23px "SimSun";
+height: 23px;
+margin: 0;
+padding: 0 0 0 10px;
+margin-right: 30px;
+background: url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;
+}
+</style>
+
+ 
+
+
+ 
+
+<dl class="blog-ass-articl tracking-ad" id="res-relatived" data-mod="popu_84"> 
+    <div class="embody embody_b" id="libkeyparent" style="display:none">
+            <span class="embody_t">更多资料请参考：</span>
+            <div class="embody_c" id="libkey"></div>
+    </div>
+
+
+     <dt><span>猜你在找</span></dt>    
+
+
+   
+
+    
+    <div id="adCollege"> 
+        <div>
+                <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                     <a href="http://edu.csdn.net/huiyiCourse/detail/422?ref=blog&amp;loc=r1" title="深度学习基础与TensorFlow实践" strategy="undefined" target="_blank">深度学习基础与TensorFlow实践</a>
+                </dd>
+                <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                     <a href="http://edu.csdn.net/huiyiCourse/series_detail/43?ref=blog&amp;loc=r1" title="【在线峰会】前端开发重点难点技术剖析与创新实践" strategy="undefined" target="_blank">【在线峰会】前端开发重点难点技术剖析与创新实践</a>
+                </dd>
+                <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                     <a href="http://edu.csdn.net/huiyiCourse/series_detail/42?ref=blog&amp;loc=r1" title="【在线峰会】一天掌握物联网全栈开发之道" strategy="undefined" target="_blank">【在线峰会】一天掌握物联网全栈开发之道</a>
+                </dd>
+                <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                     <a href="http://edu.csdn.net/huiyiCourse/series_detail/41?ref=blog&amp;loc=r1" title="【在线峰会】如何高质高效的进行Android技术开发" strategy="undefined" target="_blank">【在线峰会】如何高质高效的进行Android技术开发</a>
+                </dd>
+                <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                     <a href="http://edu.csdn.net/huiyiCourse/detail/404?ref=blog&amp;loc=r1" title="机器学习40天精英计划" strategy="undefined" target="_blank">机器学习40天精英计划</a>
+                </dd>
+                <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                     <a href="http://edu.csdn.net/huiyiCourse/detail/402?ref=blog&amp;loc=r1" title="Python数据挖掘与分析速成班" strategy="undefined" target="_blank">Python数据挖掘与分析速成班</a>
+                </dd>
+                <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                     <a href="http://edu.csdn.net/course/detail/3011?ref=blog&amp;loc=r1" title="微信小程序开发实战" strategy="undefined" target="_blank">微信小程序开发实战</a>
+                </dd>
+                <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                     <a href="http://edu.csdn.net/course/detail/1968?ref=blog&amp;loc=r1" title="JFinal极速开发企业实战" strategy="undefined" target="_blank">JFinal极速开发企业实战</a>
+                </dd>
+                <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                     <a href="http://edu.csdn.net/combo/detail/23?ref=blog&amp;loc=r1" title="备战2017软考 系统集成项目管理工程师 学习套餐" strategy="undefined" target="_blank">备战2017软考 系统集成项目管理工程师 学习套餐</a>
+                </dd>
+                <dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;">
+                     <a href="http://edu.csdn.net/course/detail/3338?ref=blog&amp;loc=r1" title="Python大型网络爬虫项目开发实战（全套）" strategy="undefined" target="_blank">Python大型网络爬虫项目开发实战（全套）</a>
+                </dd>
+            
+        </div>
+    </div>  
+
+    
+
+    
+   
+</dl>
+
+
+
+
+
+    <div id="ad_cen">        
+                <div>
+                                    <div class="tracking-ad" data-view="true" data-mod="ad_popu_199" data-mtp="43" data-order="114" data-con="ad_content_1843" style="width: 960px; height: 90px;">
+                                             <script type="text/javascript">
+                                                 /*博客内容页下方Banner2-960*90，创建于,2016-11-28*/
+                                                 var cpro_id = "u2831143";
+                                            </script>
+                                            <script type="text/javascript" src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/c.js.下载"></script><div id="BAIDU_SSP__wrapper_u2831143_0"><iframe id="iframeu2831143_0" src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/acom(3).html" width="960" height="90" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0;vertical-align:bottom;margin:0;width:960px;height:90px" allowtransparency="true"></iframe></div>
+                                   </div>
+                    </div>
+    </div>  
+
+        <!-- 广告位开始 -->
+        <!-- 广告位结束 -->
+
+
+<div class="comment_class">
+    <div id="comment_title" class="panel_head">
+        <span class="see_comment">查看评论</span><a name="comments"></a></div>
+    <div id="comment_list"><br>&nbsp;&nbsp;暂无评论<br><br><div class="clear"></div></div>
+    <div id="comment_bar">
+    </div>
+    <div id="comment_form"><div class="guest_link">您还没有登录,请<a href="javascript:void(0);" onclick="javascript:loginbox();">[登录]</a>或<a href="http://passport.csdn.net/account/register?from=http%3A%2F%2Fblog.csdn.net%2Fsuifeng3051%2Farticle%2Fdetails%2F48807423">[注册]</a></div></div>
+    <div class="announce">
+        * 以上用户言论只代表其个人观点，不代表CSDN网站的观点或立场<a name="reply"></a><a name="quote"></a></div>
+</div>
+
+<script type="text/javascript">
+    var fileName = '48807423';
+    var commentscount = 0;
+    var islock = false
+</script>
+
+    <div id="ad_bot">
+    </div>
+<div id="report_dialog">
+</div>
+
+<div id="d-top" style="bottom:60px;">
+
+        <a id="quick-reply" class="btn btn-top q-reply" title="快速回复" style="display:none;">
+            <img src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/blog-icon-reply.png" alt="快速回复">
+        </a>    
+    <a id="d-top-a" class="btn btn-top backtop" style="display: none;" title="返回顶部" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_huidaodingbu&#39;])">         
+         <img src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/top.png" alt="TOP">
+    </a>
+</div>
+<script type="text/javascript">
+    $(function ()
+    {
+        $("#ad_frm_0").height("90px");
+        
+        setTimeout(function(){
+            $("#ad_frm_2").height("200px");
+        },1000);    
+    });
+  
+</script>
+<style type="text/css">
+    .tag_list
+    {
+        background: none repeat scroll 0 0 #FFFFFF;
+        border: 1px solid #D7CBC1;
+        color: #000000;
+        font-size: 12px;
+        line-height: 20px;
+        list-style: none outside none;
+        margin: 10px 2% 0 1%;
+        padding: 1px;
+    }
+    .tag_list h5
+    {
+        background: none repeat scroll 0 0 #E0DBD3;
+        color: #47381C;
+        font-size: 12px;
+        height: 24px;
+        line-height: 24px;
+        padding: 0 5px;
+        margin: 0;
+    }
+    .tag_list h5 a
+    {
+        color: #47381C;
+    }
+    .classify
+    {
+        margin: 10px 0;
+        padding: 4px 12px 8px;
+    }
+    .classify a
+    {
+        margin-right: 20px;
+        white-space: nowrap;
+    }
+</style>
+
+
+
+
+
+<div id="pop_win" style="display:none ;position: absolute; z-index: 10000; border: 1px solid rgb(220, 220, 220); top: 222.5px; left: 630px; opacity: 1; background: none 0px 0px repeat scroll rgb(255, 255, 255);">
+    
+</div>
+<div id="popup_mask"></div>
+<style>
+    #popup_mask
+    {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        z-index: 9999;
+        left: 0px;
+        top: 0px;
+        opacity: 0.3;
+        filter: alpha(opacity=30);
+        display: none;
+    }
+
+</style>
+
+
+
+
+<script type="text/javascript">
+    $(function(){        
+        
+        setTimeout(function(){
+            $(".comment_body:contains('回复')").each(function(index,item){
+                var u=$(this).text().split('：')[0].toString().replace("回复","")
+                var thisComment=$(this);
+                if(u)
+                {
+                    $.getJSON("https://passport.csdn.net/get/nick?callback=?", {users: u}, function(a) {
+                        if(a!=null&&a.data!=null&&a.data.length>0)
+                        {
+                            nick=a.data[0].n; 
+                            if(u!=nick)
+                            {
+                                thisComment.text(thisComment.text().replace(u,nick));  
+                            }
+                        }       
+                    });  
+                }
+            });         
+
+        },200);  
+
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },5000);
+
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },10000);
+
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },15000);
+        
+        setTimeout(function(){
+            $("a img[src='http://js.tongji.linezing.com/stats.gif']").parent().css({"position":"absolute","left":"50%"});
+        },300);
+    });
+
+    function loginbox(){
+        var $logpop=$("#pop_win");
+        $logpop.html('<iframe src="https://passport.csdn.net/account/loginbox?service=http://static.blog.csdn.net/callback.htm" frameborder="0" height="600" width="400" scrolling="no"></iframe>');
+
+        $('#popup_mask').css({
+            opacity: 0.5,
+            width: $( document ).width() + 'px',
+            height:  $( document ).height() + 'px'
+        });
+        $('#popup_mask').css("display","block");
+ 
+        $logpop.css( {
+            top: ($( window ).height() - $logpop.height())/ 2  + $( window 
+       ).scrollTop() + 'px',
+            left:($( window ).width() - $logpop.width())/ 2
+        } );
+ 
+        setTimeout( function () {
+            $logpop.show();
+            $logpop.css( {
+                opacity: 1
+            } );
+        }, 200 );
+ 
+        $('#popup_mask').unbind("click");
+        $('#popup_mask').bind("click", function(){
+            $('#popup_mask').hide();
+            var $clopop = $("#pop_win");
+            $("#common_ask_div_sc").css("display","none");
+            $clopop.css( {
+                opacity: 0
+            } );
+            setTimeout( function () {
+                $clopop.hide();
+            }, 350 );
+            return false;
+        });
+    }   
+
+    var articletitle='【Java并发之】BlockingQueue';
+
+</script>
+
+
+
+
+
+
+
+
+                        <div class="clear">
+                        </div>
+                    </div>                   
+                
+            </div>
+                   
+           <div id="side">
+               
+    <div class="side">
+<div id="panel_Profile" class="panel">
+<ul class="panel_head"><span>个人资料</span></ul>
+<ul class="panel_body profile">
+<div id="blog_userface">
+    <a href="http://my.csdn.net/suifeng3051" target="_blank">
+    <img src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/1_suifeng3051.jpg" title="访问我的空间" style="max-width:90%">
+    </a>
+    <br>
+    <span><a href="http://my.csdn.net/suifeng3051" class="user_name" target="_blank">Heaven-Wang</a></span>
+</div>
+<div class="interact">
+
+    <a href="javascript:void(0);" class="attent" id="span_add_follow" title="[加关注]"></a>
+
+ <a href="javascript:void(0);" class="letter" title="[发私信]" onclick="window.open(&#39;http://msg.csdn.net/letters/model?receiver=suifeng3051&#39;,&#39;_blank&#39;,&#39;height=350,width=700&#39;);_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_sixin&#39;])"></a>  
+</div>
+<div id="blog_medal">
+                <div id="bms_box">
+                                            <a target="_blank">
+                                                    <img src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/zhuanlandaren.png" onmouseover="m_over_m(this,2)" onmouseout="m_out_m()" alt="2">
+                                            </a>
+                                            <a target="_blank">
+                                                    <img src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/chizhiyiheng.png" onmouseover="m_over_m(this,4)" onmouseout="m_out_m()" alt="1">
+                                            </a>
+               </div>
+</div>
+<ul id="blog_rank">
+    <li>访问：<span>410377次</span></li>
+    <li>积分：<span>4797</span> </li>    
+    <li>等级： <span style="position:relative;display:inline-block;z-index:1">
+            <img src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/blog5.png" alt="" style="vertical-align: middle;" id="leveImg">
+            <div id="smallTittle" style=" position: absolute;  left: -24px;  top: 25px;  text-align: center;  width: 101px;  height: 32px;  background-color: #fff;  line-height: 32px;  border: 2px #DDDDDD solid;  box-shadow: 0px 2px 2px rgba (0,0,0,0.1);  display: none;   z-index: 999;">
+            <div style="left: 42%;  top: -8px;  position: absolute;  width: 0;  height: 0;  border-left: 10px solid transparent;  border-right: 10px solid transparent;  border-bottom: 8px solid #EAEAEA;"></div>
+            积分：4797 </div>
+        </span>  </li>
+    <li>排名：<span>第5608名</span></li>
+</ul>
+<ul id="blog_statistics">
+    <li>原创：<span>92篇</span></li>
+    <li>转载：<span>12篇</span></li>
+    <li>译文：<span>3篇</span></li>
+    <li>评论：<span>109条</span></li>
+</ul>
+</ul>
+</div>
+
+
+<div class="panel" id="panel_Search">
+    <ul class="panel_head"><span>文章搜索</span></ul>
+    <ul class="panel_body">
+        <form id="frmSearch" action="http://so.csdn.net/search" class="form_search csdn-tracking-statistics" target="_blank" data-mod="popu_306">
+        <span><input id="inputSearch" type="text" class="blogsearch" title="请输入关键字"></span>
+        <input id="btnSubmit" type="button" value="搜索" title="search in blog">
+        <input type="hidden" name="q" id="inputQ">
+        <input type="hidden" name="t" value="blog">
+        <a id="btnSearchBlog" target="_blank"></a>
+        </form>
+    </ul>
+</div>
+
+<script type="text/javascript">
+
+   
+    $(function () {
+        $("#btnSubmit").unbind("click");
+        $("#btnSubmit").click(function () {           
+            search();
+        });
+
+        $("#frmSearch").submit(function () {           
+            search();
+            return false;
+        });
+
+        function search()
+        {
+            if ($("#inputSearch").val() == "") {               
+                alert("请录入搜索关键词！");                         
+                return false;
+            }
+            //var url = "http://so.csdn.net/so/search/s.do?q=" + encodeURIComponent($("#inputSearch").val()) + "&u=" + username + "&t=blog";           
+            var url = "https://www.baidu.com/s?wd=" + encodeURIComponent($("#inputSearch").val()) + "%20site%3Ablog.csdn.net"
+            window.location.href = url;
+        }   
+    });
+</script><div id="panel_Category" class="panel">
+    <ul class="panel_head"><span>博客专栏</span></ul>
+    <ul class="panel_body" id="sp_column">
+    <table cellpadding="0" cellspacing="0"><tbody><tr>
+    <td style="padding:10px 10px 0 0;">
+    <a href="http://blog.csdn.net/column/details/heaven-hadoop.html" target="_blank"><img src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/20151123180537583" style="width:75px;height:75px;"></a>
+    </td>
+    <td style="padding:10px 0; vertical-align:top;">
+    <a href="http://blog.csdn.net/column/details/heaven-hadoop.html" target="_blank">Hadoop教程</a>
+    <p>文章：9篇</p>
+    <span>阅读：24364</span>
+    </td>
+    </tr></tbody></table>
+    <table cellpadding="0" cellspacing="0"><tbody><tr>
+    <td style="padding:10px 10px 0 0;">
+    <a href="http://blog.csdn.net/column/details/heaven-java-column.html" target="_blank"><img src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/20151123180530520" style="width:75px;height:75px;"></a>
+    </td>
+    <td style="padding:10px 0; vertical-align:top;">
+    <a href="http://blog.csdn.net/column/details/heaven-java-column.html" target="_blank">Java 从基础到高级</a>
+    <p>文章：3篇</p>
+    <span>阅读：2003</span>
+    </td>
+    </tr></tbody></table>
+    <table cellpadding="0" cellspacing="0"><tbody><tr>
+    <td style="padding:10px 10px 0 0;">
+    <a href="http://blog.csdn.net/column/details/heaven-storm-column.html" target="_blank"><img src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/20151123180530364" style="width:75px;height:75px;"></a>
+    </td>
+    <td style="padding:10px 0; vertical-align:top;">
+    <a href="http://blog.csdn.net/column/details/heaven-storm-column.html" target="_blank">Storm 实时计算</a>
+    <p>文章：10篇</p>
+    <span>阅读：37628</span>
+    </td>
+    </tr></tbody></table>
+    </ul>
+</div><div id="panel_Category" class="panel">
+<ul class="panel_head"><span>文章分类</span></ul>
+<ul class="panel_body">    
+                 <li>
+                    <a href="http://blog.csdn.net/suifeng3051/article/category/1745921" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">Java基础知识</a><span>(22)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/suifeng3051/article/category/5848629" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">Java高级技术</a><span>(13)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/suifeng3051/article/category/1745919" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">Hadoop</a><span>(12)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/suifeng3051/article/category/2161833" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">Storm</a><span>(10)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/suifeng3051/article/category/2386223" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">Kafka</a><span>(6)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/suifeng3051/article/category/2452257" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">Redis</a><span>(2)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/suifeng3051/article/category/2194263" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">Memcache</a><span>(4)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/suifeng3051/article/category/1745923" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">Linux</a><span>(0)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/suifeng3051/article/category/3074117" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">HBase</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/suifeng3051/article/category/2281427" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">算法</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/suifeng3051/article/category/2161821" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">Netty</a><span>(7)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/suifeng3051/article/category/2284287" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">框架</a><span>(2)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/suifeng3051/article/category/2292857" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">Web编程</a><span>(10)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/suifeng3051/article/category/2401939" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">数据库</a><span>(3)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/suifeng3051/article/category/2204405" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">性能方面</a><span>(6)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/suifeng3051/article/category/5805877" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">架构设计</a><span>(4)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/suifeng3051/article/category/2292859" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">数据挖掘</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/suifeng3051/article/category/2534519" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">综合管理</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/suifeng3051/article/category/5786509" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">组件及工具</a><span>(3)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/suifeng3051/article/category/6205841" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">设计模式</a><span>(4)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/suifeng3051/article/category/6278599" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">Spring</a><span>(0)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/suifeng3051/article/category/6278602" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">Spring MVC</a><span>(4)</span>
+                </li>
+</ul>
+</div><div id="panel_Archive" class="panel">
+<ul class="panel_head"><span>文章存档</span></ul>
+<ul class="panel_body">
+<div id="archive_list"><li><a href="http://blog.csdn.net/suifeng3051/article/month/2017/01">2017年01月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/suifeng3051/article/month/2016/10">2016年10月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/suifeng3051/article/month/2016/09">2016年09月</a><span>(5)</span></li><li><a href="http://blog.csdn.net/suifeng3051/article/month/2016/08">2016年08月</a><span>(5)</span></li><li><a href="http://blog.csdn.net/suifeng3051/article/month/2016/07">2016年07月</a><span>(5)</span></li><span class="hidelist" style="display:none;"><li><a href="http://blog.csdn.net/suifeng3051/article/month/2016/06">2016年06月</a><span>(9)</span></li><li><a href="http://blog.csdn.net/suifeng3051/article/month/2016/05">2016年05月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/suifeng3051/article/month/2016/04">2016年04月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/suifeng3051/article/month/2015/11">2015年11月</a><span>(4)</span></li><li><a href="http://blog.csdn.net/suifeng3051/article/month/2015/10">2015年10月</a><span>(12)</span></li><li><a href="http://blog.csdn.net/suifeng3051/article/month/2015/09">2015年09月</a><span>(9)</span></li><li><a href="http://blog.csdn.net/suifeng3051/article/month/2015/08">2015年08月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/suifeng3051/article/month/2015/05">2015年05月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/suifeng3051/article/month/2015/04">2015年04月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/suifeng3051/article/month/2015/03">2015年03月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/suifeng3051/article/month/2014/12">2014年12月</a><span>(5)</span></li><li><a href="http://blog.csdn.net/suifeng3051/article/month/2014/11">2014年11月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/suifeng3051/article/month/2014/09">2014年09月</a><span>(4)</span></li><li><a href="http://blog.csdn.net/suifeng3051/article/month/2014/08">2014年08月</a><span>(10)</span></li><li><a href="http://blog.csdn.net/suifeng3051/article/month/2014/07">2014年07月</a><span>(7)</span></li><li><a href="http://blog.csdn.net/suifeng3051/article/month/2014/06">2014年06月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/suifeng3051/article/month/2014/05">2014年05月</a><span>(5)</span></li><li><a href="http://blog.csdn.net/suifeng3051/article/month/2014/04">2014年04月</a><span>(7)</span></li><li><a href="http://blog.csdn.net/suifeng3051/article/month/2014/03">2014年03月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/suifeng3051/article/month/2013/12">2013年12月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/suifeng3051/article/month/2013/11">2013年11月</a><span>(1)</span></li></span><div id="archive_list_button" class="list_closed">展开</div></div>
+</ul>
+</div>
+<div id="hotarticls" class="panel">
+<ul class="panel_head">
+    <span>       
+阅读排行    </span>
+</ul>
+
+<ul class="panel_body itemlist">
+<li>
+<a href="http://blog.csdn.net/suifeng3051/article/details/48053965" title="Kafka 设计与原理详解">Kafka 设计与原理详解</a><span>(33515)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/suifeng3051/article/details/38321043" title="Kafka详解二、如何配置Kafka集群">Kafka详解二、如何配置Kafka集群</a><span>(18151)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/suifeng3051/article/details/28861883" title="Netty4详解三：Netty架构设计">Netty4详解三：Netty架构设计</a><span>(17274)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/suifeng3051/article/details/52611310" title="全面理解Java内存模型">全面理解Java内存模型</a><span>(16117)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/suifeng3051/article/details/23739295" title="Memcache,Redis,MongoDB（数据缓存系统）方案对比与分析">Memcache,Redis,MongoDB（数据缓存系统）方案对比与分析</a><span>(13794)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/suifeng3051/article/details/25238243" title="Netty4详解二：开发第一个Netty应用程序">Netty4详解二：开发第一个Netty应用程序</a><span>(13724)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/suifeng3051/article/details/37602025" title="kafka详解三：开发Kafka应用">kafka详解三：开发Kafka应用</a><span>(10387)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/suifeng3051/article/details/38657465" title="Kafka详解五、Kafka Consumer的底层API- SimpleConsumer">Kafka详解五、Kafka Consumer的底层API- SimpleConsumer</a><span>(10304)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/suifeng3051/article/details/52087343" title="使用Charles进行移动APP抓包分析">使用Charles进行移动APP抓包分析</a><span>(9858)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/suifeng3051/article/details/48160753" title="Java NIO 详解（一）">Java NIO 详解（一）</a><span>(8832)</span>
+</li>
+</ul>
+</div>
+
+
+<div id="custom_column_40581685" class="panel">
+<ul class="panel_head"><span>关于我</span></ul>
+<ul class="panel_body">
+
+<ul class="panel_body" style="font-family:&#39;microsoft yahei&#39;">
+gitHub地址：<a href="https://github.com/suifeng3051" target="_blank">https://github.com/suifeng3051&nbsp;</a>
+</ul>
+<ul class="panel_body" style="font-family:&#39;microsoft yahei&#39;">
+坐标：浙江杭州 </ul>
+<ul class="panel_body" style="font-family:&#39;microsoft yahei&#39;">
+QQ:490095337 </ul>
+
+</ul>
+</div>    </div>
+    <div class="clear">
+    </div>
+
+
+                 <!-- 广告位开始 --> 
+                <!-- 广告位结束 -->
+                   <div class="tracking-ad" data-view="true" data-mod="ad_popu_189" data-mtp="63" data-order="40" data-con="ad_content_1259" style="width: 250px; height: 250px;">
+                        <div id="nav_show_top_stop" style="width: 250px; height: 250px; z-index: 1000; position: fixed; top: 0px;"><div id="cpro_u2734133"><iframe id="iframeu2734133_0" src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/acom(4).html" width="250" height="250" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0;vertical-align:bottom;margin:0;width:250px;height:250px" allowtransparency="true"></iframe></div></div>
+                   </div>
+                    <script>    
+                        
+                        setTimeout(function () {
+                            var naviga_offsetTop = 0; function naviga_stay_top() {
+                                var scrollTop = jQuery(document).scrollTop();
+                                if (scrollTop > naviga_offsetTop) {
+                                    jQuery("#nav_show_top_stop").css({ "position": "fixed" });
+                                    jQuery("#nav_show_top_stop").css({ "top": "0px" });
+                                } else { jQuery("#nav_show_top_stop").css({ "position": "fixed" }); jQuery("#nav_show_top_stop").css({ "top": naviga_offsetTop - scrollTop + "px" }); }
+                            }
+                            function onload_function() {
+                                naviga_offsetTop = jQuery("#nav_show_top_stop").position().top;
+                                jQuery(window).bind("scroll", naviga_stay_top); jQuery(window).bind("mousewheel", naviga_stay_top);
+                                jQuery(document).bind("scroll", naviga_stay_top); jQuery(document).bind("mousewheel", naviga_stay_top);
+                            } jQuery(document).ready(onload_function);
+                        },200);                                   
+
+                    </script>
+                    <script type="text/javascript">    (window.cproArray = window.cproArray || []).push({ id: "u2734133" });  </script>
+                   <script src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/c.js.下载" type="text/javascript"></script>
+
+           </div>   
+
+            <div class="clear">
+            </div>
+        </div>
+
+        
+
+
+
+
+
+
+
+
+    <script type="text/javascript" src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/login.js.下载"></script>
+<script type="text/javascript">
+    $(function () {
+        function __get_code_toolbar(snippet_id) {
+            return $("<span class='tracking-ad' data-mod='popu_167'><a href='https://code.csdn.net/snippets/"
+                    + snippet_id
+                    + "' target='_blank' title='在CODE上查看代码片'  style='text-indent:0;'><img src='https://code.csdn.net/assets/CODE_ico.png' width=12 height=12 alt='在CODE上查看代码片' style='position:relative;top:1px;left:2px;'/></a></span>"
+                    + "<span class='tracking-ad' data-mod='popu_170'><a href='https://code.csdn.net/snippets/"
+                    + snippet_id
+                    + "/fork' target='_blank' title='派生到我的代码片' style='text-indent:0;'><img src='https://code.csdn.net/assets/ico_fork.svg' width=12 height=12 alt='派生到我的代码片' style='position:relative;top:2px;left:2px;'/></a></span>");
+        }
+        
+        $("[code_snippet_id]").each(function () {
+            __s_id = $(this).attr("code_snippet_id");
+            if (__s_id != null && __s_id != "" && __s_id != 0 && parseInt(__s_id) > 70020) {
+                __code_tool = __get_code_toolbar(__s_id);
+                $(this).prev().find(".tools").append(__code_tool);
+            }
+        });
+
+        $(".bar").show();
+    });
+</script>
+
+
+
+
+
+    </div>
+      <!--new top-->
+    
+
+     
+
+   
+   
+     <!--new top-->
+   
+   
+
+    
+    
+    
+   
+
+   
+
+
+       <script type="text/javascript" src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/MathJax.js.下载"></script>
+          <script type="text/javascript">
+              //$(function () {
+              //    setTimeout(function () {
+              //        var searchtitletags = articletitle + ',' + $("#tags").html();
+              //        searchService({
+              //            index: 'blog',
+              //            query: searchtitletags,
+              //            from: 5,
+              //            size: 5,
+              //            appendTo: '#res',
+              //            url: 'recommend',
+              //            his: 2,
+              //            client: "blog_cf_enhance",
+              //            tmpl: '<dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;"><a href="#{ url }" title="#{ title }" strategy="#{ strategy }">#{ title }</a></dd>'
+              //        });
+              //    }, 1000);
+              //});
+
+         </script>
+    
+    <script src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/csdn_blog_detail.min.js.下载" type="text/javascript"></script><link rel="stylesheet" type="text/css" href="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/pub_footer_2014.css"><div class="pub_fo"><div id="pub_footerall" class="pub_footer_new"><dl><dt></dt> <dd class="foot_sub_menu"><a href="http://www.csdn.net/company/about.html" target="_blank">公司简介</a><span>|</span><a href="http://www.csdn.net/company/recruit.html" target="_blank">招贤纳士</a><span>|</span><a href="http://www.csdn.net/company/marketing.html" target="_blank">广告服务</a><span>|</span><a href="http://www.csdn.net/company/contact.html" target="_blank">联系方式</a><span>|</span><a href="http://www.csdn.net/company/statement.html" target="_blank">版权声明</a><span>|</span><a href="http://www.csdn.net/company/layer.html" target="_blank">法律顾问</a><span>|</span><a href="mailto:webmaster@csdn.net">问题报告</a><span>|</span><a target="_blank" href="http://www.csdn.net/friendlink.html">合作伙伴</a><span>|</span><a href="http://bbs.csdn.net/forums/Service" target="_blank">论坛反馈</a></dd><dd class="foot_contact"><a href="javascript:void(0);" target="_blank" class="qq">网站客服</a><a href="http://wpa.qq.com/msgrd?v=3&amp;uin=2251809102&amp;site=qq&amp;menu=yes" target="_blank" class="qq">杂志客服</a><a href="http://e.weibo.com/csdnsupport/profile" target="_blank" class="weibo">微博客服</a><a href="mailto:webmaster@csdn.net" class="email" title="联系邮箱">webmaster@csdn.net</a><span class="phone" title="服务热线">400-660-0108</span><span class="interval">|</span><span>北京创新乐知信息技术有限公司 版权所有</span><span class="interval">|</span><span>江苏知之为计算机有限公司</span><span class="interval">|</span><span>江苏乐知网络技术有限公司</span></dd><dd class="foot_copyright"><span>京&nbsp;ICP&nbsp;证&nbsp;09002463&nbsp;号</span><span class="interval">|</span><span>Copyright © 1999-2017, CSDN.NET, All Rights Reserved&nbsp;</span><a href="http://www.hd315.gov.cn/beian/view.asp?bianhao=010202001032100010" target="_blank"><img src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/gongshang_logos.gif" alt="GongshangLogo" title=""></a></dd></dl></div></div><div id="note1" class="csdn_note" style="display:none; position:absolute; z-index:9999; width:440px">  <span class="notice_top_arrow"><span class="inner"></span></span>  <div class="box"></div></div><div class="csdn_notice_tip" style="display:none; position:absolute; z-index:9990; width:170px">  <iframe src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/saved_resource(2).html" frameborder="0" scrolling="no" style="z-index:-1;position:absolute;top:0;left:0;width:100%;height:100%;background:transparent"></iframe>  <div class="tip_text">您有<strong>0</strong>条新通知</div>  <a href="javascript:void 0" class="close2"></a></div><script id="noticeScript" type="text/javascript" btnid="header_notice_num" wrapid="note1" count="5" subcount="5" src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/notify.js.下载"></script><input type="hidden" id="aa_g_data_ids">
+        
+    <script type="text/javascript" src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/csdn_public_blog_detail.min.js.下载"></script>
+
+    <script type="text/javascript" src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/showblogmedal.ashx"></script>
+
+     
+    
+
+
+  <div id="a52b5334d" style="width: 1px; height: 1px; display: none;">
+                    <script id="adJs52b5334" src="http://ads.csdn.net/js/opt/52b5334.js?t=0.2537275119785496"></script>
+                    <script>document.getElementById("adJs52b5334").src = "http://ads.csdn.net/js/opt/52b5334.js?t=" + Math.random();</script>
+   </div>
+
+    
+    
+        
+     
+
+    
+          
+    <div class="pop_CA_cover" style="display:none"></div>
+    <div class="pop pop_CA" style="display:none">
+          <div class="CA_header">
+            收藏助手
+            <span class="cancel_icon" id="fapancle" onclick="$(&#39;.pop_CA&#39;).hide();$(&#39;.pop_CA_cover&#39;).hide();"></span>
+          </div>
+          <iframe src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/saved_resource(3).html" id="fa" frameborder="0" width="100%" height="360" scrolling="no"></iframe>
+    </div>
+
+
+        <script type="text/javascript">
+
+            $(function () {
+                var fromjs = $("#fromjs");
+                if (fromjs.length > 0) {
+                    $("#fromjs .markdown_views pre").addClass("prettyprint");
+                    prettyPrint();
+
+                    $('pre.prettyprint code').each(function () {
+                        var lines = $(this).text().split('\n').length;
+                        var $numbering = $('<ul/>').addClass('pre-numbering').hide();
+                        $(this).addClass('has-numbering').parent().append($numbering);
+                        for (i = 1; i <= lines; i++) {
+                            $numbering.append($('<li/>').text(i));
+                        };
+                        $numbering.fadeIn(1700);
+                    });
+
+                    $('.pre-numbering li').css("color", "#999");
+                }
+            });
+           
+            $(".markdown_views a[target!='_blank']").attr("target", "_blank");
+
+            //$(".toc a[target='_blank']").attr("target", "");
+
+            setTimeout(function () {
+                $(".toc a[target='_blank']").attr("target", "");
+            },500);
+
+        </script>
+
+
+   
+ <div id="tag-suggest-pop">
+  <div class="relative">
+    <div class="close"></div>
+    <div class="content"></div>
+  </div>
+</div><div id="mask_code"></div><div class="gist_edit"><div class="save_snippets clearfix"><div class="tit"><h3>保存代码片</h3><span>整理和分享保存的代码片，请访问<a href="https://code.csdn.net/snippets_manage" target="_blank">代码笔记</a></span></div><div class="con_form"><ul class="gist_edit_list clearfix"><li><span class="red">*</span><span class="txt">标题</span><input id="form_title" class="form-input" placeholder="【Java并发之】BlockingQueue" type="text"></li><li><span class="red">*</span><span class="txt">描述</span><textarea id="form-textarea" class="form-textarea" placeholder="【Java并发之】BlockingQueue： http://blog.csdn.net/suifeng3051/article/details/48807423"></textarea></li><li><span class="red">&nbsp;</span><span class="txt">标签</span><div id="divSearchTags"><span class="label blog_tag"><span>Java并发</span><a title="Removing tag" href="javascript:;">x</a></span><span class="label blog_tag"><span>BlockQueue</span><a title="Removing tag" href="javascript:;">x</a></span><span class="label blog_tag"><span>Java高级</span><a title="Removing tag" href="javascript:;">x</a></span><span class="label blog_tag"><span>Java多线程</span><a title="Removing tag" href="javascript:;">x</a></span><input id="insertTag" class="insertTag" placeholder="请输入标签，按Enter生成(最多5项)" type="text" value="" name="insertTag" maxlength="21" style="color: rgb(51, 51, 51);"><input id="OrganTag" class="OrganTag" type="hidden" name="OrganTag" value="Java并发,BlockQueue,Java高级,Java多线程,"><input id="OldOrganTag" class="OldOrganTag" type="hidden" name="OldOrganTag" value=""><input type="hidden" name="txtSearchTags"></div></li></ul></div><div class="bottom-bar"><a href="javascript:;" class="btn-submit btn-cancel">取消</a><span class="tracking-ad" data-mod="popu_250"><a class="btn-submit btn-confirm" href="javascript:;" target="_blank">确定</a></span></div></div></div><link rel="stylesheet" type="text/css" media="screen" href="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/ask_float_fonts_css-6b30a53970eb5c3a2a045e3df585b475.css"><div data-mod="popu_64" class="csdn-tracking-statistics" chg-blk="0"><a id="com-quick-reply" title="快速回复" style="top:266px"></a><a id="com-quick-collect" title="我要收藏" style="top:304px"></a><a id="com-d-top-a" style="top: 342px; display: inline;" title="返回顶部" onclick=""></a> </div><div class="pop_edit ask_second comm_ask_second"><h3>提问</h3><span class="ask_float_span">您的问题将会被发布在“<a class="ask_float_channel" href="http://ask.csdn.net/" target="_blank" style="cursor:pointer">技术问答</a>”频道</span><a href="http://blog.csdn.net/suifeng3051/article/details/48807423#" nodetype="close" class="close">×</a><div class="context"><div class="err_div"><span class="err_ico"></span><span class="err_txt">该问题已存在，请勿重复提问</span></div><div class="input_div"><input id="askInputSecond" type="text" style="font-size:14px;" placeholder="问题标题"></div><div class="cm_box"><div class="cm_dialog"></div> <div class="pop_cm cm_add_link"><input type="text" placeholder="链接内容" id="af_cm_link_txt"><input type="text" placeholder="链接地址" id="af_cm_link_url"><input type="text" placeholder="链接提示" id="af_cm_link_tit"><div class="text-right"><span class="btn btn-default btn-sm" id="add_link_btn">插入链接</span> </div> </div><div class="pop_cm cm_add_img"><div class="nav-tabs"><a class="img_tab active" href="http://blog.csdn.net/suifeng3051/article/details/48807423#tab_upload">本地上传</a><a class="img_tab" href="http://blog.csdn.net/suifeng3051/article/details/48807423#tab_weburl">网络图片</a></div><div class="tab_panel active" id="tab_upload"><div class="set_img"><iframe src="./【Java并发之】BlockingQueue - Heaven Wang 的专栏 - 博客频道 - CSDN.NET_files/upload.html"></iframe></div></div><div class="tab_panel" id="tab_weburl"><input type="text" placeholder="图片地址" id="af_cm_img_url"><input type="text" placeholder="图片说明" id="af_cm_img_alt"><div class="text-right"><span class="btn btn-default btn-sm" id="add_img_btn">插入图片</span> </div></div> </div></div> <textarea id="editor_all" rows="8" style="display: none;"></textarea><div class="editor-toolbar"><i class="separator">|</i><a class="icon-headline" title="标题一（Ctrl+Alt+1）"></a><a class="icon-heading" title="标题二（Ctrl+Alt+2）"></a><a class="icon-bold" title="粗体（Ctrl+B）"></a><a class="icon-italic" title="斜体（Ctrl+I）"></a><i class="separator">|</i><a class="icon-quote-left" title="引用（Ctrl+’）"></a><a class="icon-code" title="插入代码片（Ctrl+,）"></a><a class="icon-list-ul" title="无序列表（Ctrl+L）"></a><a class="icon-list-ol" title="有序列表（Ctrl+Alt+L）"></a><i class="separator">|</i><a class="icon-link" title="添加链接（Ctrl+K）"></a><a class="icon-picture" title="添加图片（Ctrl+Alt+I）"></a><i class="separator">|</i><a class="icon-reply" title="撤退（Ctrl+Z）"></a><a class="icon-share-alt" title="前进（Ctrl+Shift+Z）"></a><i class="separator">|</i><a class="icon-info" href="http://ask.csdn.net/pages/markdown" target="_blank" title="markdown语法参考"></a><a class="icon-preview" title="预览"></a><i class="separator">|</i></div><div class="CodeMirror cm-s-paper CodeMirror-focused"><div style="overflow: hidden; position: relative; width: 3px; height: 0px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none; font-size: 4px;" tabindex="0"></textarea></div><div class="CodeMirror-hscrollbar"><div style="height: 1px;"></div></div><div class="CodeMirror-vscrollbar"><div style="width: 1px;"></div></div><div class="CodeMirror-scrollbar-filler"></div><div class="CodeMirror-gutter-filler"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="min-width: 33px;"><div style="position: relative;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre>&nbsp;<span style="display: inline-block; width: 1px; margin-right: -1px;">&nbsp;</span></pre></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code"></div><div class="CodeMirror-cursor" style="visibility: hidden;">&nbsp;</div><div class="CodeMirror-cursor CodeMirror-secondarycursor" style="visibility: hidden;">&nbsp;</div></div></div></div></div><div style="position: absolute; height: 30px; width: 1px;"></div><div class="CodeMirror-gutters" style="display: none;"></div></div></div><div class="editor-statusbar"><span class="lines">0</span><span class="words">0</span><span class="cursor">0:0</span></div><div class="div_tags clearfix"><div id="divSearchTags" class="tags_con"><input type="text"></div><input type="hidden" name="txtSearchTags"></div><div id="ask2_tagRecomm_div" class="drt_tagRecomm tracking-ad" data-mod="popu_73"><span class="drt_tit">推荐标签：</span></div></div><div class="success"><div class="left_area"><input id="chk_cb" type="checkbox"><span class="wyxs">我要悬赏</span><input id="cb_num" class="cb_num" readonly="true"><span class="phib_rii"><span> 币</span></span></div><a href="http://blog.csdn.net/suifeng3051/article/details/48807423#" nodetype="cancel" class="cancel">取消</a><a href="http://blog.csdn.net/suifeng3051/article/details/48807423#" nodetype="ok" class="ok">发布</a></div></div><div id="common_ask_div_sc" class="searchContainer"><div class="sTitle">可能存在类似的问题：</div><div class="sFooter"><a class="sFirstNewAsk">我想提一个新问题</a></div></div><div style="position:fixed; top:0; left:0; overflow:hidden;"><input style="position:absolute; left:-300px;" type="text" value="" id="focus_retriever" readonly="true"></div></body></html>

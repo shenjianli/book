@@ -1,0 +1,738 @@
+
+/* Likes */
+.item-like {
+    padding-right: 2px;
+}
+
+.item-like a.button--like:hover {
+    text-decoration: none !important;
+    color: white;
+}
+
+ /* Like Button Styles */
+ 
+.button--like {
+    display: inline-block;
+    /* display: inline-table; */
+    font-size: 11px;
+    font-weight: 700;
+    background: #259349;
+    border: 1px solid #259349;
+    border-radius: 2px;
+    color: #ffffff !important;
+    line-height: normal;
+    padding: 6px 10px 6px 25px;
+    text-align: center;
+    transition: all .1s ease;
+    position: relative;
+    z-index: 10;
+}
+
+.button--like__icon {
+    position: absolute;
+    left: 10px;
+    top: 6px;
+    overflow: visible;
+    width: 16px;
+    height: 10px;
+    pointer-events: none;
+}
+.button--like:hover {
+    background: #197C39;
+    border: 1px solid #197C39;
+ }
+
+.button--like__icon,
+.button--like:hover .button--like__icon {
+   background: url('../images/personalization/like_item_icon_white.svg') no-repeat center left; 
+ }
+ 
+ .button--liked {
+    color: #000 !important;
+    border: 1px solid #E0E0E0;
+    background: #F3F3F3;
+ }
+
+.button--liked:hover {
+    background-color: #EBF0F3;
+    border: 1px solid #CDDCEC;
+}
+
+/* There is used to overwrite an !important declaration from the main css file */
+span.author_general .button--like:hover {
+    text-decoration: none !important;
+ }
+
+.button--liked a {
+    color: white;
+}
+
+.button--liked .button--like__icon,
+.button--liked:hover .button--like__icon {
+    background: url('../images/personalization/like_item_icon.svg') no-repeat center left;
+}
+
+/* Likes comments */
+.button--comment {
+    background: url('../images/personalization/like_comment_icon.svg') no-repeat left center;
+    background-position: 0 1px;
+    padding-top: 2px !important;
+    padding-bottom: 3px !important;
+    padding-left: 20px !important;
+    line-height: 150%;/* this can be removed as it is already contained the the main InfoQ Styles */
+}
+
+.button--comment:hover {
+	background: url('../images/personalization/like_comment_icon_full.svg') no-repeat left center;
+	background-position: 0 1px;
+}
+/* End likes */
+
+/* InfoQ Styles that need to be changed/added to accomodate the button element */
+.page_header_with_rss_url > h1 {
+	max-width: 72%;
+	margin-right: 10px;
+}
+
+.btn_right {
+	float: right;
+}
+
+/* Follow Button Styles */
+.button {
+	float: left;
+	border-radius: 1px;
+	color: #fff;
+	display: block;
+	font-size: 14px;
+	font-weight: 700;
+	line-height: normal;
+	padding: 7px 20px;
+	width: 132px;
+	text-align: center;
+	-webkit-transition: background-color 300ms ease;
+	-moz-transition: background-color 300ms ease;
+	-ms-transition: background-color 300ms ease;
+	-o-transition: background-color 300ms ease;
+	transition: background-color 300ms ease;
+}
+
+.button--follow {
+	background-color: #577EBC;
+	background-image: url('../images/personalization/follow_topic_icon.svg');
+	background-repeat: no-repeat;
+	background-position: 8px 48%;
+	padding: 12px 6px 13px 25px;
+}
+
+.button--following {
+	background-color: #577EBC;
+	background-image: url('../images/personalization/following_topic_icon.svg');
+	background-repeat: no-repeat;
+	background-position: 8px 48%;
+	padding: 12px 6px 13px 25px;
+}
+
+.button--unfollow {
+	color: #2a2a2a;
+	background-color: #D5E0E7;
+	background-image: url('../images/personalization/unfollow_topic_icon.svg');
+	background-repeat: no-repeat;
+	background-position: 8px 48%;
+	padding: 12px 6px 13px 25px;
+}
+
+
+.button--follow:hover,
+.button--following:hover {
+	background-color: #3060AB;
+}
+
+.button--unfollow:hover {
+	background-color: #CDDAE2;
+}
+
+
+.followswitch {
+    float: right;
+    z-index: 1;
+    padding-left: 4px;
+    position: relative; width: 100px;
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+}
+.followswitch-checkbox {
+    display: none;
+}
+.followswitch-label {
+    display: block; overflow: hidden; cursor: pointer;
+    border: 1px solid #999999; 
+    border-radius: 0px;
+}
+.followswitch-inner {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+.followswitch-inner:before, .followswitch-inner:after {
+    display: block; float: left; width: 50%; height: 25px; padding: 0; line-height: 25px;
+    font-size: 13px; color: white; font-family: Trebuchet, Arial, sans-serif;
+    box-sizing: border-box;
+}
+.followswitch-inner:before {
+    content: "\2713 Following";
+    padding-left: 10px;
+    background-color: #EEEEEE; color: #999999;
+}
+.followswitch-inner:after {
+    content: "+ Follow";
+    background-color: #4e80bb; color: #FFFFFF;
+    text-align: center;
+}
+.followswitch-checkbox:checked + .followswitch-label .followswitch-inner {
+    margin-left: 0;
+}
+.followswitch-checkbox:checked + .followswitch-label /*.followswitch-switch*/ {
+    right: 0px; 
+}
+
+/* === LIKE === */
+.likeContentSwitch {
+    position: relative; 
+    width: 90px;
+    font-size: 12px;
+    height: 17px;
+    line-height: 17px;
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+}
+.likeContentSwitch-checkbox {
+    display: none;
+}
+.likeContentSwitch-label {
+    display: block; overflow: hidden; cursor: pointer;
+    border: 1px solid #999999; 
+    border-radius: 0px;
+}
+.likeContentSwitch-inner {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+.likeContentSwitch-inner:before, .likeContentSwitch-inner-inner:after {
+    display: block; float: left; width: 50%; height: 17px; padding: 0; line-height: 17px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif;
+    box-sizing: border-box;
+}
+.likeContentSwitch-inner:before {
+    content: "\2713 Liked";
+    background-color: #EEEEEE; color: #999999;
+    text-align: center;
+}
+.likeContentSwitch-inner:after {
+    content: "+ Like";
+    background-color: #4e80bb; color: #FFFFFF;
+    text-align: center;
+    display: block;
+}
+.likeContentSwitch-checkbox:checked + .likeContentSwitch-label .likeContentSwitch-inner {
+    margin-left: 0;
+}
+.likeContentSwitch-checkbox:checked + .likeContentSwitch-label {
+    right: 0px; 
+}
+
+/* User Information (Picture, Name, Bio, Summary and Social Links) */
+
+.row {
+  float: left;
+  width: 100%;
+  margin: 0;
+  clear: both;
+}
+
+.first-row {
+  margin-top: 20px;
+}
+
+.user-image,
+.user-sidebar-activity {
+  float: left;
+  width: 200px;
+  margin-right: 20px;
+}
+
+.user-image img {
+  max-width: 100%;
+  height: auto;
+}
+
+.user-title,
+.user-activity {
+  float: left;
+  width: 749px;
+}
+
+.user-name {
+  float: left;
+  max-width: 440px;
+  margin-right: 20px;
+}
+
+.user-name h2 {
+  float: left;
+  width: auto;
+  margin: 0 15px 2px 0;
+  color: #3b9647;
+  font-size: 27px;
+}
+
+.user-social {
+  float: left;
+}
+
+.user-social a {
+  float: left;
+  margin: 8px 5px 0 0;
+  padding: 0;
+  font-size: 18px;
+}
+
+.user-social .icon-twitter {
+  color: #55acee;
+}
+
+.user-social .icon-facebook2 {
+  color: #3b5998;
+}
+
+.user-social .icon-linkedin {
+  color: #0077b5;
+}
+
+.user-social .icon-google-plus,
+.user-social .icon-google-plus2 {
+  color: #DC4E40;
+}
+
+.user-social-github {
+  color: #000;
+}
+
+.user-social-weibo {
+  color: #E6222E;
+}
+
+.user-social-quora {
+  color: #A72412;
+}
+
+.user-actions {
+  float: right;
+  padding-bottom: 10px; /*added*/
+  margin-top: 10px;
+  text-align: right;
+}
+
+.user-actions .icon-add_circle_outline,
+.user-actions .icon-remove_circle_outline,
+.user-actions .icon-drafts {
+  font-size: 18px;
+  padding: 0 9px 0 0;
+  vertical-align: sub; /* Fix for incorrect positioning in Safari. */
+}
+
+.user-actions a {
+  border-radius: 2px;
+  font-size: 14px;
+	font-weight: 700;
+	line-height: 1;
+  -webkit-transition: all 300ms ease;
+	-moz-transition: all 300ms ease;
+	-ms-transition: all 300ms ease;
+	-o-transition: all 300ms ease;
+	transition: all 300ms ease;
+}
+
+.user-button-blue {
+  color: #fff;
+  border: 1px solid #577EBC;
+  background-color: #577EBC;
+	padding: 10px 20px 10px 15px;
+}
+
+.user-button-blue:hover {
+  background-color: #3060AB;
+}
+
+.user-button-grey {
+  border: 1px solid #E0E0E0;
+  background-color: #F3F3F3;
+  padding: 10px 20px 10px 15px;
+}
+
+.user-button-grey:hover {
+  background-color: #EBF0F3;
+  border: 1px solid #CDDCEC;
+}
+
+.user-comment {
+  color: #333;
+  border: 1px solid #E0E0E0;
+  background-color: #F3F3F3;
+  padding: 10px 20px 10px 15px;
+}
+
+.user-comment:hover {
+  background-color: #EBF0F3;
+  border: 1px solid #CDDCEC;
+}
+
+.user-minibio,
+.user-summary {
+  float: left;
+  clear: both;
+}
+
+.user-minibio a,
+.user-summary a,
+.user-activity-more,
+.user-activity-item__hidden .user-activity-content a {
+  text-decoration: none;
+  color: #286AB2;
+}
+
+.user-minibio a:hover,
+.user-summary a:hover,
+.user-activity-more:hover,
+.user-activity-item__hidden .user-activity-content a:hover {
+  text-decoration: underline;
+  color: #286AB2;
+}
+
+.user-minibio p {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  margin-top: 15px;
+  padding: 0;
+}
+
+.user-summary h3,
+.user-activity h3 {
+  font-size: 18px;
+  font-weight: 700;
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 15px 0 0 0;
+}
+
+.user-activity h3 {
+  margin: 15px 0 5px 0;
+}
+
+.user-summary p {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  margin-top: 5px;
+  padding: 0;
+}
+
+
+/* User Sidebar */
+
+.user-sidebar-activity {
+  margin-top: 25px;
+}
+
+.user-sidebar-activity li {
+  margin-bottom: 8px;
+}
+
+.user-sidebar-activity li span {
+  font-size: 12px;
+  color: #9C9C9C;
+  padding-left: 5px;
+}
+
+.user-sidebar-activity li a {
+  font-size: 13px;
+  display: inline-block;
+  padding: 4px 7px;
+}
+
+.user-sidebar-activity li a:hover {
+  color: #286AB2;
+}
+
+.user-sidebar-activity li .current {
+  color: #333;
+  font-weight: 700;
+  margin: 0;
+  background-color: #F3F3F3;
+}
+
+/* User Activity */
+
+.user-activity {
+  margin-top: 10px;
+}
+
+.user-activity-content {
+  width: 670px;
+  margin-right: 20px;
+  float: left;
+}
+
+.user-activity-content a:hover,
+.user-activity-follow-content a:hover {
+  text-decoration: underline;
+}
+
+.user-activity-content img {
+  float: left;
+  margin-right: 10px;
+  width: 60px;
+  height: auto;
+}
+
+.user-activity-content a {
+  color: #333;
+}
+
+.user-activity-content blockquote {
+   width: 100%;
+}
+
+.hide-item {
+  float: right;
+  width: 20px;
+}
+
+.tooltip {
+  display:none;
+  background: #232323;
+  font-size:11px;
+  padding:4px 10px;
+  color:#eee;
+}
+
+.user-activity-meta {
+  font-size: 12px;
+  color: #999999;
+  display: block;
+  padding-top: 3px;
+}
+
+.user-activity-like {
+  /*background: url(i/news.png) no-repeat left 5px;*/
+}
+
+.user-activity-item {
+  float: left;
+  position: relative;
+  width: 100%;
+  padding: 20px 0;
+  border-bottom: 1px solid #E5E5E5;
+}
+
+.user-activity-item:hover .user-activity-icon {
+  color: #AAC1E0;
+}
+
+.user-activity-icon {
+  color: #ccc;
+  font-size: 20px;
+  float: left;
+  width: 29px;
+  margin-right: 10px;
+}
+
+.icon-clear {
+  color: #ccc;
+  font-size: 18px;
+}
+
+.icon-clear:hover {
+  color: #333;
+}
+
+.user-activity .load_more_articles {
+  border-top: 0;
+  margin-bottom: 35px;
+}
+
+.user-tabs-following {
+  padding-top: 15px;
+}
+
+.user-tabs-following {
+  float: left;
+  width: 100%;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #E5E5E5;
+}
+
+.user-tabs-following li {
+  float: left;
+  margin-right: 15px;
+}
+
+.user-tabs-following li a {
+  display: block;
+  text-align: center;
+  padding: 6px 25px;
+  color: #9c9c9c;
+  font-weight: 700;
+  border-top: 1px solid #E5E5E5;
+  border-left: 1px solid #E5E5E5;
+  border-right: 1px solid #E5E5E5;
+  border-bottom: 1px solid #fff;
+  margin-bottom: -1px;
+}
+
+.user-tabs-following .current {
+  color: #333;
+}
+
+.user-activity-item-half {
+  float: left;
+  width: 354px;
+  margin: 20px 20px 5px 0;
+  padding-bottom: 25px;
+  border-bottom: 1px solid #E5E5E5;
+}
+
+.user-activity-follow-content {
+  float: left;
+  width: 100%;
+  padding-bottom: 15px;
+}
+
+.user-activity-follow-content img {
+  float: left;
+  margin-right: 10px;
+  width: 30px;
+  height: 30px;
+}
+
+.user-activity-follow-content h4 {
+  float: left;
+  width: 314px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0;
+  padding: 0;
+  clear: none;
+}
+
+.user-activity-follow-content p {
+  clear: none;
+  width: auto;
+  color: #333;
+  font-size: 13px;
+}
+
+.user-activity-follow-meta {
+  float: left;
+  width: 100%;
+}
+.user-activity-follow-meta .followers {
+  font-size: 11px;
+  color: #9c9c9c;
+}
+
+.user-button-small,
+.user-button-small {
+  padding: 5px 15px 5px 15px;
+  font-weight: 700;
+  font-size: 11px;
+  margin-right: 10px;
+}
+
+.user-button-small span,
+.user-button-small span {
+  padding-right: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  vertical-align: text-bottom;
+}
+
+/* Dialog Box Styles */
+
+.hide-dialog {
+  background-color:#fff;
+  display:none;
+  width:380px;
+  text-align:left;
+  opacity:1;
+  left: 50%; /* FIX for incorrect jQuery Tools positioning */
+  margin-left: -190px; /*  FIX for incorrect jQuery Tools positioning */
+  box-shadow: 0 0 7px rgba(0,0,0,0.3);
+}
+
+.hide-dialog-content {
+  padding: 7px 15px;
+}
+
+.hide-dialog h2 {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  background: #f5f5f5;
+  border-bottom: 1px solid #c9c9c9;
+  padding: 15px 15px 13px 15px;
+  box-sizing: border-box;
+}
+
+.hide-dialog p {
+  padding-bottom: 10px;
+}
+
+.hide-dialog .close {
+  position: absolute;
+  top: 13px;
+  right: 11px;
+  cursor: pointer;
+}
+
+.hide-dialog-buttons {
+  text-align: right;
+}
+
+/* Hide */
+.spanLess,
+.user-activity-item__hidden p {
+  font-size: 12px;
+  margin: 2px 0 0 0;
+}
+
+.spanLess a {
+    color: #286AB2;
+}
+
+.icon-interviews {
+    background: url(i/popular_interviews.jpg) no-repeat left center;
+    height: 30px;
+}
+.icon-news {
+    background: url(i/popular_news.jpg) no-repeat left center;
+    height: 30px;
+}
+.icon-articles {
+    background: url(i/popular_articles.jpg) no-repeat left center;
+    height: 30px;
+}
+.icon-presentations {
+    background: url(i/popular_presentations.jpg) no-repeat left center;
+    height: 30px;
+}
+.icon-podcasts {
+    background: url(i/popular_podcasts.jpg) no-repeat left center;
+    height: 30px;
+}
+.icon-minibooks {
+    background: url(i/popular_minibooks.jpg) no-repeat left center;
+    height: 30px;
+}
+.icon-research {
+    background: url(i/popular_research.jpg) no-repeat left center;
+    height: 30px;
+}

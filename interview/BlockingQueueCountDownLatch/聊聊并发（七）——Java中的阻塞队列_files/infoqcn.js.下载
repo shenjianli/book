@@ -1,0 +1,6 @@
+if(Math.random() < 0.33333333333333){$(".text_info .random_links").before('<div style="margin-bottom:5px"><b>【2017年，你应该把握这些运维技术热点】智能化运维、Serverless、DevOps......CNUTCon全球运维技术大会将于9月上海举办，12位大牛联合出品，揭秘最前沿运维技术，更有阿里、百度、腾讯、京东、携程、搜狗等公司大牛分享他们在最新运维实践过程中遇到的坑与经验，<a href="http://www.cnutcon.com/?utm_source=infoq&utm_medium=wenzhangdibu" target="_blank">推荐学习>></a></b></div>')
+console.log("请关注InfoQ微信帐号:infoqchina");}
+else if(Math.random() >= 0.33333333333333&&Math.random() < 0.66666666666667){$(".text_info .random_links").before('<div style="margin-bottom:5px"><b>【2017GTLC全球技术领导力峰会】将于2017年6月30日-7月1日在上海举行，目前汇聚蚂蚁金服、饿了么、网易研究院、摩拜、小米科技、苏宁云商等业内杰出的技术领导者，现场分享管理实战经验，解读技术与商业之道，本年最强的学习交流盛宴，技术管理者一定不容错过！<a href="http://gtlc.geekbang.org/?utm_source=infoq&utm_medium=wzdbgg&utm_campaign=0611" target="_blank">>>立即报名</a></b></div>')
+console.log("请关注InfoQ微信帐号:infoqchina");}
+else{$(".text_info .random_links").before('<div style="margin-bottom:5px"><b>【ArchSummit深圳2017】华南地区即将上演100+毫无保留的架构案例，不乏Facebook、Airbnb、LinkedIn、Uber、微信、淘宝、百度AI等巨头产品的技术细节， 大会9折报名火热进行中，你与顶尖架构师的距离仅此一步，<a href="http://sz2017.archsummit.com/?utm_source=infoq&utm_medium=wenzhangbottm&utm_term=wenzilian&utm_content=9zhe" target="_blank">详情戳>></a></b></div>')
+console.log("请关注InfoQ微信帐号:infoqchina");}

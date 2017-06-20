@@ -1,0 +1,332 @@
+body {font-family: Helvetica,'Open Sans', Arial, 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, STHeiti, 'WenQuanYi Micro Hei', SimSun, sans-serif; }
+span.about_general { font-size:12px;}
+i,em { font-style:normal;}
+.text_info p em, .text_info em {  font-style:normal;}
+.homepage_list .left .listed_news .news p em { font-style: normal;}
+table.last_content td.text { width:360px;}
+.presentation_full .qcon_notice {margin-right:160px; margin-top:-8px;}
+#content .static_pages .left .contribute_join .or {top: 60px;}
+
+/*customizations*/
+
+h1,h2,h3,h4{font-family: Helvetica,'Open Sans', Arial, 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, STHeiti, 'WenQuanYi Micro Hei', SimSun, sans-serif;}
+ol li{border:none;}
+h1.general{font-size: 22px;font-weight: 600}
+.text_info h3{line-height: 36px}
+.text_info h4{line-height: 32px}
+.related_sponsors h3{line-height: 1.2}
+#content .static_pages .left h3{font-size: 18px;}
+#content .static_pages .left .border_box table.core td.c1,#content .static_pages .left .border_box table.core td.c2{font-size: 12px}
+
+/* article title */
+.title_canvas h1 {font-size: 22px;font-weight: 500;}
+
+.tab_article .txxt h2{font-family: Helvetica,'Open Sans', Arial, 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, STHeiti, 'WenQuanYi Micro Hei', SimSun, sans-serif; font-size: 14px;font-weight: 600;}
+.tab_article .txxt{float: left}
+.tab_article{margin: 5px 0 10px 0}
+.tab_article img{border:1px solid #999;width: 85px;height: 85px}
+
+
+.text_content_container ul{margin: 0 0 15px 10px;}
+
+.widget_div ul.books li .one_book p,ul.tabs li{font-size:12px}
+.homepage_grid .grid.presentations_type .news > div .video_details p a:not(.video_box),.homepage_grid .grid.interviews_type .news > div .video_details p a:not(.video_box){font-size:12px}
+.homepage_grid .grid.presentations_type .news > div .video_details p a:not(.video_box),.homepage_grid .grid.podcasts_type .news > div .video_details p a:not(.video_box){font-size:12px}
+.homepage_grid .grid.presentations_type .news > div .video_details p span,.homepage_grid .grid.interviews_type .news > div .video_details p span{font-size:12px}
+.homepage_grid .grid.presentations_type .news > div .video_details p span,.homepage_grid .grid.podcasts_type .news > div .video_details p span{font-size:12px}
+.homepage_list > .tabs li a{font-size:14px}
+/*.logo p{display:none}*/
+.logo p{font-size: 12px;}
+
+.breadcrumbs{ font-size:12px;font-family: Helvetica,'Open Sans', Arial, 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, STHeiti, 'WenQuanYi Micro Hei', SimSun, sans-serif; }
+
+.widget_div ul.books li .one_book p{font-size:14px}
+
+.homepage_list .left .listed_news .news p{font-size:14px}
+.homepage_list .left .listed_news .news h2{font-size:16px;font-weight: 600;margin: 0 0 2px 0;}
+
+.homepage_list .left .listed_news .news{margin: 0 0 10px 0;}
+
+.ebook_list h2{font-size:16px}
+h2.itemtitle{min-height: 24px;}
+.text_info{font-family: Helvetica,'Open Sans', Arial, 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, STHeiti, 'WenQuanYi Micro Hei', SimSun, sans-serif; font-size:14px}
+.text_info p{font-size:14px;line-height: 1.8;margin: 0 0 15px 0;}
+blockquote{margin: 0 0 10px 0;}
+
+.text_info p em, .text_info em{font-size:14px}
+
+ul.tabs li{font-size:14px}
+
+.tag_page_content .tab_content .this_is.list p{font-size:14px}
+.tag_page_content h2{font-size:16px}
+
+.general_green{font-size: 20px;}
+
+.homepage_list{margin:0;}
+
+.related_sponsors p.title{margin: 0 0 8px 0;}
+.related_sponsors .related_editorial{min-height: 150px;}
+
+.news_in_tabs .panes > div h3{margin: 0 0 10px 1px;height: 18px;overflow: hidden;font-weight: normal;}
+
+
+.homepage_grid .grid .news > div h3{font-size: 14px;margin:0;font-weight: 600}
+.homepage_grid .grid .news > div > span{font-size: 12px;}
+
+
+.grid.articles_type div span{text-align: right}
+/*layout on articles/homepage/grid*/
+.homepage_grid .grid .news > div > span{max-height:14px;}
+.homepage_grid .grid .news.full_width .gbanner{padding-left:10px;}
+
+#footer {padding:0 0 15px 0;margin: 8px 0 8px 0;}
+.our_events .communities{margin:20px 0 0 0;}
+ul.footerMenu li{width:145px;}
+ul.footerMenu{margin:30px 10px 10px 0;}
+ul.footerTxt1{margin:30px 20px 10px 30px;}
+ul.footerTxt1 li strong { font-weight:600; font-size:13px; margin-bottom:25px; margin-top:10px;text-transform:none;}
+
+div.ftxt3{margin:30px 0px 10px 20px;}
+.our_events{margin: 30px 0px 0px 0px;}
+.communities fieldset{margin-top:-12px;}
+
+
+.homepage_list .left .listed_news .news{font-size:14px}
+.widget_div ul.books li .one_book p{font-size:14px}
+
+.homepage_list .left .listed_news .news p{font-size:14px}
+.homepage_list .left .listed_news .news h2{font-weight: 600;font-size:20px}
+
+.homepage_grid .grid .news > div h3 a img{border: 1px solid #888;height: 60px; width:60px }
+
+.widget_div ul.books li .one_book p{font-size: 12px}
+
+.widget_div h2,.homepage_grid h2{font-size: 20px;font-weight: 600}
+
+/*.homepage_grid .grid.interviews_type .news > div .video_details,.homepage_grid .grid.presentations_type .news > div .video_details{padding: 10px 10px 2px;}*/
+
+/*.homepage_grid .grid.interviews_type .news > div .video_details .interviewTitle,.homepage_grid .grid.presentations_type .news > div .video_details .presentationTitle{height: 40px}*/
+.homepage_grid .home_banner.mgtop{margin-top:0}
+
+.comments_counts{margin: -3px 0 0 7px;}
+
+/*custom header banner start*/
+.top_explain { width:400px;}
+ul.menu li a.main { width:103px; }
+ul.menu { width:620px; }
+.search_cls { margin:0px 206px 0 0; }
+/*custom header banner end*/
+
+ul.submenu > li {
+    padding: 0px 15px 0px 0px;
+    line-height: 16px;
+}
+
+div.all_topics { line-height: 21px }
+
+ul.menu,
+.newsletter h3,
+.comment_here h3,
+.links h3,
+.panes h3,
+.comment_here h2,
+.comments h4,
+.article_page_right h2,
+.article_page_right h3,
+.article_page_right h4,
+.research_index .published_research .ritems h2,
+.registration_right .get_account h2,
+ul.menu li .top_submenu .menu_article p,
+.article_page_left.presentation_full .recorded,
+.ebook .txt h2,
+.eBookRight h2,
+.eBookRight h3										{ font-family: Helvetica,'Open Sans', Arial, 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, STHeiti, 'WenQuanYi Micro Hei', SimSun, sans-serif; }
+#content .tag_page_content .tab_content .this_is.grid p a.art_title, input {
+    font-family: Helvetica,'Open Sans', Arial, 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, STHeiti, 'WenQuanYi Micro Hei', SimSun, sans-serif;
+}
+
+#article-guidelines { line-height:1.8; }
+#article-guidelines p {  margin-bottom:20px }
+#article-guidelines h2 {  margin-top: 20px;}
+#article-guidelines a { text-decoration:underline; }
+#article-guidelines ul { clear:both; }
+#article-guidelines ul li { background: url(i/li_bg2.jpg) no-repeat left top;padding:0px 0px 0px 35px }
+
+/* partners page */
+.cooperator {
+    display: block;
+    width: 100%;
+    margin: 0 auto;
+    padding: 50px 0 30px;
+    background: #fff;
+}
+
+.cooperator li {
+    list-style: square inside;
+}
+
+.cooperator h3 {
+    font-size: 20px;
+    margin-bottom: 27px;
+}
+
+.cooperator-partner ul {
+    padding: 0 22px;
+    margin-bottom: 50px;
+}
+
+.cooperator-partner ul li {
+    display: inline-block;
+    margin-right: 50px;
+    list-style: none;
+}
+
+.cooperator-partner ul li a img {
+    height: 80px;
+}
+
+.cooperator-forum li {
+    display: inline-block;
+    margin-right: 15px;
+    margin-bottom: 32px;
+    list-style: none;
+    border: 1px solid #ddd;
+}
+
+.cooperator-forum ul li img {
+    width: 118px;
+    height: 43px;
+}
+
+#companyList {
+    margin-bottom: 4px;
+}
+
+.decrease {
+    box-sizing: border-box;
+    padding: 5px;
+}
+
+#companyList li {
+    display: inline-block;
+    margin-right: 17px;
+    margin-bottom: 32px;
+    list-style: none;
+    border: 1px solid #ddd;
+}
+
+#companyList li:nth-child(7n) {
+    margin-right: 0;
+}
+
+#companyList li a img {
+    width: 118px;
+    height: 43px;
+}
+
+.cooperator-media {
+    margin-bottom: 34px;
+    display: none;
+}
+
+.cooperator-media-content {
+    display: block;
+    width: 966px;
+    height: 180px;
+    margin: 0 auto;
+    background: #e6e6e7;
+}
+
+#messageGroup {
+    /*padding: 0 26px;*/
+    box-sizing: content-box;
+    display: inline-block;
+}
+
+
+#messageGroup li {
+    display: block;
+    float: left;
+    clear:none;
+    width: 245px;
+    margin-bottom: 30px;
+    padding-right: 117px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #ccc;
+    vertical-align: top;
+    box-sizing: content-box;
+}
+
+#messageGroup li:nth-child(3n) {
+    padding-right: 0;
+
+}
+
+#messageGroup li:last-child {
+    width: 100%;
+    padding-right: initial;
+}
+
+#messageGroup li p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.8em;
+    color: #666566;
+}
+
+#messageGroup li img {
+    width: 118px;
+    height: 43px;
+    margin-bottom: 25px;
+    border: 1px solid #ddd;
+}
+
+#messageGroup li h4 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+#messageGroup li h4 span::before {
+    content: ' ';
+}
+
+#messageGroup li h4 span {
+    color: #007f33;
+}
+
+.cooperator-contact > h3 > a {
+    color: #1759a0;
+    text-decoration: none;
+}
+
+.cooperator-contact > h3 > a:focus, .cooperator-contact > h3 > a:hover {
+    color: #1759a0;
+    text-decoration: underline;
+}
+
+.cooperator-contact > h3 > a:visited {
+    color: #1759a0;
+    text-decoration: none;
+}
+
+.text_info {
+    line-height: 1.8;
+}
+
+.comment_here #subButton.submit {
+    background-color: #47a756;
+}
+.homepage_grid .grid.presentations_type .news > div .video_details .editorName {
+    line-height:1.1;
+}
+ul.authors-list li:not(:last-child)::after,
+.type_presentations> a:not(:last-of-type)::after,
+p.podcast__meta > a:not(:last-of-type)::after,
+p.editorName > a:not(:last-of-type)::after,
+p > span.author > a:not(:last-of-type)::after {
+    content: ", ";
+}
+
+/* the following line is to prevent the bold fonts on InfoQ china to stay at weight 700, which is the default for 'bold'. Because the main font is unintelligible at weight 700, all bold fonts on the Chinese pages need to be set to weight 600 */
+b, strong,#content .privacy_policy > ul li strong,#popupLogin .label_login,#forgotPopup .label_login,#login_formPasswordReset .submit-resetPass.active,#popupLogin .welcome_title,#popupLogin .login-type-in,#popupLogin .login-type a.open_id,#popupLogin .login-type a.twitter_oa,#popupLogin .more_links p a,ul.menu li .top_submenu ul.top_submenu_links li,ul.menu li .top_submenu ul.top_submenu_links li a,ul.menu li .top_submenu ul.top_submenu_links li a.more,ul.menu li .top_submenu .menu_article h2,a.view_all_categ,.qcon p strong,ul.breadcrumbs li a.articles,.breadcrumbs a,.newsletter h3,.newsletter .input_submit,.load_more_articles a strong,.fcls .title,ul.footerMenu li a.active,ul.footerTxt1 li strong,ul.footerTxt2 li strong,ul.footerTxt3 li,ul.footerTxt3 li a,.our_events p,.our_events .communities span,table.last_content td span strong, table.last_content td span a,.download_presentation span.videolength2,.download_presentation ul li,.download_presentation ul li a,.article_page_left.presentation_full .presentation_v1 #top .rightSide h3,.article_page_left.presentation_full .presentation_v1 #bottom h3,span.author_general q, span.author_general a,ul.sh_t li a.read_later,ul.sh_t li a.read_later:hover,ul.sh_t li a.read_later_saved,ul.sh_t li a.reading_list,ul.sh_t li a.reading_list:hover,.text_info p strong,.aditional_info h3,ul.aditional li,ul.aditional li a,div.comments .comment_title > a strong,.popupLoginComments #submit-reply, .popupLoginComments #resubmit-reply,.popupLoginComments .reset-reply,.popupLoginComments .label_login,#popupLogin .welcome_title,#overlay_comments h4 strong,.answers .popupLoginComments .label_login,.answers .popupLoginComments.replyPopup .submit-reply,.answers .popupLoginComments.replyPopup .reset-reply,.article_page_right h2,.titleTab2 span,ul.news li a,ul.normal_list li,.related_video .related_news .txt p,.related_video .related_news .txt p span,ul.listing_news_v3 li,a.link_v3 strong,.registration_left2 .form_subtitle,.registration_left2 .box_input p a,.registration_left3 .form_subtitle,.registration_left3 .box_input p a,.registration_left .form_subtitle,.registration_left .box_input span.thick,.registration_left #validateMessage,.registration_left .box_input p a,.submit_button,.registration_right .get_account h2,ul.account_star li,.register_intro p a,a.blue_button,.newsletter_overlay .input_submit,.newsletter_text p b,.newsletter_text p strong,.author_data strong,.summary p strong,.ebook .author_data a,a.download_green,.download_green_inside,a.download_blue_small,a.download_green_small,.eBookLeft .text_field p strong span,.eBookRight p,.eBookRight .random_links .orange_over,ul.ebook_list_ul li strong,.eBookRight>ul li strong,.ebook .txt #sponsorParagraph .innerWindow .wpTitle,.ebook_vqs .title,.grey_box .leftSide .title,.grey_box .leftSide ul li a,.grey_box .rightSide .title,.grey_box .rightSide div,.grey_box .rightSide ul li,.about_authors .title,.about_authors .author .info p strong,.news_related p strong,.news_related p a,.news_related ul li a,.bookmarks .bookmark_left .title,.bookmarks .bookmark_right .title,.bookmarks .bookmark_right ul li a,.comments_title,.comment_here .area input,.comment_here .area textarea,.comment_here #subButton.submit,.comment_here h3,.search_page h1 span,.search_page .one_result h2,.search_page .one_result p a,ul.search_pagination li a,.error_page p.r1,.error_page p.r2,.error_page p.r3 span,.error_page p.r0,.error_page .search_error_page p,.error_page .search_error_page .search_error,ul.error_pg_menu li a,body.fullSiteWidth #wrapper #site #content .article_page_left.presentation_full .presentation_v1 #top .leftSide h3,body.fullSiteWidth #wrapper #site #content .fullscreenIdentifier strong,.interview_v1 .leftSide p b,.interview_v1 .leftSide .total_playtime p strong,.interview_v1 .rightSideInterview .qa p,.interview_v1 .rightSideInterview .qa_categ,.interview_v1 .rightSideInterview .qa_categ .title_categ,div#postFormDeck h2,div#postFormDeck a,div#postFormDeck div#getMost h2,.register_intro p a,a.blue_button,.register_intro_reskin p.company_link a,.register_intro_reskin p.download_link a,.register_new_content .reg_left .banner a.download,.register_new_content .reg_left .banner a.email,.register_new_content .reg_left ul.share_it li,.register_new_content .reg_right > ul li strong,.register_new_content .need_to_login_container .idp_register p,.topics-search .search-label,.topics-legend-title,ul.tabs .tab_title,ul.tabs2 li a,.related_sponsors  p.title,.related_sponsors .related_editorial.sponsored h3 a,.related_sponsors .s .links a.learn_more,.homepage_grid .grid.presentations_type .news > div .video_box > span, span.videolength,.homepage_grid .grid.interviews_type .news > div .video_box > span,.homepage_grid .grid.podcasts_type .news > div .video_box > span,.homepage_grid .grid.research_type .news > div p a,.homepage_grid .grid.research_type .news .newsletter h3,.homepage_grid .grid.ebooks_type .news > div a.ebooks p,.sponsored_links_section .sp_title,.sponsored_links_section div,.sponsored_links_section_i18n .sp_title,.sponsored_links_section_i18n div,.homepage_list > .tabs li a,.homepage_list .right .research_type .news > div p a,.homepage_list .right .qconLondon a.bottom,.homepage_list .right .qconLondon p,.homepage_list .left .ebooks_type .news > div a.ebooks p,.homepage_list .left .listed_news .news .posted_info a,.news_in_tabs ul.tabs li a,.research_index .rleft .last_item p strong,.research_index .rleft .last_item p span,.research_index .rleft .last_item p.subtitle,.research_index a.all_of_categ,.research_index .rright .title,.research_index .rright a.suggest_topic,.research_index .upcoming_search p.itemss strong,.research_index .upcoming_search p.itemss span,.research_detail ul.share_btns li strong,.research_detail .title,.addthis_button.standard,.tag_page_content a.all_of_categ,.tag_page_content .tab_warning p a,.tag_page_content .tab_content .featured_article p a,.tag_page_content .tab_content .this_is.research.list p a.read_more,.tag_page_content .tab_content .this_is.ebooks.list p a.read_more,.tag_page_content.sponsored_label .tag_sponored h2,ul.newsnav li a.left,ul.newsnav li a.right,div.with_small_image span.duration,div.all_topics,.widget_div ul.books li .one_book h3,#content .static_pages .left .border_box .bubble_links a,#content .static_pages .left .border_box p a.und,#content .static_pages .left .border_box table.core td.c1,#content .static_pages .left p a,#content .static_pages .left form.sgen .fakeradio label,#content .static_pages .left .totals > div,#content .static_pages .left .totals > div span,#content .static_pages .left ul.list1 li a,#content .static_pages .left .meet .meet_team.opened .editors .editor .text h4,#content .static_pages .left .meet .meet_team.opened .editors .editor .text p,#content .static_pages .left .meet .meet_team .mtitle,#content .static_pages .left .meet .meet_team a.mview,#content .static_pages .right ul.static_menu > li a,#content .static_pages .right ul.static_menu > li.active > ul li a,#content .static_pages .right .hear_editors .title,#content .static_pages .right .hear_editors p span,#content .static_pages .right .conference_comitee_member .title,#content .static_pages .right .conference_comitee_member p,#content .static_pages .right .conference_comitee_member p span,#content .static_pages .right .more_pics a.viewmorepics,#content .static_pages .right .more_pics a.viewmorepics q,.rvcWidget .left_widget .title,.rvcWidget .left_widget > a,.rvcWidget .right_widget .txt,.rvcWidget .right_widget .txt a,.comments_counts .disquss,#login_hop_form > p.short_info > em,.rhs_b_s__related h3,.inline_header .message,.simple_btn,.vcr_thanks .section .list .txt a.links,.simple_btn,#inline_content,#inline_content1,#inline_content2,#inline_content3,.inline_content_title,.inline_header .message { font-weight: 600; }

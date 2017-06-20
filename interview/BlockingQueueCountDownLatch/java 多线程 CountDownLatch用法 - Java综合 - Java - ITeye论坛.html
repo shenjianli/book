@@ -1,0 +1,508 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0034)http://www.iteye.com/topic/1002652 -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" dir="ltr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛</title>
+    <meta name="description" content="CountDownLatch，一个同步辅助类，在完成一组正在其他线程中执行的操作之前，它允许一个或多个线程一直等待。  主要方法   public CountDownLatch(int count);   public void countDown();   public void await() throws InterruptedException   构造方法参数指定了计数的次数  count ...">
+    <meta name="keywords" content="Java综合 Java">
+    <link rel="shortcut icon" href="http://www.iteye.com/images/favicon.ico" type="image/x-icon">
+    <link href="http://www.iteye.com/rss/board/Java" rel="alternate" title="ITeye论坛" type="application/rss+xml">
+    <link rel="search" type="application/opensearchdescription+xml" href="http://www.iteye.com/open_search.xml" title="ITeye">
+    <link href="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/forum.css" media="screen" rel="stylesheet" type="text/css">
+    <script type="text/javascript" async="" src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/aczm"></script><script src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/hm.js.下载"></script><script src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/application.js.下载" type="text/javascript"></script>
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?e19a8b00cf63f716d774540875007664";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+      <link href="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/SyntaxHighlighter.css" media="screen" rel="stylesheet" type="text/css">
+  <script src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/shCoreCommon.js.下载" type="text/javascript"></script>
+<script src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/hotkey.js.下载" type="text/javascript"></script>
+  <script src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/code_favorites.js.下载" type="text/javascript"></script>
+          <script src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/dragdrop.js.下载" type="text/javascript"></script>
+          <style type="text/css">.dp-j .annotation { color: #646464; }.dp-j .number { color: #C00000; }</style><style type="text/css">
+:root #header + #content > #left > #rlblock_left,
+:root #content > #center > .dose > .dosesingle,
+:root #content > #right > .dose > .dosesingle
+{ display: none !important; }</style></head>
+  <body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/o.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div>
+    <div id="page">
+      <div id="header">
+        <div class="clearfix"><div id="user_nav">
+      <a href="http://www.iteye.com/login" class="welcome" title="登录">您还未登录 !</a>
+    <a href="http://www.iteye.com/login">登录</a>
+    <a href="http://www.iteye.com/signup" class="nobg">注册</a>
+  </div>
+</div>
+        <div class="clearfix">
+          <div id="branding">
+            <a href="http://www.iteye.com/"><img alt="ITeye-最棒的软件开发交流社区" src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/logo.gif" title="ITeye-最棒的软件开发交流社区"></a>
+          </div>
+          <div id="gg">
+          	
+            <script type="text/javascript">
+              /*iteye论坛帖子页Banner-728*90，创建于2014-7-3*/
+              var cpro_id = "u1617757";
+            </script>
+            <script type="text/javascript" src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/c.js.下载"></script><div id="BAIDU_SSP__wrapper_u1617757_0"><iframe id="iframeu1617757_0" src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/aczm.html" width="728" height="90" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0;vertical-align:bottom;margin:0;width:728px;height:90px" allowtransparency="true"></iframe></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="content" class="clearfix">
+        <div id="main">
+          
+
+
+
+          
+
+<div class="h-entry" style="display:none">
+  <a href="http://zk1878.iteye.com/" class="p-author" target="_blank">zk1878</a>
+</div>
+
+
+<div class="clearfix">
+  <div class="crumbs">
+    <a href="http://www.iteye.com/forums">论坛首页</a> <span class="arrow">→</span>
+    <a href="http://www.iteye.com/forums/board/Java">Java企业应用论坛</a> <span class="arrow">→</span>
+    <h1>java 多线程 CountDownLatch用法</h1>
+  </div>
+</div>
+
+
+  <div id="forum_tag_list">
+    <a href="http://www.iteye.com/forums/board/Java">全部</a>
+          <a href="http://www.iteye.com/forums/tag/Hibernate">Hibernate</a>
+          <a href="http://www.iteye.com/forums/tag/Spring">Spring</a>
+          <a href="http://www.iteye.com/forums/tag/Struts">Struts</a>
+          <a href="http://www.iteye.com/forums/tag/iBATIS">iBATIS</a>
+          <a href="http://www.iteye.com/forums/tag/%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8">企业应用</a>
+          <a href="http://www.iteye.com/forums/tag/Lucene">Lucene</a>
+          <a href="http://www.iteye.com/forums/tag/SOA">SOA</a>
+              <a href="http://www.iteye.com/forums/tag/Java%E7%BB%BC%E5%90%88">Java综合</a>
+          <a href="http://www.iteye.com/forums/tag/Tomcat">Tomcat</a>
+          <a href="http://www.iteye.com/forums/tag/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">设计模式</a>
+          <a href="http://www.iteye.com/forums/tag/OO">OO</a>
+          <a href="http://www.iteye.com/forums/tag/JBoss">JBoss</a>
+      </div>
+
+
+<div class="actions">
+  <div class="buttons"></div>
+  <div class="wrapper">
+    <div id="forum_recommended_f4"></div>
+    
+    <div class="info">浏览 152706 次</div>
+  </div>
+</div>
+
+
+
+<table id="forum_main" cellspacing="1">
+  <thead>
+    <tr>
+      <th colspan="2" class="topic_title">
+        <div class="wrapper"><span class="locked">锁定老帖子</span> <a href="http://www.iteye.com/topic/1002652">主题：java 多线程 CountDownLatch用法</a></div>
+        <div id="topic_rate_box">精华帖 (0) :: 良好帖 (0) :: 新手帖 (0) :: 隐藏帖 (0)</div>
+      </th>
+    </tr>
+    <tr>
+      <td class="first_col">作者</td>
+      <td class="last_col">正文
+      
+      </td>
+    </tr>
+  </thead>
+  <tbody id="posts">
+    <tr id="2041510">
+  <td class="postauthor">
+    <ul>
+      <li class="name">zk1878</li>
+      <li>等级: <img src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/star1.gif" alt="一星会员" title="一星会员"></li>
+      <li><a href="http://zk1878.iteye.com/" target="_blank"><img alt="zk1878的博客" class="logo" src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/6c461021-ee08-389f-9346-52fd161b675f.jpg" title="zk1878的博客: 疯狂的骑士" width=""></a></li>
+      <li>性别: <img src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/icon_minigender_1.gif" title="男"></li>      <li>文章: 40</li>
+      <li>积分: 150</li>
+      <li>来自: 深圳</li>
+      <li><img src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/offline.gif"></li>
+    </ul>
+  </td>
+  <td class="postcontent">
+    <div class="postactions">
+      <div class="description">
+        &nbsp;&nbsp;
+        发表时间：2011-04-14&nbsp;&nbsp;
+        最后修改：2011-04-14
+      </div>
+      <div class="links">
+        
+        
+          
+          
+        
+      </div>
+    </div>
+    <div class="postbody clearfix">
+	    
+      
+	      	    
+		  		
+<div class="newfors">
+  <em>相关知识库：</em>
+  
+  <a target="_blank" href="http://lib.csdn.net/base/android">
+  	<img src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/1455589744328_328.jpg" width="30" height="30" alt="" class="imgradius">
+    <span>Android知识库</span>
+  </a>
+  
+  <a target="_blank" href="http://lib.csdn.net/base/react">
+  	<img src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/1465887837340_340.jpg" width="30" height="30" alt="" class="imgradius">
+    <span>React知识库</span>
+  </a>
+  
+  <a target="_blank" href="http://lib.csdn.net/base/ai">
+  	<img src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/1479972981201_201.jpg" width="30" height="30" alt="" class="imgradius">
+    <span>人工智能基础知识库</span>
+  </a>
+  
+  <a target="_blank" href="http://lib.csdn.net/base/java">
+  	<img src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/1453701371636_636.jpg" width="30" height="30" alt="" class="imgradius">
+    <span>Java 知识库</span>
+  </a>
+  </div>
+
+		            
+          
+        
+      
+                                            <div id="related_topics" style="position: relative;">相关文章: <span class="close"><a href="http://www.iteye.com/topic/1002652#" onclick="$(&#39;related_topics&#39;).hide();if($(&#39;hunter_recommended&#39;)){$(&#39;hunter_recommended&#39;).style.width=&#39;780px&#39;};if($(&#39;topic_tags&#39;)){$(&#39;topic_tags&#39;).style.width=&#39;790px&#39;};return false;" title="关闭">&nbsp;</a></span>
+              <ul>
+                                  <li><a href="http://www.iteye.com/topic/657295" title="Java线程学习笔记（十）CountDownLatch 和CyclicBarrier" target="_blank">Java线程学习笔记（十）CountDownLatch 和CyclicBarrier</a></li>
+                                  <li><a href="http://www.iteye.com/topic/869109" title="多线程断点续传" target="_blank">多线程断点续传</a></li>
+                                  <li><a href="http://www.iteye.com/topic/1131968" title="单例模式的标准写法、注意事项、作用及测试" target="_blank">单例模式的标准写法、注意事项、作用及测试</a></li>
+                              </ul>
+              <br><span>推荐群组: <a href="http://pcdiy.group.iteye.com/" target="_blank">电脑DIY</a></span>
+              <br><a href="http://www.iteye.com/wiki/topic/1002652" target="_blank">更多相关推荐</a>
+            </div>
+            <script type="text/javascript">
+              document.observe("dom:loaded", function() {
+                if($('hunter_recommended')) {
+                  $('hunter_recommended').setStyle({cssFloat: 'left', width: '557px'})
+                }
+                if($('topic_tags')) {
+                  $('topic_tags').setStyle({width: '567px'})
+                }
+                new Draggable("related_topics");
+              });
+            </script>
+                          
+          <div id="topic_tags" class="news_tag" style="width: 567px;">
+                          <a href="http://www.iteye.com/forums/tag/Java%E7%BB%BC%E5%90%88">Java综合</a>
+                      </div>
+        
+      
+      <p>CountDownLatch，一个同步辅助类，在完成一组正在其他线程中执行的操作之前，它允许一个或多个线程一直等待。</p>
+<p>主要方法</p>
+<p>&nbsp;public CountDownLatch(int count);</p>
+<p>&nbsp;public void <strong>countDown</strong>();</p>
+<p>&nbsp;public void <strong>await</strong>() throws <a href="http://www.iteye.com/java/lang/InterruptedException.html" title="java.lang 中的类">InterruptedException</a><br>&nbsp;</p>
+<p>构造方法参数指定了计数的次数</p>
+<p>countDown方法，当前线程调用此方法，则计数减一</p>
+<p>awaint方法，调用此方法会一直阻塞当前线程，直到计时器的值为0</p>
+<p>&nbsp;</p>
+<p>例子</p>
+<div class="dp-highlighter" id=""><div class="bar"><div class="tools">Java代码 <embed wmode="transparent" src="/javascripts/syntaxhighlighter/clipboard_new.swf" width="14" height="15" flashvars="clipboard=public%20class%20CountDownLatchDemo%20%7B%0A%09final%20static%20SimpleDateFormat%20sdf%3Dnew%20SimpleDateFormat(%22yyyy-MM-dd%20HH%3Amm%3Ass%22)%3B%0A%20%20%20%20public%20static%20void%20main(String%5B%5D%20args)%20throws%20InterruptedException%20%7B%0A%20%20%20%20%09CountDownLatch%20latch%3Dnew%20CountDownLatch(2)%3B%2F%2F%E4%B8%A4%E4%B8%AA%E5%B7%A5%E4%BA%BA%E7%9A%84%E5%8D%8F%E4%BD%9C%0A%20%20%20%20%09Worker%20worker1%3Dnew%20Worker(%22zhang%20san%22%2C%205000%2C%20latch)%3B%0A%20%20%20%20%09Worker%20worker2%3Dnew%20Worker(%22li%20si%22%2C%208000%2C%20latch)%3B%0A%20%20%20%20%09worker1.start()%3B%2F%2F%0A%20%20%20%20%09worker2.start()%3B%2F%2F%0A%20%20%20%20%09latch.await()%3B%2F%2F%E7%AD%89%E5%BE%85%E6%89%80%E6%9C%89%E5%B7%A5%E4%BA%BA%E5%AE%8C%E6%88%90%E5%B7%A5%E4%BD%9C%0A%20%20%20%20%20%20%20%20System.out.println(%22all%20work%20done%20at%20%22%2Bsdf.format(new%20Date()))%3B%0A%09%7D%0A%20%20%20%20%0A%20%20%20%20%0A%20%20%20%20static%20class%20Worker%20extends%20Thread%7B%0A%20%20%20%20%09String%20workerName%3B%20%0A%20%20%20%20%09int%20workTime%3B%0A%20%20%20%20%09CountDownLatch%20latch%3B%0A%20%20%20%20%09public%20Worker(String%20workerName%20%2Cint%20workTime%20%2CCountDownLatch%20latch)%7B%0A%20%20%20%20%09%09%20this.workerName%3DworkerName%3B%0A%20%20%20%20%09%09%20this.workTime%3DworkTime%3B%0A%20%20%20%20%09%09%20this.latch%3Dlatch%3B%0A%20%20%20%20%09%7D%0A%20%20%20%20%09public%20void%20run()%7B%0A%20%20%20%20%09%09System.out.println(%22Worker%20%22%2BworkerName%2B%22%20do%20work%20begin%20at%20%22%2Bsdf.format(new%20Date()))%3B%0A%20%20%20%20%09%09doWork()%3B%2F%2F%E5%B7%A5%E4%BD%9C%E4%BA%86%0A%20%20%20%20%09%09System.out.println(%22Worker%20%22%2BworkerName%2B%22%20do%20work%20complete%20at%20%22%2Bsdf.format(new%20Date()))%3B%0A%20%20%20%20%09%09latch.countDown()%3B%2F%2F%E5%B7%A5%E4%BA%BA%E5%AE%8C%E6%88%90%E5%B7%A5%E4%BD%9C%EF%BC%8C%E8%AE%A1%E6%95%B0%E5%99%A8%E5%87%8F%E4%B8%80%0A%0A%20%20%20%20%09%7D%0A%20%20%20%20%09%0A%20%20%20%20%09private%20void%20doWork()%7B%0A%20%20%20%20%09%09try%20%7B%0A%09%09%09%09Thread.sleep(workTime)%3B%0A%09%09%09%7D%20catch%20(InterruptedException%20e)%20%7B%0A%09%09%09%09e.printStackTrace()%3B%0A%09%09%09%7D%0A%20%20%20%20%09%7D%0A%20%20%20%20%7D%0A%20%20%20%20%0A%20%20%20%20%20%0A%7D%0A" quality="high" allowscriptaccess="always" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer">&nbsp;<a href="javascript:void()" title="收藏这段代码" onclick="code_favorites_do_favorite(this);return false;"><img class="star" src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/icon_star.png" alt="收藏代码"><img class="spinner" src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/spinner.gif" style="display:none"></a></div></div><ol start="1" class="dp-j"><li><span><span class="keyword">public</span><span>&nbsp;</span><span class="keyword">class</span><span>&nbsp;CountDownLatchDemo&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">final</span><span>&nbsp;</span><span class="keyword">static</span><span>&nbsp;SimpleDateFormat&nbsp;sdf=</span><span class="keyword">new</span><span>&nbsp;SimpleDateFormat(</span><span class="string">"yyyy-MM-dd&nbsp;HH:mm:ss"</span><span>);&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public</span><span>&nbsp;</span><span class="keyword">static</span><span>&nbsp;</span><span class="keyword">void</span><span>&nbsp;main(String[]&nbsp;args)&nbsp;</span><span class="keyword">throws</span><span>&nbsp;InterruptedException&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CountDownLatch&nbsp;latch=<span class="keyword">new</span><span>&nbsp;CountDownLatch(</span><span class="number">2</span><span>);</span><span class="comment">//两个工人的协作</span><span>&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Worker&nbsp;worker1=<span class="keyword">new</span><span>&nbsp;Worker(</span><span class="string">"zhang&nbsp;san"</span><span>,&nbsp;</span><span class="number">5000</span><span>,&nbsp;latch);&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Worker&nbsp;worker2=<span class="keyword">new</span><span>&nbsp;Worker(</span><span class="string">"li&nbsp;si"</span><span>,&nbsp;</span><span class="number">8000</span><span>,&nbsp;latch);&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;worker1.start();<span class="comment">//</span><span>&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;worker2.start();<span class="comment">//</span><span>&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;latch.await();<span class="comment">//等待所有工人完成工作</span><span>&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println(<span class="string">"all&nbsp;work&nbsp;done&nbsp;at&nbsp;"</span><span>+sdf.format(</span><span class="keyword">new</span><span>&nbsp;Date()));&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">static</span><span>&nbsp;</span><span class="keyword">class</span><span>&nbsp;Worker&nbsp;</span><span class="keyword">extends</span><span>&nbsp;Thread{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String&nbsp;workerName;&nbsp;&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span><span>&nbsp;workTime;&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CountDownLatch&nbsp;latch;&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public</span><span>&nbsp;Worker(String&nbsp;workerName&nbsp;,</span><span class="keyword">int</span><span>&nbsp;workTime&nbsp;,CountDownLatch&nbsp;latch){&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span><span>.workerName=workerName;&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span><span>.workTime=workTime;&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span><span>.latch=latch;&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public</span><span>&nbsp;</span><span class="keyword">void</span><span>&nbsp;run(){&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println(<span class="string">"Worker&nbsp;"</span><span>+workerName+</span><span class="string">"&nbsp;do&nbsp;work&nbsp;begin&nbsp;at&nbsp;"</span><span>+sdf.format(</span><span class="keyword">new</span><span>&nbsp;Date()));&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;doWork();<span class="comment">//工作了</span><span>&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println(<span class="string">"Worker&nbsp;"</span><span>+workerName+</span><span class="string">"&nbsp;do&nbsp;work&nbsp;complete&nbsp;at&nbsp;"</span><span>+sdf.format(</span><span class="keyword">new</span><span>&nbsp;Date()));&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;latch.countDown();<span class="comment">//工人完成工作，计数器减一</span><span>&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private</span><span>&nbsp;</span><span class="keyword">void</span><span>&nbsp;doWork(){&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><span>&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thread.sleep(workTime);&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;<span class="keyword">catch</span><span>&nbsp;(InterruptedException&nbsp;e)&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.printStackTrace();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></li><li><span>}&nbsp;&nbsp;</span></li></ol></div><pre class="java" name="code" codeable_type="Post" codeable_id="2041510" source_url="http://www.iteye.com/topic/1002652#2041510" pre_index="0" title="java 多线程 CountDownLatch用法" style="display: none;">public class CountDownLatchDemo {
+	final static SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static void main(String[] args) throws InterruptedException {
+    	CountDownLatch latch=new CountDownLatch(2);//两个工人的协作
+    	Worker worker1=new Worker("zhang san", 5000, latch);
+    	Worker worker2=new Worker("li si", 8000, latch);
+    	worker1.start();//
+    	worker2.start();//
+    	latch.await();//等待所有工人完成工作
+        System.out.println("all work done at "+sdf.format(new Date()));
+	}
+    
+    
+    static class Worker extends Thread{
+    	String workerName; 
+    	int workTime;
+    	CountDownLatch latch;
+    	public Worker(String workerName ,int workTime ,CountDownLatch latch){
+    		 this.workerName=workerName;
+    		 this.workTime=workTime;
+    		 this.latch=latch;
+    	}
+    	public void run(){
+    		System.out.println("Worker "+workerName+" do work begin at "+sdf.format(new Date()));
+    		doWork();//工作了
+    		System.out.println("Worker "+workerName+" do work complete at "+sdf.format(new Date()));
+    		latch.countDown();//工人完成工作，计数器减一
+
+    	}
+    	
+    	private void doWork(){
+    		try {
+				Thread.sleep(workTime);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+    	}
+    }
+    
+     
+}
+</pre>
+<p>&nbsp;</p>
+<p>输出：</p>
+<p>Worker zhang san do work begin at 2011-04-14 11:05:11<br>Worker li si do work begin at 2011-04-14 11:05:11<br>Worker zhang san do work complete at 2011-04-14 11:05:16<br>Worker li si do work complete at 2011-04-14 11:05:19<br>all work done at 2011-04-14 11:05:19</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+    </div>
+    
+
+          <div id="topic_copyright">声明：ITeye文章版权属于作者，受法律保护。没有作者书面许可不得转载。 </div>
+      <div id="forum_recommended_f5"><span>推荐链接</span><ul></ul></div>
+              <div id="forum_recommended_f0"></div>
+        </td>
+  </tr>
+  <tr>
+    <td class="postauthor"><a href="http://www.iteye.com/topic/1002652#">返回顶楼</a></td>
+    <td class="postcontent">
+      <div class="icons">
+        <a href="http://zk1878.iteye.com/" class="icon_www" title="浏览作者的博客">&nbsp;</a>
+        <a href="http://zk1878.iteye.com/blog/profile" class="icon_profile" title="浏览作者资料">&nbsp;</a>
+        <a href="http://my.iteye.com/messages/new?message%5Breceiver_name%5D=zk1878" class="icon_pm" title="发送站内短信">&nbsp;</a>
+        <a href="http://zk1878.iteye.com/blog/guest_book" class="icon_guestbook" title="给作者留言">&nbsp;</a>
+        <a href="http://my.iteye.com/feed?subscription%5Bsubscribed_user_name%5D=zk1878" class="icon_rss" onclick="var f = document.createElement(&#39;form&#39;); f.style.display = &#39;none&#39;; this.parentNode.appendChild(f); f.method = &#39;POST&#39;; f.action = this.href;var s = document.createElement(&#39;input&#39;); s.setAttribute(&#39;type&#39;, &#39;hidden&#39;); s.setAttribute(&#39;name&#39;, &#39;authenticity_token&#39;); s.setAttribute(&#39;value&#39;, &#39;TT7FH6Iq9lzHa0kzrMhUuCfBN/++9yNoMBoSzCX/ujk=&#39;); f.appendChild(s);f.submit();return false;" title="关注作者">&nbsp;</a>
+              </div>
+                    </td>
+</tr>
+<tr class="sep2"><td colspan="2"></td></tr>
+<tr id="2041535">
+  <td class="postauthor">
+    <ul>
+      <li class="name">xiaobao0501</li>
+      <li>等级: 初级会员</li>
+      <li><a href="http://xiaobao0501.iteye.com/" target="_blank"><img alt="xiaobao0501的博客" class="logo" src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/user-logo.gif" title="xiaobao0501的博客: " width=""></a></li>
+      <li>性别: <img src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/icon_minigender_1.gif" title="男"></li>      <li>文章: 27</li>
+      <li>积分: 30</li>
+      <li>来自: 北京</li>
+      <li><img src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/offline.gif"></li>
+    </ul>
+  </td>
+  <td class="postcontent">
+    <div class="postactions">
+      <div class="description">
+        &nbsp;&nbsp;
+        发表时间：2011-04-14&nbsp;&nbsp;
+        
+      </div>
+      <div class="links">
+        
+        
+          
+          
+          
+        
+      </div>
+    </div>
+    <div class="postbody clearfix">
+	    
+      
+      
+      latch.countDown(); 建议放在 finally里执行<img src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/icon_smile.gif">
+    </div>
+    
+
+            </td>
+  </tr>
+  <tr>
+    <td class="postauthor"><a href="http://www.iteye.com/topic/1002652#">返回顶楼</a></td>
+    <td class="postcontent">
+      <div class="icons">
+        <a href="http://xiaobao0501.iteye.com/" class="icon_www" title="浏览作者的博客">&nbsp;</a>
+        <a href="http://xiaobao0501.iteye.com/blog/profile" class="icon_profile" title="浏览作者资料">&nbsp;</a>
+        <a href="http://my.iteye.com/messages/new?message%5Breceiver_name%5D=xiaobao0501" class="icon_pm" title="发送站内短信">&nbsp;</a>
+        <a href="http://xiaobao0501.iteye.com/blog/guest_book" class="icon_guestbook" title="给作者留言">&nbsp;</a>
+        <a href="http://my.iteye.com/feed?subscription%5Bsubscribed_user_name%5D=xiaobao0501" class="icon_rss" onclick="var f = document.createElement(&#39;form&#39;); f.style.display = &#39;none&#39;; this.parentNode.appendChild(f); f.method = &#39;POST&#39;; f.action = this.href;var s = document.createElement(&#39;input&#39;); s.setAttribute(&#39;type&#39;, &#39;hidden&#39;); s.setAttribute(&#39;name&#39;, &#39;authenticity_token&#39;); s.setAttribute(&#39;value&#39;, &#39;TT7FH6Iq9lzHa0kzrMhUuCfBN/++9yNoMBoSzCX/ujk=&#39;); f.appendChild(s);f.submit();return false;" title="关注作者">&nbsp;</a>
+                  <a href="http://www.iteye.com/topic/1002652#2041535" title="xiaobao0501回帖:java 多线程 CountDownLatch用法">回帖地址</a>
+              </div>
+                        <div id="post_rate_box_2041535" class="post_rate_box"><a href="http://www.iteye.com/topic/1002652#" onclick="return false;" class="good" title="好">0</a> <a href="http://www.iteye.com/topic/1002652#" onclick="return false;" class="hidden" title="差">0</a> 请登录后投票</div>              </td>
+</tr>
+<tr class="sep2"><td colspan="2"></td></tr>
+<tr id="2041566">
+  <td class="postauthor">
+    <ul>
+      <li class="name">zk1878</li>
+      <li>等级: <img src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/star1.gif" alt="一星会员" title="一星会员"></li>
+      <li><a href="http://zk1878.iteye.com/" target="_blank"><img alt="zk1878的博客" class="logo" src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/6c461021-ee08-389f-9346-52fd161b675f.jpg" title="zk1878的博客: 疯狂的骑士" width=""></a></li>
+      <li>性别: <img src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/icon_minigender_1.gif" title="男"></li>      <li>文章: 40</li>
+      <li>积分: 150</li>
+      <li>来自: 深圳</li>
+      <li><img src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/offline.gif"></li>
+    </ul>
+  </td>
+  <td class="postcontent">
+    <div class="postactions">
+      <div class="description">
+        &nbsp;&nbsp;
+        发表时间：2011-04-14&nbsp;&nbsp;
+        
+      </div>
+      <div class="links">
+        
+        
+          
+          
+          
+        
+      </div>
+    </div>
+    <div class="postbody clearfix">
+	    
+      
+      
+      <div class="quote_title">xiaobao0501 写道</div><div class="quote_div">latch.countDown(); 建议放在 finally里执行<img src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/icon_smile.gif"></div>
+<br>&nbsp;<img src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/icon_biggrin.gif"> 是的
+    </div>
+    
+
+            </td>
+  </tr>
+  <tr>
+    <td class="postauthor"><a href="http://www.iteye.com/topic/1002652#">返回顶楼</a></td>
+    <td class="postcontent">
+      <div class="icons">
+        <a href="http://zk1878.iteye.com/" class="icon_www" title="浏览作者的博客">&nbsp;</a>
+        <a href="http://zk1878.iteye.com/blog/profile" class="icon_profile" title="浏览作者资料">&nbsp;</a>
+        <a href="http://my.iteye.com/messages/new?message%5Breceiver_name%5D=zk1878" class="icon_pm" title="发送站内短信">&nbsp;</a>
+        <a href="http://zk1878.iteye.com/blog/guest_book" class="icon_guestbook" title="给作者留言">&nbsp;</a>
+        <a href="http://my.iteye.com/feed?subscription%5Bsubscribed_user_name%5D=zk1878" class="icon_rss" onclick="var f = document.createElement(&#39;form&#39;); f.style.display = &#39;none&#39;; this.parentNode.appendChild(f); f.method = &#39;POST&#39;; f.action = this.href;var s = document.createElement(&#39;input&#39;); s.setAttribute(&#39;type&#39;, &#39;hidden&#39;); s.setAttribute(&#39;name&#39;, &#39;authenticity_token&#39;); s.setAttribute(&#39;value&#39;, &#39;TT7FH6Iq9lzHa0kzrMhUuCfBN/++9yNoMBoSzCX/ujk=&#39;); f.appendChild(s);f.submit();return false;" title="关注作者">&nbsp;</a>
+                  <a href="http://www.iteye.com/topic/1002652#2041566" title="zk1878回帖:java 多线程 CountDownLatch用法">回帖地址</a>
+              </div>
+                        <div id="post_rate_box_2041566" class="post_rate_box"><a href="http://www.iteye.com/topic/1002652#" onclick="return false;" class="good" title="好">0</a> <a href="http://www.iteye.com/topic/1002652#" onclick="return false;" class="hidden" title="差">0</a> 请登录后投票</div>              </td>
+</tr>
+<tr class="sep2"><td colspan="2"></td></tr>
+
+  </tbody>
+</table>
+
+
+<div class="actions">
+  <div class="buttons"></div>
+  <div class="wrapper"></div>
+</div>
+
+<div>
+  <div class="crumbs">
+    <a href="http://www.iteye.com/forums">论坛首页</a> <span class="arrow">→</span>
+    <a href="http://www.iteye.com/forums/board/Java">Java企业应用版</a>
+    <br><br>跳转论坛:<select id="forum_urlname" name="forum[urlname]" onchange="window.location=&#39;/forums/board/&#39;+this.value"><option value="mobile">移动开发技术</option>
+<option value="web">Web前端技术</option>
+<option value="Java" selected="selected">Java企业应用</option>
+<option value="language">编程语言技术</option>
+<option value="Tech">综合技术</option>
+<option value="New">入门技术</option>
+<option value="Job">招聘求职</option>
+<option value="Life">海阔天空</option></select>
+    
+  </div>
+
+  
+</div>
+
+<div style="display:none">
+  <form action="http://www.iteye.com/posts/rate" id="post_rate_form" method="post" onsubmit="new Ajax.Request(&#39;/posts/rate&#39;, {asynchronous:true, evalScripts:true, parameters:Form.serialize(this)}); return false;"><div style="margin:0;padding:0;display:inline"><input name="authenticity_token" type="hidden" value="TT7FH6Iq9lzHa0kzrMhUuCfBN/++9yNoMBoSzCX/ujk="></div>
+    <input type="hidden" id="post_rate_id" name="id">
+    <input type="hidden" id="post_rate_type" name="type">
+  </form></div>
+
+<script type="text/javascript">
+  function processComment() {
+    fix_image_size($$('div.postbody img'), 760);
+    
+    $$('#forum_main > #posts > tr[id]').each(function(tr){
+      var post_id = tr.id;
+      $$("#"+post_id+" pre[name=code]").each(function(pre, index){
+        var location = window.location;
+        source_url = location.protocol + "//" + location.host + location.pathname + location.search;
+        source_url += "#" + post_id;
+        pre.writeAttribute('codeable_type', 'Post');
+        pre.writeAttribute('codeable_id', post_id);
+        pre.writeAttribute('source_url', source_url);
+        pre.writeAttribute('pre_index', index);
+        pre.writeAttribute('title', 'java 多线程 CountDownLatch用法');
+      });
+    });
+  }
+
+  dp.SyntaxHighlighter.HighlightAll('code', true, true);
+  processComment();
+  code_favorites_init();
+
+  function rate_post(id, type) {
+    Element.update('post_rate_box_' + id, '提交中...');
+    new Ajax.Request('/posts/rate', {asynchronous:true, evalScripts:true, parameters:{"id":id, "type":type}});
+  }
+
+  function rate_topic(type) {
+    Element.update('topic_rate_box', '提交中...');
+    new Ajax.Request('/topics/rate', {asynchronous:true, evalScripts:true, parameters:{"id":1002652, "type":type}});
+  }
+</script>
+
+
+
+        </div>
+        <div id="nav">
+  <div class="wrapper">
+    <ul>
+            <li><a href="http://www.iteye.com/">首页</a></li>
+      <li><a href="http://www.iteye.com/news">资讯</a></li>
+      <li><a href="http://www.iteye.com/magazines">精华</a></li>
+      <li><a href="http://www.iteye.com/forums" class="selected">论坛</a></li>
+      <li><a href="http://www.iteye.com/ask">问答</a></li>
+      <li><a href="http://www.iteye.com/blogs">博客</a></li>
+      <li><a href="http://www.iteye.com/blogs/subjects">专栏</a></li>
+      <li><a href="http://www.iteye.com/groups">群组</a></li>
+      <!-- <li><a target="_blank" href="http://job.iteye.com/iteye">招聘</a></li>-->
+      <li><a target="_blank" href="http://lib.csdn.net/">知识库</a></li>
+      <li class="last"><a href="http://www.iteye.com/search">搜索</a></li>
+    </ul>
+  </div>
+</div>
+      </div>
+      <div id="footer">
+  <div id="site_nav">
+    <ul>
+      <li><a href="http://www.iteye.com/index/service">广告服务</a></li>
+      <li><a href="http://webmaster.iteye.com/">ITeye黑板报</a></li>
+      <li><a href="http://www.iteye.com/index/contactus">联系我们</a></li>
+      <li class="last"><a href="http://www.iteye.com/index/friend_links">友情链接</a></li>
+    </ul>
+  </div>
+  <div id="copyright">
+    © 2003-2017 ITeye.com.    [ <a href="http://www.miibeian.gov.cn/">京ICP证070598号</a>  京公网安备11010502027441 ]<br>
+    北京创新乐知信息技术有限公司 版权所有<br>
+  </div>
+</div>
+    </div>
+    <script type="text/javascript">
+  document.write("<img src='http://stat.iteye.com/?url="+ encodeURIComponent(document.location.href) + "&referrer=" + encodeURIComponent(document.referrer) + "&user_id=' width='0' height='0' />");
+</script><img src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/saved_resource" width="0" height="0">
+
+<script src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/tracking.js.下载" type="text/javascript"></script>
+
+    <script language="javascript" type="text/javascript" src="http://ads.csdn.net/js/async_new.js"></script>
+<script src="./java 多线程 CountDownLatch用法 - Java综合 - Java - ITeye论坛_files/jquery-1.11.1.min.js.下载" type="text/javascript"></script>
+<script type="text/javascript">var $csdn_iteye_jq = jQuery.noConflict();// 解决jq与prototype.js命名空间冲突的问题</script>
+<script src="http://ads.csdn.net/js/tracking.js" type="text/javascript"></script>
+  
+
+</body></html>
