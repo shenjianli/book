@@ -1,0 +1,1284 @@
+﻿body
+{
+    margin: 0 auto;
+    padding: 0;
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    color: #555;
+    line-height: 20px;
+}
+input, form, ul, li, h1, h2, h3, p, dl, dt, dd
+{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+img
+{
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+a
+{
+    color: #555;
+    text-decoration: none;
+}
+a:hover
+{
+    color: #2883c5;
+    text-decoration: underline;
+}
+
+h2
+{
+    font-size: 14px;
+    line-height: 32px;
+}
+strong
+{
+    font-size: 14px;
+    color: #2883c5;
+    line-height: 32px;
+}
+em
+{
+    font-style: normal;
+}
+b
+{
+    color: #333;
+}
+.clearBoth
+{
+    clear: both;
+    margin: 0px;
+    padding: 0;
+    height: 0px;
+    _display: inline;
+}
+.clear
+{
+    overflow: auto;
+    zoom: 1;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+
+
+#top
+{
+    margin: auto;
+    width: 980px;
+}
+.topnav
+{
+    background: url( ../images/topbg.gif) repeat-x;
+    line-height: 32px;
+}
+.topnav ul
+{
+    float: left;
+    width: 600px;
+    background: url( ../images/topbg.gif) repeat-x;
+}
+.topnav ul li
+{
+    float: left;
+    display: inline;
+    margin: 0 20px;
+}
+.topnav ul li span a, .maintopLeft ul li font a
+{
+    color: #f90;
+    color: #f90;
+    text-decoration: underline;
+}
+.navright
+{
+    float: right;
+    margin-right: 20px;
+    _margin-top: 5px;
+}
+.logo
+{
+    float: left;
+    margin: 10px;
+}
+.topright
+{
+    width: 700px;
+    height: 86px;
+    float: right;
+    background-color: #eeeccc;
+    color: #000000;
+    margin: 0px;
+}
+
+.topright ul
+{
+    margin: 10px;
+}
+.topright ul li
+{
+    width: 85px;
+    float: left;
+    line-height: 24px;
+    text-indent: 10px;
+    font-size: 14px;
+}
+.topmenu
+{
+    float: left;
+    width: 740px;
+}
+.topmenu ul li
+{
+    float: left;
+    line-height: 24px;
+    margin: 5px;
+}
+.search_txt, .search_btn
+{
+    float: right;
+}
+.search_txt
+{
+    background: #fff;
+    height: 21px;
+    line-height: 22px;
+    border: 1px solid #ccc;
+    width: 280px;
+    text-indent: 5px;
+    color: #ccc;
+}
+.search_btn
+{
+    margin-left: 5px;
+    background: url( ../images/dingyue.gif) no-repeat;
+    width: 85px;
+    height: 23px;
+    border: none;
+}
+
+#menu
+{
+    margin: auto;
+    width: 100%;
+    background: url( ../images/zx_menubg.jpg) repeat-x;
+    height: 36px;
+    line-height: 36px;
+    color: #fff;
+    padding-top: 7px;
+}
+.menucontent
+{
+    margin: auto;
+    width: 980px;
+}
+.menuleft
+{
+    float: left;
+    width: 360px;
+}
+.menuleft li, .menuright li
+{
+    float: left;
+    line-height: 36px;
+    padding: 0 10px;
+}
+.menuleft li
+{
+    width: 100px;
+    height: 36px;
+    text-align: center;
+}
+.menuleft li a
+{
+    display: block;
+    font-weight: bold;
+    font-size: 14px;
+    color: #fff;
+}
+.menuleft li a:hover
+{
+    width: 107px;
+    height: 36px;
+    color: #2883c5;
+    background: url( ../images/zx_menuhover.jpg) no-repeat;
+    text-decoration: none;
+}
+.menuright
+{
+    float: right;
+    width: 580px;
+}
+.menuright li a
+{
+    color: #fff;
+}
+.menuright li a:hover
+{
+    color: #fe0000;
+}
+.curMenu a
+{
+    background: url( ../images/zx_menuhover.jpg) no-repeat;
+    width: 107px;
+    height: 36px;
+}
+.curMenu a span
+{
+    color: #2883c5;
+}
+
+
+#mainpage
+{
+    margin: auto;
+    width: 980px;
+}
+.maintop
+{
+    width: 980px;
+    height: 250px;
+    margin-top: 10px;
+}
+.maintopleft
+{
+    float: left;
+    width: 252px;
+    border: 1px solid #d9d9d9;
+    height: 248px;
+    overflow: hidden;
+}
+.title
+{
+    line-height: 32px;
+    border-bottom: 1px solid #d9d9d9;
+    color: #2883c5;
+    padding: 0 10px;
+}
+.title span
+{
+    float: right;
+}
+.hleft
+{
+    float: left;
+    width: 232px;
+    padding: 5px 10px;
+}
+.hleft li
+{
+    float: left;
+    width: 232px;
+    margin-bottom: 5px;
+}
+.hleft li p
+{
+    float: left;
+}
+.hleft li p img
+{
+    margin-right: 10px;
+}
+.hleft li b
+{
+    float: left;
+    color: #f60;
+    font-size: 14px;
+    width: 122px;
+    height: 20px;
+    line-height: 20px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.hleft li span
+{
+    float: left;
+    width: 122px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ls
+{
+    padding:1px 1px 1px 8px; 
+    width: 224px;
+    height: 20px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    
+}
+
+.banner
+{
+    float: left;
+    margin: 0 10px;
+    width: 466px;
+    border: 1px solid #d9d9d9;
+    height: 250px;
+}
+
+
+.banner ul
+{
+    margin-left: 10px;
+    
+}
+.banner ul li
+{
+    float: left;
+    margin:1px 2px 2px 5px;
+    width: 220px;
+    list-style-type:disc;
+}
+
+.maintopright
+{
+    float: left;
+    border: 1px solid #d9d9d9;
+    width: 236px;
+    height: 248px;
+}
+.maintopright ul
+{
+    padding: 5px 10px;
+    width: 216px;
+}
+.maintopright ul li
+{
+    float: left;
+    background: url( ../images/ls.jpg) no-repeat left center;
+    padding-left: 8px;
+    width: 208px;
+    height: 23px;
+    line-height: 22px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.life03_c
+{
+    padding: 5px 10px;
+    width: 216px;
+    list-style-image: none;
+}
+.life03_c li
+{
+    float: left;
+    padding-left: 5px;
+    height: 23px;
+    line-height: 22px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.banner02
+{
+    margin-top: 10px;
+    width: 980px;
+}
+.mainbox
+{
+    margin-top: 10px;
+}
+.mainleft
+{
+    float: left;
+    width: 930px;
+}
+
+.mainleft1
+{
+    float: left;
+    width: 730px;
+}
+
+.hs
+{
+    border: 1px solid #d9d9d9;
+    margin-bottom: 10px;
+    height: 335px;
+}
+.hs01, .hs02
+{
+    padding: 10px;
+    _padding: 5px;
+    width: 710px;
+    clear: both;
+}
+.hs01 li
+{
+    float: left;
+    width: 343px;
+    margin: 5px;
+}
+.hs01 li a, .food01 li a, .life03_img li a
+{
+    display: block;
+    text-align: center;
+    color: #2883c5;
+    line-height: 22px;
+}
+
+.hs02 li
+{
+    float: left;
+    width: 300px;
+    background: url( ../images/ls.jpg) no-repeat left center;
+    padding-left: 8px;
+    margin: 5px 20px;
+    _margin: 5px 15px;
+}
+.hs02 li span
+{
+    float: right;
+}
+
+.life
+{
+    width: 732px;
+    height: 337px;
+    margin-bottom: 10px;
+    clear: both;
+}
+.life01
+{
+    float: left;
+    width: 359px;
+    border: 1px solid #d9d9d9;
+    height: 335px;
+    overflow: hidden;
+}
+.life02
+{
+    float: left;
+    width: 359px;
+    border: 1px solid #d9d9d9;
+    height: 325px;
+    margin-left: 10px;
+    padding-bottom: 10px;
+    overflow: hidden;
+}
+.life01 ul, .life02 dl
+{
+    padding: 10px;
+    width: 339px;
+    clear: both;
+}
+.life01 ul li, .food02 li
+{
+    background: url( ../images/ls.jpg) no-repeat left center;
+    padding-left: 8px;
+    width: 331px;
+    height: 28px;
+    line-height: 28px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.life02 dl
+{
+    border-bottom: 1px dashed #ccc;
+    margin: 5px 10px;
+    padding: 8px 0;
+    clear: both;
+}
+.life02 dl dt
+{
+    float: left;
+    margin-right: 10px;
+}
+.life02 dl dd
+{
+    float: left;
+    background: url( ../images/ls.jpg) no-repeat left center;
+    padding-left: 8px;
+    width: 221px;
+    height: 24px;
+    line-height: 24px;
+    overflow: hidden;
+}
+
+
+.food
+{
+    border: 1px solid #d9d9d9;
+    width: 730px;
+    margin-bottom: 10px;
+    height: 335px;
+    clear: both;
+}
+.food01, .food02
+{
+    padding: 10px;
+    width: 710px;
+    clear: both;
+}
+.food01 li
+{
+    float: left;
+    width: 216px;
+    margin: 5px 10px;
+    _margin: 5px 6px;
+}
+.food02 li
+{
+    float: left;
+    width: 208px;
+    margin: 0px 10px;
+    _margin: 0 6px;
+}
+
+/*侧边栏*/
+.sidebar
+{
+    float: left;
+    margin-left: 10px;
+    _margin-left: 8px;
+    width: 238px;
+    overflow: hidden;
+}
+.life03
+{
+    width: 236px;
+    border: 1px solid #d9d9d9;
+    margin-bottom: 10px;
+    height: 335px;
+    clear: both;
+}
+.life03_img
+{
+    width: 236px;
+    padding: 10px 0;
+    _padding: 5px 0;
+    clear: both;
+}
+.life03_img li
+{
+    float: left;
+    width: 100px;
+    margin: 0 8px;
+    _margin: 0 6px;
+}
+
+.spic
+{
+    float: left;
+    padding: 5px;
+    width: 65px;
+}
+.spic li
+{
+    margin-bottom: 5px;
+}
+.sli
+{
+    float: left;
+    margin-right: 5px;
+    width: 150px;
+}
+.sli li
+{
+    background: url( ../images/ls.jpg) no-repeat left center;
+    padding-left: 8px;
+    width: 142px;
+    height: 24px;
+    line-height: 24px;
+    overflow: hidden;
+}
+
+/*底部*/
+#foot
+{
+    margin: auto;
+    width: 980px;
+    color: #949494;
+    margin-top: 5px;
+}
+.foottop
+{
+    background: #f8f8f8;
+    width: 938px;
+    padding: 8px 20px;
+    border: 1px solid #ccc;
+    margin-bottom: 8px;
+}
+.foottop ul
+{
+    float: left;
+    line-height: 24px;
+    margin: 5px 15px;
+    _margin: 5px 12px;
+    width: 275px;
+}
+.foottop ul li span
+{
+    color: #0088a0;
+}
+.footnav
+{
+    width: 970px;
+    text-align: center;
+    float: left;
+    padding: 0 5px;
+    line-height: 24px;
+}
+.footnav a
+{
+    color: #949494;
+}
+.copyR
+{
+    text-align: center;
+}
+.copyR span
+{
+    margin: 5px 10px;
+}
+
+
+/*资讯搜索结果*/
+
+.find
+{
+    border: 1px solid #d9d9d9;
+    border-top: none;
+    padding: 10px 20px 5px 20px;
+    clear: both;
+}
+.fcate
+{
+    float: left;
+    position: relative;
+    border: 1px solid #999;
+    background: #fff;
+    height: 25px;
+    width: 500px;
+    padding-top: 5px;
+    padding-left: 5px;
+}
+.fcate select, .fcate input
+{
+    border: none;
+    color: #555;
+    background: #fff;
+}
+.fcate select
+{
+    width: 100px;
+    padding-left: 5px;
+}
+.fcate input
+{
+    padding-left: 10px;
+    width: 250px;
+    position: relative;
+    line-height: 20px;
+    left: 100px;
+    border: none;
+    background: #fff;
+}
+.search_btn2
+{
+    float: left;
+    background: url( ../images/zx_search.gif) no-repeat;
+    width: 69px;
+    height: 31px;
+    border: none;
+    margin-left: 10px;
+}
+
+.cur_search
+{
+    width: 710px;
+    padding: 0 10px;
+    border: 1px solid #d9d9d9;
+    height: 32px;
+    line-height: 32px;
+    clear: both;
+}
+.cur_search em
+{
+    color: #f00;
+}
+
+
+.food_ass
+{
+    border: 1px solid #d9d9d9;
+    margin-top: 10px;
+}
+.search_food
+{
+    margin: 5px 10px;
+    _margin: 5px;
+    padding: 10px;
+    width: 690px;
+    border-bottom: 1px dashed #ccc;
+    line-height: 26px;
+}
+.search_food dt
+{
+    color: #f60;
+    font-size: 14px;
+    font-weight: bold;
+    width: 700px;
+    clear: both;
+}
+.search_foot dd
+{
+    width: 690px;
+}
+.sd em
+{
+    float: right;
+}
+.sd p
+{
+    font-size: 14px;
+    color: #2883c5;
+}
+.sd p a
+{
+    color: #2883c5;
+}
+
+
+.simg
+{
+    margin-bottom: 10px;
+}
+.hot
+{
+    margin-top: 10px;
+    border: 1px solid #d9d9d9;
+    width: 236px;
+}
+.hotli, .hotimg
+{
+    padding: 10px;
+    width: 216px;
+}
+.hotli li, .food_c li
+{
+    background: url( ../images/ls.jpg) no-repeat left center;
+    padding-left: 8px;
+    width: 208px;
+    height: 24px;
+    line-height: 24px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.hotimg li
+{
+    width: 216px;
+    line-height: 24px;
+    margin-bottom: 8px;
+}
+.hotimg li a
+{
+    display: block;
+    color: #2883c5;
+    text-align: center;
+}
+
+.bnone
+{
+    border-bottom: none;
+}
+.pagging
+{
+    padding-left: 120px;
+    clear: both;
+    margin: 10px 0;
+    height: 40px;
+}
+.num
+{
+    float: right;
+    margin-top: 5px;
+}
+.pagging a
+{
+    display: block;
+    float: left;
+    padding: 2px 8px;
+    background: #faf9f5;
+    border: 1px solid #c2d5e3;
+    margin-right: 4px;
+    vertical-align: middle;
+}
+.pagging_left
+{
+    display: block;
+    background: url( ../images/icon10.gif) no-repeat left center;
+    text-indent: 15px;
+}
+.pagging_right
+{
+    display: block;
+    background: url( ../images/icon11.gif) no-repeat right center;
+    padding-right: 15px;
+}
+
+
+/*资讯详细*/
+.food_c
+{
+    padding: 10px;
+    margin: 10px;
+    border-bottom: 1px dashed #ccc;
+}
+.food_c li
+{
+    width: 690px;
+    height: 28px;
+    line-height: 28px;
+}
+.food_c li a
+{
+    width: 530px;
+}
+.food_c li span
+{
+    float: right;
+    margin-right: 10px;
+}
+.fbg
+{
+    background: #f0f5f8;
+}
+
+.c_position
+{
+    width: 960px;
+    padding: 8px 10px 0 10px;
+}
+
+
+.yh_detail
+{
+    width: 650px;
+    border: 1px solid #d9d9d9;
+    padding: 20px 40px;
+    margin-bottom: 10px;
+}
+.yh_detail h2
+{
+    text-align: center;
+    color: #f60;
+    line-height: 32px;
+}
+.yh_detail p img
+{
+    margin: 10px 0;
+}
+
+
+
+.sdetail
+{
+    width: 216px;
+    border: 1px solid #d9d9d9;
+    padding: 10px;
+    line-height: 24px;
+    margin-bottom: 10px;
+}
+.kfc
+{
+    border: 1px solid #d9d9d9;
+    padding: 10px;
+    width: 194px;
+    background: #efefef;
+    margin-bottom: 10px;
+}
+.kfc span
+{
+    display: block;
+    text-align: center;
+    color: #0e689b;
+}
+.kfc span img
+{
+    margin-bottom: 8px;
+}
+.sdetail p a
+{
+    display: block;
+    text-align: right;
+    color: #0e689b;
+    text-decoration: underline;
+}
+
+
+/*优惠券列表*/
+
+.coupons, .coupons_list
+{
+    width: 720px;
+    padding: 10px 5px;
+    border: 1px solid #d9d9d9;
+    margin-bottom: 10px;
+}
+.coupons ul li
+{
+    float: left;
+    width: 168px;
+    line-height: 28px;
+    border: 1px solid #e3e0c0;
+    background: #f8f5d8;
+    text-align: center;
+    color: #c25700;
+    margin: 5px;
+}
+
+
+.coupons_list
+{
+    width: 710px;
+    padding: 10px;
+}
+.coupons_list p span
+{
+    float: right;
+    margin-right: 20px;
+    line-height: 32px;
+}
+.coupons_list p span b
+{
+    font-size: 14px;
+    margin-right: 40px;
+}
+
+.coupons_list ul
+{
+    padding: 10px;
+    width: 690px;
+    border-bottom: 1px dashed #d9d9d9;
+    clear: both;
+}
+.coupons_list ul li
+{
+    width: 690px;
+}
+.ctitle b
+{
+    font-size: 14px;
+    color: #f60;
+    line-height: 40px;
+}
+.cd
+{
+    line-height: 40px;
+}
+.cd span
+{
+    color: #0e689b;
+}
+.cd em
+{
+    float: right;
+    margin-right: 20px;
+}
+
+.city_nav
+{
+    border: 1px solid #d9d9d9;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+.city_nav ul
+{
+    padding: 10px;
+    width: 216px;
+}
+.city_nav ul li
+{
+    float: left;
+    margin: 5px;
+    white-space: nowrap;
+}
+.city_nav ul li a
+{
+    display: block;
+    white-space: nowrap;
+}
+.city_nav ul li a:hover
+{
+    color: #2883c5;
+}
+
+
+/*资讯详细*/
+
+.zxdetail
+{
+    width: 930px;
+    border: 1px solid #d9d9d9;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+}
+.detail_title h1
+{
+    line-height: 40px;
+    font-size: 24px;
+    color: #2883c5;
+    text-align: center;
+    padding: 5px 0;
+    background: url( ../images/titleline.jpg) no-repeat center bottom;
+}
+.writer span
+{
+    padding: 5px 10px;
+    line-height: 32px;
+}
+
+.detail_title2
+{
+    margin: 10px 0;
+    background: #f2f8fc;
+    border: 1px solid #ddebf6;
+    padding: 10px;
+    width: 910px;
+    text-indent: 24px;
+}
+.detail_title2 span
+{
+    margin-left: 20px;
+}
+.detail_c p
+{
+    text-indent: 24px;
+    margin: 10px 0;
+    line-height: 24px;
+}
+
+.others
+{
+    font-weight: bold;
+    padding-left: 250px;
+    margin: 30px 0;
+    line-height: 24px;
+    clear: both;
+}
+
+.related
+{
+    margin: 10px 0;
+}
+.related ul li a
+{
+    display: block;
+    color: #2883c5;
+    background: url( ../images/ls2.jpg) no-repeat left center;
+    padding-left: 8px;
+    line-height: 28px;
+}
+
+.thislabel, .shareto
+{
+    margin: 20px 0;
+}
+.thislabel p span
+{
+    margin: 5px 15px 5px 0;
+}
+
+.shareto
+{
+    height: 40px;
+}
+.shareto b
+{
+    float: left;
+    font-size: 14px;
+    margin-right: 10px;
+}
+.shareto a
+{
+    display: block;
+    float: left;
+    margin: 0 5px;
+}
+
+
+/*网友评论*/
+.comments
+{
+    width: 732px;
+    margin-bottom: 10px;
+    clear: both;
+}
+.com_title
+{
+    background: #f2f8fc;
+    border: 1px solid #ddebf6;
+    padding: 0 10px;
+}
+.com_title span
+{
+    float: right;
+    line-height: 32px;
+}
+.com_title span em
+{
+    color: #f00;
+}
+.com_more
+{
+    padding: 10px 0px 10px 20px;
+    width: 712px;
+}
+.com_more li
+{
+    float: left;
+    width: 710px;
+    margin: 10px 0;
+    position: relative;
+    clear: both;
+}
+.com_more dt
+{
+    float: left;
+    width: 52px;
+    text-align: center;
+    margin-right: 10px;
+}
+.com_more dt img
+{
+    border: 1px solid #d9d9d9;
+    width: 50px;
+}
+.com_more dt span
+{
+    display: block;
+    width: 52px;
+    text-align: center;
+}
+.com_list
+{
+    float: left;
+    border: 1px solid #ebebeb;
+    padding: 5px 10px;
+    width: 626px;
+    height: 40px;
+}
+.com_time
+{
+    float: right;
+    white-space: nowrap;
+    line-height: 32px;
+    padding-right: 20px;
+}
+.icon04
+{
+    position: absolute;
+    width: 11px;
+    height: 7px;
+    z-index: 30;
+    background: url( ../images/icon04.gif) no-repeat;
+    left: 150px;
+    top: -6px;
+}
+
+
+
+/*我要评论*/
+.want_com
+{
+    width: 690px;
+    padding: 20px;
+    border: 1px solid #cdcdcd;
+    background: #eeeeee;
+    margin-bottom: 10px;
+    clear: both;
+}
+.want_com textarea
+{
+    border: 1px solid #ccc;
+    width: 688px;
+    height: 100px;
+}
+.want_com p span
+{
+    float: left;
+    display: block;
+    margin-top: 10px;
+    margin-right: 20px;
+}
+.want_com p span input
+{
+    margin-top: 5px;
+    margin-left: 60px;
+}
+
+
+.newimg li
+{
+    float: left;
+    width: 100px;
+    text-align: center;
+    margin: 5px 8px;
+    _margin: 5px;
+}
+
+
+
+
+.pgcls
+{
+    width: 230px;
+    float: left;
+    padding-left: 10px;
+    margin-top: 10px;
+}
+.pgcls ul
+{
+    list-style-image: none;
+}
+.pgcls ul li
+{
+    float: left;
+    padding: 5px;
+}
+
+.treediv
+{
+    float: left;
+    margin-left: 10px;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    position: fixed;
+    left: 15px;
+    margin-top: 10px;
+    overflow: auto;
+    width:260px;
+}
+.treenav
+{
+    border: 1px solid #d9d9d9;
+    background-color: #eeeeee;
+    font-weight: bold;
+    height:110px;
+    overflow:hidden;
+}
+
+
+
+.treenav li
+{
+    float: left;
+    padding: 5px;
+    margin: 3px;
+}

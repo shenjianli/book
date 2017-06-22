@@ -1,0 +1,608 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0052)http://www.apihome.cn/api/java/KeyPairGenerator.html -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>JAVA_KeyPairGenerator_API之家,最大的中文API社区</title>
+<meta name="keywords" content="JAVA KeyPairGenerator">
+<meta name="description" content="JAVA KeyPairGenerator用法，JAVA KeyPairGenerator如何使用，JAVA KeyPairGenerator手册，JAVA KeyPairGenerator帮助，JAVA KeyPairGenerator例子，JAVA KeyPairGenerator示例，JAVA KeyPairGenerator案例">
+<link href="http://www.apihome.cn/favicon.ico" rel="shortcut icon">
+	<link href="./JAVA_KeyPairGenerator_API之家,最大的中文API社区_files/style.css" rel="stylesheet" type="text/css">
+	<link href="./JAVA_KeyPairGenerator_API之家,最大的中文API社区_files/dtree.css" rel="stylesheet" type="text/css">
+     <script type="text/javascript" async="" src="./JAVA_KeyPairGenerator_API之家,最大的中文API社区_files/pcjm"></script><script type="text/javascript" async="" src="./JAVA_KeyPairGenerator_API之家,最大的中文API社区_files/ga.js.下载"></script><script src="http://www.apihome.cn/api/java/KeyPairGenerator.html" type="text/javascript"></script>    <script src="./JAVA_KeyPairGenerator_API之家,最大的中文API社区_files/dtree.js.下载" type="text/javascript"></script>
+	<script src="./JAVA_KeyPairGenerator_API之家,最大的中文API社区_files/common.js.下载" type="text/javascript"></script>
+	<script src="./JAVA_KeyPairGenerator_API之家,最大的中文API社区_files/jquery.js.下载" type="text/javascript"></script>
+	<script type="text/javascript">
+        var realH = 0;
+        var isexp = false;
+        var initTree=false;
+        $(function () {
+            Array            $(".dtree").html(d);
+            realH = $(".treediv").height();
+            
+            $(".treediv").css("height", 500);
+            $("#expall").bind("click", function () {
+                if (!isexp) {
+                    $(".treediv").css("height", 500);                     
+                    isexp = true;
+                    DevelopAll();
+                    $(this).text("悬浮目录");
+                    $(".treediv").css("position", "absolute");
+                } else {
+                   
+                    isexp = false;
+                    $(this).text("固定目录");
+                    $(".treediv").css("position", "fixed");
+                }
+
+            });
+        })         
+    </script>
+     <link href="./JAVA_KeyPairGenerator_API之家,最大的中文API社区_files/B4467012E04E07FA51F2D6686F1D4687.css" rel="stylesheet" type="text/css">
+
+
+
+</head>
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="./JAVA_KeyPairGenerator_API之家,最大的中文API社区_files/o.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div>
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-38056524-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<div id="top">
+    <div class="topnav">
+        <ul>
+            <li>API之家----您的程序好帮手！</li>
+            
+        </ul>
+        <span class="navright"><a href="javascript:void(0);" onclick="this.style.behavior=&#39;url(#default#homepage)&#39;;this.setHomePage(&#39;http://www.apihome.cn&#39;);">
+            设为首页</a> | <a href="javascript:void(0);" onclick="javascript:window.external.AddFavorite(&#39;http://www.apihome.cn&#39;, &#39;api之家--最大的中文api社区&#39;)">
+                收藏本站</a></span>
+        <div class="clearBoth">
+        </div>
+    </div>
+    <div class="logo">
+        <a href="http://www.apihome.cn/">
+            <img src="./JAVA_KeyPairGenerator_API之家,最大的中文API社区_files/logo.gif" alt="API之家"></a></div>
+    <div class="topright">
+        <ul>
+            <li><a href="http://www.apihome.cn/api/c/">C语言</a></li>
+            <li><a href="http://www.apihome.cn/api/java/">JAVA</a></li>
+            <li><a href="http://www.apihome.cn/api/hibernate/">Hibernate</a></li>
+			 <li><a href="http://www.apihome.cn/api/lua/">Lua</a></li>
+            <li><a href="http://www.apihome.cn/api/html5/">HTML5</a> </li>
+            <li><a href="http://www.apihome.cn/api/css3/">CSS3</a></li>
+            <li><a href="http://www.apihome.cn/api/javascript/">Javascript</a></li>
+            <li><a href="http://www.apihome.cn/api/unity3d/">Unity3d</a></li>
+            <li><a href="http://www.apihome.cn/api/php/">PHP</a></li>
+            <li><a href="http://www.apihome.cn/api/taobao/">淘宝</a></li>
+            <li><a href="http://www.apihome.cn/api/tencent/">腾讯</a></li>
+            <li><a href="http://www.apihome.cn/api/sina/">新浪</a></li>
+            <li><a href="http://www.apihome.cn/api/hadoop/">Hadoop</a></li>
+            <li><a href="http://www.apihome.cn/api/lucene/">Lucene</a> </li>
+            <li><a href="http://www.apihome.cn/api/nginx/">Nginx</a></li>
+            <li><a href="http://www.apihome.cn/api/memcached/">Memcached</a></li>
+           
+            <li><a href="http://www.apihome.cn/api/mfc/">mfc</a></li>
+            <li><a href="http://www.apihome.cn/api/plc/">PLC</a></li>
+            <li><a href="http://www.apihome.cn/api/cocos2d/">cocos2d</a></li>
+            <li><a href="http://www.apihome.cn/api/win32sdk/">Win32 SDK</a></li>
+            <li><a href="http://www.apihome.cn/api/linux/">Unix/Linux </a></li>
+            <li><a href="http://www.apihome.cn/api/shell/">Bash Shell</a></li>
+            <li><a href="http://www.apihome.cn/api/oracle/">Oracle</a></li>
+            <li><a href="http://www.apihome.cn/api/mysql/">Mysql</a></li>
+        </ul>
+    </div>
+    <div class="clearBoth">
+    </div>
+</div>
+<div id="menu">
+    <div class="menucontent">
+        <ul class="menuleft">
+            <li><a href="http://www.apihome.cn/">首页</a></li>
+            <li><a href="http://www.apihome.cn/api/android/">Android API</a></li>
+            <li><a href="http://www.apihome.cn/api/html5/"><span>HTML5</span></a></li>
+        </ul>
+        <ul class="menuright">
+            <li><a href="http://www.apihome.cn/api/android/">android</a></li>
+            <li>|</li>
+            <li><a href="http://www.apihome.cn/api/java/">java</a></li>
+            <li>|</li>
+            <li><a href="http://www.apihome.cn/api/php/">php</a></li>
+            <li>|</li>            
+            <li><form id="formSch" method="get" action="http://www.apihome.cn/search"><input style="height:25px;width:200px;background-color:#ffffff;" type="text" id="keyword" name="keyword" placeholder="请输入搜索关键字">&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" id="btnSub" value="  搜　索　" style="height:25px;background-color:#EEE9E9;"></form></li>
+             
+        </ul>
+        <div class="clearBoth">
+        </div>
+    </div>
+</div>
+    <div id="mainpage">
+                <div class="mainbox">
+			<div class="mainleft">
+				<div class="zxdetail">
+					<div class="title">
+						当前位置：<b><a href="http://www.apihome.cn/">首页</a>&gt;<a href="http://www.apihome.cn/api/list/">API参考大全</a>&gt;<a href="http://www.apihome.cn/api/java/">java参考手册</a>&gt;<a href="http://www.apihome.cn/api/java/java.security">java.security</a></b>&gt;KeyPairGenerator
+					</div>
+					<div class="detail_title">
+						<h1>
+                            KeyPairGenerator(<a href="http://www.apihome.cn/example/java/KeyPairGenerator" title="KeyPairGenerator使用的示例，例子等">示例</a>,<a href="http://www.apihome.cn/error/java/KeyPairGenerator" title="查看使用KeyPairGenerator有可能出错的原因及解决方法">出错代码</a>)</h1>
+						<p class="writer"></p>
+					</div>
+					<div class="detail_title2">
+						<span style="margin-left: 260px"><b>出处</b>：JAVA</span>
+						<span><b>作者</b>：JAVA</span> <span><b>阅读</b>：3753次</span>
+					</div>
+					<div class="detail_c">
+                        <h2><font size="-1">java.security</font><br>类 KeyPairGenerator</h2><pre>java.lang.Object
+  <img src="./JAVA_KeyPairGenerator_API之家,最大的中文API社区_files/inherit.gif" alt="继承者 ">java.security.KeyPairGeneratorSpi
+      <img src="./JAVA_KeyPairGenerator_API之家,最大的中文API社区_files/inherit.gif" alt="继承者 "><b>java.security.KeyPairGenerator</b>
+</pre>
+<hr>
+<dl>
+<dt><pre>public abstract class <b>KeyPairGenerator</b><dt>extends KeyPairGeneratorSpi</dt></pre></dt></dl>
+
+
+<p>
+KeyPairGenerator 类用于生成公钥和私钥对。密钥对生成器是使用 <code>getInstance</code> 工厂方法（返回一个给定类的实例的静态方法）构造的。
+
+</p><p>特定算法的密钥对生成器可以创建能够与此算法一起使用的公钥/私钥对。它还可以将特定于算法的参数与每个生成的密钥关联。
+ 
+</p><p>有两种生成密钥对的方式：与算法无关的方式和特定于算法的方式。两种方式的唯一区别在于对象的初始化：
+ 
+ </p><ul>
+<li><b>与算法无关的初始化</b>
+<p>所有的密钥对生成器遵循密钥大小和随机源的概念。对于不同的算法，密钥大小的解释也不相同（例如，对于 <i>DSA</i> 算法，密钥大小对应于模的长度）。此 KeyPairGenerator 类有一个 initialize 方法，该方法带有两个通用的共享类型的参数。还有一个只带有 <code>keysize</code> 参数的方法，它使用以最高优先级安装的提供者的 <code>SecureRandom</code> 实现作为随机源。（如果任何安装的提供者都不提供 <code>SecureRandom</code> 的实现，则使用系统提供的随机源。）
+ 
+</p><p>因为调用上述与算法无关的 <code>initialize</code> 方法时没有指定其他参数，所以由提供者决定如何处理与每个密钥关联的特定于算法的参数（如果有）。
+ 
+</p><p>如果算法为 <i>DSA</i> 算法，密钥大小（模大小）为 512、768 或 1024，那么 <i>Sun</i> 提供者对 <code>p</code>、<code>q</code> 和 <code>g</code> 参数使用一组预计算值。如果模大小不是上述值之一，则 <i>Sun</i> 提供者创建一个新的参数集合。其他提供者可能具有供更多模大小（不仅仅是上文提及的那三个）使用的预计算参数集合。其他提供者也可能没有任何预计算参数列表，而总是创建新的参数集合。
+ </p><p>
+
+</p></li><li><b>特定于算法的初始化</b>
+<p>对于特定于算法的参数集合已存在的情况（例如，DSA 中所谓的<i>公用参数</i>），有两个 initialize 方法具有 <code>AlgorithmParameterSpec</code> 参数。其中一个方法还有一个 <code>SecureRandom</code> 参数，而另一个方法使用以最高优先级安装的提供者的 <code>SecureRandom</code> 实现作为随机源。（如果任何安装的提供者都不提供 <code>SecureRandom</code> 的实现，则使用系统提供的随机源。）
+ </p></li></ul>
+
+<p>每个提供者都必须提供（并记录）默认的初始化，以防客户端没有显式初始化 KeyPairGenerator（通过调用 <code>initialize</code> 方法）。例如，<i>Sun</i> 提供者使用 1024 位的默认模大小（密钥大小）。
+
+</p><p>注意，由于历史原因，此类是抽象类，是从 <code>KeyPairGeneratorSpi</code> 扩展的。应用程序开发人员只需注意在此 <code>KeyPairGenerator</code> 类中定义的方法；超类中的所有方法是供加密服务提供者使用的，这些加密服务提供者希望提供自己的密钥对生成器实现。
+</p><p>
+
+</p><p>
+</p><dl>
+<dt><b>另请参见：</b></dt><dd>AlgorithmParameterSpec</dd></dl>
+<hr>
+
+<p>
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+
+
+</p><table border="1" width="100%" cellpadding="3" cellspacing="0" summary="">
+<tbody><tr bgcolor="#CCCCFF" class="TableHeadingColor">
+<th align="left" colspan="2"><font size="+2">
+<b>构造方法摘要</b></font></th>
+</tr>
+<tr bgcolor="white" class="TableRowColor">
+<td align="right" valign="top" width="1%"><font size="-1">
+<code>protected </code></font></td>
+<td><code><b>KeyPairGenerator</b>(String&nbsp;algorithm)</code>
+
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;为指定的算法创建 KeyPairGenerator 对象。</td>
+</tr>
+</tbody></table>
+&nbsp;
+<!-- ========== METHOD SUMMARY =========== -->
+
+
+<table border="1" width="100%" cellpadding="3" cellspacing="0" summary="">
+<tbody><tr bgcolor="#CCCCFF" class="TableHeadingColor">
+<th align="left" colspan="2"><font size="+2">
+<b>方法摘要</b></font></th>
+</tr>
+<tr bgcolor="white" class="TableRowColor">
+<td align="right" valign="top" width="1%"><font size="-1">
+<code>&nbsp;KeyPair</code></font></td>
+<td><code><b>generateKeyPair</b>()</code>
+
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;生成一个密钥对。</td>
+</tr>
+<tr bgcolor="white" class="TableRowColor">
+<td align="right" valign="top" width="1%"><font size="-1">
+<code>&nbsp;KeyPair</code></font></td>
+<td><code><b>genKeyPair</b>()</code>
+
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;生成密钥对。</td>
+</tr>
+<tr bgcolor="white" class="TableRowColor">
+<td align="right" valign="top" width="1%"><font size="-1">
+<code>&nbsp;String</code></font></td>
+<td><code><b>getAlgorithm</b>()</code>
+
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回此密钥对生成器算法的标准名称。</td>
+</tr>
+<tr bgcolor="white" class="TableRowColor">
+<td align="right" valign="top" width="1%"><font size="-1">
+<code>static&nbsp;KeyPairGenerator</code></font></td>
+<td><code><b>getInstance</b>(String&nbsp;algorithm)</code>
+
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回生成指定算法的 public/private 密钥对的 KeyPairGenerator 对象。</td>
+</tr>
+<tr bgcolor="white" class="TableRowColor">
+<td align="right" valign="top" width="1%"><font size="-1">
+<code>static&nbsp;KeyPairGenerator</code></font></td>
+<td><code><b>getInstance</b>(String&nbsp;algorithm,
+            Provider&nbsp;provider)</code>
+
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回生成指定算法的 public/private 密钥对的 KeyPairGenerator 对象。</td>
+</tr>
+<tr bgcolor="white" class="TableRowColor">
+<td align="right" valign="top" width="1%"><font size="-1">
+<code>static&nbsp;KeyPairGenerator</code></font></td>
+<td><code><b>getInstance</b>(String&nbsp;algorithm,
+            String&nbsp;provider)</code>
+
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回生成指定算法的 public/private 密钥对的 KeyPairGenerator 对象。</td>
+</tr>
+<tr bgcolor="white" class="TableRowColor">
+<td align="right" valign="top" width="1%"><font size="-1">
+<code>&nbsp;Provider</code></font></td>
+<td><code><b>getProvider</b>()</code>
+
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回此密钥对生成器对象的提供者。</td>
+</tr>
+<tr bgcolor="white" class="TableRowColor">
+<td align="right" valign="top" width="1%"><font size="-1">
+<code>&nbsp;void</code></font></td>
+<td><code><b>initialize</b>(AlgorithmParameterSpec&nbsp;params)</code>
+
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;初始化密钥对生成器，使用指定参数集合，并使用以最高优先级安装的提供者的 <code>SecureRandom</code> 的实现作为随机源。</td>
+</tr>
+<tr bgcolor="white" class="TableRowColor">
+<td align="right" valign="top" width="1%"><font size="-1">
+<code>&nbsp;void</code></font></td>
+<td><code><b>initialize</b>(AlgorithmParameterSpec&nbsp;params,
+           SecureRandom&nbsp;random)</code>
+
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;使用给定参数集合和随机源初始化密钥对生成器。</td>
+</tr>
+<tr bgcolor="white" class="TableRowColor">
+<td align="right" valign="top" width="1%"><font size="-1">
+<code>&nbsp;void</code></font></td>
+<td><code><b>initialize</b>(int&nbsp;keysize)</code>
+
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;初始化确定密钥大小的密钥对生成器，使用默认的参数集合，并使用以最高优先级安装的提供者的 <code>SecureRandom</code> 实现作为随机源。</td>
+</tr>
+<tr bgcolor="white" class="TableRowColor">
+<td align="right" valign="top" width="1%"><font size="-1">
+<code>&nbsp;void</code></font></td>
+<td><code><b>initialize</b>(int&nbsp;keysize,
+           SecureRandom&nbsp;random)</code>
+
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;使用给定的随机源（和默认的参数集合）初始化确定密钥大小的密钥对生成器。</td>
+</tr>
+</tbody></table>
+&nbsp;
+<table border="1" width="100%" cellpadding="3" cellspacing="0" summary="">
+<tbody><tr bgcolor="#EEEEFF" class="TableSubHeadingColor">
+<th align="left"><b>从类 java.lang.Object 继承的方法</b></th>
+</tr>
+<tr bgcolor="white" class="TableRowColor">
+<td><code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></td>
+</tr>
+</tbody></table>
+&nbsp;
+<p>
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+
+</p><table border="1" width="100%" cellpadding="3" cellspacing="0" summary="">
+<tbody><tr bgcolor="#CCCCFF" class="TableHeadingColor">
+<th align="left" colspan="1"><font size="+2">
+<b>构造方法详细信息</b></font></th>
+</tr>
+</tbody></table>
+
+<h3>
+KeyPairGenerator</h3>
+<pre>protected <b>KeyPairGenerator</b>(String&nbsp;algorithm)</pre>
+<dl>
+<dd>为指定的算法创建 KeyPairGenerator 对象。
+<p>
+</p><dl>
+<dt><b>参数：</b></dt><dd><code>algorithm</code> - 算法的标准字符串名称。有关标准算法名称的信息，请参阅 Java Cryptography Architecture API Specification &amp; Reference 中的附录 A。</dd></dl>
+</dd></dl>
+
+<!-- ============ METHOD DETAIL ========== -->
+
+
+<table border="1" width="100%" cellpadding="3" cellspacing="0" summary="">
+<tbody><tr bgcolor="#CCCCFF" class="TableHeadingColor">
+<th align="left" colspan="1"><font size="+2">
+<b>方法详细信息</b></font></th>
+</tr>
+</tbody></table>
+
+<h3>
+getAlgorithm</h3>
+<pre>public String <b>getAlgorithm</b>()</pre>
+<dl>
+<dd>返回此密钥对生成器算法的标准名称。有关标准算法名称的信息，请参阅 Java Cryptography Architecture API Specification &amp; Reference 中的附录 A。
+<p>
+</p></dd><dd><dl>
+
+<dt><b>返回：</b></dt><dd>算法的标准字符串名称。</dd></dl>
+</dd>
+</dl>
+<hr>
+
+<h3>
+getInstance</h3>
+<pre>public static KeyPairGenerator <b>getInstance</b>(String&nbsp;algorithm)
+                                    throws NoSuchAlgorithmException</pre>
+<dl>
+<dd>返回生成指定算法的 public/private 密钥对的 KeyPairGenerator 对象。
+
+ <p> 此方法从首选 Provider 开始遍历已注册安全提供者列表。返回封装 KeyPairGeneratorSpi 实现的新 KeyPairGenerator 对象，该实现取自第一个支持指定算法的 Provider。
+
+ </p><p> 注意，可以通过 Security.getProviders() 方法获取已注册提供者列表。
+</p><p>
+</p></dd><dd><dl>
+<dt><b>参数：</b></dt><dd><code>algorithm</code> - 算法的标准字符串名称。有关标准算法名称的信息，请参阅 <a href="http://www.apihome.cn/technotes/guides/security/crypto/CryptoSpec.html#AppA">
+ Java Cryptography Architecture API Specification &amp; Reference </a> 中的附录 A。
+</dd><dt><b>返回：</b></dt><dd>新的 KeyPairGenerator 对象。
+</dd><dt><b>抛出：</b>
+</dt><dd><code>NoSuchAlgorithmException</code> - 如果没有 Provider 支持指定算法的 KeyPairGeneratorSpi 实现。</dd><dt><b>另请参见：</b></dt><dd>Provider</dd></dl>
+</dd>
+</dl>
+<hr>
+
+<h3>
+getInstance</h3>
+<pre>public static KeyPairGenerator <b>getInstance</b>(String&nbsp;algorithm,
+                                           String&nbsp;provider)
+                                    throws NoSuchAlgorithmException,
+                                           NoSuchProviderException</pre>
+<dl>
+<dd>返回生成指定算法的 public/private 密钥对的 KeyPairGenerator 对象。
+
+ <p> 返回一个封装 KeyPairGeneratorSpi 实现的新 KeyPairGenerator 对象，该实现取自指定提供者。指定提供者必须在安全提供者列表中注册。
+
+ </p><p> 注意，可以通过 Security.getProviders() 方法获取已注册提供者列表。
+</p><p>
+</p></dd><dd><dl>
+<dt><b>参数：</b></dt><dd><code>algorithm</code> - 算法的标准字符串名称。有关标准算法名称的信息，请参阅 <a href="http://www.apihome.cn/technotes/guides/security/crypto/CryptoSpec.html#AppA">
+ Java Cryptography Architecture API Specification &amp; Reference </a> 中的附录 A。</dd><dd><code>provider</code> - 提供者的字符串名称。
+</dd><dt><b>返回：</b></dt><dd>新的 KeyPairGenerator 对象。
+</dd><dt><b>抛出：</b>
+</dt><dd><code>NoSuchAlgorithmException</code> - 如果指定算法的 KeyPairGeneratorSpi 实现不能从指定提供者获得。
+</dd><dd><code>NoSuchProviderException</code> - 如果指定提供者未在安全提供者列表中注册。
+</dd><dd><code>IllegalArgumentException</code> - 如果提供者的名称为 null 或空。</dd><dt><b>另请参见：</b></dt><dd>Provider</dd></dl>
+</dd>
+</dl>
+<hr>
+
+<h3>
+getInstance</h3>
+<pre>public static KeyPairGenerator <b>getInstance</b>(String&nbsp;algorithm,
+                                           Provider&nbsp;provider)
+                                    throws NoSuchAlgorithmException</pre>
+<dl>
+<dd>返回生成指定算法的 public/private 密钥对的 KeyPairGenerator 对象。
+
+ <p> 返回一个封装 KeyPairGeneratorSpi 实现的新 KeyPairGenerator 对象，该实现取自指定 Provider 对象。注意，指定 Provider 对象无需在提供者列表中注册。
+</p><p>
+</p></dd><dd><dl>
+<dt><b>参数：</b></dt><dd><code>algorithm</code> - 算法的标准字符串名称。有关标准算法名称的信息，请参阅  <a href="http://www.apihome.cn/technotes/guides/security/crypto/CryptoSpec.html#AppA">
+ Java Cryptography Architecture API Specification &amp; Reference </a> 中的附录 A。</dd><dd><code>provider</code> - 提供者。
+</dd><dt><b>返回：</b></dt><dd>新的 KeyPairGenerator 对象。
+</dd><dt><b>抛出：</b>
+</dt><dd><code>NoSuchAlgorithmException</code> - 如果指定算法的 KeyPairGeneratorSpi 实现不能从指定提供者对象获得。
+</dd><dd><code>IllegalArgumentException</code> - 如果指定提供者为 null。</dd><dt><b>从以下版本开始：</b></dt>
+  <dd>1.4</dd>
+<dt><b>另请参见：</b></dt><dd>Provider</dd></dl>
+</dd>
+</dl>
+<hr>
+
+<h3>
+getProvider</h3>
+<pre>public final Provider <b>getProvider</b>()</pre>
+<dl>
+<dd>返回此密钥对生成器对象的提供者。
+<p>
+</p></dd><dd><dl>
+
+<dt><b>返回：</b></dt><dd>返回此密钥对生成器对象的提供者</dd></dl>
+</dd>
+</dl>
+<hr>
+
+<h3>
+initialize</h3>
+<pre>public void <b>initialize</b>(int&nbsp;keysize)</pre>
+<dl>
+<dd>初始化确定密钥大小的密钥对生成器，使用默认的参数集合，并使用以最高优先级安装的提供者的 <code>SecureRandom</code> 实现作为随机源。（如果任何安装的提供者都不提供 <code>SecureRandom</code> 的实现，则使用系统提供的随机源。）
+<p>
+</p></dd><dd><dl>
+<dt><b>参数：</b></dt><dd><code>keysize</code> - 密钥大小。它是特定于算法的度量（如模长度），以位数为单位指定。
+</dd><dt><b>抛出：</b>
+</dt><dd><code>InvalidParameterException</code> - 如果 <code>keysize</code> 不受此 KeyPairGenerator 对象支持。</dd></dl>
+</dd>
+</dl>
+<hr>
+
+<h3>
+initialize</h3>
+<pre>public void <b>initialize</b>(int&nbsp;keysize,
+                       SecureRandom&nbsp;random)</pre>
+<dl>
+<dd>使用给定的随机源（和默认的参数集合）初始化确定密钥大小的密钥对生成器。
+<p>
+</p></dd><dd><dl>
+<dt><b>指定者：</b></dt><dd>类 <code>KeyPairGeneratorSpi</code> 中的 <code>initialize</code></dd></dl>
+</dd>
+<dd><dl>
+<dt><b>参数：</b></dt><dd><code>keysize</code> - 密钥大小。它是特定于算法的度量（如模长度），以位数为单位指定。</dd><dd><code>random</code> - 随机源。
+</dd><dt><b>抛出：</b>
+</dt><dd><code>InvalidParameterException</code> - 如果 <code>keysize</code> 不受此 KeyPairGenerator 对象支持。</dd><dt><b>从以下版本开始：</b></dt>
+  <dd>1.2</dd>
+</dl>
+</dd>
+</dl>
+<hr>
+
+<h3>
+initialize</h3>
+<pre>public void <b>initialize</b>(AlgorithmParameterSpec&nbsp;params)
+                throws InvalidAlgorithmParameterException</pre>
+<dl>
+<dd>初始化密钥对生成器，使用指定参数集合，并使用以最高优先级安装的提供者的 <code>SecureRandom</code> 的实现作为随机源。（如果任何安装的提供者都不提供 <code>SecureRandom</code> 的实现，则使用系统提供的随机源。）
+
+<p>已将此具体方法添加到以前定义的这个抽象类中。此方法调用 KeyPairGeneratorSpi 的 initialize 方法，为它传递 <code>params</code> 和随机源（从以最高优先级安装的提供者获得；如果任何已安装的提供者都不能提供，则由系统提供）。如果没有被提供者重写，则该 <code>initialize</code> 方法总是抛出 UnsupportedOperationException。
+</p><p>
+</p></dd><dd><dl>
+<dt><b>参数：</b></dt><dd><code>params</code> - 用于生成密钥的参数集合。
+</dd><dt><b>抛出：</b>
+</dt><dd><code>InvalidAlgorithmParameterException</code> - 如果给定的参数不适合此密钥对生成器。</dd><dt><b>从以下版本开始：</b></dt>
+  <dd>1.2</dd>
+</dl>
+</dd>
+</dl>
+<hr>
+
+<h3>
+initialize</h3>
+<pre>public void <b>initialize</b>(AlgorithmParameterSpec&nbsp;params,
+                       SecureRandom&nbsp;random)
+                throws InvalidAlgorithmParameterException</pre>
+<dl>
+<dd>使用给定参数集合和随机源初始化密钥对生成器。
+
+<p>已将此具体方法添加到以前定义的这个抽象类中。此方法调用 KeyPairGeneratorSpi 的 initialize 方法，为它传递 <code>params</code> 和 <code>random</code>。如果没有被提供者重写，则该 <code>initialize</code> 方法总是抛出 UnsupportedOperationException。
+</p><p>
+</p></dd><dd><dl>
+<dt><b>覆盖：</b></dt><dd>类 <code>KeyPairGeneratorSpi</code> 中的 <code>initialize</code></dd></dl>
+</dd>
+<dd><dl>
+<dt><b>参数：</b></dt><dd><code>params</code> - 用于生成密钥的参数集合。</dd><dd><code>random</code> - 随机源。
+</dd><dt><b>抛出：</b>
+</dt><dd><code>InvalidAlgorithmParameterException</code> - 如果给定的参数不适合此密钥对生成器。</dd><dt><b>从以下版本开始：</b></dt>
+  <dd>1.2</dd>
+</dl>
+</dd>
+</dl>
+<hr>
+
+<h3>
+genKeyPair</h3>
+<pre>public final KeyPair <b>genKeyPair</b>()</pre>
+<dl>
+<dd>生成密钥对。
+
+<p>如果此 KeyPairGenerator 没有被显式初始化，特定于提供者的默认值将用于所生成密钥的大小和其他（特定于算法的）值。
+
+</p><p>每次调用此方法都将生成新的密钥对。
+
+</p><p>此方法在功能上等同于 generateKeyPair。
+</p><p>
+</p></dd><dd><dl>
+
+<dt><b>返回：</b></dt><dd>生成的密钥对</dd><dt><b>从以下版本开始：</b></dt>
+  <dd>1.2</dd>
+</dl>
+</dd>
+</dl>
+<hr>
+
+<h3>
+generateKeyPair</h3>
+<pre>public KeyPair <b>generateKeyPair</b>()</pre><dl><dd>生成一个密钥对。<p>如果此 KeyPairGenerator 没有被显式初始化，特定于提供者的默认值将用于所生成密钥的大小和其他（特定于算法的）值。</p><p>每次调用此方法都将生成新的密钥对。</p><p>此方法在功能上等同于 generateKeyPair。</p><p></p></dd><dd><dl><dt><b>指定者：</b></dt><dd>类 <code>KeyPairGeneratorSpi</code> 中的 <code>generateKeyPair</code></dd></dl></dd><dd><dl><dt><b>返回：</b></dt><dd>生成的密钥对</dd></dl></dd></dl>                    </div>
+                                        <div class="related">
+						<h2>
+							<a href="http://www.apihome.cn/tag/KeyPairGenerator">
+                                KeyPairGenerator类似用法</a>
+						</h2>
+						<ul>
+                                                        <li><a href="http://www.apihome.cn/api/android/KeyPairGenerator.html" target="_blank" title="">
+                                Android下的KeyPairGenerator使用方法和示例</a>
+							</li>
+                                                    </ul>
+					</div>
+                                        <div class="others">
+                        <p>上一篇：<a href="http://www.apihome.cn/api/java/KeyPair.html" title="KeyPair">KeyPair</a></p><p>下一篇：<a href="http://www.apihome.cn/api/java/KeyPairGeneratorSpi.html" title="KeyPairGeneratorSpi">KeyPairGeneratorSpi</a></p>                    </div>
+					<div class="thislabel" style="background-color:#eaeaea;margin:10px;">
+						<h2 style="margin-top:15px;">
+							<a href="http://www.apihome.cn/search?keyword=KeyPairGenerator">KeyPairGenerator相关文章请点击</a>
+						</h2>
+						<ul style="margin-left:30px;">
+                        <li style="margin:10px;"><a href="http://www.apihome.cn/api/java/KeyPairGenerator.html" title="KeyPairGenerator">java  <b><font color="red">KeyPairGenerator</font></b></a></li><li style="margin:10px;"><a href="http://www.apihome.cn/api/android/KeyPairGenerator.html" title="KeyPairGenerator">android  <b><font color="red">KeyPairGenerator</font></b></a></li>                         </ul>
+					</div>
+									</div>
+
+			</div>
+		</div>
+		<div class="clearBoth"></div>
+	</div>
+    <div id="foot">
+    <div class="foottop">
+        <ul>
+            <li><span>友情链接：</span> <a href="http://www.android-studio.com.cn/" title="android studio中文社区" target="_blank">android studio中文社区</a> - <a href="http://www.apihome.cn/api/baidu/">百度API</a>  
+                - <a href="http://www.apihome.cn/api/taobao/">淘宝API</a> - <a href="http://www.apihome.cn/list/third/">更多</a></li>
+            <li><span>移动及微博：</span> <a href="http://www.apihome.cn/api/ios/">iOS</a> - <a href="http://www.apihome.cn/api/android/">Android</a> - <a href="http://www.apihome.cn/api/weibo/">新浪微博</a>-<a href="http://www.apihome.cn/api/tencentweibo/">腾讯微博</a> </li>
+        </ul>
+        <ul>
+            <li><span>支付平台：</span> <a href="http://www.apihome.cn/api/alipay/">支付宝</a> - <a href="http://www.apihome.cn/api/99bill/">快钱</a> - <a href="http://www.apihome.cn/api/ebank/">网银</a> -
+                <a href="http://www.apihome.cn/api/tenpay/">财付通</a> - <a href="http://www.apihome.cn/list/pay/">更多</a></li>
+            <li><span>程序语言:</span> <a href="http://www.apihome.cn/api/c/%22%22">C/C++</a> - <a href="http://www.apihome.cn/api/java/">JAVA</a> - <a href="http://www.apihome.cn/api/donet/">.NET</a>
+                - <a href="http://www.apihome.cn/api/python/">Python</a>-<a href="http://www.apihome.cn/api/ruby/">Ruby</a> </li>
+        </ul>
+        <ul>
+            <li><span>WEB：</span> <a href="http://www.apihome.cn/api/php/">PHP</a> - <a href="http://www.apihome.cn/api/javascript/">Javascript</a> - <a href="http://www.apihome.cn/api/css3/">CSS3</a>
+                - <a href="http://www.apihome.cn/api/html5/">HTML5</a></li>
+            <li><span>微博：</span> <a href="http://weibo.com/u/3202364491" title="API之家新浪微博">API之家新浪微博</a> - <a href="http://t.qq.com/apihomecn">API之家QQ微博</a><a style="display:none" href="http://www.casecoco.com/">iPhone 6 cases</a>&gt;</li>
+        </ul>
+        <div class="clearBoth">
+        </div>
+    </div>
+    <div class="copyR">
+        <span>责任申明：本站内容均整理自互联网，若有侵权，请联系我们。使用本站提供的任务技术内容造成不良后果，本站不负任何责任。 </span>
+        <br>
+        <span>欢迎投稿,电子邮件：477600133#qq.com（#号换成@）&nbsp;&nbsp; QQ群1：518649948 &nbsp;&nbsp; <a href="http://www.miitbeian.gov.cn/" target="_blank">备案号:闽ICP备12024207号</a></span>
+    </div>
+    <div class="clearBoth">
+    </div>
+</div>
+
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fe5cedda4e187691097a06216aac1c0c8' type='text/javascript'%3E%3C/script%3E"));
+</script><script src="./JAVA_KeyPairGenerator_API之家,最大的中文API社区_files/h.js.下载" type="text/javascript"></script><a href="http://tongji.baidu.com/hm-web/welcome/ico?s=e5cedda4e187691097a06216aac1c0c8" target="_blank"><img border="0" src="./JAVA_KeyPairGenerator_API之家,最大的中文API社区_files/21.gif" width="20" height="20"></a>
+<script type="text/javascript">
+    /*120*240，创建于2010-5-28*/
+var cpro_id = "u2029139";
+</script>
+<script src="./JAVA_KeyPairGenerator_API之家,最大的中文API社区_files/f.js.下载" type="text/javascript"></script><div id="BAIDU_SSP__wrapper_u2029139_0"></div>
+
+
+</body></html>
