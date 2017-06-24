@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<!-- saved from url=(0047)http://www.cnblogs.com/findumars/p/5353538.html -->
+<html lang="zh-cn"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>内存泄露检测工具（25款） - findumars - 博客园</title>
+<link type="text/css" rel="stylesheet" href="./内存泄露检测工具（25款） - findumars - 博客园_files/blog-common.css">
+<link id="MainCss" type="text/css" rel="stylesheet" href="./内存泄露检测工具（25款） - findumars - 博客园_files/bundle-En_summerGarden.css">
+<link id="mobile-style" media="only screen and (max-width: 768px)" type="text/css" rel="stylesheet" href="./内存泄露检测工具（25款） - findumars - 博客园_files/bundle-En_summerGarden-mobile.css">
+<link title="RSS" type="application/rss+xml" rel="alternate" href="http://www.cnblogs.com/findumars/rss">
+<link title="RSD" type="application/rsd+xml" rel="EditURI" href="http://www.cnblogs.com/findumars/rsd.xml">
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="http://www.cnblogs.com/findumars/wlwmanifest.xml">
+<script async="" src="./内存泄露检测工具（25款） - findumars - 博客园_files/analytics.js"></script><script src="./内存泄露检测工具（25款） - findumars - 博客园_files/jquery.js" type="text/javascript"></script>  
+<script type="text/javascript">var currentBlogApp = 'findumars', cb_enable_mathjax=false;var isLogined=false;</script>
+<script src="./内存泄露检测工具（25款） - findumars - 博客园_files/blog-common.js" type="text/javascript"></script>
+<style type="text/css">
+:root #header + #content > #left > #rlblock_left
+{ display: none !important; }</style></head>
+<body>
+<a name="top"></a>
+
+<!--done-->
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+	<a id="lnkBlogLogo" href="http://www.cnblogs.com/findumars/"><img id="blogLogo" src="./内存泄露检测工具（25款） - findumars - 博客园_files/logo.gif" alt="Return Home"></a>			
+		
+<!--done-->
+<h1><a id="Header1_HeaderTitle" class="headermaintitle" href="http://www.cnblogs.com/findumars/">朝闻道</a></h1>
+<h2>朝闻道，夕可死矣！为了成为IT高手，为了挽回我失去的青春，也为了我亲爱的家人，下决心刻苦学习编程知识，虽九死而不悔！
+金头盔飞行员蒋佳冀：知道了不行，熟悉也不够，要真正进入潜意识，成为条件反射才行。</h2>
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<!--done-->
+			<ul id="navList">
+				<li><a id="blog_nav_sitehome" class="menu" href="http://www.cnblogs.com/">CnBlogs</a></li>
+				<li><a id="blog_nav_myhome" class="menu" href="http://www.cnblogs.com/findumars/">Home</a></li>
+				<li><a id="blog_nav_newpost" class="menu" rel="nofollow" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">New Post</a></li>
+				<li><a id="blog_nav_contact" accesskey="9" class="menu" rel="nofollow" href="https://msg.cnblogs.com/send/findumars">Contact</a></li>
+				<li><a id="blog_nav_admin" class="menu" rel="nofollow" href="https://i.cnblogs.com/">Admin</a></li>
+				<li><a id="blog_nav_rss" class="menu" href="http://www.cnblogs.com/findumars/rss">Rss</a>
+				<a id="blog_nav_rss_image" class="aHeaderXML" href="http://www.cnblogs.com/findumars/rss"><img src="./内存泄露检测工具（25款） - findumars - 博客园_files/xml.gif" alt="Rss"></a></li>
+			</ul>
+
+
+		<div class="blogStats">
+			
+			<div id="blog_stats">
+<!--done-->
+Posts - 6181&nbsp;
+Articles - 10&nbsp;
+Comments - 121&nbsp;
+</div>
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		
+<div id="post_detail">
+<!--done-->
+<div id="topics">
+	<div class="post">
+		<h1 class="postTitle">
+			<a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/findumars/p/5353538.html">内存泄露检测工具（25款）</a>
+		</h1>
+		<div class="clear"></div>
+		<div class="postBody">
+			<div id="cnblogs_post_body"><p>&nbsp;</p>
+<ol>
+<li><span style="font-size: medium;">1.</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.inf.ethz.ch/personal/biere/projects/ccmalloc/"><span style="font-size: medium;"><span style="text-decoration: underline;">ccmalloc</span></span></a><span style="font-size: medium;">－Linux和Solaris下对C和C++程序的简单的使用内存泄漏和malloc调试库。</span></li>
+<li><span style="font-size: medium;">2.</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://dmalloc.com/"><span style="font-size: medium;"><span style="text-decoration: underline;">Dmalloc</span></span></a><span style="font-size: medium;">－Debug Malloc Library.</span></li>
+<li><span style="font-size: medium;">3.</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://perens.com/FreeSoftware/ElectricFence/"><span style="font-size: medium;"><span style="text-decoration: underline;">Electric Fence</span></span></a><span style="font-size: medium;">－Linux分发版中由Bruce Perens编写的malloc()调试库。</span></li>
+<li><span style="font-size: medium;">4.</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://lxr.mozilla.org/mozilla/source/tools/leaky/leaky.html"><span style="font-size: medium;"><span style="text-decoration: underline;">Leaky</span></span></a><span style="font-size: medium;">－Linux下检测内存泄漏的程序。</span></li>
+<li><span style="font-size: medium;">5.</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.andreasen.org/LeakTracer/"><span style="font-size: medium;"><span style="text-decoration: underline;">LeakTracer</span></span></a><span style="font-size: medium;">－Linux、Solaris和HP-UX下跟踪和分析C++程序中的内存泄漏。</span></li>
+<li><span style="font-size: medium;">6.</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.linkdata.se/sourcecode.html"><span style="font-size: medium;"><span style="text-decoration: underline;">MEMWATCH</span></span></a><span style="font-size: medium;">－由Johan Lindh编写，是一个开放源代码C语言内存错误检测工具，主要是通过gcc的precessor来进行。</span></li>
+<li><span style="font-size: medium;">7.</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://valgrind.org/"><span style="font-size: medium;"><span style="text-decoration: underline;">Valgrind</span></span></a><span style="font-size: medium;">－Debugging and profiling Linux programs, aiming at programs written in C and C++.</span></li>
+<li><span style="font-size: medium;">8.</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://kcachegrind.sourceforge.net/cgi-bin/show.cgi/KcacheGrindIndex"><span style="font-size: medium;"><span style="text-decoration: underline;">KCachegrind</span></span></a><span style="font-size: medium;">－A visualization tool for the profiling data generated by&nbsp;<a href="http://valgrind.org/info/tools.html#cachegrind"><span style="text-decoration: underline;">Cachegrind</span></a>&nbsp;and&nbsp;<a href="http://directory.fsf.org/all/calltree.html"><span style="text-decoration: underline;">Calltree</span></a>.</span></li>
+<li><span style="font-size: medium;">9.</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://dbaron.org/mozilla/leak-monitor/"><span style="font-size: medium;"><span style="text-decoration: underline;">Leak Monitor</span></span></a><span style="font-size: medium;">－一个Firefox扩展，能找出跟Firefox相关的泄漏类型。</span></li>
+<li><span style="font-size: medium;">10.</span>&nbsp;&nbsp;<a href="http://sourceforge.net/projects/ieleak/"><span style="font-size: medium;"><span style="text-decoration: underline;">IE Leak Detector (Drip/IE Sieve)</span></span></a><span style="font-size: medium;">－Drip和IE Sieve leak detectors帮助网页开发员提升动态网页性能通过报告可避免的因为IE局限的内存泄漏。</span></li>
+<li><span style="font-size: medium;">11.</span>&nbsp;&nbsp;<a href="http://sourceforge.net/projects/winleak"><span style="font-size: medium;"><span style="text-decoration: underline;">Windows Leaks Detector</span></span></a><span style="font-size: medium;">－探测任何Win32应用程序中的任何资源泄漏(内存，句柄等)，基于Win API调用钩子。</span></li>
+<li><span style="font-size: medium;">12.</span>&nbsp;&nbsp;<span style="font-size: medium;">SAP&nbsp;</span><a href="https://www.sdn.sap.com/irj/sdn/wiki?path=/display/Java/Java+Memory+Analysis"><span style="color: #0000ff; font-size: medium;"><span style="text-decoration: underline;">Memory Analyzer</span></span></a><span style="font-size: medium;">－是一款开源的JAVA内存分析软件，可用于辅助查找JAVA程序的内存泄漏，能容易找到大块内存并验证谁在一直占用它，它是基于Eclipse RCP(Rich Client Platform)，可以下载RCP的独立版本或者Eclipse的插件。</span></li>
+<li><span style="font-size: medium;">13.</span>&nbsp;&nbsp;<a href="http://www.opensolaris.org/os/community/dtrace/"><span style="color: #0000ff; font-size: medium;"><span style="text-decoration: underline;">DTrace</span></span></a><span style="font-size: medium;">－即动态跟踪Dynamic Tracing，是一款开源软件，能在Unix类似平台运行，用户能够动态检测操作系统内核和用户进程，以更精确地掌握系统的资源使用状况，提高系统性能，减少支持成本，并进行有效的调节。</span></li>
+<li><span style="font-size: medium;">14.</span>&nbsp;&nbsp;<span style="font-size: medium;">IBM Rational&nbsp;</span><a href="http://www-111.ibm.com/ecatalog/Detail.wss?locale=zh_CN&amp;synkey=E108274J06775S83"><span style="font-size: medium;"><span style="text-decoration: underline;">PurifyPlus</span></span></a><span style="font-size: medium;">－帮助开发人员查明C/C++、托管.NET、Java和VB6代码中的性能和可靠性错误。PurifyPlus&nbsp;将内存错误和泄漏检测、应用程序性能描述、代码覆盖分析等功能组合在一个单一、完整的工具包中。</span></li>
+<li><span style="font-size: medium;">15.</span>&nbsp;&nbsp;<span style="font-size: medium;">Parasoft&nbsp;</span><a href="http://www.parasoft.com/jsp/products/home.jsp?product=Insure&amp;itemId=63"><span style="font-size: medium;"><span style="text-decoration: underline;">Insure++</span></span></a><span style="font-size: medium;">－针对C/C++应用的运行时错误自动检测工具，它能够自动监测C/C++程序，发现其中存在着的内存破坏、内存泄漏、指针错误和I/O等错误。并通过使用一系列独特的技术（SCI技术和变异测试等），彻底的检查和测试我们的代码，精确定位错误的准确位置并给出详细的诊断信息。能作为Microsoft Visual C++的一个插件运行。</span></li>
+<li><span style="font-size: medium;">16.</span>&nbsp;&nbsp;<span style="font-size: medium;">Compuware&nbsp;</span><a href="http://www.compuware.com/products/devpartner/visualc.htm"><span style="font-size: medium;"><span style="text-decoration: underline;">DevPartner for Visual C++ BoundsChecker Suite</span></span></a><span style="font-size: medium;">－为C++开发者设计的运行错误检测和调试工具软件。作为Microsoft Visual Studio和C++ 6.0的一个插件运行。</span></li>
+<li><span style="font-size: medium;">17.</span>&nbsp;&nbsp;<span style="font-size: medium;">Electric Software&nbsp;</span><a href="http://www.glowcode.com/summary.htm"><span style="font-size: medium;"><span style="text-decoration: underline;">GlowCode</span></span></a><span style="font-size: medium;">－包括内存泄漏检查，code profiler，函数调用跟踪等功能。给C++和.Net开发者提供完整的错误诊断，和运行时性能分析工具包。</span></li>
+<li><span style="font-size: medium;">18.</span>&nbsp;&nbsp;<span style="font-size: medium;">Compuware&nbsp;</span><a href="http://www.compuware.com/products/devpartner/java.htm"><span style="font-size: medium;"><span style="text-decoration: underline;">DevPartner Java Edition</span></span></a><span style="font-size: medium;">－包含Java内存检测,代码覆盖率测试,代码性能测试,线程死锁,分布式应用等几大功能模块。</span></li>
+<li><span style="font-size: medium;">19.</span>&nbsp;&nbsp;<span style="font-size: medium;">Quest</span><a href="http://www.quest.com/jprobe/"><span style="font-size: medium;"><span style="text-decoration: underline;">&nbsp;JProbe</span></span></a><span style="font-size: medium;">－分析Java的内存泄漏。</span></li>
+<li><span style="font-size: medium;">20.</span>&nbsp;&nbsp;<span style="font-size: medium;">ej-technologies&nbsp;</span><a href="http://www.quest.com/jprobe/"><span style="font-size: medium;"><span style="text-decoration: underline;">JProfiler</span></span></a><span style="font-size: medium;">－一个全功能的Java剖析工具，专用于分析J2SE和J2EE应用程序。它把CPU、执行绪和内存的剖析组合在一个强大的应用中。JProfiler可提供许多IDE整合和应用服务器整合用途。JProfiler直觉式的GUI让你可以找到效能瓶颈、抓出内存泄漏、并解决执行绪的问题。4.3.2注册码：A-G666#76114F-1olm9mv1i5uuly#0126</span></li>
+<li><span style="font-size: medium;">21.</span>&nbsp;&nbsp;<span style="font-size: medium;">BEA&nbsp;</span><a href="http://www.bea.com.cn/products/beawebjro81/prodoverview7/index.jsp"><span style="font-size: medium;"><span style="text-decoration: underline;">JRockit</span></span></a><span style="font-size: medium;">－用来诊断Java内存泄漏并指出根本原因，专门针对Intel平台并得到优化，能在Intel硬件上获得最高的性能。</span></li>
+<li><span style="font-size: medium;">22.</span>&nbsp;&nbsp;<span style="font-size: medium;">SciTech Software AB&nbsp;</span><a href="http://memprofiler.com/"><span style="font-size: medium;"><span style="text-decoration: underline;">.NET Memory Profiler</span></span></a><span style="font-size: medium;">－</span><span style="font-size: medium;">找到内存泄漏并优化内存使用针对C#，VB.Net，或其它.Net程序。</span></li>
+<li><span style="font-size: medium;">23.</span>&nbsp;&nbsp;<span style="font-size: medium;">YourKit&nbsp;</span><a href="http://www.yourkit.com/"><span style="color: #0000ff; font-size: medium;"><span style="text-decoration: underline;">.NET &amp; Java Profiler</span></span></a><span style="font-size: medium;">－业界领先的Java和.NET程序性能分析工具。</span></li>
+</ol>
+<p>24.&nbsp;&nbsp;AutomatedQA&nbsp;<a href="http://www.automatedqa.com/products/aqtime/index.asp"><span style="color: #0000ff;"><span style="text-decoration: underline;">AQTime</span></span></a>－AutomatedQA的获奖产品performance profiling和memory debugging工具集的下一代替换产品，支持Microsoft, Borland, Intel, Compaq&nbsp;和&nbsp;GNU编译器。可以为.NET和Windows程序生成全面细致的报告，从而帮助您轻松隔离并排除代码中含有的性能问题和内存/资源泄露问题。支持.Net 1.0,1.1,2.0,3.0和Windows 32/64位应用程序。</p>
+<ol>
+<li><a href="http://blogs.msdn.com/gpde/pages/javascript-memory-leak-detector.aspx"><span style="color: #0000ff;"><span style="text-decoration: underline;">JavaScript Memory Leak Detector</span></span></a>－微软全球产品开发欧洲团队(Global Product Development- Europe team, GPDE)&nbsp;发布的一款调试工具，用来探测JavaScript代码中的内存泄漏，运行为IE系列的一个插件。</li>
+</ol>
+<p align="left">&nbsp;</p>
+<p>&nbsp;</p>
+<p align="left"><strong>附录：内存泄漏的发生方式</strong></p>
+<ol>
+<li>常发性内存泄漏。发生内存泄漏的代码会被多次执行到，每次被执行的时候都会导致一块内存泄漏。</li>
+<li>偶发性内存泄漏。发生内存泄漏的代码只有在某些特定环境或操作过程下才会发生。常发性和偶发性是相对的。对于特定的环境，偶发性的也许就变成了常发性的。所以测试环境和测试方法对检测内存泄漏至关重要。</li>
+<li>一次性内存泄漏。发生内存泄漏的代码只会被执行一次，或者由于算法上的缺陷，导致总会有一块且仅有一块内存发生泄漏。</li>
+<li>隐式内存泄漏。程序在运行过程中不停的分配内存，但是直到结束的时候才释放内存。严格的说这里并没有发生内存泄漏，因为最终程序释放了所有申请的内存。但是对于一个服务器程序，需要运行几天，几周甚至几个月，不及时释放内存也可能导致最终耗尽系统的所有内存。所以，我们称这类内存泄漏为隐式内存泄漏。</li>
+</ol>
+<p align="left">&nbsp;</p>
+<p align="left"><strong>什么是系统资源？</strong></p>
+<p align="left">当应用程序在Windows中运行时，Windows必须实时"跟踪"该应用程序的运行，并保留与之相关的许多信息，如按钮、光标、菜单的位置和位图、窗口的状况等，这些信息由Windows保留在一种叫堆的内存块中，堆的英文为Heap。简单地说，堆是采用特殊机制管理的内存块。由Windows的一个系统内核User.exe管理的堆叫做User资源堆（User Resource Heap），由另一个系统内核Gdi.exe管理的堆叫做GDI资源堆（Graphical Device Interface Resource Heap，简称GDI Resource Heap），User资源堆和GDI资源堆合称为系统资源堆（System Resource Heap），习惯上就把它们叫做系统资源（System Resource）。</p>
+<p align="left">　　微软将Windows的系统资源（堆）分为五个堆，其中User资源堆为三个，而GDI资源堆为两个。</p>
+<p align="left">　　三个User资源堆分别是：16位的用户堆（User Heap，64KB）；32位的窗口堆（Windows Heap，2MB）；32位的用户菜单堆（User Menu Heap，2MB）。</p>
+<p align="left">　　两个GDI资源堆分别是：16位的GDI堆（GDI Heap，64KB）；32位的GDI堆（GDI，2MB）。</p>
+<p align="left">　　从这里的系统资源分类和大小我们应该明白，不管CPU是P4还是486，内存是8M还是1G，所有Windows的用户都拥有同样大小的系统资源（堆），用户不能自已增加或减少系统资源的大小，这是由操作系统决定的，与硬件档次没有任何关系。</p>
+<p align="left">　　Windows的User资源堆和GDI资源堆的可用（Free）空间称为可用&nbsp;User资源和可用GDI资源，Windows中以百分数表示它们，用户可以选择&nbsp;"开始/附件/系统工具/系统信息"，来实时查看它们的大小。</p>
+<p align="left">http://blog.csdn.net/adcxf/article/details/2822441</p></div><div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="BlogPostCategory">分类: <a href="http://www.cnblogs.com/findumars/category/581935.html" target="_blank">C++ 内存</a></div>
+<div id="EntryTag"></div>
+<div id="blog_post_info"><div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(5353538,cb_blogId,1);green_channel_success(this,&#39;谢谢推荐！&#39;);">好文要顶</a>
+            <a id="green_channel_follow" onclick="follow(&#39;2c18b524-44f8-e011-b7b9-842b2b196315&#39;);" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="./内存泄露检测工具（25款） - findumars - 博客园_files/icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="./内存泄露检测工具（25款） - findumars - 博客园_files/wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/findumars/" target="_blank"><img src="./内存泄露检测工具（25款） - findumars - 博客园_files/20170513201151.png" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/findumars/">findumars</a><br>
+            <a href="http://home.cnblogs.com/u/findumars/followees">关注 - 60</a><br>
+            <a href="http://home.cnblogs.com/u/findumars/followers">粉丝 - 303</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow(&#39;2c18b524-44f8-e011-b7b9-842b2b196315&#39;);return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(5353538,&#39;Digg&#39;)">
+        <span class="diggnum" id="digg_count">0</span>
+    </div>
+    <div class="buryit" onclick="votePost(5353538,&#39;Bury&#39;)">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+</div>
+<div class="clear"></div>
+<div id="post_next_prev"><a href="http://www.cnblogs.com/findumars/p/5353535.html" class="p_n_p_prefix">« </a> 上一篇：<a href="http://www.cnblogs.com/findumars/p/5353535.html" title="发布于2016-04-05 00:42">谈VC++对象模型</a><br><a href="http://www.cnblogs.com/findumars/p/5353545.html" class="p_n_p_prefix">» </a> 下一篇：<a href="http://www.cnblogs.com/findumars/p/5353545.html" title="发布于2016-04-05 00:54">VC 中与字符串相关的宏 _T、TEXT,_TEXT、L 的作用（简单明了）</a><br></div>
+</div>
+
+
+		</div>
+		<div class="postDesc">posted @ <span id="post-date">2016-04-05 00:44</span> <a href="http://www.cnblogs.com/findumars/">findumars</a> Views(<span id="post_view_count">5358</span>) Comments(<span id="post_comment_count">0</span>)  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=5353538" rel="nofollow">Edit</a> <a href="http://www.cnblogs.com/findumars/p/5353538.html#" onclick="AddToWz(5353538);return false;">收藏</a></div>
+	</div>
+	<script type="text/javascript">var allowComments=true,cb_blogId=99729,cb_entryId=5353538,cb_blogApp=currentBlogApp,cb_blogUserGuid='2c18b524-44f8-e011-b7b9-842b2b196315',cb_entryCreatedDate='2016/4/5 0:44:00';loadViewCount(cb_entryId);</script>
+	
+</div>
+</div><a name="!comments"></a><div id="blog-comments-placeholder"></div><script type="text/javascript">var commentManager = new blogCommentManager();commentManager.renderComments(0);</script>
+<div id="comment_form" class="commentform">
+<a name="commentform"></a>
+<div id="divCommentShow"></div>
+<div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="http://www.cnblogs.com/findumars/p/5353538.html#" onclick="return RefreshPage();">刷新页面</a><a href="http://www.cnblogs.com/findumars/p/5353538.html#top">返回顶部</a></div>
+<div id="comment_form_container"><div class="login_tips">注册用户登录后才能发表评论，请 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login(&#39;commentform&#39;);">登录</a> 或 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，<a href="http://www.cnblogs.com/">访问</a>网站首页。</div></div>
+<div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+<div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_blank">【推荐】50万行VC++源码: 大型组态工控、电力仿真CAD与GIS源码库</a><br><a href="http://click.aliyun.com/m/21970/" target="_blank">【阿里云】云计算科技红利邀您免费体验！云服务器、云数据库等35+产品，6个月免费使用！</a><br><a href="https://cloud.tencent.com/developer/labs?fromSource=gwzcw.241259.241259.241259" target="_blank">【免费】从零开始学编程，开发者专属实验平台免费实践！</a><br><a href="https://www.upyun.com/618?utm_source=cnblogs&amp;utm_medium=referral&amp;utm_content=618" target="_blank">【推荐】又拍云年中大促！现在注册，充值最高送4800元</a><br></div>
+<div id="opt_under_post"></div>
+<div id="cnblogs_c1" class="c_ad_block"><a href="http://click.aliyun.com/m/19236/" target="_blank"><img width="300" height="250" src="./内存泄露检测工具（25款） - findumars - 博客园_files/24442-20170502163240086-1545306933.jpg" alt="阿里云B1"></a></div>
+<div id="under_post_news"><div class="itnews c_ad_block"><b>最新IT新闻</b>:<br> ·  <a href="http://news.cnblogs.com/n/572368/" target="_blank">百度回应与吴恩达新项目无关联 并祝福他工作顺利</a><br> ·  <a href="http://news.cnblogs.com/n/572367/" target="_blank">Note 8九月下旬发售 定价999欧元三星史上最贵</a><br> ·  <a href="http://news.cnblogs.com/n/572366/" target="_blank">黑客泄露微软Win 10大量源代码 或带来安全风险</a><br> ·  <a href="http://news.cnblogs.com/n/572365/" target="_blank">苹果停交专利使用费影响收入 高通欲在中国低端手机市场找补</a><br> ·  <a href="http://news.cnblogs.com/n/572364/" target="_blank">谷歌不再扫描用户Gmail内容创建精准定位广告 良心疼了？</a><br>» <a href="http://news.cnblogs.com/" title="IT新闻" target="_blank">更多新闻...</a></div></div>
+<div id="cnblogs_c2" class="c_ad_block"><a href="https://www.mtyun.com/activity-anniversary?site=cnblogs&amp;campaign=20170601sales" target="_blank"><img width="468" height="60" src="./内存泄露检测工具（25款） - findumars - 博客园_files/24442-20170615095125603-13625507.png" alt="美团云"></a></div>
+<div id="under_post_kb"><div class="itnews c_ad_block" id="kb_block"><b>最新知识库文章</b>:<br><div id="kb_recent"> ·  <a href="http://kb.cnblogs.com/page/570194/" target="_blank">小printf的故事：什么是真正的程序员？</a><br> ·  <a href="http://kb.cnblogs.com/page/569992/" target="_blank">程序员的工作、学习与绩效</a><br> ·  <a href="http://kb.cnblogs.com/page/569056/" target="_blank">软件开发为什么很难</a><br> ·  <a href="http://kb.cnblogs.com/page/565901/" target="_blank">唱吧DevOps的落地，微服务CI/CD的范本技术解读</a><br> ·  <a href="http://kb.cnblogs.com/page/566523/" target="_blank">程序员，如何从平庸走向理想？</a><br></div>» <a href="http://kb.cnblogs.com/" target="_blank">更多知识库文章...</a></div></div>
+<div id="HistoryToday" class="c_ad_block"><b>历史上的今天:</b><br>2012-04-05 <a href="http://www.cnblogs.com/findumars/archive/2012/04/05/2433626.html">将指针作为函数传递时候的情况</a><br></div>
+<script type="text/javascript">
+    fixPostBody();
+    setTimeout(function () { incrementViewCount(cb_entryId); }, 50);
+    deliverAdT2();
+    deliverAdC1();
+    deliverAdC2();    
+    loadNewsAndKb();
+    loadBlogSignature();
+    LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+    GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate);
+    loadOptUnderPost();
+    GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);   
+</script>
+</div>
+
+
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+<!--done-->
+<div class="newsItem">
+<h3 class="catListTitle">公告</h3>
+	<div id="blog-news"><div id="profile_block">昵称：<a href="http://home.cnblogs.com/u/findumars/">findumars</a><br>园龄：<a href="http://home.cnblogs.com/u/findumars/" title="入园时间：2011-10-17">5年8个月</a><br>粉丝：<a href="http://home.cnblogs.com/u/findumars/followers/">303</a><br>关注：<a href="http://home.cnblogs.com/u/findumars/followees/">60</a><div id="p_b_follow"><a href="javascript:void(0);" onclick="follow(&#39;2c18b524-44f8-e011-b7b9-842b2b196315&#39;)">+加关注</a></div></div></div><script type="text/javascript">loadBlogNews();</script>
+</div>
+
+			<div id="calendar"></div>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn"><div id="sidebar_search" class="sidebar-block">
+<div class="mySearch">
+<h3 class="catListTitle">Search</h3>
+<div id="widget_my_zzk" class="div_my_zzk"><input type="text" id="q" onkeydown="return zzk_go_enter(event);" class="input_my_zzk">&nbsp;<input onclick="zzk_go()" type="button" value="ZZK" id="btnZzk" class="btn_my_zzk"></div>
+<div id="widget_my_google" class="div_my_zzk"><input type="text" name="google_q" id="google_q" onkeydown="return google_go_enter(event)" class="input_my_zzk">&nbsp;<input onclick="google_go()" type="button" value="Google" class="btn_my_zzk"></div>
+</div></div><div id="sidebar_shortcut" class="sidebar-block">
+<!--
+<div class="catListLink">
+<h3 class ="catListTitle">常用链接</h3>
+<ul>
+<li><a href="http://www.cnblogs.com/findumars/p/" title="我的博客的随笔列表">我的随笔</a></li><li><a href="http://www.cnblogs.com/findumars/MyComments.html" title="我发表过的评论列表">我的评论</a></li><li><a href="http://www.cnblogs.com/findumars/OtherPosts.html" title="我评论过的随笔列表">我的参与</a></li><li><a href="http://www.cnblogs.com/findumars/RecentComments.html" title="我的博客的评论列表">最新评论</a></li><li><a href="http://www.cnblogs.com/findumars/tag/" title="我的博客的标签列表">我的标签</a></li>
+<li><a id="itemListLink" onclick="this.blur();WarpClass('itemListLink', 'itemListLin_con');return false;" href="#">更多链接</a></li>
+</ul>
+<div id="itemListLin_con" style="display:none;">
+<ul>
+
+</ul>
+</div>
+</div>
+--></div><div id="sidebar_toptags" class="sidebar-block"></div><div id="sidebar_categories">
+<div class="catListPostCategory">
+<h3 class="catListTitle">Post Categories</h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_0_Link_0" href="http://www.cnblogs.com/findumars/category/935925.html">010101(42)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_1" href="http://www.cnblogs.com/findumars/category/488681.html">1.SaaS(30)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_2" href="http://www.cnblogs.com/findumars/category/721174.html">2.Saas-Job(54)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_3" href="http://www.cnblogs.com/findumars/category/814722.html">4.SaaS-Tech(21)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_4" href="http://www.cnblogs.com/findumars/category/739017.html">7.SaaS-起居注(51)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_5" href="http://www.cnblogs.com/findumars/category/672600.html">9.SaaS-云存储，云服务(29)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_6" href="http://www.cnblogs.com/findumars/category/612122.html">9.SaaS-云计算-学习(24)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_7" href="http://www.cnblogs.com/findumars/category/882091.html">Android(10)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_8" href="http://www.cnblogs.com/findumars/category/1002619.html">Architecture-ARM(10)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_9" href="http://www.cnblogs.com/findumars/category/626425.html">Architecture-CPU(34)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_10" href="http://www.cnblogs.com/findumars/category/994395.html">Architecture-MIPS(12)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_11" href="http://www.cnblogs.com/findumars/category/355643.html">ASM-Exe文件(4)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_12" href="http://www.cnblogs.com/findumars/category/581139.html">ASM-经典资料(14)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_13" href="http://www.cnblogs.com/findumars/category/329299.html">ASM-学习(16)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_14" href="http://www.cnblogs.com/findumars/category/570826.html">ASM-指针(14)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_15" href="http://www.cnblogs.com/findumars/category/646870.html">BCB(14)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_16" href="http://www.cnblogs.com/findumars/category/972949.html">C++ GUI(20)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_17" href="http://www.cnblogs.com/findumars/category/608877.html">C++ Library(46)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_18" href="http://www.cnblogs.com/findumars/category/837520.html">C++ MinGW(36)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_19" href="http://www.cnblogs.com/findumars/category/570783.html">C++ OO研究(46)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_20" href="http://www.cnblogs.com/findumars/category/570782.html">C++ RTL(19)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_21" href="http://www.cnblogs.com/findumars/category/574697.html">C++ STL(14)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_22" href="http://www.cnblogs.com/findumars/category/830944.html">C++ 编译(26)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_23" href="http://www.cnblogs.com/findumars/category/581956.html">C++ 构造与析构(18)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_24" href="http://www.cnblogs.com/findumars/category/581957.html">C++ 关键字(5)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_25" href="http://www.cnblogs.com/findumars/category/640686.html">C++ 函数调用(35)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_26" href="http://www.cnblogs.com/findumars/category/581935.html">C++ 内存(124)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_27" href="http://www.cnblogs.com/findumars/category/329298.html">C++ 学习(24)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_28" href="http://www.cnblogs.com/findumars/category/633053.html">C++ 哲学(17)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_29" href="http://www.cnblogs.com/findumars/category/785390.html">CSharp-学习(14)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_30" href="http://www.cnblogs.com/findumars/category/940537.html">CSharp-哲学(7)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_31" href="http://www.cnblogs.com/findumars/category/633054.html">Delphi-ASM(16)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_32" href="http://www.cnblogs.com/findumars/category/646841.html">Delphi-COM(43)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_33" href="http://www.cnblogs.com/findumars/category/490030.html">Delphi-Compiler(16)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_34" href="http://www.cnblogs.com/findumars/category/800995.html">Delphi-DataType(32)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_35" href="http://www.cnblogs.com/findumars/category/601885.html">Delphi-Editor(30)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_36" href="http://www.cnblogs.com/findumars/category/599317.html">Delphi-Exception(29)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_37" href="http://www.cnblogs.com/findumars/category/570760.html">Delphi-Exe(63)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_38" href="http://www.cnblogs.com/findumars/category/811341.html">Delphi-FireMonkey编程(82)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_39" href="http://www.cnblogs.com/findumars/category/570822.html">Delphi-FireMonkey配置(36)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_40" href="http://www.cnblogs.com/findumars/category/989247.html">Delphi-FireMonkey哲学(19)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_41" href="http://www.cnblogs.com/findumars/category/592188.html">Delphi-GDI(27)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_42" href="http://www.cnblogs.com/findumars/category/894373.html">Delphi-Lazarus(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_43" href="http://www.cnblogs.com/findumars/category/980415.html">Delphi-Linux(8)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_44" href="http://www.cnblogs.com/findumars/category/490433.html">Delphi-MIS设计(14)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_45" href="http://www.cnblogs.com/findumars/category/584234.html">Delphi-OO研究(37)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_46" href="http://www.cnblogs.com/findumars/category/816798.html">Delphi-Process(43)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_47" href="http://www.cnblogs.com/findumars/category/570765.html">Delphi-RTL(16)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_48" href="http://www.cnblogs.com/findumars/category/765847.html">Delphi-RTTI(26)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_49" href="http://www.cnblogs.com/findumars/category/570775.html">Delphi-String(40)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_50" href="http://www.cnblogs.com/findumars/category/724914.html">Delphi-Thread(48)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_51" href="http://www.cnblogs.com/findumars/category/615498.html">Delphi-Unidac(12)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_52" href="http://www.cnblogs.com/findumars/category/592146.html">Delphi-Unigui(5)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_53" href="http://www.cnblogs.com/findumars/category/490744.html">Delphi-VCL窗体(93)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_54" href="http://www.cnblogs.com/findumars/category/609367.html">Delphi-VCL控件创建与显示(57)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_55" href="http://www.cnblogs.com/findumars/category/447277.html">Delphi-VCL源码研究(41)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_56" href="http://www.cnblogs.com/findumars/category/353474.html">Delphi-WebBrowser(45)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_57" href="http://www.cnblogs.com/findumars/category/604241.html">Delphi-WebService(51)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_58" href="http://www.cnblogs.com/findumars/category/570777.html">Delphi-WindowStyle(11)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_59" href="http://www.cnblogs.com/findumars/category/643420.html">Delphi-x64(22)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_60" href="http://www.cnblogs.com/findumars/category/483306.html">Delphi-XML-JSON(25)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_61" href="http://www.cnblogs.com/findumars/category/329296.html">Delphi-高手突破(6)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_62" href="http://www.cnblogs.com/findumars/category/353475.html">Delphi-经典资料(27)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_63" href="http://www.cnblogs.com/findumars/category/603760.html">Delphi-经典资料-Install(21)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_64" href="http://www.cnblogs.com/findumars/category/570807.html">Delphi-控件开发(56)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_65" href="http://www.cnblogs.com/findumars/category/497644.html">Delphi-控件使用(26)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_66" href="http://www.cnblogs.com/findumars/category/490029.html">Delphi-内存(40)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_67" href="http://www.cnblogs.com/findumars/category/594374.html">Delphi-时间(29)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_68" href="http://www.cnblogs.com/findumars/category/599322.html">Delphi-时间器(28)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_69" href="http://www.cnblogs.com/findumars/category/642605.html">Delphi-事件(27)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_70" href="http://www.cnblogs.com/findumars/category/492131.html">Delphi-数据库(8)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_71" href="http://www.cnblogs.com/findumars/category/669736.html">Delphi-图形图像(36)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_72" href="http://www.cnblogs.com/findumars/category/592161.html">Delphi-网络(69)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_73" href="http://www.cnblogs.com/findumars/category/601204.html">Delphi-文件(56)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_74" href="http://www.cnblogs.com/findumars/category/592162.html">Delphi-系统编程(36)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_75" href="http://www.cnblogs.com/findumars/category/792010.html">Delphi-消息WM_PAINT(42)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_76" href="http://www.cnblogs.com/findumars/category/641629.html">Delphi-消息大全(50)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_77" href="http://www.cnblogs.com/findumars/category/570750.html">Delphi-消息研究(65)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_78" href="http://www.cnblogs.com/findumars/category/599316.html">Delphi-消息应用(38)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_79" href="http://www.cnblogs.com/findumars/category/505266.html">Delphi-语法(5)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_80" href="http://www.cnblogs.com/findumars/category/609419.html">Delphi-哲学(26)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_81" href="http://www.cnblogs.com/findumars/category/646838.html">Delphi-指针(14)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_82" href="http://www.cnblogs.com/findumars/category/641781.html">Golang-学习(12)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_83" href="http://www.cnblogs.com/findumars/category/630548.html">Golang-哲学(34)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_84" href="http://www.cnblogs.com/findumars/category/640688.html">HTTP-TCP等各种协议(49)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_85" href="http://www.cnblogs.com/findumars/category/329295.html">IC-仿真(4)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_86" href="http://www.cnblogs.com/findumars/category/570818.html">Java-OO研究(7)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_87" href="http://www.cnblogs.com/findumars/category/505811.html">Java-学习(9)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_88" href="http://www.cnblogs.com/findumars/category/845803.html">Linux-编程(14)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_89" href="http://www.cnblogs.com/findumars/category/814725.html">Linux-服务器(97)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_90" href="http://www.cnblogs.com/findumars/category/593165.html">Linux-工具(24)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_91" href="http://www.cnblogs.com/findumars/category/833721.html">Mac(30)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_92" href="http://www.cnblogs.com/findumars/category/891980.html">Mac-iOS(6)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_93" href="http://www.cnblogs.com/findumars/category/633107.html">Mobile-哲学(9)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_94" href="http://www.cnblogs.com/findumars/category/839582.html">OpenGL(11)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_95" href="http://www.cnblogs.com/findumars/category/838129.html">OpenSSL(45)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_96" href="http://www.cnblogs.com/findumars/category/563310.html">Python-wxPython(8)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_97" href="http://www.cnblogs.com/findumars/category/553258.html">Python-语法(4)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_98" href="http://www.cnblogs.com/findumars/category/847552.html">Qt-Android(19)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_99" href="http://www.cnblogs.com/findumars/category/839740.html">Qt-COM(20)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_100" href="http://www.cnblogs.com/findumars/category/845325.html">Qt-Layout(18)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_101" href="http://www.cnblogs.com/findumars/category/745071.html">Qt-Lib-DLL(56)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_102" href="http://www.cnblogs.com/findumars/category/624889.html">Qt-Model View(71)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_103" href="http://www.cnblogs.com/findumars/category/785622.html">Qt-Process(48)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_104" href="http://www.cnblogs.com/findumars/category/845196.html">Qt-Python(5)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_105" href="http://www.cnblogs.com/findumars/category/982687.html">Qt-QGraphicsItem-3D</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_106" href="http://www.cnblogs.com/findumars/category/484909.html">Qt-QML(40)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_107" href="http://www.cnblogs.com/findumars/category/810733.html">Qt-QSS(44)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_108" href="http://www.cnblogs.com/findumars/category/719285.html">Qt-String(69)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_109" href="http://www.cnblogs.com/findumars/category/785353.html">Qt-Thread(81)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_110" href="http://www.cnblogs.com/findumars/category/621019.html">Qt-安装与编译(276)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_111" href="http://www.cnblogs.com/findumars/category/355642.html">Qt-窗口(78)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_112" href="http://www.cnblogs.com/findumars/category/621022.html">Qt-经典资料(65)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_113" href="http://www.cnblogs.com/findumars/category/624955.html">Qt-控件(135)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_114" href="http://www.cnblogs.com/findumars/category/880476.html">Qt-控件背景(37)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_115" href="http://www.cnblogs.com/findumars/category/785364.html">Qt-容器(17)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_116" href="http://www.cnblogs.com/findumars/category/621018.html">Qt-事件(90)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_117" href="http://www.cnblogs.com/findumars/category/784682.html">Qt-数据库(40)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_118" href="http://www.cnblogs.com/findumars/category/839739.html">Qt-图形图像(44)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_119" href="http://www.cnblogs.com/findumars/category/747755.html">Qt-网络编程(115)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_120" href="http://www.cnblogs.com/findumars/category/909070.html">Qt-网络编程curl(17)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_121" href="http://www.cnblogs.com/findumars/category/839741.html">Qt-文件(43)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_122" href="http://www.cnblogs.com/findumars/category/727798.html">Qt-信号槽(47)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_123" href="http://www.cnblogs.com/findumars/category/602663.html">Qt-学习(51)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_124" href="http://www.cnblogs.com/findumars/category/785354.html">Qt-源码(24)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_125" href="http://www.cnblogs.com/findumars/category/659296.html">Qt-哲学(28)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_126" href="http://www.cnblogs.com/findumars/category/780743.html">SG3-编程经验(30)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_127" href="http://www.cnblogs.com/findumars/category/690736.html">SG3-行业经验(14)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_128" href="http://www.cnblogs.com/findumars/category/482136.html">SQL-MySQL(33)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_129" href="http://www.cnblogs.com/findumars/category/981564.html">SQL-SQLite(10)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_130" href="http://www.cnblogs.com/findumars/category/492173.html">VC++ DirectUI(21)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_131" href="http://www.cnblogs.com/findumars/category/614193.html">VC++ Editor(10)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_132" href="http://www.cnblogs.com/findumars/category/608864.html">VC++ MFC(46)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_133" href="http://www.cnblogs.com/findumars/category/502480.html">VC++ String编码理论(28)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_134" href="http://www.cnblogs.com/findumars/category/719286.html">VC++ String编码应用(52)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_135" href="http://www.cnblogs.com/findumars/category/329297.html">VC++ 经典资料(49)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_136" href="http://www.cnblogs.com/findumars/category/892270.html">VC++ 控件(26)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_137" href="http://www.cnblogs.com/findumars/category/669737.html">VC++ 图形图像(22)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_138" href="http://www.cnblogs.com/findumars/category/725989.html">VC++ 哲学(5)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_139" href="http://www.cnblogs.com/findumars/category/835649.html">VirtualBox(43)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_140" href="http://www.cnblogs.com/findumars/category/846587.html">VirtualBox-磁盘与文件(48)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_141" href="http://www.cnblogs.com/findumars/category/484908.html">Web-HTML(3)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_142" href="http://www.cnblogs.com/findumars/category/460266.html">Web-JavaScript(16)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_143" href="http://www.cnblogs.com/findumars/category/459600.html">Web-JQuery(2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_144" href="http://www.cnblogs.com/findumars/category/451751.html">Web-PHP(14)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_145" href="http://www.cnblogs.com/findumars/category/660991.html">Web-经典(45)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_146" href="http://www.cnblogs.com/findumars/category/599056.html">Web-系统(8)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_147" href="http://www.cnblogs.com/findumars/category/492132.html">Windows-API(14)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_148" href="http://www.cnblogs.com/findumars/category/490743.html">Windows-DLL(10)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_149" href="http://www.cnblogs.com/findumars/category/608867.html">Windows-SDK(10)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_150" href="http://www.cnblogs.com/findumars/category/786007.html">Windows-Service(52)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_151" href="http://www.cnblogs.com/findumars/category/736291.html">Windows-UAC与数字签名(76)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_152" href="http://www.cnblogs.com/findumars/category/482216.html">Windows-窗口(24)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_153" href="http://www.cnblogs.com/findumars/category/649505.html">Windows-核心编程(57)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_154" href="http://www.cnblogs.com/findumars/category/734717.html">Windows-驱动编程(17)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_155" href="http://www.cnblogs.com/findumars/category/581958.html">Windows-网络编程(53)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_156" href="http://www.cnblogs.com/findumars/category/596080.html">Windows-系统(44)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_157" href="http://www.cnblogs.com/findumars/category/640243.html">编程理解(36)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_158" href="http://www.cnblogs.com/findumars/category/679580.html">创业起居注(64)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_159" href="http://www.cnblogs.com/findumars/category/884362.html">读书笔记(29)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_160" href="http://www.cnblogs.com/findumars/category/938987.html">房价(5)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_161" href="http://www.cnblogs.com/findumars/category/630282.html">工具(32)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_162" href="http://www.cnblogs.com/findumars/category/660992.html">华为(49)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_163" href="http://www.cnblogs.com/findumars/category/720078.html">坚持到底(101)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_164" href="http://www.cnblogs.com/findumars/category/728147.html">经典资料(43)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_165" href="http://www.cnblogs.com/findumars/category/860887.html">开源项目(20)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_166" href="http://www.cnblogs.com/findumars/category/641141.html">雷军(45)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_167" href="http://www.cnblogs.com/findumars/category/504433.html">人生计划(32)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_168" href="http://www.cnblogs.com/findumars/category/509891.html">设计模式(4)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_169" href="http://www.cnblogs.com/findumars/category/966004.html">生活常识(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_170" href="http://www.cnblogs.com/findumars/category/615499.html">时间沙漏(62)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_171" href="http://www.cnblogs.com/findumars/category/353473.html">算法(13)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_172" href="http://www.cnblogs.com/findumars/category/938374.html">微软(2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_173" href="http://www.cnblogs.com/findumars/category/378578.html">吾日三省(40)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_174" href="http://www.cnblogs.com/findumars/category/646845.html">项目管理与架构(22)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_175" href="http://www.cnblogs.com/findumars/category/482157.html">行业理解(18)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_176" href="http://www.cnblogs.com/findumars/category/640242.html">学习方法(49)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_177" href="http://www.cnblogs.com/findumars/category/669735.html">游戏(9)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_178" href="http://www.cnblogs.com/findumars/category/781738.html">赵伟国(15)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_179" href="http://www.cnblogs.com/findumars/category/491307.html">正则表达式(4)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_180" href="http://www.cnblogs.com/findumars/category/644807.html">最喜欢的(68)</a> </li>
+
+</ul>
+
+</div>
+
+<div class="catListPostArchive">
+<h3 class="catListTitle">Post Archives</h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_1_Link_0" href="http://www.cnblogs.com/findumars/archive/2017/06.html">2017/6 (109)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_1" href="http://www.cnblogs.com/findumars/archive/2017/05.html">2017/5 (135)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_2" href="http://www.cnblogs.com/findumars/archive/2017/04.html">2017/4 (171)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_3" href="http://www.cnblogs.com/findumars/archive/2017/03.html">2017/3 (174)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_4" href="http://www.cnblogs.com/findumars/archive/2017/02.html">2017/2 (359)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_5" href="http://www.cnblogs.com/findumars/archive/2017/01.html">2017/1 (511)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_6" href="http://www.cnblogs.com/findumars/archive/2016/12.html">2016/12 (192)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_7" href="http://www.cnblogs.com/findumars/archive/2016/11.html">2016/11 (110)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_8" href="http://www.cnblogs.com/findumars/archive/2016/10.html">2016/10 (377)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_9" href="http://www.cnblogs.com/findumars/archive/2016/09.html">2016/9 (145)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_10" href="http://www.cnblogs.com/findumars/archive/2016/08.html">2016/8 (296)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_11" href="http://www.cnblogs.com/findumars/archive/2016/07.html">2016/7 (265)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_12" href="http://www.cnblogs.com/findumars/archive/2016/06.html">2016/6 (403)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_13" href="http://www.cnblogs.com/findumars/archive/2016/05.html">2016/5 (179)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_14" href="http://www.cnblogs.com/findumars/archive/2016/04.html">2016/4 (317)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_15" href="http://www.cnblogs.com/findumars/archive/2016/03.html">2016/3 (303)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_16" href="http://www.cnblogs.com/findumars/archive/2016/02.html">2016/2 (273)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_17" href="http://www.cnblogs.com/findumars/archive/2016/01.html">2016/1 (146)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_18" href="http://www.cnblogs.com/findumars/archive/2015/12.html">2015/12 (250)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_19" href="http://www.cnblogs.com/findumars/archive/2015/11.html">2015/11 (274)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_20" href="http://www.cnblogs.com/findumars/archive/2015/10.html">2015/10 (208)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_21" href="http://www.cnblogs.com/findumars/archive/2015/09.html">2015/9 (96)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_22" href="http://www.cnblogs.com/findumars/archive/2015/08.html">2015/8 (162)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_23" href="http://www.cnblogs.com/findumars/archive/2015/07.html">2015/7 (38)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_24" href="http://www.cnblogs.com/findumars/archive/2015/06.html">2015/6 (42)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_25" href="http://www.cnblogs.com/findumars/archive/2015/05.html">2015/5 (35)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_26" href="http://www.cnblogs.com/findumars/archive/2015/04.html">2015/4 (54)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_27" href="http://www.cnblogs.com/findumars/archive/2015/03.html">2015/3 (42)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_28" href="http://www.cnblogs.com/findumars/archive/2015/02.html">2015/2 (29)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_29" href="http://www.cnblogs.com/findumars/archive/2015/01.html">2015/1 (41)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_30" href="http://www.cnblogs.com/findumars/archive/2014/12.html">2014/12 (45)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_31" href="http://www.cnblogs.com/findumars/archive/2014/11.html">2014/11 (35)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_32" href="http://www.cnblogs.com/findumars/archive/2014/10.html">2014/10 (33)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_33" href="http://www.cnblogs.com/findumars/archive/2014/09.html">2014/9 (24)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_34" href="http://www.cnblogs.com/findumars/archive/2014/08.html">2014/8 (27)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_35" href="http://www.cnblogs.com/findumars/archive/2014/07.html">2014/7 (22)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_36" href="http://www.cnblogs.com/findumars/archive/2014/06.html">2014/6 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_37" href="http://www.cnblogs.com/findumars/archive/2014/05.html">2014/5 (26)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_38" href="http://www.cnblogs.com/findumars/archive/2014/04.html">2014/4 (32)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_39" href="http://www.cnblogs.com/findumars/archive/2014/03.html">2014/3 (12)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_40" href="http://www.cnblogs.com/findumars/archive/2014/02.html">2014/2 (6)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_41" href="http://www.cnblogs.com/findumars/archive/2014/01.html">2014/1 (8)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_42" href="http://www.cnblogs.com/findumars/archive/2013/12.html">2013/12 (23)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_43" href="http://www.cnblogs.com/findumars/archive/2013/11.html">2013/11 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_44" href="http://www.cnblogs.com/findumars/archive/2013/10.html">2013/10 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_45" href="http://www.cnblogs.com/findumars/archive/2013/09.html">2013/9 (13)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_46" href="http://www.cnblogs.com/findumars/archive/2013/08.html">2013/8 (29)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_47" href="http://www.cnblogs.com/findumars/archive/2013/07.html">2013/7 (15)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_48" href="http://www.cnblogs.com/findumars/archive/2013/06.html">2013/6 (16)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_49" href="http://www.cnblogs.com/findumars/archive/2013/05.html">2013/5 (25)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_50" href="http://www.cnblogs.com/findumars/archive/2013/04.html">2013/4 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_51" href="http://www.cnblogs.com/findumars/archive/2013/03.html">2013/3 (5)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_52" href="http://www.cnblogs.com/findumars/archive/2013/02.html">2013/2 (7)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_53" href="http://www.cnblogs.com/findumars/archive/2013/01.html">2013/1 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_54" href="http://www.cnblogs.com/findumars/archive/2012/12.html">2012/12 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_55" href="http://www.cnblogs.com/findumars/archive/2012/10.html">2012/10 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_56" href="http://www.cnblogs.com/findumars/archive/2012/08.html">2012/8 (5)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_57" href="http://www.cnblogs.com/findumars/archive/2012/06.html">2012/6 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_58" href="http://www.cnblogs.com/findumars/archive/2012/05.html">2012/5 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_59" href="http://www.cnblogs.com/findumars/archive/2012/04.html">2012/4 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_60" href="http://www.cnblogs.com/findumars/archive/2012/03.html">2012/3 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_61" href="http://www.cnblogs.com/findumars/archive/2012/02.html">2012/2 (8)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_62" href="http://www.cnblogs.com/findumars/archive/2012/01.html">2012/1 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_63" href="http://www.cnblogs.com/findumars/archive/2011/11.html">2011/11 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_64" href="http://www.cnblogs.com/findumars/archive/2011/10.html">2011/10 (3)</a> </li>
+
+</ul>
+
+</div>
+
+<div class="catListArticleCategory">
+<h3 class="catListTitle">Article Categories</h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_2_Link_0" href="http://www.cnblogs.com/findumars/category/599315.html">Delphi-BPL(1)</a> </li>
+
+</ul>
+
+</div>
+
+</div><div id="sidebar_scorerank" class="sidebar-block">
+<!--
+<div class="catListBlogRank">
+<h3 class="catListTitle">积分与排名</h3>
+<ul>
+	<li class="liScore">
+		积分 -	1635588
+	<li class="liRank">
+		排名 -	25
+	</li>
+</ul>
+</div>
+-->
+
+
+</div><div id="sidebar_recentcomments" class="sidebar-block"><div id="recent_comments_wrap">
+<div class="catListComment">
+<h3 class="catListTitle">Recent Comments</h3>
+
+	<div id="RecentCommentsBlock"><ul>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/findumars/p/5794162.html#3721665">1. Re:如何分析程序的时间消耗</a></li>
+        <li class="recent_comment_body">请问测试这样函数级耗时必须要有源码吗？假如是一个加壳加密的软件可以直接测吗</li>
+        <li class="recent_comment_author">--机智的小L</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/findumars/p/7010145.html#3720751">2. Re:HTTP请求（GET与POST区别）和响应（get是从服务器上获取数据，post是向服务器传送数据，格式与举例都非常清楚）</a></li>
+        <li class="recent_comment_body">@一桶白开水被你说的我都不好意思了，我查了一下我在博客园排名25，而且帖子特别多，比我排名高的都没那么多。看来以后要另找学习方法了。...</li>
+        <li class="recent_comment_author">--findumars</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/findumars/p/7010145.html#3720159">3. Re:HTTP请求（GET与POST区别）和响应（get是从服务器上获取数据，post是向服务器传送数据，格式与举例都非常清楚）</a></li>
+        <li class="recent_comment_body">没有恶意 只是感慨</li>
+        <li class="recent_comment_author">--一桶白开水</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/findumars/p/7010145.html#3720113">4. Re:HTTP请求（GET与POST区别）和响应（get是从服务器上获取数据，post是向服务器传送数据，格式与举例都非常清楚）</a></li>
+        <li class="recent_comment_body">@一桶白开水不好意思，我比较饥渴，看我的个人签名就知道了。...</li>
+        <li class="recent_comment_author">--findumars</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/findumars/p/7010145.html#3719843">5. Re:HTTP请求（GET与POST区别）和响应（get是从服务器上获取数据，post是向服务器传送数据，格式与举例都非常清楚）</a></li>
+        <li class="recent_comment_body">@findumars 就算是转的 转6000+ 也是厉害的...</li>
+        <li class="recent_comment_author">--一桶白开水</li>
+</ul>
+</div>
+</div>
+</div></div><div id="sidebar_topviewedposts" class="sidebar-block"><div id="topview_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">Top Posts</h3>
+	<div id="TopViewPostsBlock"><ul><li><a href="http://www.cnblogs.com/findumars/archive/2013/05/24/3097614.html">1. JQuery动态隐藏和显示DIV(294715)</a></li><li><a href="http://www.cnblogs.com/findumars/p/3164232.html">2. JS把内容动态插入到DIV(54258)</a></li><li><a href="http://www.cnblogs.com/findumars/p/3620078.html">3. UTF8最好不要带BOM，附许多经典评论(26347)</a></li><li><a href="http://www.cnblogs.com/findumars/p/3556883.html">4. 终于理解了什么是LGPL(25655)</a></li><li><a href="http://www.cnblogs.com/findumars/p/3948315.html">5. SetWindowPos函数详解(21578)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topcommentedposts" class="sidebar-block"><div id="topfeedback_posts_wrap" style="display: none;">
+<!--
+<div class="catListFeedback">
+<h3 class="catListTitle">评论排行榜</h3>
+	<div id="TopFeedbackPostsBlock"></div>
+</div>
+-->
+</div></div><div id="sidebar_topdiggedposts" class="sidebar-block"><div id="topdigg_posts_wrap">
+<h3 class="catListTitle">推荐排行榜</h3>
+<div class="RecentComment">
+	<div id="TopDiggPostsBlock"><ul><li><a href="http://www.cnblogs.com/findumars/p/5009003.html">1. 计算机视觉牛人博客和代码汇总（全）(14)</a></li><li><a href="http://www.cnblogs.com/findumars/archive/2013/05/24/3097614.html">2. JQuery动态隐藏和显示DIV(7)</a></li><li><a href="http://www.cnblogs.com/findumars/p/3556883.html">3. 终于理解了什么是LGPL(5)</a></li><li><a href="http://www.cnblogs.com/findumars/p/3620078.html">4. UTF8最好不要带BOM，附许多经典评论(4)</a></li><li><a href="http://www.cnblogs.com/findumars/p/3712955.html">5. DELPHI中的消息处理机制（三种消息处理方法的比较，如何截断消息）(3)</a></li></ul></div>
+</div></div></div></div><script type="text/javascript">loadBlogSideColumn();</script>
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		
+<!--done-->
+Copyright ©2017 findumars
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+
+</body></html>

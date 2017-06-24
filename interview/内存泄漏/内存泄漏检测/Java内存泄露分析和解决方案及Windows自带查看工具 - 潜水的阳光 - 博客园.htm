@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<!-- saved from url=(0046)http://www.cnblogs.com/yinliang/p/6431677.html -->
+<html lang="zh-cn"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Java内存泄露分析和解决方案及Windows自带查看工具 - 潜水的阳光 - 博客园</title>
+<link type="text/css" rel="stylesheet" href="./Java内存泄露分析和解决方案及Windows自带查看工具 - 潜水的阳光 - 博客园_files/blog-common.css">
+<link id="MainCss" type="text/css" rel="stylesheet" href="./Java内存泄露分析和解决方案及Windows自带查看工具 - 潜水的阳光 - 博客园_files/bundle-Autumn.css">
+<link id="mobile-style" media="only screen and (max-width: 768px)" type="text/css" rel="stylesheet" href="./Java内存泄露分析和解决方案及Windows自带查看工具 - 潜水的阳光 - 博客园_files/bundle-Autumn-mobile.css">
+<link title="RSS" type="application/rss+xml" rel="alternate" href="http://www.cnblogs.com/yinliang/rss">
+<link title="RSD" type="application/rsd+xml" rel="EditURI" href="http://www.cnblogs.com/yinliang/rsd.xml">
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="http://www.cnblogs.com/yinliang/wlwmanifest.xml">
+<script async="" src="./Java内存泄露分析和解决方案及Windows自带查看工具 - 潜水的阳光 - 博客园_files/analytics.js"></script><script src="./Java内存泄露分析和解决方案及Windows自带查看工具 - 潜水的阳光 - 博客园_files/jquery.js" type="text/javascript"></script><style type="text/css">
+:root #header + #content > #left > #rlblock_left
+{ display: none !important; }</style>  
+<script type="text/javascript">var currentBlogApp = 'yinliang', cb_enable_mathjax=false;var isLogined=false;</script>
+<script src="./Java内存泄露分析和解决方案及Windows自带查看工具 - 潜水的阳光 - 博客园_files/blog-common.js" type="text/javascript"></script>
+</head>
+<body>
+<a name="top"></a>
+
+<table id="blog_header" cellspacing="0" cellpadding="0" width="100%" border="0" class="banner" height="250" background="./Java内存泄露分析和解决方案及Windows自带查看工具 - 潜水的阳光 - 博客园_files/bg_banner.jpg">
+        <tbody><tr>
+            <td width="61">
+                &nbsp;
+            </td>
+            <td width="236" align="center">
+                
+<br><br><br><br><br><br><br>
+<div id="header">
+	<span>
+		<a id="Header1_HeaderTitle" href="http://www.cnblogs.com/yinliang/">潜水的阳光</a><br><br>
+		
+	</span>
+</div>
+            </td>
+            <td style="padding-bottom: 30px" align="center" valign="bottom">
+                &nbsp;
+            </td>
+        </tr>
+</tbody></table>
+<table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+    <tbody><tr>
+        <td width="60">
+            &nbsp;
+        </td>
+        <td id="sidebar" valign="top" s="">
+            <table align="center" width="100%" height="1400" cellspacing="0" cellpadding="5" border="0" bgcolor="white">
+                <tbody><tr>
+                    <td class="banner" valign="top" style="padding-top: 0px">
+                        
+                            
+<div class="news"><div id="blog-news"><div id="profile_block">昵称：<a href="http://home.cnblogs.com/u/yinliang/">潜水的阳光</a><br>园龄：<a href="http://home.cnblogs.com/u/yinliang/" title="入园时间：2014-03-06">3年3个月</a><br>粉丝：<a href="http://home.cnblogs.com/u/yinliang/followers/">3</a><br>关注：<a href="http://home.cnblogs.com/u/yinliang/followees/">8</a><div id="p_b_follow"><a href="javascript:void(0);" onclick="follow(&#39;609af608-43a5-e311-8d02-90b11c0b17d6&#39;)">+加关注</a></div></div></div><script type="text/javascript">loadBlogNews();</script></div>
+
+                            <div id="blog-sidecolumn"><div id="sidebar_search" class="sidebar-block">
+<div id="sidebar_search" class="mySearch">
+<h3 class="catListTitle">搜索</h3>
+<div id="sidebar_search_box">
+<div id="widget_my_zzk" class="div_my_zzk"><input type="text" id="q" onkeydown="return zzk_go_enter(event);" class="input_my_zzk">&nbsp;<input onclick="zzk_go()" type="button" value="找找看" id="btnZzk" class="btn_my_zzk"></div>
+<div id="widget_my_google" class="div_my_zzk"><input type="text" name="google_q" id="google_q" onkeydown="return google_go_enter(event)" class="input_my_zzk">&nbsp;<input onclick="google_go()" type="button" value="谷歌搜索" class="btn_my_zzk"></div>
+</div>
+</div>
+
+</div><div id="sidebar_shortcut" class="sidebar-block">
+<h3 class="catListTitle">常用链接</h3>
+<ul>
+<li><a href="http://www.cnblogs.com/yinliang/p/" title="我的博客的随笔列表">我的随笔</a></li><li><a href="http://www.cnblogs.com/yinliang/MyComments.html" title="我发表过的评论列表">我的评论</a></li><li><a href="http://www.cnblogs.com/yinliang/OtherPosts.html" title="我评论过的随笔列表">我的参与</a></li><li><a href="http://www.cnblogs.com/yinliang/RecentComments.html" title="我的博客的评论列表">最新评论</a></li><li><a href="http://www.cnblogs.com/yinliang/tag/" title="我的博客的标签列表">我的标签</a></li>
+</ul>
+<div id="itemListLin_con" style="display:none;">
+
+</div></div><div id="sidebar_toptags" class="sidebar-block">
+<h3 class="catListTitle">我的标签</h3>
+<div id="MyTag">
+<ul>
+<li><a href="http://www.cnblogs.com/yinliang/tag/css/">css</a>(15)</li><li><a href="http://www.cnblogs.com/yinliang/tag/javascript/">javascript</a>(6)</li><li><a href="http://www.cnblogs.com/yinliang/tag/java%E5%A4%9A%E7%BA%BF%E7%A8%8B/">java多线程</a>(4)</li><li><a href="http://www.cnblogs.com/yinliang/tag/requirejs/">requirejs</a>(4)</li><li><a href="http://www.cnblogs.com/yinliang/tag/html/">html</a>(3)</li><li><a href="http://www.cnblogs.com/yinliang/tag/HTML5%20boilerplate/">HTML5 boilerplate</a>(3)</li><li><a href="http://www.cnblogs.com/yinliang/tag/angulatjs/">angulatjs</a>(3)</li><li><a href="http://www.cnblogs.com/yinliang/tag/jquery/">jquery</a>(2)</li><li><a href="http://www.cnblogs.com/yinliang/tag/oracle/">oracle</a>(2)</li><li><a href="http://www.cnblogs.com/yinliang/tag/redis/">redis</a>(2)</li><li><a href="http://www.cnblogs.com/yinliang/tag/">更多</a></li>
+</ul>
+</div></div><div id="sidebar_categories">
+		<h1 class="listtitle">随笔分类</h1>
+		
+				<ul class="list">
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_0" class="listitem" href="http://www.cnblogs.com/yinliang/category/967083.html"> webstorm(1)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_1" class="listitem" href="http://www.cnblogs.com/yinliang/category/733055.html">ajax(1)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_2" class="listitem" href="http://www.cnblogs.com/yinliang/category/990666.html">Angular2(1)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_3" class="listitem" href="http://www.cnblogs.com/yinliang/category/728228.html">angulatjs(4)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_4" class="listitem" href="http://www.cnblogs.com/yinliang/category/757672.html">css(15)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_5" class="listitem" href="http://www.cnblogs.com/yinliang/category/695006.html">dns(1)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_6" class="listitem" href="http://www.cnblogs.com/yinliang/category/1017760.html">dubbo(1)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_7" class="listitem" href="http://www.cnblogs.com/yinliang/category/560581.html">grails(2)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_8" class="listitem" href="http://www.cnblogs.com/yinliang/category/725268.html">HTML5 boilerplate(3)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_9" class="listitem" href="http://www.cnblogs.com/yinliang/category/632498.html">http(2)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_10" class="listitem" href="http://www.cnblogs.com/yinliang/category/564609.html">java(11)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_11" class="listitem" href="http://www.cnblogs.com/yinliang/category/698253.html">javascript(12)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_12" class="listitem" href="http://www.cnblogs.com/yinliang/category/590039.html">jquery(5)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_13" class="listitem" href="http://www.cnblogs.com/yinliang/category/563806.html">linux(4)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_14" class="listitem" href="http://www.cnblogs.com/yinliang/category/641959.html">log4j(2)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_15" class="listitem" href="http://www.cnblogs.com/yinliang/category/591494.html">maven(2)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_16" class="listitem" href="http://www.cnblogs.com/yinliang/category/725390.html">modernizr.js(1)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_17" class="listitem" href="http://www.cnblogs.com/yinliang/category/914057.html">mysql(1)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_18" class="listitem" href="http://www.cnblogs.com/yinliang/category/970704.html">nodejs(3)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_19" class="listitem" href="http://www.cnblogs.com/yinliang/category/563593.html">oracle(3)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_20" class="listitem" href="http://www.cnblogs.com/yinliang/category/913751.html">PostgreSQL(1)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_21" class="listitem" href="http://www.cnblogs.com/yinliang/category/1009359.html">radius(1)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_22" class="listitem" href="http://www.cnblogs.com/yinliang/category/572053.html">redis(2)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_23" class="listitem" href="http://www.cnblogs.com/yinliang/category/823812.html">spring(1)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_24" class="listitem" href="http://www.cnblogs.com/yinliang/category/788525.html">tcp协议(1)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_25" class="listitem" href="http://www.cnblogs.com/yinliang/category/926115.html">vyatta(1)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_26" class="listitem" href="http://www.cnblogs.com/yinliang/category/867816.html">webpack(1)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_27" class="listitem" href="http://www.cnblogs.com/yinliang/category/788476.html">测试(1)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_0_Link_28" class="listitem" href="http://www.cnblogs.com/yinliang/category/788543.html">抓包(1)</a> </li>
+			
+				</ul>
+			
+	
+		<h1 class="listtitle">随笔档案</h1>
+		
+				<ul class="list">
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_0" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2017/06.html">2017年6月 (2)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_1" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2017/05.html">2017年5月 (3)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_2" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2017/04.html">2017年4月 (2)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_3" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2017/03.html">2017年3月 (2)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_4" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2017/02.html">2017年2月 (5)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_5" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2017/01.html">2017年1月 (1)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_6" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2016/12.html">2016年12月 (2)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_7" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2016/11.html">2016年11月 (4)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_8" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2016/09.html">2016年9月 (1)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_9" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2016/08.html">2016年8月 (2)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_10" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2016/07.html">2016年7月 (2)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_11" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2016/05.html">2016年5月 (3)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_12" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2016/04.html">2016年4月 (1)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_13" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2016/03.html">2016年3月 (4)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_14" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2016/02.html">2016年2月 (4)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_15" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2016/01.html">2016年1月 (1)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_16" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2015/12.html">2015年12月 (1)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_17" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2015/11.html">2015年11月 (10)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_18" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2015/09.html">2015年9月 (4)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_19" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2015/08.html">2015年8月 (7)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_20" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2015/06.html">2015年6月 (7)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_21" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2015/05.html">2015年5月 (1)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_22" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2015/01.html">2015年1月 (4)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_23" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2014/12.html">2014年12月 (2)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_24" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2014/11.html">2014年11月 (1)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_25" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2014/06.html">2014年6月 (2)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_26" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2014/04.html">2014年4月 (3)</a> </li>
+			
+				<li class="listitem"><a id="CatList_LinkList_1_Link_27" class="listitem" href="http://www.cnblogs.com/yinliang/archive/2014/03.html">2014年3月 (3)</a> </li>
+			
+				</ul>
+			
+	
+</div><div id="sidebar_recentcomments" class="sidebar-block"><div id="recent_comments_wrap">
+<h3 class="catListTitle">最新评论</h3>
+<div class="RecentComment" id="RecentComments">
+	<div id="RecentCommentsBlock"><ul>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/yinliang/p/4110668.html#3068241">1. Re:http网页性能最佳实践</a></li>
+        <li class="recent_comment_body">有没有带一下，教一下HTML</li>
+        <li class="recent_comment_author">--964933676</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/yinliang/p/4110668.html#3068212">2. Re:http网页性能最佳实践</a></li>
+        <li class="recent_comment_body">那两本书，《高性能网站建设指南》《高性能网站建设进阶指南 WEB开发者性能优化最佳实践》很详细的介绍了相关的方法</li>
+        <li class="recent_comment_author">--前行者</li>
+</ul>
+</div>
+</div>
+</div></div><div id="sidebar_topviewedposts" class="sidebar-block"><div id="topview_posts_wrap">
+<h3 class="catListTitle">阅读排行榜</h3>
+<div class="RecentComment" id="TopViewPosts"> 
+	<div id="TopViewPostsBlock"><ul><li><a href="http://www.cnblogs.com/yinliang/p/6099058.html">1. mysql5.8安装指南(1188)</a></li><li><a href="http://www.cnblogs.com/yinliang/p/4535159.html">2. Linux Whois命令安装与使用(1113)</a></li><li><a href="http://www.cnblogs.com/yinliang/p/3701099.html">3. IntelliJ debug grails 无效的解决办法(781)</a></li><li><a href="http://www.cnblogs.com/yinliang/p/4173025.html">4. Log4j写入数据库详解(757)</a></li><li><a href="http://www.cnblogs.com/yinliang/p/5319263.html">5. html中的块元素(Block)和内联元素(Inline)(转)(731)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topcommentedposts" class="sidebar-block"><div id="topfeedback_posts_wrap">
+<h3 class="catListTitle">评论排行榜</h3>
+<div class="RecentComment" id="TopCommentsPosts">
+	<div id="TopFeedbackPostsBlock"><ul><li><a href="http://www.cnblogs.com/yinliang/p/4110668.html">1. http网页性能最佳实践(2)</a></li></ul></div>
+</div></div></div><div id="sidebar_topdiggedposts" class="sidebar-block"><div id="topdigg_posts_wrap">
+<h3 class="catListTitle">推荐排行榜</h3>
+<div class="RecentComment">
+	<div id="TopDiggPostsBlock"><ul><li><a href="http://www.cnblogs.com/yinliang/p/4110668.html">1. http网页性能最佳实践(1)</a></li></ul></div>
+</div></div></div></div><script type="text/javascript">loadBlogSideColumn();</script>
+                        
+                        <br>
+                        <center>
+                            Powered by <a href="http://www.cnblogs.com/">博客园</a>
+                        </center>
+                    </td>
+                </tr>
+            </tbody></table>
+        </td>
+        <td valign="top" style="padding: 0">
+            <table align="center" width="100%" height="1400" cellspacing="0" cellpadding="5" border="0" bgcolor="white" class="index">
+                <tbody><tr>
+                    <td class="banner" valign="top">
+                        <center>
+                            <a id="blog_nav_sitehome" class="menu" href="http://www.cnblogs.com/">博客园</a> <span id="sitehome_link_split">|</span> 
+<a id="blog_nav_myhome" class="menu" href="http://www.cnblogs.com/yinliang/">首页</a> <span id="bloghome_link_split">|</span> 
+<a id="blog_nav_newpost" class="menu" rel="nofollow" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">新随笔</a> <span id="newpost_link_split">|</span> 
+<!--<a id="MyLinks1_NewArticleLink" class="menu" href="/EnterMyBlog.aspx?NewArticle=1">发新文章</a> | -->
+<a id="blog_nav_contact" accesskey="9" class="menu" rel="nofollow" href="https://msg.cnblogs.com/send/%E6%BD%9C%E6%B0%B4%E7%9A%84%E9%98%B3%E5%85%89">联系</a> <span id="contact_link_split">|</span>  
+<a id="blog_nav_rss" class="menu" href="http://www.cnblogs.com/yinliang/rss">订阅</a><a id="blog_nav_rss_image" href="http://www.cnblogs.com/yinliang/rss"><img src="./Java内存泄露分析和解决方案及Windows自带查看工具 - 潜水的阳光 - 博客园_files/xml.gif" alt="订阅"></a> <span id="rss_link_split">|</span> 
+<a id="blog_nav_admin" class="menu" rel="nofollow" href="https://i.cnblogs.com/">管理</a>
+
+                        </center>
+                        
+<div id="post_detail">
+<div class="block">
+	<h1 class="block_title"><a id="cb_post_title_url" href="http://www.cnblogs.com/yinliang/p/6431677.html">Java内存泄露分析和解决方案及Windows自带查看工具</a></h1>
+	<div class="post">
+		<div class="postcontent">
+			<div id="cnblogs_post_body"><p align="center">Java内存泄漏是每个Java程序员都会遇到的问题,程序在本地运行一切正常,可是布署到远端就会出现内存无限制的增长,最后系统瘫痪,那么如何最快最好的检测程序的稳定性,防止系统崩盘,作者用自已的亲身经历与各位分享解决这些问题的办法.</p>
+<p align="center">作为Internet最流行的编程语言之一,Java现正非常流行.我们的网络应用程序就主要采用Java语言开发,大体上分为客户端、服务器和数据库三个层次.在进入测试过程中,我们发现有一个程序模块系统内存和CPU资源消耗急剧增加,持续增长到出现java.lang.OutOfMemoryError为止.经过分析Java内存泄漏是破坏系统的主要因素.这里与大家分享我们在开发过程中遇到的Java内存泄漏的检测和处理解决过程.</p>
+<p><strong>一. Java是如何管理内存</strong></p>
+<p>为了判断Java中是否有内存泄露,我们首先必须了解Java是如何管理内存的.Java的内存管理就是对象的分配和释放问题.在Java中,内存的分配是由程序完成的,而内存的释放是由垃圾收集器(Garbage Collection,GC)完成的,程序员不需要通过调用函数来释放内存,但它只能回收无用并且不再被其它对象引用的那些对象所占用的空间.</p>
+<p>Java的内存垃圾回收机制是从程序的主要运行对象开始检查引用链,当遍历一遍后发现没有被引用的孤立对象就作为垃圾回收.GC为了能够正确释放对象,必须监控每一个对象的运行状态,包括对象的申请、引用、被引用、赋值等,GC都需要进行监控.监视对象状态是为了更加准确地、及时地释放对象,而释放对象的根本原则就是该对象不再被引用.</p>
+<p>在Java中,这些无用的对象都由GC负责回收,因此程序员不需要考虑这部分的内存泄露.虽然,我们有几个函数可以访问GC,例如运行GC的函数System.gc(),但是根据Java语言规范定义,该函数不保证JVM的垃圾收集器一定会执行.因为不同的JVM实现者可能使用不同的算法管理GC.通常GC的线程的优先级别较低.JVM调用GC的策略也有很多种,有的是内存使用到达一定程度时,GC才开始工作,也有定时执行的,有的是平缓执行GC,有的是中断式执行GC.但通常来说,我们不需要关心这些.</p>
+<p><strong>二. 什么是Java中的内存泄露</strong></p>
+<p>导致内存泄漏主要的原因是,先前申请了内存空间而忘记了释放.如果程序中存在对无用对象的引用,那么这些对象就会驻留内存,消耗内存,因为无法让垃圾回收器GC验证这些对象是否不再需要.如果存在对象的引用,这个对象就被定义为"有效的活动",同时不会被释放.要确定对象所占内存将被回收,我们就要务必确认该对象不再会被使用.典型的做法就是把对象数据成员设为null或者从集合中移除该对象.但当局部变量不需要时,不需明显的设为null,因为一个方法执行完毕时,这些引用会自动被清理.</p>
+<p>在Java中,内存泄漏就是存在一些被分配的对象,这些对象有下面两个特点,首先,这些对象是有被引用的,即在有向树形图中,存在树枝通路可以与其相连；其次,这些对象是无用的,即程序以后不会再使用这些对象.如果对象满足这两个条件,这些对象就可以判定为Java中的内存泄漏,这些对象不会被GC所回收,然而它却占用内存.</p>
+<p>这里引用一个常看到的例子,在下面的代码中,循环申请Object对象,并将所申请的对象放入一个Vector中,如果仅仅释放对象本身,但因为Vector仍然引用该对象,所以这个对象对GC来说是不可回收的.因此,如果对象加入到Vector后,还必须从Vector中删除,最简单的方法就是将Vector对象设置为null.</p>
+<p>实际上这些对象已经是无用的,但还被引用,GC就无能为力了(事实上GC认为它还有用),这一点是导致内存泄漏最重要的原因. 再引用另一个例子来说明Java的内存泄漏.假设有一个日志类Logger,其提供一个静态的log(String msg),任何其它类都可以调用Logger.Log(message)来将message的内容记录到系统的日志文件中.</p>
+<p>Logger类有一个类型为HashMap的静态变量temp,每次在执行log(message)的时候,都首先将message的值写入temp中(以当前线程+当前时间为键),在退出之前再从temp中将以当前线程和当前时间为键的条目删除.注意,这里当前时间是不断变化的,所以log在退出之前执行删除条目的操作并不能删除执行之初写入的条目.这样,任何一个作为参数传给log的字符串最终由于被Logger的静态变量temp引用,而无法得到回收,这种对象保持就是我们所说的Java内存泄漏. 总的来说,内存管理中的内存泄漏产生的主要原因：保留下来却永远不再使用的对象引用.</p>
+<p><strong>三. 几种典型的内存泄漏</strong></p>
+<p>我们知道了在Java中确实会存在内存泄漏,那么就让我们看一看几种典型的泄漏,并找出他们发生的原因和解决方法.</p>
+<p>3.1 全局集合</p>
+<p>在大型应用程序中存在各种各样的全局数据仓库是很普遍的,比如一个JNDI-tree或者一个session table.在这些情况下,必须注意管理储存库的大小.必须有某种机制从储存库中移除不再需要的数据.</p>
+<p>通常有很多不同的解决形式,其中最常用的是一种周期运行的清除作业.这个作业会验证仓库中的数据然后清除一切不需要的数据.另一种管理储存库的方法是使用反向链接(referrer)计数.然后集合负责统计集合中每个入口的反向链接的数目.这要求反向链接告诉集合何时会退出入口.当反向链接数目为零时,该元素就可以从集合中移除了.</p>
+<p>3.2 缓存&nbsp;<br>缓存一种用来快速查找已经执行过的操作结果的数据结构.因此,如果一个操作执行需要比较多的资源并会多次被使用,通常做法是把常用的输入数据的操作结果进行缓存,以便在下次调用该操作时使用缓存的数据.缓存通常都是以动态方式实现的,如果缓存设置不正确而大量使用缓存的话则会出现内存溢出的后果,因此需要将所使用的内存容量与检索数据的速度加以平衡.</p>
+<p>常用的解决途径是使用java.lang.ref.SoftReference类坚持将对象放入缓存.这个方法可以保证当虚拟机用完内存或者需要更多堆的时候,可以释放这些对象的引用.</p>
+<p>3.3 类装载器&nbsp;*****<br>Java类装载器的使用为内存泄漏提供了许多可乘之机.一般来说类装载器都具有复杂结构,因为类装载器不仅仅是只与"常规"对象引用有关,同时也和对象内部的引用有关.比如数据变量,方法和各种类.这意味着只要存在对数据变量,方法,各种类和对象的类装载器,那么类装载器将驻留在JVM中.既然类装载器可以同很多的类关联,同时也可以和静态数据变量关联,那么相当多的内存就可能发生泄漏.</p>
+<p><strong>四. 如何检测和处理内存泄漏</strong></p>
+<p>如何查找引起内存泄漏的原因一般有两个步骤:第一是安排有经验的编程人员对代码进行走查和分析,找出内存泄漏发生的位置;第二是使用专门的内存泄漏测试工具进行测试.</p>
+<p>第一个步骤:在代码走查的工作中,可以安排对系统业务和开发语言工具比较熟悉的开发人员对应用的代码进行了交叉走查,尽量找出代码中存在的数据库连接声明和结果集未关闭、代码冗余等故障代码.</p>
+<p>第二个步骤:就是检测Java的内存泄漏.在这里我们通常使用一些工具来检查Java程序的内存泄漏问题.市场上已有几种专业检查Java内存泄漏的工具,它们的基本工作原理大同小异,都是通过监测Java程序运行时,所有对象的申请、释放等动作,将内存管理的所有信息进行统计、分析、可视化.开发人员将根据这些信息判断程序是否有内存泄漏问题.这些工具包括Optimizeit Profiler,JProbe Profiler,JinSight , Rational 公司的Purify等.</p>
+<p>4.1检测内存泄漏的存在&nbsp;<br>这里我们将简单介绍我们在使用Optimizeit检查的过程.通常在知道发生内存泄漏之后,第一步是要弄清楚泄漏了什么数据和哪个类的对象引起了泄漏.</p>
+<p>一般说来,一个正常的系统在其运行稳定后其内存的占用量是基本稳定的,不应该是无限制的增长的.同样,对任何一个类的对象的使用个数也有一个相对稳定的上限,不应该是持续增长的.根据这样的基本假设,我们持续地观察系统运行时使用的内存的大小和各实例的个数,如果内存的大小持续地增长,则说明系统存在内存泄漏,如果特定类的实例对象个数随时间而增长(就是所谓的“增长率”),则说明这个类的实例可能存在泄漏情况.</p>
+<p>另一方面通常发生内存泄漏的第一个迹象是：在应用程序中出现了OutOfMemoryError.在这种情况下,需要使用一些开销较低的工具来监控和查找内存泄漏.虽然OutOfMemoryError也有可能应用程序确实正在使用这么多的内存；对于这种情况则可以增加JVM可用的堆的数量,或者对应用程序进行某种更改,使它使用较少的内存.</p>
+<p>但是,在许多情况下,OutOfMemoryError都是内存泄漏的信号.一种查明方法是不间断地监控GC的活动,确定内存使用量是否随着时间增加.如果确实如此,就可能发生了内存泄漏.</p>
+<p>4.2处理内存泄漏的方法&nbsp;<br>一旦知道确实发生了内存泄漏,就需要更专业的工具来查明为什么会发生泄漏.JVM自己是不会告诉您的.这些专业工具从JVM获得内存系统信息的方法基本上有两种：JVMTI和字节码技术(byte code instrumentation).Java虚拟机工具接口(Java Virtual Machine Tools Interface,JVMTI)及其前身Java虚拟机监视程序接口(Java Virtual Machine Profiling Interface,JVMPI)是外部工具与JVM通信并从JVM收集信息的标准化接口.字节码技术是指使用探测器处理字节码以获得工具所需的信息的技术.</p>
+<p>Optimizeit是Borland公司的产品,主要用于协助对软件系统进行代码优化和故障诊断,其中的Optimizeit Profiler主要用于内存泄漏的分析.Profiler的堆视图就是用来观察系统运行使用的内存大小和各个类的实例分配的个数的.</p>
+<p>首先,Profiler会进行趋势分析,找出是哪个类的对象在泄漏.系统运行长时间后可以得到四个内存快照.对这四个内存快照进行综合分析,如果每一次快照的内存使用都比上一次有增长,可以认定系统存在内存泄漏,找出在四个快照中实例个数都保持增长的类,这些类可以初步被认定为存在泄漏.通过数据收集和初步分析,可以得出初步结论:系统是否存在内存泄漏和哪些对象存在泄漏(被泄漏).</p>
+<p>接下来,看看有哪些其他的类与泄漏的类的对象相关联.前面已经谈到Java中的内存泄漏就是无用的对象保持,简单地说就是因为编码的错误导致了一条本来不应该存在的引用链的存在(从而导致了被引用的对象无法释放),因此内存泄漏分析的任务就是找出这条多余的引用链,并找到其形成的原因.查看对象分配到哪里是很有用的.同时只知道它们如何与其他对象相关联(即哪些对象引用了它们)是不够的,关于它们在何处创建的信息也很有用.</p>
+<p>最后,进一步研究单个对象,看看它们是如何互相关联的.借助于Profiler工具,应用程序中的代码可以在分配时进行动态添加,以创建堆栈跟踪.也有可以对系统中所有对象分配进行动态的堆栈跟踪.这些堆栈跟踪可以在工具中进行累积和分析.对每个被泄漏的实例对象,必然存在一条从某个牵引对象出发到达该对象的引用链.处于堆栈空间的牵引对象在被从栈中弹出后就失去其牵引的能力,变为非牵引对象.因此,在长时间的运行后,被泄露的对象基本上都是被作为类的静态变量的牵引对象牵引.</p>
+<p>总而言之, Java虽然有自动回收管理内存的功能,但内存泄漏也是不容忽视,它往往是破坏系统稳定性的重要因素.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><strong>Windows自带的Java内存查看命令</strong></p>
+<p>jinfo:可以输出并修改运行时的java 进程的opts。&nbsp;<br>jps:与unix上的ps类似，用来显示本地的java进程，可以查看本地运行着几个java程序，并显示他们的进程号。&nbsp;<br>jstat:一个极强的监视VM内存工具。可以用来监视VM内存内的各种堆和非堆的大小及其内存使用量。&nbsp;<br>jmap:打印出某个java进程（使用pid）内存内的所有'对象'的情况（如：产生那些对象，及其数量）。&nbsp;<br>jconsole:一个java GUI监视工具，可以以图表化的形式显示各种数据。并可通过远程连接监视远程的服务器VM。&nbsp;<br><br>详细：在使用这些工具前，先用JPS命令获取当前的每个JVM进程号，然后选择要查看的JVM。&nbsp;<br>jstat工具特别强大，有众多的可选项，详细查看堆内各个部分的使用量，以及加载类的数量。使用时，需加上查看进程的进程id，和所选参数。以下详细介绍各个参数的意义。&nbsp;<br>jstat -class pid:显示加载class的数量，及所占空间等信息。&nbsp;<br>jstat -compiler pid:显示VM实时编译的数量等信息。&nbsp;<br>jstat -gc pid:可以显示gc的信息，查看gc的次数，及时间。其中最后五项，分别是young gc的次数，young gc的时间，full gc的次数，full gc的时间，gc的总时间。&nbsp;<br>jstat -gccapacity:可以显示，VM内存中三代（young,old,perm）对象的使用和占用大小，如：PGCMN显示的是最小perm的内存使用量，PGCMX显示的是perm的内存最大使用量，PGC是当前新生成的perm内存占用量，PC是但前perm内存占用量。其他的可以根据这个类推， OC是old内纯的占用量。&nbsp;<br>jstat -gcnew pid:new对象的信息。&nbsp;<br>jstat -gcnewcapacity pid:new对象的信息及其占用量。&nbsp;<br>jstat -gcold pid:old对象的信息。&nbsp;<br>jstat -gcoldcapacity pid:old对象的信息及其占用量。&nbsp;<br>jstat -gcpermcapacity pid: perm对象的信息及其占用量。&nbsp;<br>jstat -util pid:统计gc信息统计。&nbsp;<br>jstat -printcompilation pid:当前VM执行的信息。&nbsp;<br>除了以上一个参数外，还可以同时加上 两个数字，如：jstat -printcompilation 3024 250 6是每250毫秒打印一次，一共打印6次，还可以加上-h3每三行显示一下标题。&nbsp;<br><br>jmap是一个可以输出所有内存中对象的工具，甚至可以将VM 中的heap，以二进制输出成文本。&nbsp;<br>命令：jmap -dump:format=b,file=heap.bin &lt;pid&gt;&nbsp;<br>file：保存路径及文件名&nbsp;<br>pid：进程编号&nbsp;<br>•jmap -histo:live&nbsp; pid| less :堆中活动的对象以及大小&nbsp;<br>•jmap -heap pid : 查看堆的使用状况信息&nbsp;<br><br><br>jinfo:的用处比较简单，就是能输出并修改运行时的java进程的运行参数。用法是jinfo -opt pid 如：查看2788的MaxPerm大小可以用 jinfo -flag MaxPermSize 2788。&nbsp;<br><br>jconsole是一个用java写的GUI程序，用来监控VM，并可监控远程的VM，非常易用，而且功能非常强。使用方法：命令行里打 jconsole，选则进程就可以了。&nbsp;</p>
+<p><img src="./Java内存泄露分析和解决方案及Windows自带查看工具 - 潜水的阳光 - 博客园_files/20141105101931693" alt="" width="907" height="510"><br><br></p>
+<p>JConsole中关于内存分区的说明。&nbsp;<br><br>Eden Space (heap)： 内存最初从这个线程池分配给大部分对象。&nbsp;<br>Survivor Space (heap)：用于保存在eden space内存池中经过垃圾回收后没有被回收的对象。&nbsp;<br>Tenured Generation (heap)：用于保持已经在 survivor space内存池中存在了一段时间的对象。&nbsp;<br>Permanent Generation (non-heap): 保存虚拟机自己的静态(refective)数据，例如类（class）和方法（method）对象。Java虚拟机共享这些类数据。这个区域被分割为只读的和只写的，&nbsp;<br>Code Cache (non-heap):HotSpot Java虚拟机包括一个用于编译和保存本地代码（native code）的内存，叫做“代码缓存区”（code cache）&nbsp;<br><br>•jstack ( 查看jvm线程运行状态，是否有死锁现象等等信息) : jstack pid : thread dump&nbsp;<br>•jstat -gcutil&nbsp; pid&nbsp; 1000 100&nbsp; : 1000ms统计一次gc情况统计100次；&nbsp;<br><br>另外推荐一款查看jmap dump 的内存对象工具 MemoryAnalyzer&nbsp;<br>网址：http://www.eclipse.org/mat/，可以查看dump时对象数量，内存占用，线程情况等。</p>
+<p>以及使用Memory Analyzer tool分析内存泄露</p>
+<p>http://www.blogjava.net/rosen/archive/2010/05/21/321575.html</p></div><div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="BlogPostCategory">分类: <a href="http://www.cnblogs.com/yinliang/category/564609.html" target="_blank">java</a></div>
+<div id="EntryTag"></div>
+<div id="blog_post_info"><div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(6431677,cb_blogId,1);green_channel_success(this,&#39;谢谢推荐！&#39;);">好文要顶</a>
+            <a id="green_channel_follow" onclick="follow(&#39;609af608-43a5-e311-8d02-90b11c0b17d6&#39;);" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="./Java内存泄露分析和解决方案及Windows自带查看工具 - 潜水的阳光 - 博客园_files/icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="./Java内存泄露分析和解决方案及Windows自带查看工具 - 潜水的阳光 - 博客园_files/wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/yinliang/" target="_blank"><img src="./Java内存泄露分析和解决方案及Windows自带查看工具 - 潜水的阳光 - 博客园_files/sample_face.gif" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/yinliang/">潜水的阳光</a><br>
+            <a href="http://home.cnblogs.com/u/yinliang/followees">关注 - 8</a><br>
+            <a href="http://home.cnblogs.com/u/yinliang/followers">粉丝 - 3</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow(&#39;609af608-43a5-e311-8d02-90b11c0b17d6&#39;);return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(6431677,&#39;Digg&#39;)">
+        <span class="diggnum" id="digg_count">0</span>
+    </div>
+    <div class="buryit" onclick="votePost(6431677,&#39;Bury&#39;)">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+</div>
+<div class="clear"></div>
+<div id="post_next_prev"><a href="http://www.cnblogs.com/yinliang/p/6431675.html" class="p_n_p_prefix">« </a> 上一篇：<a href="http://www.cnblogs.com/yinliang/p/6431675.html" title="发布于2017-02-23 00:45">JVM调优之jstack找出最耗cpu的线程并定位代码</a><br><a href="http://www.cnblogs.com/yinliang/p/6565036.html" class="p_n_p_prefix">» </a> 下一篇：<a href="http://www.cnblogs.com/yinliang/p/6565036.html" title="发布于2017-03-17 11:37">webstorm 2016</a><br></div>
+</div>
+
+
+		</div>
+		<div class="itemdesc">
+			发表于 <span id="post-date">2017-02-23 00:48</span> <a href="http://www.cnblogs.com/yinliang/">潜水的阳光</a> 阅读(<span id="post_view_count">304</span>) 评论(<span id="post_comment_count">0</span>)  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=6431677" rel="nofollow">编辑</a> <a href="http://www.cnblogs.com/yinliang/p/6431677.html#" onclick="AddToWz(6431677);return false;">收藏</a>
+		</div>
+	</div>
+	<div class="seperator">&nbsp;</div>
+	<script type="text/javascript">var allowComments=true,cb_blogId=178455,cb_entryId=6431677,cb_blogApp=currentBlogApp,cb_blogUserGuid='609af608-43a5-e311-8d02-90b11c0b17d6',cb_entryCreatedDate='2017/2/23 0:48:00';loadViewCount(cb_entryId);</script>
+	
+</div><a name="!comments"></a><div id="blog-comments-placeholder"></div><script type="text/javascript">var commentManager = new blogCommentManager();commentManager.renderComments(0);</script>
+<div id="comment_form" class="commentform">
+<a name="commentform"></a>
+<div id="divCommentShow"></div>
+<div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="http://www.cnblogs.com/yinliang/p/6431677.html#" onclick="return RefreshPage();">刷新页面</a><a href="http://www.cnblogs.com/yinliang/p/6431677.html#top">返回顶部</a></div>
+<div id="comment_form_container"><div class="login_tips">注册用户登录后才能发表评论，请 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login(&#39;commentform&#39;);">登录</a> 或 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，<a href="http://www.cnblogs.com/">访问</a>网站首页。</div></div>
+<div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+<div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_blank">【推荐】50万行VC++源码: 大型组态工控、电力仿真CAD与GIS源码库</a><br><a href="http://click.aliyun.com/m/21970/" target="_blank">【阿里云】云计算科技红利邀您免费体验！云服务器、云数据库等35+产品，6个月免费使用！</a><br><a href="https://cloud.tencent.com/developer/labs?fromSource=gwzcw.241259.241259.241259" target="_blank">【免费】从零开始学编程，开发者专属实验平台免费实践！</a><br><a href="https://www.upyun.com/618?utm_source=cnblogs&amp;utm_medium=referral&amp;utm_content=618" target="_blank">【推荐】又拍云年中大促！现在注册，充值最高送4800元</a><br></div>
+<div id="opt_under_post"></div>
+<div id="cnblogs_c1" class="c_ad_block"><a href="http://click.aliyun.com/m/19236/" target="_blank"><img width="300" height="250" src="./Java内存泄露分析和解决方案及Windows自带查看工具 - 潜水的阳光 - 博客园_files/24442-20170502163240086-1545306933.jpg" alt="阿里云B1"></a></div>
+<div id="under_post_news"><div class="itnews c_ad_block"><b>最新IT新闻</b>:<br> ·  <a href="http://news.cnblogs.com/n/572368/" target="_blank">百度回应与吴恩达新项目无关联 并祝福他工作顺利</a><br> ·  <a href="http://news.cnblogs.com/n/572367/" target="_blank">Note 8九月下旬发售 定价999欧元三星史上最贵</a><br> ·  <a href="http://news.cnblogs.com/n/572366/" target="_blank">黑客泄露微软Win 10大量源代码 或带来安全风险</a><br> ·  <a href="http://news.cnblogs.com/n/572365/" target="_blank">苹果停交专利使用费影响收入 高通欲在中国低端手机市场找补</a><br> ·  <a href="http://news.cnblogs.com/n/572364/" target="_blank">谷歌不再扫描用户Gmail内容创建精准定位广告 良心疼了？</a><br>» <a href="http://news.cnblogs.com/" title="IT新闻" target="_blank">更多新闻...</a></div></div>
+<div id="cnblogs_c2" class="c_ad_block"><a href="https://www.mtyun.com/activity-anniversary?site=cnblogs&amp;campaign=20170601sales" target="_blank"><img width="468" height="60" src="./Java内存泄露分析和解决方案及Windows自带查看工具 - 潜水的阳光 - 博客园_files/24442-20170615095125603-13625507.png" alt="美团云"></a></div>
+<div id="under_post_kb"><div class="itnews c_ad_block" id="kb_block"><b>最新知识库文章</b>:<br><div id="kb_recent"> ·  <a href="http://kb.cnblogs.com/page/570194/" target="_blank">小printf的故事：什么是真正的程序员？</a><br> ·  <a href="http://kb.cnblogs.com/page/569992/" target="_blank">程序员的工作、学习与绩效</a><br> ·  <a href="http://kb.cnblogs.com/page/569056/" target="_blank">软件开发为什么很难</a><br> ·  <a href="http://kb.cnblogs.com/page/565901/" target="_blank">唱吧DevOps的落地，微服务CI/CD的范本技术解读</a><br> ·  <a href="http://kb.cnblogs.com/page/566523/" target="_blank">程序员，如何从平庸走向理想？</a><br></div>» <a href="http://kb.cnblogs.com/" target="_blank">更多知识库文章...</a></div></div>
+<div id="HistoryToday" class="c_ad_block"></div>
+<script type="text/javascript">
+    fixPostBody();
+    setTimeout(function () { incrementViewCount(cb_entryId); }, 50);
+    deliverAdT2();
+    deliverAdC1();
+    deliverAdC2();    
+    loadNewsAndKb();
+    loadBlogSignature();
+    LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+    GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate);
+    loadOptUnderPost();
+    GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);   
+</script>
+</div>
+
+
+                    </div></td>
+                </tr>
+            </tbody></table>
+        </td>
+    </tr>
+</tbody></table>
+
+
+
+</body></html>

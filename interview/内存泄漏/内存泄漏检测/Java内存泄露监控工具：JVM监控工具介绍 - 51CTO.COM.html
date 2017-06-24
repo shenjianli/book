@@ -1,0 +1,1087 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0048)http://developer.51cto.com/art/201203/321431.htm -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=GBK"><script src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/v4.js" charset="utf-8" id="UYScript"></script><script src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/saved_resource" charset="utf-8" id="uyan_script"></script>
+
+<meta http-equiv="x-ua-compatible" content="ie=7">
+
+<title>Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM</title>
+<meta name="description" content="本文将对JVM监控工具jstack, jconsole, jinfo, jmap, jdb, jstat进行详细的介绍，具体内容请看下文。">
+<meta name="keywords" content="Java,JVM">
+<!--<base target="_blank">--><base href="." target="_blank">
+<link href="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/grid.css" rel="stylesheet" type="text/css">
+<link type="text/css" rel="stylesheet" href="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/art_master_top.css">
+<link href="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/css3.css" rel="stylesheet" type="text/css">
+<script src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/hm.js"></script><script language="javaScript" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/base_art.js"></script>
+<script src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/index_1_down.js"></script>
+<style type="text/css">
+.bds_tools a{ padding:0; margin:0;}
+</style>
+<style type="text/css"></style><link href="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/bdsstyle.css" rel="stylesheet" type="text/css"><script src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/logger.js"></script><style type="text/css">
+:root .ad.super,
+:root #content > #center > .dose > .dosesingle,
+:root #content > #right > .dose > .dosesingle,
+:root [href^="http://ad-apac.doubleclick.net/"]
+{ display: none !important; }
+:root *[skxbi8c][hidden] { display: none !important; }</style></head>
+<body><iframe frameborder="0" style="display: none;" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/saved_resource.html"></iframe><div id="bdshare_s" style="display: block;"><iframe id="bdsIfr" style="position:absolute;display:none;z-index:9999;" frameborder="0" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/saved_resource(1).html"></iframe><div id="bdshare_l" style="display: none;"><div id="bdshare_l_c"><h6>分享到</h6><ul><li><a href="http://developer.51cto.com/art/201203/321431.htm#" class="bds_mshare mshare">一键分享</a></li><li><a href="http://developer.51cto.com/art/201203/321431.htm#" class="bds_qzone qqkj">QQ空间</a></li><li><a href="http://developer.51cto.com/art/201203/321431.htm#" class="bds_tsina xlwb">新浪微博</a></li><li><a href="http://developer.51cto.com/art/201203/321431.htm#" class="bds_bdysc bdysc">百度云收藏</a></li><li><a href="http://developer.51cto.com/art/201203/321431.htm#" class="bds_renren rrw">人人网</a></li><li><a href="http://developer.51cto.com/art/201203/321431.htm#" class="bds_tqq txwb">腾讯微博</a></li><li><a href="http://developer.51cto.com/art/201203/321431.htm#" class="bds_bdxc bdxc">百度相册</a></li><li><a href="http://developer.51cto.com/art/201203/321431.htm#" class="bds_kaixin001 kxw">开心网</a></li><li><a href="http://developer.51cto.com/art/201203/321431.htm#" class="bds_tqf txpy">腾讯朋友</a></li><li><a href="http://developer.51cto.com/art/201203/321431.htm#" class="bds_tieba bdtb">百度贴吧</a></li><li><a href="http://developer.51cto.com/art/201203/321431.htm#" class="bds_douban db">豆瓣网</a></li><li><a href="http://developer.51cto.com/art/201203/321431.htm#" class="bds_tsohu shwb">搜狐微博</a></li><li><a href="http://developer.51cto.com/art/201203/321431.htm#" class="bds_bdhome bdhome">百度新首页</a></li><li><a href="http://developer.51cto.com/art/201203/321431.htm#" class="bds_sqq sqq">QQ好友</a></li><li><a href="http://developer.51cto.com/art/201203/321431.htm#" class="bds_thx thx">和讯微博</a></li><li><a href="http://developer.51cto.com/art/201203/321431.htm#" class="bds_more">更多...</a></li></ul><p><a href="http://developer.51cto.com/art/201203/321431.htm#" class="goWebsite">百度分享</a></p></div></div></div>
+<!-- 导航 开始-->
+<script id="allmobilize" charset="utf-8" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/allmobilize.min.js"></script><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="http://developer.51cto.com/art/201203/321431.htm#">
+<div id="home_top">    <div class="top_nav">        <div class="left" style="width:400px"><div class="logo_51cto" title="51CTO.COM - 技术成就梦想 -  中国领先的IT技术网站"></div><a href="http://www.51cto.com/">首页</a><img width="16" height="25" align="absmiddle" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/top_bg_xian.gif" style="padding-top: 2px;"><a onmouseover="show(1,this);" onmouseout="popupClose();" href="http://www.51cto.com/col/35/" target="_blank">技术频道<img align="absmiddle" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/nav_ico1.gif" style="padding-left: 4px;"></a><img width="16" height="25" align="absmiddle" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/top_bg_xian.gif"><a onmouseover="show(2,this);" onmouseout="popupClose();" href="http://www.51cto.com/" target="_blank">51CTO旗下网站<img align="absmiddle" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/nav_ico1.gif" style="padding-left: 4px;"></a><img width="16" height="25" align="absmiddle" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/top_bg_xian.gif"><a href="http://www.51cto.com/about/map.htm" target="_blank">地图</a> <a href="http://www.51cto.com/about/rss.html" target="_blank"><img src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/143749870.gif" style="vertical-align:middle; margin-bottom: 5px; margin-left:5px;"></a>       </div>        <div class="right">            <div class="more"><img width="27" height="16" align="absmiddle" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/top_shequ.gif"><a href="http://wot.51cto.com/" target="_blank" style="color:#CC0000">WOT</a><a href="http://edu.51cto.com/" target="_blank" style="color:#CC0000">学院</a><a href="http://down.51cto.com/" target="_blank">下载</a><a href="http://bbs.51cto.com/" target="_blank">论坛</a><a href="http://blog.51cto.com/" target="_blank">博客</a><a onmouseover="show(3,this)" onmouseout="popupClose()" href="javascript:viod(0);">更多<img align="absmiddle" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/nav_ico1.gif" style="padding-left: 4px;"></a>            </div>            <span id="login_status"><div class="login" style="padding-top:8px; text-align:right;"><a href="http://home.51cto.com/index?reback=http://developer.51cto.com/art/201203/321431.htm" target="_self">登录</a><a href="http://home.51cto.com/user/register?reback=http://developer.51cto.com/art/201203/321431.htm" target="_self">注册</a><a href="http://home.51cto.com/members/in-fo?down" target="_blank"><span class="jsVipDrop" style="position: relative;"><img src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/vip_grey2.png" style="float:right; margin-top:5px"><div id="vip_mes_top" style="display:none;position: absolute;right:-75px;top: 17px;width: 137px;z-index: 99;"><div style="background: #faf7e6 none repeat scroll 0 0;border: 1px solid #ecb7a5;color: #666;font-size: 12px;padding: 3px 5px;position: relative;"><span style="background: rgba(0, 0, 0, 0) url(https://static2.51cto.com/home/web/images/hidearro.png) no-repeat scroll center center;display: inline-block;height: 7px;position: absolute;right: 57px;top: -6px;width: 12px;"></span><div style="color:#f60; text-align:center;">一个会员，全站特权</div></div></div></span></a></div></span>                </div>    </div></div>
+<div class="subMenu1" id="s1" onmouseover="popupNoClose();" onmouseout="popupClose();">
+<ul>
+<li><a href="http://network.51cto.com/" target="_blank">网络</a></li>
+<li><a href="http://netsecurity.51cto.com/" target="_blank">安全</a></li>
+<li><a href="http://developer.51cto.com/" target="_blank">开发</a></li>
+<li><a href="http://database.51cto.com/" target="_blank">数据库</a></li>
+<li><a href="http://server.51cto.com/" target="_blank">服务器</a></li>
+<li><a href="http://os.51cto.com/" target="_blank">系统</a></li>
+<li><a href="http://virtual.51cto.com/" target="_blank">虚拟化</a></li>
+<li><a href="http://cloud.51cto.com/" target="_blank">云计算</a></li>
+<li><a href="http://developer.51cto.com/embed/" target="_blank">嵌入式</a></li>
+<li><a href="http://mobile.51cto.com/" target="_blank">移动开发</a></li>
+</ul>
+</div> 
+<div class="subMenu2" id="s2" onmouseover="popupNoClose()" onmouseout="popupClose()">
+<ul>
+<li><a href="http://www.51cto.com/" target="_blank" title="中国领先的IT技术网站">51CTO.COM</a></li>
+<li><a href="http://cio.51cto.com/" target="_blank" title="中国首个专门服务于CIO的专业网站">CIOage.com</a></li>
+<li><a href="http://www.watchstor.com/" target="_blank" title="领先的中文存储网络媒体">WatchStor.com</a></li>
+<li><a href="http://www.hc3i.cn/" target="_blank" title="中国首家专注于数字医疗及医疗信息化的专业网站">HC3i.cn</a></li>
+</ul>
+</div>
+<script src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/jquery-1.8.3.min.js"></script>
+<script>
+$(function(){
+	$(".bann").height(265);	 
+	$(".bann").css("background-color","white");
+	var s=window.location.toString();
+	var s1=s.substr(7,s.length);
+	var s2=s1.indexOf(".");
+	s=s.substr(7,s2);
+	if (s == 'cloud') {
+	     $(".hot").css("top","1200px");
+		$(".g_13").find(".focus").css("height","1390px");
+	}else{
+		$(".hot").css("top","450px");
+
+	}
+	//$(".fixfloat").css("height","640px");
+	$(".g_13").find(".focus").css("height","640px");
+	var url = window.location.host;
+	if (url.indexOf('developer.51cto.com/col')) {
+		$('.banner_r').css('position', 'relative');
+		$('.banner_r').children().append('<div style="right: 0px; width: 24px; height: 14px; z-index: 12; position: absolute; background: transparent url(http://s5.51cto.com/wyfs02/M00/86/BB/wKiom1fI4nWStYqXAAAEoZQn6vs942.png) repeat scroll 0% 0%; bottom: 2px;"></div>');
+	}
+});
+var edunum=2;
+$(function(){
+	$("#change").click(function(){
+		$("#edu > ul").css("display","none");
+		var eduid='edu'+edunum;
+		$("#" + eduid).css("display","block");	
+		if(edunum<4){
+			edunum++;	
+		}else{
+			edunum=1;	
+		}							
+	});  
+});
+</script>
+
+<script src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/head_art_more1.js"></script><div class="subMenu3" id="s3" onmouseover="popupNoClose()" onmouseout="popupClose()" style="z-index:9999;position: absolute;">
+<ul>
+<li><a href="http://home.51cto.com/" target="_blank">家园</a></li>
+<li><a href="http://gaozhao.51cto.com/" target="_blank" style="color:red;">招聘</a></li>
+<li><a href="http://wot.51cto.com/" target="_blank">WOT</a></li>
+<li><a href="http://edu.51cto.com/" target="_blank">学院</a></li>
+<li><a href="http://blog.51cto.com/" target="_blank">博客</a></li>
+<li><a href="http://bbs.51cto.com/" target="_blank">论坛</a></li>
+<li><a href="http://down.51cto.com/" target="_blank">下载</a></li>
+<li><a href="http://selftest.51cto.com/" target="_blank">自测</a></li>
+<li><a href="http://doctor.51cto.com/" target="_blank">门诊</a></li>
+<li><a href="http://blog.51cto.com/newsletter/" target="_blank">周刊</a></li>
+<li><a href="http://book.51cto.com/" target="_blank">读书</a></li>
+<li><a href="http://t.51cto.com/" target="_blank" style="color:red;">题库</a></li>
+</ul>
+</div>
+
+<!-- 登陆信息 -->
+<!-- 导航 结束--> 
+ <div class="g_39 mb10">
+	<div id="tonglanad" class="fl"><script language="JavaScript" src="http://www.51cto.com/ad/art/tonglan/ad.js"></script></div>
+	<div id="list4" class="fr">
+		<ul>
+			<li id="wordlinkad1"></li>
+			<li id="wordlinkad2"></li>
+			<li id="wordlinkad3"></li>
+			<li id="wordlinkad4"></li>
+		</ul>
+	</div>
+<br class="dle">
+</div>
+
+<div class="g_39 menu">
+<div class="subNav_logo"><img src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/kaifa_logo.gif"></div>
+<div class="subNav_l"><a href="http://developer.51cto.com/">首页</a> | <a href="http://developer.51cto.com/java/">Java</a> | <a href="http://developer.51cto.com/net/">.NET</a> | <a href="http://developer.51cto.com/web/">Web</a> | <a href="http://developer.51cto.com/col/585/">语言工具</a> | <a href="http://developer.51cto.com/col/1312/">测试</a> | <a href="http://developer.51cto.com/col/583/" target="_blank">移动</a> | <a href="http://developer.51cto.com/col/1308/">架构</a> | <a href="http://developer.51cto.com/col/586/">项目管理</a> | <a href="http://developer.51cto.com/col/577/">大数据</a> | <a href="http://publish.51cto.com/list/460/">全部文章</a></div>
+  
+<div class="search fr">
+<dl>
+<form name="searchform" action="http://www.51cto.com/php/search.php" target="_blank" method="post" style="margin:0px; padding:0px;">
+<dt class="fl"><input name="keyword" type="text" class="searchInput f14 input" value="请输入关键字" onfocus="doempty(this, &#39;请输入关键字&#39;);" onblur="doempty(this, &#39;请输入关键字&#39;);"></dt>
+<dd class="fl"><input type="image" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/search.gif"></dd></form>
+</dl>
+</div>
+<br class="dle">
+</div>
+<div class="g_39 b3-s-4273B3 rel">
+<!--width : 26*25 - 15 = 635px-->
+<div class="g_26 fl m_l">
+<div class="brief bgF8F8F8">
+<p class="crumb ">您所在的位置：<a href="http://developer.51cto.com/">开发</a> &gt; <a href="http://developer.51cto.com/java/">Java</a> &gt; <a href="http://developer.51cto.com/col/1006/">深入JVM</a> &gt;  <b>Java内存泄露监控工具：JVM监控工具介绍</b> </p>
+<h1>Java内存泄露监控工具：JVM监控工具介绍</h1>
+<div class="msg">
+<div>2012-03-02 14:20  jacky0922  jacky0922的博客 <span class="f12-a"><a href="http://developer.51cto.com/art/201203/321431.htm#commment" target="_self"></a></span> 字号：<span class="f14-b"><a href="javascript:setfont(12);" target="_self">T</a></span> | <span class="f16-b"><a href="javascript:setfont(16);" target="_self">T</a></span></div>
+<div class="artHd" id="books" style="padding:5px 25px;display:none;"><script language="JavaScript" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/getBookData.php"></script></div>
+<div class="fav"><a href="javascript:favorBox(&#39;open&#39;);" title="一键收藏，随时查看，分享好友！" target="_self"><img src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/Fav.gif" alt="一键收藏，随时查看，分享好友！" border="0"></a></div>
+</div>
+<div class="brieftext">
+<p class="f14 green">本文将对JVM监控工具jstack, jconsole, jinfo, jmap, jdb, jstat进行详细的介绍，具体内容请看下文。</p>
+<p class="ad">AD：<script src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/keywords_ad_new.js"></script><a href="http://mobile.51cto.com/mobile/mdsa12/" target="_blank" style="text-decoration: none;color:red">51CTO 网+ 第十二期沙龙：大话数据之美_如何用数据驱动用户体验</a>
+</p>
+</div>
+</div>
+<div class="tag bgF8F8F8" id="indexlist" style="display:none;">
+<ul id="indexliststr">
+</ul>
+<br class="dle">
+</div>
+<div class="content bgF8F8F8 f14">
+<div id="content">
+<p></p><p><strong>jstack</strong> -- 如果java程序崩溃生成core文件，jstack工具可以用来获得core文件的java stack和native stack的信息，从而可以轻松地知道java程序是如何崩溃和在程序何处发生问题。另外，jstack工具还可以附属到正在运行的java程序中，看到 当时运行的java程序的java stack和native stack的信息, 如果现在运行的java程序呈现hung的状态，jstack是非常有用的。目前只有在Solaris和Linux的JDK版本里面才有。</p>
+<p><strong>jconsole</strong> – jconsole是基于Java Management Extensions (JMX)的实时图形化监测工具，这个工具利用了内建到JVM里面的JMX指令来提供实时的性能和资源的监控，包括了Java 程序的内存使用，Heap size, 线程的状态，类的分配状态和空间使用等等。</p>
+<p><strong>jinfo</strong> – jinfo可以从core文件里面知道崩溃的Java应用程序的配置信息，目前只有在Solaris和Linux的JDK版本里面才有。</p>
+<p><strong>jmap</strong> – jmap 可以从core文件或进程中获得内存的具体匹配情况，包括Heap size, Perm size等等，目前只有在Solaris和Linux的JDK版本里面才有。</p>
+<p><strong>jdb</strong> – jdb 用来对core文件和正在运行的Java进程进行实时地调试，里面包含了丰富的命令帮助您进行调试，它的功能和Sun studio里面所带的dbx非常相似，但 jdb是专门用来针对Java应用程序的。</p>
+<p><strong>jstat</strong> – jstat利用了JVM内建的指令对Java应用程序的资源和性能进行实时的命令行的监控，包括了对Heap size和垃圾回收状况的监控等等。</p>
+<p><strong>jps</strong> – jps是用来查看JVM里面所有进程的具体状态, 包括进程ID，进程启动的路径等等。</p>
+<p><strong><span style="color: #0000ff">jstatd</span></strong></p>
+<p>启动jvm监控服务。它是一个基于rmi的应用，向远程机器提供本机jvm应用程序的信息。默认端口1099。</p>
+<p>实例：jstatd -J-Djava.security.policy=my.policy</p>
+<p>my.policy文件需要自己建立，内如如下：</p>
+<pre><ol class="dp-j"><li class="alt"><span><span>grant&nbsp;codebase&nbsp;</span><span class="string">"file:$JAVA_HOME/lib/tools.jar"</span><span>&nbsp;{ &nbsp;</span></span></li><li><span>permission&nbsp;java.security.AllPermission; &nbsp;</span></li><li class="alt"><span>};&nbsp;</span></li></ol></pre>
+<p>这是安全策略文件，因为jdk对jvm做了jaas的安全检测，所以我们必须设置一些策略，使得jstatd被允许作网络操作</p>
+<p>上面的操作没有通过，出现：</p>
+<p><span style="color: #ff0000">Could not create remote object<br>
+access denied (java.util.PropertyPermission java.rmi.server.ignoreSubClasses write)<br>
+java.security.AccessControlException: access denied (java.util.PropertyPermission java.rmi.server.ignoreSubClasses write)<br>
+at java.security.AccessControlContext.checkPermission(AccessControlContext.java:323)<br>
+at java.security.AccessController.checkPermission(AccessController.java:546)<br>
+at java.lang.SecurityManager.checkPermission(SecurityManager.java:532)<br>
+at java.lang.System.setProperty(System.java:727)<br>
+at sun.tools.jstatd.Jstatd.main(Jstatd.java:122)</span></p>
+<p>create in your usr/java/bin the jstatd.all.policy file, with the content must be</p>
+<pre><ol class="dp-j"><li class="alt"><span><span>grant&nbsp;codebase&nbsp;</span><span class="string">"file:${java.home}/../lib/tools.jar"</span><span>&nbsp;{&nbsp; &nbsp;</span></span></li><li><span>permission&nbsp;java.security.AllPermission;&nbsp; &nbsp;</span></li><li class="alt"><span>};&nbsp;&nbsp;</span></li></ol></pre>
+<p><strong><span style="color: #0000ff">JPS</span></strong></p>
+<p>列出所有的jvm实例</p>
+<p>实例：</p>
+<p>jps</p>
+<p>列出本机所有的jvm实例</p>
+<pre>jps 192.168.0.77</pre>
+<p>列出远程服务器192.168.0.77机器所有的jvm实例，采用rmi协议，默认连接端口为1099（前提是远程服务器提供jstatd服务）</p>
+<p>输出内容如下：</p>
+<pre>jones@jones:~/data/ebook/java/j2se/jdk_gc$ jps 
+6286 Jps 
+6174 Jstat</pre>
+<p><strong><span style="color: #0000ff">jconsole</span></strong></p>
+<p>一个图形化界面，可以观察到java进程的gc，class，内存等信息。虽然比较直观，但是个人还是比较倾向于使用jstat命令（在最后一部分会对jstat作详细的介绍）。</p>
+<p><strong><span style="color: #0000ff">jinfo （linux下特有）</span></strong></p>
+<p>观察运行中的java程序的运行环境参数：参数包括Java System属性和JVM命令行参数</p>
+<p>实例：jinfo 2083</p>
+<p>其中2083就是java进程id号，可以用jps得到这个id号。</p>
+<p>输出内容太多了，不在这里一一列举，大家可以自己尝试这个命令。</p>
+<p><span style="color: #0000ff"><strong>jstack （linux下特有）</strong></span></p>
+<p>可以观察到jvm中当前所有线程的运行情况和线程当前状态</p>
+<p>jstack 2083</p>
+<p>输出内容如下：</p>
+<p><a target="_blank" href="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/1448200.jpg"><img class="fit-image" onload="javascript:if(this.width&gt;498)this.width=498;" onmousewheel="javascript:return big(this)" style="width: 443px; height: 267px" border="0" alt="" width="985" height="543" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/1448200.jpg"></a></p>
+<p><strong><span style="color: #0000ff">jmap （linux下特有，也是很常用的一个命令）</span></strong></p>
+<p>观察运行中的jvm物理内存的占用情况。</p>
+<p>参数如下：</p>
+<p><strong>-heap </strong>：打印jvm heap的情况<br>
+<strong>-histo</strong>： 打印jvm heap的直方图。其输出信息包括类名，对象数量，对象占用大小。<br>
+<strong>-histo：live</strong> ： 同上，但是只答应存活对象的情况<br>
+<strong>-permstat</strong>： 打印permanent generation heap情况</p>
+<p>命令使用：</p>
+<pre>jmap -heap 2083</pre>
+<p>可以观察到New Generation（Eden Space，From Space，To Space）,tenured generation,Perm Generation的内存使用情况</p>
+<p>输出内容：</p>
+<p><a target="_blank" href="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/1448201.png"><img class="fit-image" onload="javascript:if(this.width&gt;498)this.width=498;" onmousewheel="javascript:return big(this)" border="0" alt="" width="443" height="514" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/1448201.png"></a></p>
+<pre>jmap -histo 2083 ｜ jmap -histo:live 2083</pre>
+<p>可以观察heap中所有对象的情况（heap中所有生存的对象的情况）。包括对象数量和所占空间大小。</p>
+<p>输出内容：</p>
+<p><a target="_blank" href="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/1448202.png"><img class="fit-image" onload="javascript:if(this.width&gt;498)this.width=498;" onmousewheel="javascript:return big(this)" style="width: 371px; height: 345px" border="0" alt="" width="570" height="545" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/1448202.png"></a></p>
+<p>写个脚本，可以很快把占用heap最大的对象找出来，对付内存泄漏特别有效。</p>
+<p><span style="color: #0000ff"><strong>jstat</strong></span></p>
+<p>最后要重点介绍下这个命令。</p>
+<p>这是jdk命令中比较重要，也是相当实用的一个命令，可以观察到classloader，compiler，gc相关信息</p>
+<p>具体参数如下：</p>
+<p>-class：统计class loader行为信息</p>
+<p>-compile：统计编译行为信息</p>
+<p>-gc：统计jdk gc时heap信息</p>
+<p>-gccapacity：统计不同的generations（不知道怎么翻译好，包括新生区，老年区，permanent区）相应的heap容量情况</p>
+<p>-gccause：统计gc的情况，（同-gcutil）和引起gc的事件</p>
+<p>-gcnew：统计gc时，新生代的情况</p>
+<p>-gcnewcapacity：统计gc时，新生代heap容量</p>
+<p>-gcold：统计gc时，老年区的情况</p>
+<p>-gcoldcapacity：统计gc时，老年区heap容量</p>
+<p>-gcpermcapacity：统计gc时，permanent区heap容量</p>
+<p>-gcutil：统计gc时，heap情况</p>
+<p>-printcompilation：不知道干什么的，一直没用过。</p>
+<p>一般比较常用的几个参数是：</p>
+<p>jstat -class 2083 1000 10 （每隔1秒监控一次，一共做10次）</p>
+<p>输出内容含义如下：</p>
+<table style="width: 500px; height: 144px" border="1" cellspacing="2" cellpadding="2" align="center">
+    <tbody>
+        <tr>
+            <td>Loaded</td>
+            <td>Number of classes loaded.</td>
+        </tr>
+        <tr>
+            <td>Bytes</td>
+            <td>Number of Kbytes loaded.</td>
+        </tr>
+        <tr>
+            <td>Unloaded</td>
+            <td>Number of classes unloaded.</td>
+        </tr>
+        <tr>
+            <td>Bytes</td>
+            <td>Number of Kbytes unloaded.</td>
+        </tr>
+        <tr>
+            <td>Time</td>
+            <td>Time spent performing class load and unload operations.</td>
+        </tr>
+    </tbody>
+</table>
+<p>jstat -gc 2083 2000 20（每隔2秒监控一次，共做10）</p>
+<p>输出内容含义如下：</p>
+<table style="width: 500px; height: 144px" border="1" cellspacing="2" cellpadding="2" align="center">
+    <tbody>
+        <tr>
+            <td>S0C</td>
+            <td>Current survivor space 0 capacity (KB).</td>
+        </tr>
+        <tr>
+            <td>EC</td>
+            <td>Current eden space capacity (KB).</td>
+        </tr>
+        <tr>
+            <td>EU</td>
+            <td>Eden space utilization (KB).</td>
+        </tr>
+        <tr>
+            <td>OC</td>
+            <td>Current old space capacity (KB).</td>
+        </tr>
+        <tr>
+            <td>OU</td>
+            <td>Old space utilization (KB).</td>
+        </tr>
+        <tr>
+            <td>PC</td>
+            <td>Current permanent space capacity (KB).</td>
+        </tr>
+        <tr>
+            <td>PU</td>
+            <td>Permanent space utilization (KB).</td>
+        </tr>
+        <tr>
+            <td>YGC</td>
+            <td>Number of young generation GC Events.</td>
+        </tr>
+        <tr>
+            <td>YGCT</td>
+            <td>Young generation garbage collection time.</td>
+        </tr>
+        <tr>
+            <td>FGC</td>
+            <td>Number of full GC events.</td>
+        </tr>
+        <tr>
+            <td>FGCT</td>
+            <td>Full garbage collection time.</td>
+        </tr>
+        <tr>
+            <td>GCT</td>
+            <td>Total garbage collection time.</td>
+        </tr>
+    </tbody>
+</table>
+<p>输出内容：</p>
+<p><a target="_blank" href="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/1448203.png"><img class="fit-image" onload="javascript:if(this.width&gt;498)this.width=498;" onmousewheel="javascript:return big(this)" style="width: 538px; height: 114px" border="0" alt="" width="498" height="207" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/1448203.png"></a></p>
+<p>如果能熟练运用这些命令，尤其是在linux下，那么完全可以代替jprofile等监控工具了，谁让它收费呢。呵呵。<br>
+用命令的好处就是速度快，并且辅助于其他命令，比如grep gawk sed等，可以组装多种符合自己需求的工具。</p>
+<ul>
+    <li><span style="color: #0000ff"><strong>jps 的用法</strong></span></li>
+</ul>
+<p>用来查看 JVM 里面所有进程的具体状态 , 包括进程 ID ，进程启动的路径等等。 与 unix 上的 ps 类似，用来显示本地的 java 进程，可以查看本地运行着几个 java 程序，并显示他们的进程号。</p>
+<p>[root@localhost ~]# jps</p>
+<p>25517 Jps</p>
+<p>25444 Bootstrap</p>
+<ul>
+    <li><span style="color: #0000ff"><strong>jstack 的用法</strong></span></li>
+</ul>
+<p>如果 java 程序崩溃生成 core 文件， jstack 工具可以用来获得 core 文件的 java stack 和 native stack 的信息，从而可以轻松地知道 java 程序是如何崩溃和在程序何处发生问题。另外， jstack 工具还可以附属到正在运行的 java 程序中，看到当时运行的 java 程序的 java stack 和 native stack 的信息 , 如果现在运行的 java 程序呈现 hung 的状态， jstack 是非常有用的。目前只有在 Solaris 和 Linux 的 JDK 版本里面才有。</p>
+<p><span style="color: #ff0000">[root@localhost bin]# jstack 25444</span></p>
+<p>Attaching to process ID 25917, please wait...</p>
+<p>Debugger attached successfully.</p>
+<p>Client compiler detected.</p>
+<p>JVM version is 1.5.0_08-b03</p>
+<p>Thread 25964: (state = BLOCKED)</p>
+<p>Error occurred during stack walking:</p>
+<p>sun.jvm.hotspot.debugger.DebuggerException: sun.jvm.hotspot.debugger.DebuggerException: get_thread_regs failed for a lwp</p>
+<p>at sun.jvm.hotspot.debugger.linux.LinuxDebuggerLocal$LinuxDebuggerLocalWorkerThread.execute(LinuxDebuggerLocal.java:134)</p>
+<p>at sun.jvm.hotspot.debugger.linux.LinuxDebuggerLocal.getThreadIntegerRegisterSet(LinuxDebuggerLocal.java:437)</p>
+<p>at sun.jvm.hotspot.debugger.linux.LinuxThread.getContext(LinuxThread.java:48)</p>
+<p>at</p>
+<ul>
+    <li><span style="color: #0000ff"><strong>jstat 的用法</strong></span></li>
+</ul>
+<p>用以判断JVM 是否存在内存问题呢？如何判断JVM 垃圾回收是否正常？一般的top 指令基本上满足不了这样的需求，因为它主要监控的是总体的系统资源，很难定位到java 应用程序。</p>
+<p>Jstat 是JDK 自带的一个轻量级小工具。全称“Java Virtual Machine statistics monitoring tool” ，它位于java 的bin 目录下，主要利用JVM 内建的指令对Java 应用程序的资源和性能进行实时的命令行的监控，包括了对Heap size 和垃圾回收状况的监控。可见，Jstat 是轻量级的、专门针对JVM 的工具，非常适用。由于JVM 内存设置较大，图中百分比变化不太明显</p>
+<p>一个极强的监视 VM 内存工具。可以用来监视 VM 内存内的各种堆和非堆的大小及其内存使用量。</p>
+<p>jstat 工具特别强大，有众多的可选项，详细查看堆内各个部分的使用量，以及加载类的数量。使用时，需加上查看进程的进程 id ，和所选参数。</p>
+<p>语法结构：</p>
+<p>Usage: jstat -help|-options</p>
+<p>jstat -&lt;option&gt; [-t] [-h&lt;lines&gt;] &lt;vmid&gt; [&lt;interval&gt; [&lt;count&gt;]]</p>
+<p>参数解释：</p>
+<p>Options — 选项，我们一般使用 -gcutil 查看gc 情况</p>
+<p>vmid — VM 的进程号，即当前运行的java 进程号</p>
+<p>interval– 间隔时间，单位为秒或者毫秒</p>
+<p>count — 打印次数，如果缺省则打印无数次</p>
+<p></p>
+<p>S0 — Heap 上的 Survivor space 0 区已使用空间的百分比</p>
+<p>S1 — Heap 上的 Survivor space 1 区已使用空间的百分比</p>
+<p>E — Heap 上的 Eden space 区已使用空间的百分比</p>
+<p>O — Heap 上的 Old space 区已使用空间的百分比</p>
+<p>P — Perm space 区已使用空间的百分比</p>
+<p>YGC — 从应用程序启动到采样时发生 Young GC 的次数</p>
+<p>YGCT– 从应用程序启动到采样时 Young GC 所用的时间( 单位秒 )</p>
+<p>FGC — 从应用程序启动到采样时发生 Full GC 的次数</p>
+<p>FGCT– 从应用程序启动到采样时 Full GC 所用的时间( 单位秒 )</p>
+<p>GCT — 从应用程序启动到采样时用于垃圾回收的总时间( 单位秒)</p>
+<p><strong>实例使用1 ：</strong></p>
+<p><span style="color: #ff0000"><strong>[root@localhost bin]# jstat -gcutil 25444</strong></span></p>
+<p>S0 S1 E O P YGC YGCT FGC FGCT GCT</p>
+<p>11.63 0.00 56.46 66.92 98.49 162 0.248 6 0.331 0.579</p>
+<p><strong>实例使用 2 ：</strong></p>
+<p><span style="color: #ff0000"><strong>[root@localhost bin]# jstat -gcutil 25444 1000 5</strong></span></p>
+<p>S0 S1 E O P YGC YGCT FGC FGCT GCT</p>
+<p>73.54 0.00 99.04 67.52 98.49 166 0.252 6 0.331 0.583</p>
+<p>73.54 0.00 99.04 67.52 98.49 166 0.252 6 0.331 0.583</p>
+<p>73.54 0.00 99.04 67.52 98.49 166 0.252 6 0.331 0.583</p>
+<p>73.54 0.00 99.04 67.52 98.49 166 0.252 6 0.331 0.583</p>
+<p>73.54 0.00 99.04 67.52 98.49 166 0.252 6 0.331 0.583</p>
+<p>我们可以看到，5 次young gc 之后，垃圾内存被从Eden space 区(E) 放入了Old space 区(O) ，并引起了百分比的变化，导致Survivor space 使用的百分比从73.54%(S0) 降到0%(S1) 。有效释放了内存空间。绿框中，我们可以看到，一次full gc 之后，Old space 区(O) 的内存被回收，从99.05% 降到67.52% 。</p>
+<p>图中同时打印了young gc 和full gc 的总次数、总耗时。而，每次young gc 消耗的时间，可以用相间隔的两行YGCT 相减得到。每次full gc 消耗的时间，可以用相隔的两行FGCT 相减得到。例如红框中表示的第一行、第二行之间发生了1 次young gc ，消耗的时间为0.252-0.252 ＝0.0 秒。</p>
+<p>常驻内存区(P) 的使用率，始终停留在98.49% 左右，说明常驻内存没有突变，比较正常。</p>
+<p>如果young gc 和full gc 能够正常发生，而且都能有效回收内存，常驻内存区变化不明显，则说明java 内存释放情况正常，垃圾回收及时，java 内存泄露的几率就会大大降低。但也不能说明一定没有内存泄露。</p>
+<p>GCT 是YGCT 和FGCT 的时间总和。</p>
+<p>以上，介绍了Jstat 按百分比查看gc 情况的功能。其实，它还有功能，例如加载类信息统计功能、内存池信息统计功能等，那些是以绝对值的形式打印出来的，比较少用，在此就不做介绍。</p>
+<p><strong><span style="color: #ff0000">[root@localhost bin]# ps -ef | grep java</span></strong></p>
+<p><span style="color: #ff0000">root 25917 1 2 23:23</span> pts /2 00:00:05 /usr/local/jdk1.5/bin/java -Djava.endorsed.dirs=/usr/local/jakarta-tomcat-5.0.30/common/endorsed -classpath /usr/local/jdk1.5/lib/tools.jar:/usr/local/jakarta-tomcat-5.0.30/bin/bootstrap.jar:/usr/local/jakarta-tomcat-5.0.30/bin/commons-logging-api.jar -Dcatalina.base=/usr/local/jakarta-tomcat-5.0.30 -Dcatalina.home=/usr/local/jakarta-tomcat-5.0.30 -Djava.io.tmpdir=/usr/local/jakarta-tomcat-5.0.30/temp org.apache.catalina.startup.Bootstrap start</p>
+<p>jstat -class pid: 显示加载 class 的数量，及所占空间等信息。</p>
+<p><strong>实例使用3 ：</strong></p>
+<p><span style="color: #ff0000"><strong>[root@localhost bin]# jstat -class 25917</strong></span></p>
+<p>Loaded Bytes Unloaded Bytes Time</p>
+<p>2629 2916.8 29 24.6 0.90</p>
+<p>jstat -compiler pid: 显示 VM 实时编译的数量等信息。</p>
+<p><strong>实例使用 4 ：</strong></p>
+<p><span style="color: #ff0000"><strong>[root@localhost bin]# jstat -compiler 25917</strong></span></p>
+<p>Compiled Failed Invalid Time FailedType FailedMethod</p>
+<p>768 0 0 0.70 0</p>
+<p>jstat –gccapacity : 可以显示， VM 内存中三代（ young,old,perm ）对象的使用和占用大小，如： PGCMN 显示的是最小 perm 的内存使用量， PGCMX 显示的是 perm 的内存最大使用量， PGC 是当前新生成的 perm 内存占用量， PC 是但前 perm 内存占用量。其他的可以根据这个类推， OC 是 old 内纯的占用量。</p>
+<p><span style="color: #ff0000"><strong>[root@localhost bin]# jstat -gccapacity 25917</strong></span></p>
+<p>NGCMN 640.0</p>
+<p>NGCMX 4992.0</p>
+<p>NGC 832.0</p>
+<p>S0C 64.0</p>
+<p>S1C 64.0</p>
+<p>EC 704.0</p>
+<p>OGCMN 1408.0</p>
+<p>OGCMX 60544.0</p>
+<p>OGC 9504.0</p>
+<p>OC 9504.0 OC 是 old 内纯的占用量</p>
+<p>PGCMN 8192.0 PGCMN 显示的是最小 perm 的内存使用量</p>
+<p>PGCMX 65536.0 PGCMX 显示的是 perm 的内存最大使用量</p>
+<p>PGC 12800.0 PGC 是当前新生成的 perm 内存占用量</p>
+<p>PC 12800.0 PC 是但前 perm 内存占用量</p>
+<p>YGC 164</p>
+<p>FGC 6</p>
+<p></p>
+<p>jstat -gcnew pid: new 对象的信息</p>
+<p><span style="color: #ff0000"><strong>[root@localhost bin]# jstat -gcnew 25917</strong></span></p>
+<p>S0C S1C S0U S1U TT MTT DSS EC EU YGC YGCT</p>
+<p>64.0 64.0 47.4 0.0 2 15 32.0 704.0 145.7 168 0.254</p>
+<p></p>
+<p>jstat -gcnewcapacity pid: new 对象的信息及其占用量</p>
+<p><span style="color: #ff0000"><strong>[root@localhost bin]# jstat -gcnewcapacity 25917</strong></span></p>
+<p>NGCMN NGCMX NGC S0CMX S0C S1CMX S1C ECMX EC YGC FGC</p>
+<p>640.0 4992.0 832.0 64.0 448.0 448.0 64.0 4096.0 704.0 168 6</p>
+<p></p>
+<p>jstat -gcold pid: old 对象的信息。</p>
+<p><span style="color: #ff0000"><strong>[root@localhost bin]# jstat -gcold 25917</strong></span></p>
+<p>PC PU OC OU YGC FGC FGCT GCT</p>
+<p>12800.0 12617.6 9504.0 6561.3 169 6 0.335 0.591</p>
+<p></p>
+<p>jstat -gcoldcapacity pid:old 对象的信息及其占用量。</p>
+<p><span style="color: #ff0000"><strong>[root@localhost bin]# jstat -gcoldcapacity 25917</strong></span></p>
+<p>OGCMN OGCMX OGC OC YGC FGC FGCT GCT</p>
+<p>1408.0 60544.0 9504.0 9504.0 169 6 0.335 0.591</p>
+<p></p>
+<p>jstat -gcpermcapacity pid: perm 对象的信息及其占用量。</p>
+<p><span style="color: #ff0000"><strong>[root@localhost bin]# jstat -gcpermcapacity 25917</strong></span></p>
+<p>PGCMN PGCMX PGC PC YGC FGC FGCT GCT</p>
+<p>8192.0 65536.0 12800.0 12800.0 169 6 0.335 0.591</p>
+<p></p>
+<p>jstat -printcompilation pid: 当前 VM 执行的信息。</p>
+<p><span style="color: #ff0000"><strong>[root@localhost bin]# jstat -printcompilation -h3 25917 1000 5</strong></span></p>
+<p>每 1000 毫秒打印一次，一共打印 5 次，还可以加上 -h3 每三行显示一下标题。</p>
+<p>Compiled Size Type Method</p>
+<p>788 73 1 java/io/File &lt;init&gt;</p>
+<p>788 73 1 java/io/File &lt;init&gt;</p>
+<p>788 73 1 java/io/File &lt;init&gt;</p>
+<p>Compiled Size Type Method</p>
+<p>788 73 1 java/io/File &lt;init&gt;</p>
+<p>788 73 1 java/io/File &lt;init&gt;</p>
+<ul>
+    <li><span style="color: #0000ff"><strong>jmap 的用法</strong></span></li>
+</ul>
+<p>打印出某个 java 进程（使用 pid ）内存内的，所有 ‘ 对象 ’ 的情况（如：产生那些对象，及其数量）。</p>
+<p>可以输出所有内存中对象的工具，甚至可以将 VM 中的 heap ，以二进制输出成文本。使用方法 jmap -histo pid 。如果连用 SHELL jmap -histo pid&gt;a.log 可以将其保存到文本中去，在一段时间后，使用文本对比工具，可以对比出 GC 回收了哪些对象。 jmap -dump:format=b,file=String 3024 可以将 3024 进程的内存 heap 输出出来到 String 文件里。</p>
+<p><span style="color: #ff0000"><strong>[root@localhost bin]# jmap -histo 25917</strong></span></p>
+<p>Attaching to process ID 26221, please wait...</p>
+<p>Debugger attached successfully.</p>
+<p>Client compiler detected.</p>
+<p>JVM version is 1.5.0_08-b03</p>
+<p>Iterating over heap. This may take a while...</p>
+<p>Unknown oop at 0xaa6e42d0</p>
+<p>Oop's klass is null</p>
+<p></p>
+<p>Object Histogram:</p>
+<p></p>
+<p><span style="color: #ff0000">Size Count Class description</span></p>
+<p>-------------------------------------------------------</p>
+<p>3722768 30467 * ConstMethodKlass</p>
+<p>1976480 25334 char[]</p>
+<p>1907880 46994 * SymbolKlass</p>
+<p>1762088 2947 byte[]</p>
+<p>1709536 30467 * MethodKlass</p>
+<p>1487816 2600 * ConstantPoolKlass</p>
+<p>1009576 2600 * InstanceKlassKlass</p>
+<p>904880 2199 * ConstantPoolCacheKlass</p>
+<p>741432 30893 java.lang.String</p>
+<p>653576 4785 int[]</p>
+<p>351760 4397 java.lang.reflect.Method</p>
+<p>277824 2894 java.lang.Class</p>
+<p>248704 3401 short[]</p>
+<p>200888 4411 java.lang.Object[]</p>
+<p>193656 4045 java.lang.Object[]</p>
+<p>179744 5617 java.util.TreeMap$Entry</p>
+<p>175688 1800 java.util.HashMap$Entry[]</p>
+<p>165288 6887 java.util.HashMap$Entry</p>
+<p>104736 3273 java.lang.ref.SoftReference</p>
+<p>104136 4339 java.lang.ref.WeakReference</p>
+<p>96096 3521 java.lang.String[]</p>
+<p>86160 3590 java.util.Hashtable$Entry</p>
+<p>85584 3566 java.util.ArrayList</p>
+<p>83472 1206 java.util.Hashtable$Entry[]</p>
+<p>82944 1728 java.beans.MethodDescriptor</p>
+<p>80560 265 * ObjArrayKlassKlass</p>
+<p>69120 1728 java.util.HashMap</p>
+<p>52464 3055 java.lang.Class[]</p>
+<p>43040 1076 java.util.Hashtable</p>
+<p>42496 664 org.apache.commons.modeler.AttributeInfo</p>
+<p>37880 947 java.util.TreeMap</p>
+<p>33896 557 javax.management.modelmbean.ModelMBeanAttributeInfo[]</p>
+<p>33152 518 java.beans.PropertyDescriptor</p>
+<p>616 11 org.springframework.aop.framework.ProxyFactory</p>
+<p>608 19 java.util.PropertyPermission</p>
+<p>608 38 org.springframework.beans.MutablePropertyValues</p>
+<p>608 38 org.springframework.beans.factory.support.MethodOverrides</p>
+<p>608 2 * ArrayKlassKlass</p>
+<p>608 38 org.springframework.beans.factory.config.ConstructorArgumentValues</p>
+<p>608 4 org.apache.xerces.impl.XMLDTDScannerImpl</p>
+<p>576 24 java.util.Stack</p>
+<p>576 36 java.util.regex.Pattern$Category</p>
+<p>576 24 org.apache.naming.NamingEntry</p>
+<p>560 7 java.net.URL[]</p>
+<p>552 23 sun.management.MappedMXBeanType$BasicMXBeanType</p>
+<p>552 1 java.util.Locale[]</p>
+<p>552 22 java.io.ObjectStreamField[]</p>
+<p>544 17 java.util.Collections$SynchronizedMap</p>
+<p>176 11 java.util.regex.Pattern$Ctype</p>
+<p>8 1 sun.reflect.GeneratedMethodAccessor49</p>
+<p>8 1 sun.reflect.GeneratedMethodAccessor6</p>
+<p>8 1 sun.reflect.GeneratedConstructorAccessor10</p>
+<p>Heap traversal took 12.003 seconds.</p>
+<ul>
+    <li><span style="color: #0000ff"><strong>jinfo 的用法</strong></span></li>
+</ul>
+<p>可以输出并修改运行时的 java 进程的 opts 。用处比较简单，就是能输出并修改运行时的 java 进程的运行参数。用法是 jinfo -opt pid 如：查看 2788 的 MaxPerm 大小可以用 jinfo -flag MaxPermSize 2788 。</p>
+<ul>
+    <li><span style="color: #0000ff"><strong>jconsole 的用法</strong></span></li>
+</ul>
+<p>jconsole: 一个 java GUI 监视工具，可以以图表化的形式显示各种数据。并可通过远程连接监视远程的服务器 VM 。</p>
+<p>用 java 写的 GUI 程序，用来监控 VM ，并可监控远程的 VM ，非常易用，而且功能非常强。命令行里打 jconsole ，选则进程就可以了</p>
+<p>不过我没有运行起来，老是报下面的错。会的朋友，帮忙看看。</p>
+<p><span style="color: #ff0000"><strong>[root@localhost bin]# jconsole</strong></span></p>
+<p>Exception in thread "AWT-EventQueue-0" java.awt.HeadlessException:</p>
+<p>No X11 DISPLAY variable was set, but this program performed an operation which requires it. at java.awt.GraphicsEnvironment.checkHeadless(GraphicsEnvironment.java:159)</p>
+<p>at java.awt.Window.&lt;init&gt;(Window.java:317)</p>
+<p>at java.awt.Frame.&lt;init&gt;(Frame.java:419)</p>
+<p>at javax.swing.JFrame.&lt;init&gt;(JFrame.java:194)</p>
+<p>at sun.tools.jconsole.JConsole.&lt;init&gt;(JConsole.java:65)</p>
+<p>at sun.tools.jconsole.JConsole$4.run(JConsole.java:666)</p>
+<p>at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:209)</p>
+<p>at java.awt.EventQueue.dispatchEvent(EventQueue.java:461)</p>
+<p>at java.awt.EventDispatchThread.pumpOneEventForHierarchy(EventDispatchThread.java:242)</p>
+<p>at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:163)</p>
+<p>at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:157)</p>
+<p>at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:149)</p>
+<p>at java.awt.EventDispatchThread.run(EventDispatchThread.java:110)</p>
+<ul>
+    <li><span style="color: #0000ff"><strong>jdb 的用法</strong></span></li>
+</ul>
+<p>用来对 core 文件和正在运行的 Java 进程进行实时地调试，里面包含了丰富的命令帮助您进行调试，它的功能和 Sun studio 里面所带的 dbx 非常相似，但 jdb 是专门用来针对 Java 应用程序的。</p>
+<ul>
+    <li><span style="color: #0000ff"><strong>jmap 的用法</strong></span></li>
+</ul>
+<p>打印出某个 java 进程（使用 pid ）内存内的，所有 ‘ 对象 ’ 的情况（如：产生那些对象，及其数量）。</p>
+<p>可以输出所有内存中对象的工具，甚至可以将 VM 中的 heap ，以二进制输出成文本。使用方法 jmap -histo pid 。如果连用 SHELL jmap -histo pid&gt;a.log 可以将其保存到文本中去，在一段时间后，使用文本对比工具，可以对比出 GC 回收了哪些对象。 jmap -dump:format=b,file=String 3024 可以将 3024 进程的内存 heap 输出出来到 String 文件里。</p>
+<p><span style="color: #ff0000"><strong>[root@localhost bin]# jmap -histo 25917</strong></span></p>
+<p>Attaching to process ID 26221, please wait...</p>
+<p>Debugger attached successfully.</p>
+<p>Client compiler detected.</p>
+<p>JVM version is 1.5.0_08-b03</p>
+<p>Iterating over heap. This may take a while...</p>
+<p>Unknown oop at 0xaa6e42d0</p>
+<p>Oop's klass is null</p>
+<p></p>
+<p>Object Histogram:</p>
+<p></p>
+<p><span style="color: #ff0000">Size Count Class description</span></p>
+<p>-------------------------------------------------------</p>
+<p>3722768 30467 * ConstMethodKlass</p>
+<p>1976480 25334 char[]</p>
+<p>1907880 46994 * SymbolKlass</p>
+<p>1762088 2947 byte[]</p>
+<p>1709536 30467 * MethodKlass</p>
+<p>1487816 2600 * ConstantPoolKlass</p>
+<p>1009576 2600 * InstanceKlassKlass</p>
+<p>904880 2199 * ConstantPoolCacheKlass</p>
+<p>741432 30893 java.lang.String</p>
+<p>653576 4785 int[]</p>
+<p>351760 4397 java.lang.reflect.Method</p>
+<p>277824 2894 java.lang.Class</p>
+<p>248704 3401 short[]</p>
+<p>200888 4411 java.lang.Object[]</p>
+<p>193656 4045 java.lang.Object[]</p>
+<p>179744 5617 java.util.TreeMap$Entry</p>
+<p>175688 1800 java.util.HashMap$Entry[]</p>
+<p>165288 6887 java.util.HashMap$Entry</p>
+<p>104736 3273 java.lang.ref.SoftReference</p>
+<p>104136 4339 java.lang.ref.WeakReference</p>
+<p>96096 3521 java.lang.String[]</p>
+<p>86160 3590 java.util.Hashtable$Entry</p>
+<p>85584 3566 java.util.ArrayList</p>
+<p>83472 1206 java.util.Hashtable$Entry[]</p>
+<p>82944 1728 java.beans.MethodDescriptor</p>
+<p>80560 265 * ObjArrayKlassKlass</p>
+<p>69120 1728 java.util.HashMap</p>
+<p>52464 3055 java.lang.Class[]</p>
+<p>43040 1076 java.util.Hashtable</p>
+<p>42496 664 org.apache.commons.modeler.AttributeInfo</p>
+<p>37880 947 java.util.TreeMap</p>
+<p>33896 557 javax.management.modelmbean.ModelMBeanAttributeInfo[]</p>
+<p>33152 518 java.beans.PropertyDescriptor</p>
+<p>616 11 org.springframework.aop.framework.ProxyFactory</p>
+<p>608 19 java.util.PropertyPermission</p>
+<p>608 38 org.springframework.beans.MutablePropertyValues</p>
+<p>608 38 org.springframework.beans.factory.support.MethodOverrides</p>
+<p>608 2 * ArrayKlassKlass</p>
+<p>608 38 org.springframework.beans.factory.config.ConstructorArgumentValues</p>
+<p>608 4 org.apache.xerces.impl.XMLDTDScannerImpl</p>
+<p>576 24 java.util.Stack</p>
+<p>576 36 java.util.regex.Pattern$Category</p>
+<p>576 24 org.apache.naming.NamingEntry</p>
+<p>560 7 java.net.URL[]</p>
+<p>552 23 sun.management.MappedMXBeanType$BasicMXBeanType</p>
+<p>552 1 java.util.Locale[]</p>
+<p>552 22 java.io.ObjectStreamField[]</p>
+<p>544 17 java.util.Collections$SynchronizedMap</p>
+<p>176 11 java.util.regex.Pattern$Ctype</p>
+<p>8 1 sun.reflect.GeneratedMethodAccessor49</p>
+<p>8 1 sun.reflect.GeneratedMethodAccessor6</p>
+<p>8 1 sun.reflect.GeneratedConstructorAccessor10</p>
+<p>Heap traversal took 12.003 seconds.</p>
+<ul>
+    <li><span style="color: #0000ff"><strong>jinfo 的用法</strong></span></li>
+</ul>
+<p>可以输出并修改运行时的 java 进程的 opts 。用处比较简单，就是能输出并修改运行时的 java 进程的运行参数。用法是 jinfo -opt pid 如：查看 2788 的 MaxPerm 大小可以用 jinfo -flag MaxPermSize 2788 。</p>
+<ul>
+    <li><span style="color: #0000ff"><strong>jconsole 的用法</strong></span></li>
+</ul>
+<p>jconsole: 一个 java GUI 监视工具，可以以图表化的形式显示各种数据。并可通过远程连接监视远程的服务器 VM 。</p>
+<p>用 java 写的 GUI 程序，用来监控 VM ，并可监控远程的 VM ，非常易用，而且功能非常强。命令行里打 jconsole ，选则进程就可以了</p>
+<p>不过我没有运行起来，老是报下面的错。会的朋友，帮忙看看。</p>
+<p><span style="color: #ff0000"><strong>[root@localhost bin]# jconsole</strong></span></p>
+<p>Exception in thread "AWT-EventQueue-0" java.awt.HeadlessException:</p>
+<p>No X11 DISPLAY variable was set, but this program performed an operation which requires it. at java.awt.GraphicsEnvironment.checkHeadless(GraphicsEnvironment.java:159)</p>
+<p>at java.awt.Window.&lt;init&gt;(Window.java:317)</p>
+<p>at java.awt.Frame.&lt;init&gt;(Frame.java:419)</p>
+<p>at javax.swing.JFrame.&lt;init&gt;(JFrame.java:194)</p>
+<p>at sun.tools.jconsole.JConsole.&lt;init&gt;(JConsole.java:65)</p>
+<p>at sun.tools.jconsole.JConsole$4.run(JConsole.java:666)</p>
+<p>at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:209)</p>
+<p>at java.awt.EventQueue.dispatchEvent(EventQueue.java:461)</p>
+<p>at java.awt.EventDispatchThread.pumpOneEventForHierarchy(EventDispatchThread.java:242)</p>
+<p>at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:163)</p>
+<p>at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:157)</p>
+<p>at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:149)</p>
+<p>at java.awt.EventDispatchThread.run(EventDispatchThread.java:110)</p>
+<ul>
+    <li><span style="color: #0000ff"><strong>jdb 的用法</strong></span></li>
+</ul>
+<p>用来对 core 文件和正在运行的 Java 进程进行实时地调试，里面包含了丰富的命令帮助您进行调试，它的功能和 Sun studio 里面所带的 dbx 非常相似，但 jdb 是专门用来针对 Java 应用程序的。</p>
+<p>原文链接：<a href="http://blog.csdn.net/jacky0922/article/details/6201878">http://blog.csdn.net/jacky0922/article/details/6201878</a></p>
+<p>【编辑推荐】</p>
+<ol>
+    <li><a href="http://developer.51cto.com/art/201203/321353.htm">Java开源工具在linux上的源码分析（一）：跟踪方式</a></li>
+    <li><a target="_blank" href="http://developer.51cto.com/art/201203/321354.htm">Java开源工具在linux上的源码分析(二)：信号处理</a></li>
+    <li><a target="_blank" href="http://developer.51cto.com/art/201203/321355.htm">Java开源工具在linux上的源码分析(三):执行的线程vm thread</a></li>
+    <li><a target="_blank" href="http://developer.51cto.com/art/201203/321357.htm">Java开源工具在linux上的源码分析(四)：safe point</a></li>
+    <li><a target="_blank" href="http://developer.51cto.com/art/201203/321359.htm">Java开源工具在linux上的源码分析(五)：-F参数的bug</a></li>
+</ol>
+<div align="right">【责任编辑：<a class="ln" href="mailto:linss@51cto.com">小林</a> TEL：（010）68476606】</div><br> 
+<p class="blank10"></p> 
+ 
+ 
+
+
+<div class="f12"> <span class="fl">原文：<a href="http://developer.51cto.com/art/201203/321431.htm" class="blue"><b>Java内存泄露监控工具：JVM监控工具介绍</b></a></span> <span class="fr"><a href="http://developer.51cto.com/">返回开发首页</a></span> </div>
+<p class="blank1"></p>
+</div>
+<hr style="border-top: #555555 1px solid; height: 1px; border-right: medium none; border-bottom: medium none; border-left: medium none">
+<div style="width: 600px; background: #ffffff"><img width="600" height="140" alt="" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/wKioL1ZOwrbDjDqxAABJOr5GFjU021.png" border="0"></div>
+<hr style="border-top: #555555 1px solid; height: 1px; border-right: medium none; border-bottom: medium none; border-left: medium none">
+<iframe width="600" height="239" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/bulkfollow.html" frameborder="0" scrolling="no"></iframe>
+<div class="tips">
+<div style="float:left;">
+<span style="float:left; margin-top:4px;">分享到：</span>
+<!-- Baidu Button BEGIN -->
+    <div id="bdshare" class="bdshare_t bds_tools get-codes-bdshare" style="margin-right:5px; float:left;">
+        <a class="bds_qzone" title="分享到QQ空间" href="http://developer.51cto.com/art/201203/321431.htm#"></a>
+        <a class="bds_tsina" title="分享到新浪微博" href="http://developer.51cto.com/art/201203/321431.htm#"></a>
+        <a class="bds_tqq" title="分享到腾讯微博" href="http://developer.51cto.com/art/201203/321431.htm#"></a>
+        <a class="bds_renren" title="分享到人人网" href="http://developer.51cto.com/art/201203/321431.htm#"></a>
+        <a class="bds_t163" title="分享到网易微博" href="http://developer.51cto.com/art/201203/321431.htm#"></a>
+        <span class="bds_more"></span>
+		<a class="shareCount" href="http://developer.51cto.com/art/201203/321431.htm#" title="累计分享8次">8</a>
+
+</div>
+<!--<div class="fl"> 
+    </div>
+--><script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=585532" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/bds_s_v2.js"></script>
+
+<script type="text/javascript">
+	var bds_config = {'snsKey':{'tsina':'2378297317'}};
+	document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?t=" + new Date().getHours();
+</script>
+<!-- Baidu Button END -->
+
+
+
+</div><div class="fr blue"><a href="javascript:AddFavorite(document.location.href,document.title);" target="_self">收藏</a>|<a href="javascript:window.print();" target="_self">打印</a>|<a id="msnqqcopy" title="分享本资源给好友" target="_self">复制</a></div>
+</div>
+</div>
+<!--内容 end-->
+<div class="topbiaoqing">
+<div class="biaoqing fixfloat pad">
+<ul>
+<li><a href="javascript:getcountscom(321431,1)" target="_self"><img src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/bq1.jpg"></a>
+<div><a href="javascript:getcountscom(321431,1)" target="_self">给力</a></div>
+<span id="321431_1">(61票)</span></li>
+<li><a href="javascript:getcountscom(321431,2)" target="_self"><img src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/bq2.jpg"></a>
+<div><a href="javascript:getcountscom(321431,2)" target="_self">动心</a></div>
+<span id="321431_2">(56票)</span></li>
+<li><a href="javascript:getcountscom(321431,3)" target="_self"><img src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/bq3.jpg"></a>
+<div><a href="javascript:getcountscom(321431,3)" target="_self">废话</a></div>
+<span id="321431_3">(57票)</span></li>
+<li><a href="javascript:getcountscom(321431,4)" target="_self"><img src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/bq4.jpg"></a>
+<div><a href="javascript:getcountscom(321431,4)" target="_self">专业</a></div>
+<span id="321431_4">(55票)</span></li>
+<li><a href="javascript:getcountscom(321431,5)" target="_self"><img src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/bq5.jpg"></a>
+<div><a href="javascript:getcountscom(321431,5)" target="_self">标题党</a></div>
+<span id="321431_5">(56票)</span></li>
+<li><a href="javascript:getcountscom(321431,6)" target="_self"><img src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/bq6.jpg"></a>
+<div><a href="javascript:getcountscom(321431,6)" target="_self">路过</a></div>
+<span id="321431_6">(56票)</span></li>
+</ul>
+</div>
+<script language="javascript"> 
+getcountscom(321431,11);
+
+</script>
+</div>
+<p class="blank10"></p>
+<!--reltag end-->
+
+<p class="blank10"></p>
+<div class="uyan">
+<div id="uyan_frame"><iframe id="uyan_ifr_2058940" scrolling="no" frameborder="0" style="height: 420px; display: block !important; width: 100% !important; border: 0px none !important; overflow: hidden !important;" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/saved_resource(2).html"></iframe></div>
+<script type="text/javascript" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/uyan.js"></script><script type="text/javascript" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/plugin.client.js" charset="utf-8"></script>
+</div>
+<!--box end-->
+
+<div class="bor">
+<div class="titbg pl15">关于<a href="http://www.51cto.com/php/search.php?keyword=Java" target="_blank" class="underline">Java</a>&nbsp;&nbsp;<a href="http://www.51cto.com/php/search.php?keyword=JVM" target="_blank" class="underline">JVM</a>的更多文章</div>
+<div class="reltag">
+<ul class="fl list02">
+  <li><a href="http://developer.51cto.com/art/201311/415096.htm" title="Java 开源博客—B3log Solo 0.6.5 正式版发布了！">Java 开源博客—B3log Solo 0.6.5 正式版发</a></li><li><a href="http://developer.51cto.com/art/201310/413964.htm" title="Java长存！12个Java长久占居主要地位的原因">Java长存！12个Java长久占居主要地位的原因</a></li><li><a href="http://developer.51cto.com/art/201310/413776.htm" title="Firefox 封杀 Java 惹恼开发者">Firefox 封杀 Java 惹恼开发者</a></li><li><a href="http://developer.51cto.com/art/201211/364725.htm" title="从程序员到项目经理：成长历程">从程序员到项目经理：成长历程</a></li><li><a href="http://developer.51cto.com/art/201310/413211.htm" title="JVM性能优化,Java的伸缩性">JVM性能优化,Java的伸缩性</a></li>
+</ul>
+<div class="fr">
+<div class="h5 f12"><a href="http://developer.51cto.com/art/201001/176550.htm" title="JVM详解 Java虚拟机原理与优化"><b>JVM详解 Java虚拟机原理与优化</b></a></div>
+<a href="http://developer.51cto.com/art/201001/176550.htm" title="JVM详解 Java虚拟机原理与优化"><img src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/155935666.jpg" alt="JVM详解 Java虚拟机原理与优化" width="100" height="80" border="0"></a>
+<p class="c666">Java之所以能够崛起，JVM功不可没。Java虚拟机最初服务于让Java<a class="blue" href="http://developer.51cto.com/art/201001/176550.htm" title="JVM详解 Java虚拟机原理与优化">[详细]</a></p>
+</div>
+</div></div>
+
+<p class="blank10"></p>
+
+
+
+<div class="relart fl bor">
+<div class="titbg">
+<h3 class="fl t1">栏目热门</h3>
+<a href="http://developer.51cto.com/click/1006" class="tmore">更多&gt;&gt;</a></div>
+<ul>
+  
+	  <li><a href="http://developer.51cto.com/art/201310/413211.htm" title="JVM性能优化,Java的伸缩性">JVM性能优化,Java的伸缩性</a></li>
+	  
+	  <li><a href="http://developer.51cto.com/art/201309/410971.htm" title="JVM并发机制探讨—内存模型、内存可见性和指令重排序">JVM并发机制探讨—内存模型、内存可见性和</a></li>
+	  
+</ul>
+</div>
+<div class="cathot fr bor">
+<div class="titbg">
+<h3 class="fl t1">同期最新</h3>
+<a href="http://developer.51cto.com/col/1006" class="tmore">更多&gt;&gt;</a></div>
+<ul>
+	
+	  <li><a href="http://developer.51cto.com/art/201203/321424.htm" title="jstack命令(Java Stack Trace)">jstack命令(Java Stack Trace)</a></li>
+	  
+	  <li><a href="http://developer.51cto.com/art/201203/321422.htm" title="jmap命令(Java Memory Map)">jmap命令(Java Memory Map)</a></li>
+	  
+	  <li><a href="http://developer.51cto.com/art/201203/321409.htm" title="Java开源工具在linux上的源码分析(六)：符号表的读取">Java开源工具在linux上的源码分析(六)：符</a></li>
+	  
+	  <li><a href="http://developer.51cto.com/art/201203/321359.htm" title="Java开源工具在linux上的源码分析(五)：-F参数的bug">Java开源工具在linux上的源码分析(五)：-F</a></li>
+	  
+	  <li><a href="http://developer.51cto.com/art/201203/321357.htm" title="Java开源工具在linux上的源码分析(四)：safe point">Java开源工具在linux上的源码分析(四)：saf</a></li>
+	  
+</ul>
+</div>
+<p class="blank10"></p>
+<div class="bor">
+<div class="titbg">
+<h3 class="fl t1"><a href="http://developer.51cto.com/">开发</a></h3>
+<span class="pl10">频道导航</span></div>
+ <ul class="xtlist">
+<li><span class="tit">Java</span>
+<div><a href="http://developer.51cto.com/java/">Java开发</a>|<a href="http://developer.51cto.com/col/1005/">Java基础</a>|<a href="http://developer.51cto.com/col/1014/">Java EE开发</a>|<a href="http://developer.51cto.com/col/1004/">Java框架</a>|<a href="http://developer.51cto.com/col/1007/">设计模式</a></div>
+</li>
+<li><span class="tit">WEB开发</span>
+<div><a href="http://developer.51cto.com/col/1441/">PHP开发</a>|<a href="http://developer.51cto.com/col/1455/">Python</a>|<a href="http://developer.51cto.com/col/1552/">Ruby</a>|<a href="http://developer.51cto.com/col/1552/">JSP</a>|<a href="http://developer.51cto.com/art/200907/133407.htm">HTML 5</a>|<a href="http://developer.51cto.com/col/1450/">DIV+CSS</a></div>
+</li>
+<li class="last"><span class="tit">综合</span>
+<div><a href="http://developer.51cto.com/net/">.NET开发</a>|<a href="http://developer.51cto.com/embed/">嵌入式开发</a>|<a href="http://developer.51cto.com/col/586/">项目管理</a>|<a href="http://developer.51cto.com/col/1308/">架构设计</a></div>
+</li>
+</ul> 
+</div> 
+<p class="blank10"></p>
+<p class="blank10"></p>
+<div class="leftbotcon">
+<div class="bor jdlist">
+<div class="titbg">
+<h3 class="t2">热点推荐</h3></div>
+<ul>
+<li><a onclick="javascript: _gaq.push([&#39;_trackPageview&#39;, &#39;/51cto/neirong/d-t-4&#39;]);" href="http://mobile.51cto.com/mobile-182392.htm"><img src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/153546162.jpg"></a> 
+<div class="name"><a onclick="javascript: _gaq.push([&#39;_trackPageview&#39;, &#39;/51cto/neirong/d-t-4&#39;]);" href="http://mobile.51cto.com/mobile-182392.htm">Android开发应用详解</a></div></li>
+<li><a onclick="javascript: _gaq.push([&#39;_trackPageview&#39;, &#39;/51cto/neirong/d-t-4&#39;]);" href="http://developer.51cto.com/art/201106/266369.htm"><img src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/133620622.jpg"></a> 
+<div class="name"><a onclick="javascript: _gaq.push([&#39;_trackPageview&#39;, &#39;/51cto/neirong/d-t-4&#39;]);" href="http://developer.51cto.com/art/201106/266369.htm">那些性感的让人尖叫的程序员</a></div></li>
+<li><a href="http://developer.51cto.com/art/200907/133407.htm"><img src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/134217922.jpg"></a> 
+<div class="name"><a href="http://developer.51cto.com/art/200907/133407.htm">HTML5 下一代Web开发标准详解</a></div></li>
+<li><a href="http://developer.51cto.com/art/201104/257581.htm"><img src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/123123954.jpg"></a> 
+<div class="name"><a href="http://developer.51cto.com/art/201104/257581.htm">高性能WEB开发应用指南</a></div></li>
+<li><a href="http://os.51cto.com/art/200706/49181.htm"><img src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/195816929.jpg"></a> 
+<div class="name"><a href="http://os.51cto.com/art/200706/49181.htm">Ubuntu开源技术交流频道</a></div></li></ul></div>
+<p class="blank10"></p>
+<div class="bor hotTag"><strong>热门标签：</strong> <a onclick="javascript: _gaq.push([&#39;_trackPageview&#39;, &#39;/51cto/neirong/d-2]);" href="http://os.51cto.com/windows/">windows频道</a><a onclick="javascript: _gaq.push([&#39;_trackPageview&#39;, &#39;/51cto/neirong/d-w&#39;]);" href="http://mobile.51cto.com/">移动开发</a><a onclick="javascript: _gaq.push([&#39;_trackPageview&#39;, &#39;/51cto/neirong/d-w&#39;]);" href="http://cloud.51cto.com/">云计算</a><a onclick="javascript: _gaq.push([&#39;_trackPageview&#39;, &#39;/51cto/neirong/d-w&#39;]);" href="http://mobile.51cto.com/mobile/objc/">objective-c</a><a onclick="javascript: _gaq.push([&#39;_trackPageview&#39;, &#39;/51cto/neirong/d-w&#39;]);" href="http://network.51cto.com/art/200909/151122.htm">tp-link路由器设置图解</a><a onclick="javascript: _gaq.push([&#39;_trackPageview&#39;, &#39;/51cto/neirong/d-w&#39;]);" href="http://developer.51cto.com/art/200907/133407.htm">html5</a> </div></div>
+<div class="leftbotbox"> </div>
+</div>
+<!--left end-->
+<div class="g_13 fr">
+<div class="focus fixfloat" style="height: 640px;"> 
+ <img width="298" style="border: 1px solid #CCCCCC; margin:5px 0px 5px;" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/weixin.jpg"><div class="hot" style="top: 450px;">
+<ul>
+<li class="tit"><em>头条</em> <a href="http://bigdata.51cto.com/art/201706/541796.htm">亿级推广流量仍能精准推荐？解读核心算法的应用实践</a> </li>
+<li class="con"><dl><dt><a href="http://bigdata.51cto.com/art/201706/541796.htm"><img border="0" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/wKiom1hkw27y9CC8AABuG3EQ9YE821.jpg"></a></dt>
+<dd>随着云计算、物联网、大数据、移动互联网的大发展，你应该知道这些。</dd>
+</dl></li></ul><ol class="hotlist"><li><a href="http://developer.51cto.com/art/201706/541928.htm">微服务架构的两大解耦利器与最佳实践</a></li><li><a href="http://developer.51cto.com/art/201706/542433.htm">新浪微博基于混合云的PHP服务化与弹性扩容</a></li></ol></div>
+<p id="hzh_one">
+<script language="JavaScript" src="http://www.51cto.com/ad/art/hzh/ad.js" type="text/javascript"></script>
+</p>
+</div>
+<div class="rank">
+<div class="tlt">
+      <h3>文章排行</h3>
+      <a onmouseover="change_top10(3);" id="top_3">本月</a><a onmouseover="change_top10(2);" id="top_2">本周</a><a onmouseover="change_top10(1);" class="myon" id="top_1">24小时</a> </div>
+ <div id="top10_1" style="display: block;" class="list"><ul>
+<li><a href="http://developer.51cto.com/art/201607/514778.htm" target="_blank" title="为什么这么多技术专家为WOT2016移动互">为什么这么多技术专家为WOT2016移动互</a>
+</li><li><a href="http://developer.51cto.com/art/201607/514009.htm" target="_blank" title="高能预警！各路大神正火速奔赴8月WOT20">高能预警！各路大神正火速奔赴8月WOT20</a>
+</li><li><a href="http://developer.51cto.com/art/201604/509622.htm" target="_blank" title="阿里肖冰：如何实现分钟级别的HBase宕">阿里肖冰：如何实现分钟级别的HBase宕</a>
+</li><li><a href="http://developer.51cto.com/art/201411/457423.htm" target="_blank" title="5个强大的Java分布式缓存框架推荐">5个强大的Java分布式缓存框架推荐</a>
+</li><li><a href="http://developer.51cto.com/art/201203/321042.htm" target="_blank" title="Java中Runnable和Thread的区别">Java中Runnable和Thread的区别</a>
+</li><li><a href="http://developer.51cto.com/art/201601/503403.htm" target="_blank" title="HTML5游戏开发5条建议及开发工具分享">HTML5游戏开发5条建议及开发工具分享</a>
+</li><li><a href="http://developer.51cto.com/art/201604/509961.htm" target="_blank" title="圣剑游戏CEO袁健博：VR游戏与传统游戏">圣剑游戏CEO袁健博：VR游戏与传统游戏</a>
+</li><li><a href="http://developer.51cto.com/art/201403/433999.htm" target="_blank" title="C#开发微信公众平台-就这么简单(附Demo">C#开发微信公众平台-就这么简单(附Demo</a>
+</li><li><a href="http://developer.51cto.com/art/201607/514514.htm" target="_blank" title="2016年那些永远离我们而去的技术产品">2016年那些永远离我们而去的技术产品</a>
+</li><li><a href="http://developer.51cto.com/art/201006/205212.htm" target="_blank" title="多图详解Spring框架的设计理念与设计模">多图详解Spring框架的设计理念与设计模</a>
+</li></ul></div>
+<div id="top10_2" style="display: none;" class="list"><ul>
+<li><a href="http://developer.51cto.com/art/201607/515086.htm" target="_blank" title="IEEE Spectrum公布编程语言最新排行：">IEEE Spectrum公布编程语言最新排行：</a>
+</li><li><a href="http://developer.51cto.com/art/201607/514981.htm" target="_blank" title="出版商统计出最受欢迎的编程语言：Pyth">出版商统计出最受欢迎的编程语言：Pyth</a>
+</li><li><a href="http://developer.51cto.com/art/201607/515070.htm" target="_blank" title="使用 Python 创建你自己的 Shell （上">使用 Python 创建你自己的 Shell （上</a>
+</li><li><a href="http://developer.51cto.com/art/201607/514988.htm" target="_blank" title="菜鸟才需要GUI：Linux终端生存指南">菜鸟才需要GUI：Linux终端生存指南</a>
+</li><li><a href="http://developer.51cto.com/art/201607/514983.htm" target="_blank" title="浅谈程序员的英语学习">浅谈程序员的英语学习</a>
+</li><li><a href="http://developer.51cto.com/art/201607/514976.htm" target="_blank" title="R与TypeScript在RedMonk语言人气榜上迎">R与TypeScript在RedMonk语言人气榜上迎</a>
+</li><li><a href="http://developer.51cto.com/art/201607/514959.htm" target="_blank" title="作为一个新手程序员该如何成长？">作为一个新手程序员该如何成长？</a>
+</li><li><a href="http://developer.51cto.com/art/201608/515436.htm" target="_blank" title="ES6新式集合类解析——Map、Set、WeakM">ES6新式集合类解析——Map、Set、WeakM</a>
+</li><li><a href="http://developer.51cto.com/art/201607/515100.htm" target="_blank" title="甲骨文设下的Java EE困局：我们要细节">甲骨文设下的Java EE困局：我们要细节</a>
+</li><li><a href="http://developer.51cto.com/art/201608/515449.htm" target="_blank" title="微软向其它JavaScript引擎开放Node.js">微软向其它JavaScript引擎开放Node.js</a>
+</li></ul></div>
+<div id="top10_3" style="display: none;" class="list"><ul>
+<li><a href="http://developer.51cto.com/art/201607/514778.htm" target="_blank" title="为什么这么多技术专家为WOT2016移动互">为什么这么多技术专家为WOT2016移动互</a>
+</li><li><a href="http://developer.51cto.com/art/201607/514009.htm" target="_blank" title="高能预警！各路大神正火速奔赴8月WOT20">高能预警！各路大神正火速奔赴8月WOT20</a>
+</li><li><a href="http://developer.51cto.com/art/201607/514514.htm" target="_blank" title="2016年那些永远离我们而去的技术产品">2016年那些永远离我们而去的技术产品</a>
+</li><li><a href="http://developer.51cto.com/art/201607/514464.htm" target="_blank" title="颠覆多因素验证技术的五大发展趋势">颠覆多因素验证技术的五大发展趋势</a>
+</li><li><a href="http://developer.51cto.com/art/201607/514491.htm" target="_blank" title="达沃时代阳立堂：超融合的未来不只是改">达沃时代阳立堂：超融合的未来不只是改</a>
+</li><li><a href="http://developer.51cto.com/art/201607/514383.htm" target="_blank" title="汇聚创新 共创未来---记2016华为开发者">汇聚创新 共创未来---记2016华为开发者</a>
+</li><li><a href="http://developer.51cto.com/art/201607/514510.htm" target="_blank" title="无服务器计算的真正含义究竟是什么？">无服务器计算的真正含义究竟是什么？</a>
+</li><li><a href="http://developer.51cto.com/art/201607/514790.htm" target="_blank" title="基于Angular 2 CLI开发CRUD应用程序">基于Angular 2 CLI开发CRUD应用程序</a>
+</li><li><a href="http://developer.51cto.com/art/201607/515086.htm" target="_blank" title="IEEE Spectrum公布编程语言最新排行：">IEEE Spectrum公布编程语言最新排行：</a>
+</li><li><a href="http://developer.51cto.com/art/201607/513999.htm" target="_blank" title="十款最佳免费Web设计软件一览">十款最佳免费Web设计软件一览</a>
+</li></ul></div>
+ 
+ </div>
+<p class="blank1"></p>
+<div class="bor">
+<div class="titbg">
+<h3 class="fl t1">热点职位</h3>
+<a href="http://gaozhao.51cto.com/job-search/list" class="tmore">更多&gt;&gt;</a></div>
+	<div class="rmzwn_xx"><dl><dt><a href="http://gaozhao.51cto.com/job/view/id-3034.html" target="_blank"> PHP研发工程师 </a></dt><dd><h2>全职/1-3年/本科</h2><span>10k-15k</span><a href="http://gaozhao.51cto.com/company/view/id-651.html" target="_blank">动视云科技</a></dd></dl><dl><dt><a href="http://gaozhao.51cto.com/job/view/id-6957.html" target="_blank"> 前端高级研发工程师 </a></dt><dd><h2>全职/3-5年/硕士</h2><span>45k-65k</span><a href="http://gaozhao.51cto.com/company/view/id-1089.html" target="_blank">理格人才</a></dd></dl><dl><dt><a href="http://gaozhao.51cto.com/job/view/id-6344.html" target="_blank"> Linux内核开发 </a></dt><dd><h2>全职/不限/不限</h2><span>15k-30k</span><a href="http://gaozhao.51cto.com/company/view/id-1038.html" target="_blank">燧炻创新</a></dd></dl><dl><dt><a href="http://gaozhao.51cto.com/job/view/id-6788.html" target="_blank"> Java开发工程师 </a></dt><dd><h2>全职/3-5年/大专</h2><span>8k-15k</span><a href="http://gaozhao.51cto.com/company/view/id-1069.html" target="_blank">Giihoo</a></dd></dl><dl><dt><a href="http://gaozhao.51cto.com/job/view/id-6947.html" target="_blank"> JAVA开发工程师 </a></dt><dd><h2>全职/3-5年/大专</h2><span>10k-20k</span><a href="http://gaozhao.51cto.com/company/view/id-1088.html" target="_blank">豆播</a></dd></dl></div>
+</div>
+<div class="blank10"></div>
+<script src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/51cto_sha1.js"></script>
+<div class="bor">
+<div class="titbg">
+<h3 class="fl t1">热点专题</h3>
+<a href="http://developer.51cto.com/speclist/1006" class="tmore">更多&gt;&gt;</a></div>
+<ul class="plist01">
+<li><a href="http://developer.51cto.com/art/201309/411913.htm" title="JavaScript成为网络霸主的“绯闻”"><img src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/wKioJlJHn8DC9RVYAAAv2xgpMSU902.png" alt="JavaScript成为网络霸主的“绯闻”" width="100" height="80"></a>
+<h5><a href="http://developer.51cto.com/art/201309/411913.htm" title="JavaScript成为网络霸主的“绯闻”">JavaScript成为网络霸</a></h5>
+<div class="c666">JavaScript正凭借新型工具与功能提升以极度夸张的速度</div>
+</li><li><a href="http://developer.51cto.com/art/201309/411803.htm" title="开发频道2013年9月第4周重点内容推荐：值得尝试的七大前沿性编程实验"><img src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/wKioJlJFH9jxdzYPAAAY4WF2i1M859.jpg" alt="开发频道2013年9月第4周重点内容推荐：值得尝试的七大前沿性编程实验" width="100" height="80"></a>
+<h5><a href="http://developer.51cto.com/art/201309/411803.htm" title="开发频道2013年9月第4周重点内容推荐：值得尝试的七大前沿性编程实验">开发频道2013年9月第4</a></h5>
+<div class="c666">国庆假期前的612，是不是有点折腾？网上的中秋国庆放</div>
+</li><li><a href="http://developer.51cto.com/art/201309/411713.htm" title="Java之数组基础应用回顾"><img src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/wKioJlJD3fbz9SEKAAAXRRoVtDo224.jpg" alt="Java之数组基础应用回顾" width="100" height="80"></a>
+<h5><a href="http://developer.51cto.com/art/201309/411713.htm" title="Java之数组基础应用回顾">Java之数组基础应用回</a></h5>
+<div class="c666">刚刚开始接触java数组的人都会听到一句类似的话：java</div>
+</li> 
+</ul>
+</div>
+<p class="blank10"></p>
+<div class="tagCloud">
+<div class="tlt">
+<h3>热点标签</h3>
+</div>
+<div class="taglist"><a title="编程语言排行榜" href="http://developer.51cto.com/art/200911/165281.htm">编程语言排行榜</a> <a title="敏捷开发" href="http://developer.51cto.com/art/200803/68222.htm">敏捷开发</a> <a title="Eclipse" href="http://developer.51cto.com/art/201006/207407.htm">Eclipse 3.6</a> <a title="PHP设计模式" href="http://developer.51cto.com/art/201004/195765.htm">PHP设计模式</a> <a title="NetBeans7" href="http://developer.51cto.com/art/201105/259431.htm">NetBeans 7</a> <a title="Java7" href="http://developer.51cto.com/art/201001/175830.htm">Java7</a> <a title="Scala编程语言" href="http://developer.51cto.com/art/200906/127830.htm">Scala编程语言</a> <a title="Python编程世界" href="http://developer.51cto.com/art/201011/234347.htm">Python编程世界</a> <a title="Ruby" on="" rails开发="" href="http://developer.51cto.com/art/201007/215101.htm">Ruby On Rails开发</a> <a class="imp" title="LINQ" href="http://developer.51cto.com/art/200911/165090.htm">LINQ</a> <a title="ASP.NET视频教程" href="http://developer.51cto.com/art/200904/120314.htm">ASP.NET视频教程</a> <a title="Visual Studio" href="http://developer.51cto.com/art/201004/194262.htm">Visual Studio</a> <a title="智能手机" href="http://p.linkphone.cn/">智能手机</a> <a title="软件下载" href="http://download.linkphone.cn/">软件下载</a></div>
+</div>
+<div class="rss">
+<ul>
+<li class="lin f12-c"><a href="http://news.51cto.com/col/1323/"><strong>点击这里查看样刊</strong></a></li>
+<li>
+<dl>
+<dt> </dt>
+<dd><a href="http://home.51cto.com/index.php?s=/Subscribe"><img src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/dingy.gif"></a></dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="bor">
+<div class="titbg">
+<h3 class="t1">全站热点</h3>
+</div>
+<div class="webhot fixfloat">
+<ul>
+
+<li>
+  <a href="http://ad-apac.doubleclick.net/ddm/trackclk/N4517.139517.51CTO/B7893539.9;dc_trk_aid=276510732;dc_trk_cid=55984278;ord=[timestamp]?http://network.51cto.com/network/cisco/branding201310/index.html" title="联天下 享未来" skxbi8c="" hidden="" style="display: none !important;"><img src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/wKioOVJzRAyg58ncAAAWitfVoPE521.jpg"></a>
+  <div><a href="http://ad-apac.doubleclick.net/ddm/trackclk/N4517.139517.51CTO/B7893539.9;dc_trk_aid=276510732;dc_trk_cid=55984278;ord=[timestamp]?http://network.51cto.com/network/cisco/branding201310/index.html" title="联天下 享未来" skxbi8c="" hidden="" style="display: none !important;">联天下 享未来</a></div>
+</li>
+
+<li>
+  <a href="http://network.51cto.com/network/ruijie/2013/" title="简网络  享未来"><img src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/wKioOVJJCzTBIzOoAACFKEIMJjo568.jpg"></a>
+  <div><a href="http://network.51cto.com/network/ruijie/2013/" title="简网络  享未来">简网络  享未来</a></div>
+</li>
+
+</ul>
+</div>
+<p class="blank1"></p>
+<ul class="list03">
+
+<li><a href="http://server.51cto.com/Storage-405306.htm" title="西数拉大与希捷差距：已领先11％">西数拉大与希捷差距：已领先11％</a></li>
+
+<li><a href="http://os.51cto.com/art/201307/405268.htm" title="系统频道7月第4周热点推荐：你应该了解的Linux发行版">系统频道7月第4周热点推荐：你应该了</a></li>
+
+<li><a href="http://book.51cto.com/art/201307/405263.htm" title="Essential C++中文版">Essential C++中文版</a></li>
+
+<li><a href="http://mobile.51cto.com/iphone-405168.htm" title="iOS教程之ASIHttpRequest完全攻略">iOS教程之ASIHttpRequest完全攻略</a></li>
+
+<li><a href="http://developer.51cto.com/art/201307/405156.htm" title="独家提供:最具有价值的Hadoop Summit 2013资料（第二季）下载">独家提供:最具有价值的Hadoop Summit</a></li>
+
+</ul>
+</div>
+<p class="blank10"></p>
+<div class="bor">
+<div class="titbg">
+<h3 class="t1">读书</h3>
+</div>
+  
+<div class="catbook"><a href="http://book.51cto.com/art/200704/46273.htm" title="网络工程师必读——接入网与交换网"><img src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/201953742.jpg" width="66" height="98" border="0"></a>
+<h5><a href="http://book.51cto.com/art/200704/46273.htm">网络工程师必读——接入网与交换网</a></h5>
+<div class="c666 text">本书是以一个典型的计算机广域网通信为背景进行编写的，详细、全面地介绍了通信网中最主要的两个部分：目前，国内外接入网与交换</div>
+</div>
+
+
+<ul class="list03">
+
+<li><a href="http://book.51cto.com/art/200704/45749.htm" title="Oracle 10g应用指导与案例精讲">Oracle 10g应用指导与案例精讲</a></li>
+
+<li><a href="http://book.51cto.com/art/200704/45756.htm" title="计算机病毒防范艺术">计算机病毒防范艺术</a></li>
+
+<li><a href="http://book.51cto.com/art/200704/45761.htm" title="软件工程：实践者的研究方法">软件工程：实践者的研究方法</a></li>
+
+<li><a href="http://book.51cto.com/art/200704/45766.htm" title="数据库原理与应用">数据库原理与应用</a></li>
+
+</ul>
+</div>
+<p class="blank10"></p>
+<div class="bor">
+<div class="titbg">
+<h3 class="t1 fl">博文推荐</h3>
+<a class="tmore" href="http://blog.51cto.com/">更多&gt;&gt;</a></div>
+
+<ul class="list03">
+ <li><a href="http://lavasoft.blog.51cto.com/62575/53815/" target="_blank" title="Java事务处理总结">Java事务处理总结</a></li><li><a href="http://148297.blog.51cto.com/138297/53793/" target="_blank" title="因为选择所以不自由">因为选择所以不自由</a></li><li><a href="http://lgzeng2360.blog.51cto.com/275998/53780/" target="_blank" title="Linux网络管理之五:vsftpd服务器的创建实例">Linux网络管理之五:vsftpd服务器的创</a></li><li><a href="http://blacksnow.blog.51cto.com/265898/53776/" target="_blank" title="要做就要做一个又魄力的男人">要做就要做一个又魄力的男人</a></li>
+</ul>
+</div>
+<p class="blank10"></p>
+<div class="tj">
+<div class="tlt">
+<h3>最新热帖</h3>
+<a class="more" href="http://bbs.51cto.com/hotthreads.php">更多&gt;&gt;</a></div>
+<ul>
+<li><a href="http://bbs.51cto.com/thread-26429-1.html" target="_blank" title="通用WAP网站生成系统(PowerDiamond) v.1">通用WAP网站生成系统(PowerDiamond) </a></li><li><a href="http://bbs.51cto.com/thread-11063-1.html" target="_blank" title="八类大学毕业生求职时不受欢迎">八类大学毕业生求职时不受欢迎</a></li><li><a href="http://bbs.51cto.com/thread-6946-1.html" target="_blank" title="IT人为什么难以拿到高薪？【转帖】">IT人为什么难以拿到高薪？【转帖】</a></li><li><a href="http://bbs.51cto.com/thread-4333-1.html" target="_blank" title="想去外企上班">想去外企上班</a></li>
+</ul>
+</div>
+<div class="picAD">
+<script language="JavaScript" src="http://www.51cto.com/ad/art/baidugoogle/ad.js" type="text/javascript"></script>
+</div>
+</div>
+<p class="blank1"></p> 
+<!--leftbotcon end-->
+</div> 
+<div class="subweb">
+<h4>51CTO旗下网站</h4>
+<div>
+<a target="_blank" href="http://www.51cto.com/">领先的IT技术网站 51CTO</a>
+<a target="_blank" href="http://www.watchstor.com/">领先的中文存储媒体 WatchStor</a>
+<a target="_blank" href="http://cio.51cto.com/">中国首个CIO网站 CIOage</a>
+<a target="_blank" href="http://www.hc3i.cn/">中国首家数字医疗网站 HC3i</a>
+</div>
+</div>
+<div id="ft"><div id="foot" align="center"><script src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/copy_right.js"></script>Copyright&#169;2005-2017 <a href="http://www.51cto.com/">51CTO.COM</a> 版权所有 未经许可 请勿转载<script src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/bc20b099e054d5e648120c44d7a94173" type="text/javascript"></script></div></div>
+<script src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/count.js"></script><script src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/count.php"></script>
+<script type="text/javascript">
+	$("#uyan_cmt_list").next().remove();	
+	$("#uyan_cmt_list").next().css("display","none");	
+</script>
+<!-- 悬浮广告 -->
+<!--<style type="text/css">-->
+	<!--.ipadFload{display:none;}-->
+	<!--.ipadFloada{ position:fixed; width:280px; height:210px; font-family:"微软雅黑"; padding-left:18px;right: 20px; bottom: 240px;  }-->
+	<!--.ipadClosea{ text-align:right; font-size:14px; line-height:20px;cursor:pointer;}-->
+<!--</style>-->
+<!--<div class="ipadFloada" id="ipadFloada" style="z-index:9999;">-->
+	<!--<div onclick="document.getElementById('ipadFloada').style.display='none';" class="ipadClosea"><img src="http://s3.51cto.com/wyfs02/M02/85/21/wKiom1eaubuSesqTAAAB9Jb8kBA734.gif"></div>-->
+	<!--<div class="ipadImg">-->
+		<!--<a href="http://x.51cto.com?sytc" target="_blank"><img width="280px" height="210px" src="http://s4.51cto.com/wyfs02/M00/8D/9C/wKioL1ij756hibWaAAFNKBkaLKk823.jpg"></a></div>-->
+<!--</div>-->
+<!--end-->
+
+<style>
+.Nfloat { position: fixed; right: 2%; top: 35%; z-index: 801; }
+</style>
+
+<!-- 新监测代码 -->
+<!-- 新监测代码 -->
+<div id="MyMoveAd" style="display: none; height: 2px;">
+<span id="wordlink_1"><script src="http://www.51cto.com/ad/art/wordlink/wordlink1.js"></script></span>
+<span id="wordlink_2"><script src="http://www.51cto.com/ad/art/wordlink/wordlink2.js"></script></span>
+<span id="wordlink_3"><script src="http://www.51cto.com/ad/art/wordlink/wordlink3.js"></script></span>
+<span id="wordlink_4"><script src="http://www.51cto.com/ad/art/wordlink/wordlink4.js"></script></span>
+<span id="pinglun"><script language="JavaScript" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/getArtCount.php"></script>1</span>
+<span id="tonglan"></span>
+<span id="wordlink"><script language="JavaScript" src="http://www.51cto.com/ad/art/wordlink/ad.js"></script></span>
+<script src="http://www.51cto.com/ad/art/wordlink/ad.js"></script>
+<span id="bookss"><script language="JavaScript" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/getBookData.php"></script></span>
+</div>   
+<script language="javascript" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/favorite.js"></script>
+
+<script language="javaScript" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/dialog_utf8.js"></script>
+<script language="javaScript" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/mail.js"></script>  
+<script type="text/javascript" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/favorbox.js"></script>
+<script language="javascript" src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/clipboard.js"></script>
+<script language="javaScript"> 
+	var thistid=321431; 
+	
+	//收藏按钮
+	var favor_url = 'http://developer.51cto.com/art/201203/321431.htm';  // 如：http://bbs.51cto.com/thread-789649-1.html
+	var favor_title = 'Java内存泄露监控工具：JVM监控工具介绍';       //  
+	
+	//绑定复制按钮
+	copy('msnqqcopy', 'http://developer.51cto.com/art/201203/321431.htm', '分享到MSN/QQ的链接复制成功!');
+//	copy('bbscopy', '[url=http://developer.51cto.com/art/201203/321431.htm][u]Java内存泄露监控工具：JVM监控工具介绍[/u][/url]', '分享到论坛的UBB代码复制成功!');
+
+</script><div style="position: absolute; left: 773px; top: 19894px; width: 34px; height: 17px; z-index: 99;"><embed id="ZeroClipboardMovie_1" src="http://images.51cto.com/images/art/newart1012/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="34" height="17" name="ZeroClipboardMovie_1" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=1&amp;width=34&amp;height=17" wmode="transparent"></div> 
+<script src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/index.php" charset="utf-8"></script><script src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/vip_top.js"></script>
+<script src="./Java内存泄露监控工具：JVM监控工具介绍 - 51CTO.COM_files/count(1).php" language="javascript"></script>
+<script language="javascript">
+document.getElementById('books').innerHTML = document.getElementById("bookss").innerHTML; 
+</script>
+
+
+
+</body></html>
