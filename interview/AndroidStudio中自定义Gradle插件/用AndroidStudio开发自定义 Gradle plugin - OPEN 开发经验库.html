@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<!-- saved from url=(0056)http://www.open-open.com/lib/view/open1484207750547.html -->
+<html><head lang="cn"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库</title>
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="keywords" content="Gradle,Android Studio,Android Studio开发工具">
+	<meta name="description" content="">
+	<link rel="shortcut icon" href="http://www.open-open.com/lib/favicon.ico">
+	<link rel="copyright" href="http://www.open-open.com/">
+
+	<link href="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/idea.min.css" rel="stylesheet">
+	<link href="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/jquery-ui.min.css" rel="stylesheet">
+	
+	<link href="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/bootstrap.min.css" rel="stylesheet">
+	<link href="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/font-awesome.min.css" rel="stylesheet">
+	<link href="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/jquery-confirm.css" rel="stylesheet">
+	<link href="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/styles.css" rel="stylesheet">
+
+	<style type="text/css" media="screen, projection">
+		/*<![CDATA[*/
+		@import "/lib/css/common.css";
+		@import "/lib/css/main.css";
+		@import "/lib/css/jGrowl.css";
+		/*]]>*/
+		.articleIndex li.active a {
+			color: #0099ff;
+		}
+	</style>
+	<style type="text/css">
+		.topheader h1{font-size: 24px;margin: 0;}
+		.crumbs{padding-bottom: 5px;font-size: 11px;}.crumbs,.crumbs a,.meta{color: #bbb;}
+		#tag-list{margin-top: 10px;}
+		#tag-list a{background: #fff;padding: 2px 10px;text-decoration: none;}
+		#tag-list a:hover{background: #c5e2ff;color: #0099ff;}
+		.crumbs a:hover{color: #0099ff;}
+		#readercontainer{background: #fff;padding: 40px 89px;}
+
+		.post-nav ul{
+			margin: 0;
+		}
+		.post-nav>ul>li a{
+			padding-left: 10px;
+		}
+		.post-nav>ul>li>ul>li a{
+			padding-left: 30px;
+		}
+		.post-nav>ul>li>ul>li>ul>li a{
+			padding-left: 50px;
+		}
+		.post-nav ul li.active a{
+			border-left: 2px solid #0099ff;
+		}
+
+		.aside-fixed {
+			left: 50%;
+			margin-left: 310px;
+			position: fixed;
+			top: 65px;
+			width: 260px;
+		}
+		.bdsharebuttonbox {
+			background: #eee none repeat scroll 0 0;
+			margin-top: 10px;
+			padding: 10px;
+			width: 100%;
+		}
+
+	</style>
+
+	<script src="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/push.js.下载"></script><script type="text/javascript">
+		if(window.location.toString().indexOf('pref=padindex') != -1){
+		}else{
+			if(/AppleWebKit.*Mobile/i.test(navigator.userAgent) || (/MIDP|SymbianOS|NOKIA|SAMSUNG|LG|NEC|TCL|Alcatel|BIRD|DBTEL|Dopod|PHILIPS|HAIER|LENOVO|MOT-|Nokia|SonyEricsson|SIE-|Amoi|ZTE/.test(navigator.userAgent))){
+				if(window.location.href.indexOf("?mobile")<0){
+					try{
+						if(/Android|Windows Phone|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)){
+							window.location.href="http://m.open-open.com/m/lib/view/1484207750547.html";
+						}else if(/iPad/i.test(navigator.userAgent)){
+							window.location.href="http://m.open-open.com/m/lib/view/1484207750547.html"
+						}else{
+							window.location.href="http://m.open-open.com/m/lib/view/1484207750547.html"
+						}
+					}catch(e){}
+				}
+			}
+		}
+	</script>
+
+
+	<script type="text/javascript">
+		var rooturl="/lib";
+		var wgDocKey='1484207750547';
+		var wgDocTitle='用AndroidStudio开发自定义 Gradle plugin';
+		var wgDocStatusFlag='';
+		var wgUserFolders=null;
+		var wgDownFrame=null;
+		var wgCostByUser=null;
+		var wgDocFavoriteByUser=false;
+		var wgDocScoreByUser=null;
+		var wgUserLogined=0;
+		var tb_pathToImage = "/lib/images/loadingAnimation.gif";
+
+
+	</script>
+
+
+
+
+<script src="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/share.js.下载"></script><link rel="stylesheet" href="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/share_style0_16.css"></head>
+<body id="view"><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/o.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div>
+
+
+<style>
+	.global-tags{background: #333;color: #ababab;height: 30px;line-height: 30px;width: 100%;}
+	.global-tags .container{position: relative;}
+	.global-tags ul{ height: 30px; margin: 0; overflow: hidden;}
+	.global-tags a{color:#ababab;padding: 5px; }
+	.global-tags a:hover{color:#e0e0e0; }
+	.global-tags li { display: inline-block; padding: 0; }
+	.global-tags  .more { background-color: #333; height: 30px; position: absolute; right: 0; top: 0; width: 30px; }
+	.global-tags  .more:before { background-image: linear-gradient(90deg, rgba(0, 95, 60, 0), #333); background-size: 100% auto; content: ""; height: 100%; left: -20px; position: absolute; top: 0; width: 20px; }
+
+	/* menu */
+	.all-sort{z-index: 100;position: absolute;left: 15px;top: 30px;display: none;}
+	.all-sort-head{background: #ff3c00; color: #fff; margin-right: 20px; text-align: center; width: 160px;float: left;}
+	.all-sort-head a{color: #fff;}
+	.item-list .subitem{float:left;padding:20px;}
+	.all-sort-list{position:relative;width:160px;border:2px solid #393939;border-top:none;background:#393939;float: left;z-index: 100;}
+	.all-sort-list .item .parent{font-weight: 700;border: none;width: 120px;text-align: right;margin-right: 2px;}
+	.all-sort-list .item .parent i{font: 400 9px/14px consolas; height: 14px; margin-left: 10px; width: 4px;}
+	.all-sort-list .item.bo{border-top:none;}
+	.all-sort-list .item h3{height:40px;line-height:40px;font-size:14px;font-weight:normal;width:158px;overflow:hidden; color:#ffffff;margin: 0;}
+	.all-sort-list .item h3 a{color: #ffffff;}
+	.all-sort-list .item:hover h3,.all-sort-list .item:hover span,.all-sort-list .item:hover h3 a,.all-sort-list .item .active ,.all-sort-list .item .active a,.all-sort-list .item .active span{color:#E4393C;}
+	.all-sort-list .item span{padding:0px 5px;color:#ffffff;font-family:"\5B8B\4F53";}
+	.all-sort-list .item a{text-decoration:none;}
+	.all-sort-list .subitem a{ float: left;  margin:5px 20px 5px 0;border-left:1px solid #eee;line-height: 14px;height: 20px;}
+	.all-sort-list .item a:hover{color:#E4393C;}
+	.all-sort-list .item:hover h3,.all-sort-list .item .active{position:relative;z-index:13;background:#FFF;border-color:#DDD;border-width:1px 0px;border-style:solid;}
+	.all-sort-list .item-list{ display:none; position:absolute; width:705px; min-height:360px; _height:360px; background:#FFF; left:157px;  border:1px solid #DDD; top:0; z-index:10; }
+
+</style>
+
+
+<header class="site-header">
+	<div class="header-top ">
+		<div class="header-top-inner">
+			<div class="" style="margin: 0 30px;">
+				<div class="row">
+					
+						<div class="header-talet pull-left">
+							<a href="http://www.open-open.com/">首页</a> &nbsp;
+							<a class="" href="http://www.open-open.com/code/">代码</a> &nbsp;
+							<a class="" href="http://www.open-open.com/doc/">文档</a> &nbsp;
+							<a title="OPEN论坛频道" href="http://www.open-open.com/solution/">问答</a> &nbsp;
+							<a title="OPEN资讯" class="" href="http://www.open-open.com/news/">资讯</a> &nbsp;
+							<a title="OPEN经验库" class="active" href="http://www.open-open.com/lib/">经验</a> &nbsp;
+							<a title="GitHub日报" class="" href="http://www.open-open.com/github/">GitHub日报</a>
+							&nbsp;|&nbsp;
+							<a class="active" title=" 安卓开发专栏" target="_blank" href="http://www.open-open.com/lib/list/177">安卓开发专栏</a>
+							&nbsp;|&nbsp;
+							<a class="active" href="http://www.open-open.com/lib/tag/%E5%BC%80%E5%8F%91%E8%80%85%E5%91%A8%E5%88%8A" target="_blank" rel="tag">开发者周刊</a>&nbsp;|&nbsp;
+							<a class="active" href="http://www.open-open.com/lib/view/open1475497562965.html" target="_blank" rel="tag">Android Studio 使用推荐</a>&nbsp;|&nbsp;
+							<a class="active" href="http://www.open-open.com/lib/view/open1475497355674.html" target="_blank" rel="tag">Android开发推荐</a>
+							
+						</div>
+					
+						<div class="user-info pull-right" id="Personal">
+							
+								<a href="http://www.open-open.com/lib/view/open1484207750547.html#" title="登录OPEN经验库" class="login">登录</a>&nbsp;&nbsp;
+								<a href="http://www.open-open.com/lib/view/open1484207750547.html#" title="注册新的账号" class="register">注册</a>
+							
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+	<nav class="navbar ">
+		<div class="container">
+			<div class="navbar-header" style="margin-right: 30px;">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span aria-hidden="true" class="glyphicon glyphicon-menu-hamburger"></span>
+					<span aria-hidden="true" class="glyphicon glyphicon-menu-up"></span>
+				</button>
+				<a class="top-logo" href="http://www.open-open.com/lib"><span>www.open-open.com/lib</span></a>
+				<span style="font-size: 26px;color: #db6d4c">OPEN经验</span>
+				<span style="font-size: 12px;color: #b5b5b5"></span>
+			</div>
+
+			<div class="pull-right" style="padding: 20px;">
+				<button class="btn btn-info br40" id="upload" type="button">投稿</button>
+			</div>
+			<div id="search">
+				<form onsubmit="document.charset=&#39;utf-8&#39;;" accept-charset="utf-8" method="post" action="http://www.open-open.com/lib/query" name="sf">
+					<input type="hidden" value="all" name="site">
+					<div class="input-group">
+						<input type="text" x-webkit-speech="" placeholder="经验搜索" class="form-control" name="q" id="kw">
+                      <span class="input-group-btn">
+                        <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                      </span>
+
+					</div>
+				</form>
+
+				<!-- /input-group -->
+
+			</div>
+
+		</div>
+	</nav>
+	<div class="global-tags">
+		<div class="container">
+			<div class="all-sort-head"><a href="http://www.open-open.com/lib/list/all">全部经验分类</a>&nbsp;<i aria-hidden="true" class="fa fa-toggle-down"></i></div><div class="all-sort"><div class="all-sort-list"><div data-submenu-id="submenu1" class="item bo"><h3><span>·</span><a href="http://www.open-open.com/lib/list/1">软件开发</a></h3><div id="submenu1" class="item-list clearfix"><div class=" subitem"><a href="http://www.open-open.com/lib/list/405">VR</a><a href="http://www.open-open.com/lib/list/2">Web框架</a><a href="http://www.open-open.com/lib/list/3">GUI开发框架</a><a href="http://www.open-open.com/lib/list/4">图表/报表制作</a><a href="http://www.open-open.com/lib/list/5">搜索引擎</a><a href="http://www.open-open.com/lib/list/6">模板引擎</a><a href="http://www.open-open.com/lib/list/7">缓存组件</a><a href="http://www.open-open.com/lib/list/8">Ajax框架</a><a href="http://www.open-open.com/lib/list/9">XML操作类库</a><a href="http://www.open-open.com/lib/list/10">HTML操作类库</a><a href="http://www.open-open.com/lib/list/12">文件上传</a><a href="http://www.open-open.com/lib/list/347">3D图形处理库</a><a href="http://www.open-open.com/lib/list/14">图形/图像处理</a><a href="http://www.open-open.com/lib/list/15">常用工具包</a><a href="http://www.open-open.com/lib/list/16">JSON开发包</a><a href="http://www.open-open.com/lib/list/353">OAuth开发包</a><a href="http://www.open-open.com/lib/list/17">PDF工具包</a><a href="http://www.open-open.com/lib/list/18">Flex开发</a><a href="http://www.open-open.com/lib/list/19">Office文档处理</a><a href="http://www.open-open.com/lib/list/20">日志处理</a><a href="http://www.open-open.com/lib/list/21">网络工具包</a><a href="http://www.open-open.com/lib/list/22">多媒体处理</a><a href="http://www.open-open.com/lib/list/23">WEB服务/RPC/SOA</a><a href="http://www.open-open.com/lib/list/24">RSS/ATOM相关</a><a href="http://www.open-open.com/lib/list/25">持久层框架</a><a href="http://www.open-open.com/lib/list/26">作业调度框架</a><a href="http://www.open-open.com/lib/list/27">工作流引擎</a><a href="http://www.open-open.com/lib/list/28">业务规则引擎</a><a href="http://www.open-open.com/lib/list/29">面向方面AOP/IoC</a><a href="http://www.open-open.com/lib/list/30">JEE框架</a><a href="http://www.open-open.com/lib/list/31">安全相关</a><a href="http://www.open-open.com/lib/list/32">OpenID/单点登录SSO</a><a href="http://www.open-open.com/lib/list/34">条形码/二维码开发包</a><a href="http://www.open-open.com/lib/list/35">验证码(Captcha)</a><a href="http://www.open-open.com/lib/list/96">网络爬虫</a><a href="http://www.open-open.com/lib/list/214">OSGi</a><a href="http://www.open-open.com/lib/list/237">网络技术</a><a href="http://www.open-open.com/lib/list/324">Google相关API</a><a href="http://www.open-open.com/lib/list/328">Swing开发包</a><a href="http://www.open-open.com/lib/list/332">HTML编辑器</a><a href="http://www.open-open.com/lib/list/337" style="color:#FF3C00">JavaScript开发工具包</a><a href="http://www.open-open.com/lib/list/352">TTS/语音合成和处理</a><a href="http://www.open-open.com/lib/list/367">游戏开发</a><a href="http://www.open-open.com/lib/list/370">加密/解密软件包</a><a href="http://www.open-open.com/lib/list/374">源代码语法着色</a><a href="http://www.open-open.com/lib/list/376">WebSocket 开发</a><a href="http://www.open-open.com/lib/list/381">MathML显示与编辑</a><a href="http://www.open-open.com/lib/list/383">计算机视觉库/人脸识别</a><a href="http://www.open-open.com/lib/list/385">XML-RPC 开发</a><a href="http://www.open-open.com/lib/list/386">Markdown处理库</a><a href="http://www.open-open.com/lib/list/387">神经网络</a><a href="http://www.open-open.com/lib/list/389">多媒体播放器</a><a href="http://www.open-open.com/lib/list/391">推荐引擎</a><a href="http://www.open-open.com/lib/list/394">机器学习</a><a href="http://www.open-open.com/lib/list/401">算法</a></div><div class="cat-right"></div></div></div><div data-submenu-id="submenu2" class="item "><h3><span>·</span><a href="http://www.open-open.com/lib/list/36">开发语言与工具</a></h3><div id="submenu2" class="item-list clearfix"><div class=" subitem"><a href="http://www.open-open.com/lib/list/406">R语言</a><a href="http://www.open-open.com/lib/list/37" style="color:#FF3C00">Java开发</a><a href="http://www.open-open.com/lib/list/38">.NET开发</a><a href="http://www.open-open.com/lib/list/39">PHP开发</a><a href="http://www.open-open.com/lib/list/40">C/C++开发</a><a href="http://www.open-open.com/lib/list/42">Ruby开发</a><a href="http://www.open-open.com/lib/list/43">Python开发</a><a href="http://www.open-open.com/lib/list/148">ActionScript开发</a><a href="http://www.open-open.com/lib/list/145" style="color:#FF3C00">JavaScript开发</a><a href="http://www.open-open.com/lib/list/44">Perl开发</a><a href="http://www.open-open.com/lib/list/263">Delphi开发</a><a href="http://www.open-open.com/lib/list/243">Erlang开发</a><a href="http://www.open-open.com/lib/list/211">Google Go/Golang开发</a><a href="http://www.open-open.com/lib/list/201">Scala开发</a><a href="http://www.open-open.com/lib/list/240">Lua开发</a><a href="http://www.open-open.com/lib/list/392">Apple Swift开发</a><a href="http://www.open-open.com/lib/list/301">Objective-C开发</a><a href="http://www.open-open.com/lib/list/45">BUG跟踪管理</a><a href="http://www.open-open.com/lib/list/294">Lisp开发</a><a href="http://www.open-open.com/lib/list/46">项目构建</a><a href="http://www.open-open.com/lib/list/41">移动开发</a><a href="http://www.open-open.com/lib/list/47">单元测试</a><a href="http://www.open-open.com/lib/list/48">测试工具</a><a href="http://www.open-open.com/lib/list/49">性能测试和优化</a><a href="http://www.open-open.com/lib/list/50">程序调试</a><a href="http://www.open-open.com/lib/list/51">代码混淆和加密</a><a href="http://www.open-open.com/lib/list/52">UML/模型工具</a><a href="http://www.open-open.com/lib/list/53">安装制作</a><a href="http://www.open-open.com/lib/list/54">代码分析/审查/优化</a><a href="http://www.open-open.com/lib/list/55">前端技术</a><a href="http://www.open-open.com/lib/list/179">Eclipse开发工具</a><a href="http://www.open-open.com/lib/list/205">IntelliJ IDEA</a><a href="http://www.open-open.com/lib/list/281">NetBeans</a><a href="http://www.open-open.com/lib/list/349">程序文档工具</a><a href="http://www.open-open.com/lib/list/361">语法/词法分析器</a><a href="http://www.open-open.com/lib/list/362">脚本/动态语言</a><a href="http://www.open-open.com/lib/list/364">持续集成系统</a><a href="http://www.open-open.com/lib/list/375">Web开发工具</a><a href="http://www.open-open.com/lib/list/388">Node.js 开发</a><a href="http://www.open-open.com/lib/list/395">中文分词</a><a href="http://www.open-open.com/lib/list/399" style="color:#FF3C00">Android Studio开发工具</a></div><div class="cat-right"></div></div></div><div data-submenu-id="submenu3" class="item "><h3><span>·</span><a href="http://www.open-open.com/lib/list/57">网站系统</a></h3><div id="submenu3" class="item-list clearfix"><div class=" subitem"><a href="http://www.open-open.com/lib/list/58">论坛系统BBS</a><a href="http://www.open-open.com/lib/list/59">建站系统CMS</a><a href="http://www.open-open.com/lib/list/60">电子商务/商城</a><a href="http://www.open-open.com/lib/list/61">SNS社交网络/交友平台</a><a href="http://www.open-open.com/lib/list/62">百科系统Wiki</a><a href="http://www.open-open.com/lib/list/63">门户平台Portal</a><a href="http://www.open-open.com/lib/list/64">网络会议/视频会议</a><a href="http://www.open-open.com/lib/list/65">相册/照片/多媒体系统</a><a href="http://www.open-open.com/lib/list/66">微博工具/系统</a><a href="http://www.open-open.com/lib/list/363">博客系统</a><a href="http://www.open-open.com/lib/list/379">开源问答系统</a></div><div class="cat-right"></div></div></div><div data-submenu-id="submenu4" class="item "><h3><span>·</span><a href="http://www.open-open.com/lib/list/67">企业应用</a></h3><div id="submenu4" class="item-list clearfix"><div class=" subitem"><a href="http://www.open-open.com/lib/list/68">ERP/CRM</a><a href="http://www.open-open.com/lib/list/69">OA办公/协作平台</a><a href="http://www.open-open.com/lib/list/70">WebMail系统</a><a href="http://www.open-open.com/lib/list/71">地理信息系统GIS</a><a href="http://www.open-open.com/lib/list/72">数据挖掘</a><a href="http://www.open-open.com/lib/list/73">文档管理</a><a href="http://www.open-open.com/lib/list/74">项目/任务管理</a><a href="http://www.open-open.com/lib/list/333">教学科研相关</a><a href="http://www.open-open.com/lib/list/357">开源SIP项目</a><a href="http://www.open-open.com/lib/list/368">计算机辅助设计CAD/CAM</a></div><div class="cat-right"></div></div></div><div data-submenu-id="submenu5" class="item "><h3><span>·</span><a href="http://www.open-open.com/lib/list/75">服务器软件</a></h3><div id="submenu5" class="item-list clearfix"><div class=" subitem"><a href="http://www.open-open.com/lib/list/76">应用服务器</a><a href="http://www.open-open.com/lib/list/77">Web服务器</a><a href="http://www.open-open.com/lib/list/78">FTP服务器</a><a href="http://www.open-open.com/lib/list/79">邮件服务器</a><a href="http://www.open-open.com/lib/list/80">缓存服务器</a><a href="http://www.open-open.com/lib/list/81">版本控制系统</a><a href="http://www.open-open.com/lib/list/82">路由器/防火墙</a><a href="http://www.open-open.com/lib/list/83">电话/通讯/IM聊天</a><a href="http://www.open-open.com/lib/list/84">集群/负载均衡</a><a href="http://www.open-open.com/lib/list/85">流媒体服务器</a><a href="http://www.open-open.com/lib/list/86">消息系统</a><a href="http://www.open-open.com/lib/list/220">分布式/云计算/大数据</a><a href="http://www.open-open.com/lib/list/298">企业服务总线ESB</a><a href="http://www.open-open.com/lib/list/321">建站服务器套件</a><a href="http://www.open-open.com/lib/list/348">虚拟化</a><a href="http://www.open-open.com/lib/list/355">目录服务LDAP</a><a href="http://www.open-open.com/lib/list/393">容器系统</a></div><div class="cat-right"></div></div></div><div data-submenu-id="submenu6" class="item "><h3><span>·</span><a href="http://www.open-open.com/lib/list/87">插件和扩展</a></h3><div id="submenu6" class="item-list clearfix"><div class=" subitem"><a href="http://www.open-open.com/lib/list/88">Eclipse插件</a><a href="http://www.open-open.com/lib/list/89">jQuery插件</a><a href="http://www.open-open.com/lib/list/331">Node.js扩展</a><a href="http://www.open-open.com/lib/list/338">jQuery分页插件</a><a href="http://www.open-open.com/lib/list/346">Prototype扩展</a><a href="http://www.open-open.com/lib/list/356">Chrome插件/扩展</a></div><div class="cat-right"></div></div></div><div data-submenu-id="submenu7" class="item "><h3><span>·</span><a href="http://www.open-open.com/lib/list/90">数据库相关</a></h3><div id="submenu7" class="item-list clearfix"><div class=" subitem"><a href="http://www.open-open.com/lib/list/91">数据库服务器</a><a href="http://www.open-open.com/lib/list/92">数据库管理工具</a><a href="http://www.open-open.com/lib/list/93">数据库驱动程序</a><a href="http://www.open-open.com/lib/list/94">数据库建模</a><a href="http://www.open-open.com/lib/list/122">数据库连接池</a><a href="http://www.open-open.com/lib/list/154">SQL</a><a href="http://www.open-open.com/lib/list/307">NoSQL数据库</a></div><div class="cat-right"></div></div></div><div data-submenu-id="submenu8" class="item "><h3><span>·</span><a href="http://www.open-open.com/lib/list/155">操作系统</a></h3><div id="submenu8" class="item-list clearfix"><div class=" subitem"><a href="http://www.open-open.com/lib/list/156">Linux</a><a href="http://www.open-open.com/lib/list/182">CentOS</a><a href="http://www.open-open.com/lib/list/183">Ubuntu</a><a href="http://www.open-open.com/lib/list/224">UNIX</a><a href="http://www.open-open.com/lib/list/251">Fedora</a><a href="http://www.open-open.com/lib/list/274">FreeBSD</a><a href="http://www.open-open.com/lib/list/310">Solaris</a><a href="http://www.open-open.com/lib/list/311">openSUSE</a><a href="http://www.open-open.com/lib/list/312">Debian</a><a href="http://www.open-open.com/lib/list/313">OpenBSD</a></div><div class="cat-right"></div></div></div><div data-submenu-id="submenu9" class="item "><h3><span>·</span>其他分类</h3><div id="submenu9" class="item-list clearfix"><div class=" subitem"><p class="clearfix"><a href="http://www.open-open.com/lib/list/159" class="parent">软件开发管理<i>&gt;</i></a><a href="http://www.open-open.com/lib/list/174">敏捷开发</a><a href="http://www.open-open.com/lib/list/178">项目管理</a><a href="http://www.open-open.com/lib/list/196">软件架构</a><a href="http://www.open-open.com/lib/list/296">软件测试</a></p><p class="clearfix"><a href="http://www.open-open.com/lib/list/319" class="parent">管理和监控<i>&gt;</i></a><a href="http://www.open-open.com/lib/list/320">系统监控</a><a href="http://www.open-open.com/lib/list/360">日志分析和统计</a><a href="http://www.open-open.com/lib/list/366">备份工具</a></p><p class="clearfix"><a href="http://www.open-open.com/lib/list/322" class="parent">应用工具<i>&gt;</i></a><a href="http://www.open-open.com/lib/list/323">磁盘/光驱工具</a><a href="http://www.open-open.com/lib/list/359">文档/文本编辑</a><a href="http://www.open-open.com/lib/list/384">终端/远程登录</a></p><p class="clearfix"><a href="http://www.open-open.com/lib/list/329" class="parent">游戏相关<i>&gt;</i></a><a href="http://www.open-open.com/lib/list/330">网页游戏</a></p></div><div class="cat-right"></div></div></div></div></div>
+			<ul class="nav__list">
+				<li class="nav__item ">
+
+				</li>
+				<li class="nav__item"><i class="fa fa-tags"></i></li>
+
+				<li class="nav__item"><a href="http://www.open-open.com/lib/tag/Android" rel="tag">Android</a></li>
+				<li class="nav__item"><a href="http://www.open-open.com/lib/tag/IOS" rel="tag">IOS</a></li>
+				<li class="nav__item"><a href="http://www.open-open.com/lib/tag/JavaScript" rel="tag">JavaScript</a></li>
+				<li class="nav__item"><a href="http://www.open-open.com/lib/tag/HTML5" rel="tag">HTML5</a></li>
+				<li class="nav__item"><a href="http://www.open-open.com/lib/tag/CSS" rel="tag">CSS</a></li>
+				<li class="nav__item"><a href="http://www.open-open.com/lib/tag/jQuery" rel="tag">jQuery</a></li>
+				<li class="nav__item"><a href="http://www.open-open.com/lib/tag/Python" rel="tag">Python</a></li>
+				<li class="nav__item"><a href="http://www.open-open.com/lib/tag/PHP" rel="tag">PHP</a></li>
+				<li class="nav__item"><a href="http://www.open-open.com/lib/tag/NodeJS" rel="tag">NodeJS</a></li>
+				<li class="nav__item"><a href="http://www.open-open.com/lib/tag/Java" rel="tag">Java</a></li>
+				<li class="nav__item"><a href="http://www.open-open.com/lib/tag/Spring" rel="tag">Spring</a></li>
+				<li class="nav__item"><a href="http://www.open-open.com/lib/tag/MySQL" rel="tag">MySQL</a></li>
+				<li class="nav__item"><a href="http://www.open-open.com/lib/tag/MongoDB" rel="tag">MongoDB</a></li>
+				<li class="nav__item"><a href="http://www.open-open.com/lib/tag/Redis" rel="tag">Redis</a></li>
+				<li class="nav__item"><a href="http://www.open-open.com/lib/tag/NOSQL" rel="tag">NOSQL</a></li>
+				<li class="nav__item"><a href="http://www.open-open.com/lib/tag/Vim" rel="tag">Vim</a></li>
+				<li class="nav__item"><a href="http://www.open-open.com/lib/tag/C++" rel="tag">C++</a></li>
+				<li class="nav__item"><a href="http://www.open-open.com/lib/tag/C#" rel="tag">C#</a></li>
+				<li class="nav__item"><a href="http://www.open-open.com/lib/tag/JSON" rel="tag">JSON</a></li>
+				<li class="nav__item"><a href="http://www.open-open.com/lib/tag/Ruby" rel="tag">Ruby</a></li>
+				<li class="nav__item"><a href="http://www.open-open.com/lib/tag/Linux" rel="tag">Linux</a></li>
+				<li class="nav__item"><a href="http://www.open-open.com/lib/tag/Nginx" rel="tag">Nginx</a></li>
+				<li class="nav__item"><a href="http://www.open-open.com/lib/tag/Docker" rel="tag">Docker</a></li>
+				<li class="more"></li>
+
+			</ul>
+
+		</div>
+	</div>
+</header>
+
+
+
+<div class="topheader" style="background: #eee;padding: 10px 0 30px;">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-9">
+				<div class="crumbs">
+					<a href="http://www.open-open.com/lib/list/all">所有分类</a>
+					
+						&nbsp;&gt;&nbsp;
+						<a href="http://www.open-open.com/lib/list/36">开发语言与工具</a>
+					
+						&nbsp;&gt;&nbsp;
+						<a href="http://www.open-open.com/lib/list/399">Android Studio开发工具</a>
+					
+				</div>
+				<h1 id="articleTitle">用AndroidStudio开发自定义 Gradle plugin</h1>
+				<div class="meta" style="margin-top: 10px;">
+					<span id="tag-list">
+					
+						<a href="http://www.open-open.com/lib/tag/Gradle">Gradle</a>
+					
+						<a href="http://www.open-open.com/lib/tag/Android%20Studio">Android Studio</a>
+					
+					</span>&nbsp;
+
+					<span class="item">2017-01-12 15:55:50 发布</span>
+				</div>
+
+
+			</div>
+			<div class="col-md-3">
+				<table>
+					<tbody>
+					<tr>
+						<td><strong>您的评价</strong>:</td>
+						<td>
+							<div id="rate" class="rate-container"><span id="star1" class="star-big-off" title="很差">&nbsp;</span><span id="star2" class="star-big-off" title="较差">&nbsp;</span><span id="star3" class="star-big-off" title="还行">&nbsp;</span><span id="star4" class="star-big-off" title="不错">&nbsp;</span><span id="star5" class="star-big-off" title="力荐">&nbsp;</span></div>
+						</td>
+						<td width="30">
+							<span id="score-num">0.0</span>
+						</td>
+						<td width="30">
+							<div id="rate-tip"></div>
+						</td>
+
+					</tr>
+					</tbody>
+				</table>
+				<div id="favorite-container"><a id="favorite" href="javascript:void(0)" class="btn btn-default">收藏</a>&nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="item">0收藏</span>
+					
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+<div class="container">
+<div class="row">
+
+		<div id="readercontainer" class="col-md-9">
+				<article>
+					
+ 
+ 
+  <p>本文内容包括:&nbsp;</p> 
+  <ul> 
+   <li> <p>利用AndroidStudio,编写自定义Gradle plugin</p> </li> 
+   <li> <p>MavenDeployer 发布plugin</p> </li> 
+   <li> <p>使用Gradle plugin</p> </li> 
+  </ul> 
+  <h2 id="articleHeader0">简介</h2> 
+  <p>项目中引入自定义Gradle plugin一般有三种方法:&nbsp;</p> 
+  <ol> 
+   <li> <p>直接写在 build.gradle中.</p> </li> 
+   <li> <p>plugin源码放到rootProjectDir/buildSrc/src/main/groovy目录下</p> </li> 
+   <li> <p>plugin打包成jar, 发布到maven仓库, 然后项目通过Build Script依赖jar的形式引入</p> </li> 
+  </ol> 
+  <p>下面介绍的是第3种自定义Gradle插件的方式.</p> 
+  <h2 id="articleHeader1">一. 用AndroidStudio中写plugin</h2> 
+  <h3 id="articleHeader2">1.新建一个Android工程</h3> 
+  <h3 id="articleHeader3">2.在这个工程里面,新建一个Android Library</h3> 
+  <p>先起名叫cooker-plugin吧, 我们将会用这个library写Gradle plugin</p> 
+  <p style="text-align:center"><img src="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/20170112155549_819.jpg"></p> 
+  <h3 id="articleHeader4">3.建立plugin的目录结构</h3> 
+  <p>把这个cooker-plugin中默认产生的文件都删除, 然后按照下面结构新建文件</p> 
+  <p style="text-align:center"><img src="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/20170112155549_350.jpg"></p> 
+  <p>解释</p> 
+  <p>1.因为我们用Groovy写的插件, 插件代码放在 src/main/groovy下</p> 
+  <p>2.在src/main/resources/META-INF/gradle-plugins 里声明plugin信息</p> 
+  <p>比如:新建 cooker-plugin.properties 文件,内容如下&nbsp;</p> 
+  <pre><code class="language-java hljs">implementation-<span class="hljs-class"><span class="hljs-keyword">class</span></span>=com.helen.plugin.CookerPlugin</code></pre> 
+  <p>这里:</p> 
+  <p>"cooker-plugin" 是插件名称;</p> 
+  <p>"com.helen.plugin.CookerPlugin" 是对应的插件实现类&nbsp;</p> 
+  <p>3.build.gradle 声明用groovy开发</p> 
+  <pre><code class="language-java hljs">apply plugin: <span class="hljs-string">'groovy'</span>
+
+dependencies {
+    <span class="hljs-function">compile <span class="hljs-title">gradleApi</span><span class="hljs-params">()</span>
+    compile <span class="hljs-title">localGroovy</span><span class="hljs-params">()</span>
+}
+
+repositories </span>{
+    mavenCentral()
+}</code></pre> 
+  <h3 id="articleHeader5">4.实现插件</h3> 
+  <p>实现plugin,其实就是需要继承实现Plugin &nbsp;的接口&nbsp;</p> 
+  <pre><code class="language-java hljs"><span class="hljs-keyword">package</span> com.helen.plugin
+<span class="hljs-keyword">import</span> org.gradle.api.Plugin
+<span class="hljs-keyword">import</span> org.gradle.api.Project
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CookerPlugin</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Plugin</span>&lt;<span class="hljs-title">Project</span>&gt; </span>{
+
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">apply</span><span class="hljs-params">(Project project)</span> </span>{
+        <span class="hljs-comment">//这里实现plugin的逻辑</span>
+        <span class="hljs-comment">//巴拉巴拉巴拉</span>
+        println <span class="hljs-string">"hello, this is cooker plugin!"</span>
+
+        <span class="hljs-comment">//cooker-plugin</span>
+        <span class="hljs-comment">//比如这里加一个简单的task</span>
+        project.task(<span class="hljs-string">'cooker-test-task'</span>) &lt;&lt; {
+            println <span class="hljs-string">"hello, this is cooker test task!"</span>
+        }
+    }
+}</code></pre> 
+  <h3 id="articleHeader6">5.一个简单的plugin就写好了</h3> 
+  <p>在cooker-plugin项目中, build一下.</p> 
+  <p>就能在build/libs下生成对应的plugin插件了</p> 
+  <p style="text-align:center"><img src="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/20170112155549_441.jpg"></p> 
+  <p>这个插件就能使用了. 可以发布在本地仓库或者Maven仓库.</p> 
+  <h2 id="articleHeader7">二. mavenDeployer发布插件</h2> 
+  <p>下面介绍一下利用mavenDeployer发布在本地仓库.</p> 
+  <h3 id="articleHeader8">1. 引入 mavenDeplayer插件</h3> 
+  <p>修改cooker-plugin的build.gradle, 修改后如下:</p> 
+  <pre><code class="language-java hljs">apply plugin: <span class="hljs-string">'groovy'</span>
+<span class="hljs-comment">//添加maven plugin, 用于发布我们的jar</span>
+apply plugin: <span class="hljs-string">'maven'</span>
+
+dependencies {
+    <span class="hljs-function">compile <span class="hljs-title">gradleApi</span><span class="hljs-params">()</span>
+    compile <span class="hljs-title">localGroovy</span><span class="hljs-params">()</span>
+}
+
+repositories </span>{
+    mavenCentral()
+}
+
+<span class="hljs-comment">//设置maven deployer</span>
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            <span class="hljs-comment">//设置插件的GAV参数</span>
+            pom.groupId = <span class="hljs-string">'com.helen.plugin'</span>
+            pom.artifactId = <span class="hljs-string">'cooker-plugin'</span>
+            pom.version = <span class="hljs-number">1.0</span> 
+            <span class="hljs-comment">//文件发布到下面目录</span>
+            repository(url: uri(<span class="hljs-string">'../release'</span>))
+        }
+    }
+}</code></pre> 
+  <h3 id="articleHeader9">2.用uploadArchices发布</h3> 
+  <p>运行uploadArchives. 就能在设置的仓库路径中生成 cooker-plugin了</p> 
+  <p style="text-align:center"><img src="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/20170112155549_929.jpg"></p> 
+  <h2 id="articleHeader10">三. 使用gradle plugin</h2> 
+  <h3 id="articleHeader11">1.在build.gradle引入 cooker-plugin</h3> 
+  <pre><code class="language-java hljs">apply plugin: <span class="hljs-string">'com.android.application'</span>
+<span class="hljs-comment">//使用cooker-plugin</span>
+apply plugin: <span class="hljs-string">'cooker-plugin'</span>
+
+buildscript {
+    repositories {
+        maven {
+            <span class="hljs-comment">//cooker-plugin 所在的仓库</span>
+            <span class="hljs-comment">//这里是发布在本地文件夹了</span>
+            <span class="hljs-function">url <span class="hljs-title">uri</span><span class="hljs-params">(<span class="hljs-string">'../release'</span>)</span>
+        }
+    }
+    dependencies </span>{
+        <span class="hljs-comment">//引入cooker-plugin</span>
+        classpath <span class="hljs-string">'com.helen.plugin:cooker-plugin:1.0'</span>
+    }
+}</code></pre> 
+  <h3 id="articleHeader12">2. 我们编译App的时候,cooker-plugin就会介入了</h3> 
+  <p>每次clean/build时, 在Gradle Console可以看到我们的log</p> 
+  <p>hello, this is cooker plugin!</p> 
+  <pre><code class="language-java hljs">Configuration on demand is an incubating feature.
+hello, <span class="hljs-keyword">this</span> is cooker plugin!
+Incremental java compilation is an incubating feature.
+:app:preBuild UP-TO-DATE</code></pre> 
+  <h3 id="articleHeader13">3.使用cooker-plugin中定义的task</h3> 
+  <p>前面demo中, 我们新建了一个task: cooker-test-task , 他简单输出一句log.下面测试运行一下这个task.</p> 
+  <p>在控制台输入&nbsp; gradle cooker-test-task 运行结果如下&nbsp;</p> 
+  <p style="text-align:center"><img src="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/20170112155549_855.jpg"></p> 
+  <h2 id="articleHeader14">四. 总结</h2> 
+  <p>Demo地址-Github :&nbsp;</p> 
+  <p>https://github.com/helen-x/gradle-plugin-demo</p> 
+  <p>到此为止, 自定义Gradle plugin就介绍完了.</p> 
+  <p>结合AndroidStudio, 自定义Gradle plugin可以完成很多功能.&nbsp;</p> 
+  <p>比如cooker的plugin完成了:</p> 
+  <p>1)添加编译依赖</p> 
+  <p>2)进行Aspecj编译</p> 
+  <p>3)自动生成混淆配置</p> 
+  <p>&nbsp;</p> 
+  <p>&nbsp;</p> 
+  <p>来自：http://mp.weixin.qq.com/s/HJyYMGmVIpblJXJNKK1JTw</p> 
+  <p>&nbsp;</p> 
+ 
+
+				</article>
+
+
+
+
+		
+
+
+
+		</div>
+
+
+
+	<div class="col-md-3">
+		<div class="bdsharebuttonbox bdshare-button-style0-16" data-bd-bind="1498728730758">
+			<a href="http://www.open-open.com/lib/view/open1484207750547.html#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+			<a href="http://www.open-open.com/lib/view/open1484207750547.html#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+			<a href="http://www.open-open.com/lib/view/open1484207750547.html#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a>
+			<a href="http://www.open-open.com/lib/view/open1484207750547.html#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a>
+			<a href="http://www.open-open.com/lib/view/open1484207750547.html#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+
+		</div>
+		<script>document.write('<div style="margin-top: 20px;" class=" side-box"><a href="http://cloud.qy.com.cn/68?a=openopen" target="_blank"><img src="http://www.open-open.com/gg_images/cloud_qy_com_cn_313_250.gif" width="100%"></a></div>') </script><div style="margin-top: 20px;" class=" side-box"><a href="http://cloud.qy.com.cn/68?a=openopen" target="_blank"><img src="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/cloud_qy_com_cn_313_250.gif" width="100%"></a></div>
+
+		<div class=" side-box" style="margin-top: 20px;">
+				<div class="title"><h3>同类热门经验</h3></div>
+				<ol class="hot">
+					
+						<li>
+							<a title="Android" studio教程从入门到精通="" href="http://www.open-open.com/lib/view/open1433387390635.html"><span class="title">Android Studio教程从入门到精通 </span></a>
+						</li>
+					
+						<li>
+							<a title="最强" android="" studio="" 使用小技巧和快捷键="" href="http://www.open-open.com/lib/view/open1458715872710.html"><span class="title">最强 Android Studio 使用小技巧和快捷键</span></a>
+						</li>
+					
+						<li>
+							<a title="最全面的Android" studio使用教程="" href="http://www.open-open.com/lib/view/open1416883124753.html"><span class="title">最全面的Android Studio使用教程</span></a>
+						</li>
+					
+						<li>
+							<a title="Android" studio="" -="" 基于intellij="" idea全新的android开发工具="" href="http://www.open-open.com/lib/view/open1368686066578.html"><span class="title">Android Studio - 基于IntelliJ IDEA全新的Android开发工具</span></a>
+						</li>
+					
+						<li>
+							<a title="Android" studio项目目录结构介绍="" href="http://www.open-open.com/lib/view/open1436323668817.html"><span class="title">Android Studio项目目录结构介绍</span></a>
+						</li>
+					
+						<li>
+							<a title="Android" studio="" 新手完全指引="" href="http://www.open-open.com/lib/view/open1434029865551.html"><span class="title">Android Studio 新手完全指引</span></a>
+						</li>
+					
+
+				</ol>
+			</div>
+		<p class="aiBar"></p>
+		<div class="side-box post-nav aside-fixed" style="margin-top: 20px;">
+			<div class="title"><h3>阅读目录</h3></div>
+			<ul class="articleIndex"><li class=""><a href="http://www.open-open.com/lib/view/open1484207750547.html#articleHeader0">简介</a></li><li class=""><a href="http://www.open-open.com/lib/view/open1484207750547.html#articleHeader1">一. 用AndroidStudio中写plugin</a></li><li style="list-style:none;"><ul><li class=""><a href="http://www.open-open.com/lib/view/open1484207750547.html#articleHeader2">1.新建一个Android工程</a></li><li class="active"><a href="http://www.open-open.com/lib/view/open1484207750547.html#articleHeader3">2.在这个工程里面,新建一个Android Library</a></li><li><a href="http://www.open-open.com/lib/view/open1484207750547.html#articleHeader4">3.建立plugin的目录结构</a></li><li><a href="http://www.open-open.com/lib/view/open1484207750547.html#articleHeader5">4.实现插件</a></li><li><a href="http://www.open-open.com/lib/view/open1484207750547.html#articleHeader6">5.一个简单的plugin就写好了</a></li></ul></li><li><a href="http://www.open-open.com/lib/view/open1484207750547.html#articleHeader7">二. mavenDeployer发布插件</a></li><li style="list-style:none;"><ul><li><a href="http://www.open-open.com/lib/view/open1484207750547.html#articleHeader8">1. 引入 mavenDeplayer插件</a></li><li><a href="http://www.open-open.com/lib/view/open1484207750547.html#articleHeader9">2.用uploadArchices发布</a></li></ul></li><li><a href="http://www.open-open.com/lib/view/open1484207750547.html#articleHeader10">三. 使用gradle plugin</a></li><li style="list-style:none;"><ul><li><a href="http://www.open-open.com/lib/view/open1484207750547.html#articleHeader11">1.在build.gradle引入 cooker-plugin</a></li><li><a href="http://www.open-open.com/lib/view/open1484207750547.html#articleHeader12">2. 我们编译App的时候,cooker-plugin就会介入了</a></li><li><a href="http://www.open-open.com/lib/view/open1484207750547.html#articleHeader13">3.使用cooker-plugin中定义的task</a></li></ul></li><li class=""><a href="http://www.open-open.com/lib/view/open1484207750547.html#articleHeader14">四. 总结</a></li></ul>
+		</div>
+	</div>
+
+
+
+</div>
+	</div>
+
+<div class="container">
+<script type="text/javascript">
+    var cpro_id = "u2690846";
+</script>
+<script type="text/javascript" src="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/c.js.下载"></script><div id="BAIDU_SSP__wrapper_u2690846_0"><iframe id="iframeu2690846_0" src="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/tcdm.html" width="846" height="120" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0;vertical-align:bottom;margin:0;width:846px;height:120px" allowtransparency="true"></iframe></div>
+
+	<div class="row">
+		<div class="col-md-9">
+			<table width="100%"><tbody><tr>
+				<td valign="top" width="33%" class="Relatedb">
+					<div style="border-bottom: 1px #ccc solid;margin-top: 5px"><strong>相关文档</strong> 　—　<a href="http://www.open-open.com/doc" rel="nofollow" target="_blank">更多</a></div>
+					<ul>
+						
+							<li><a href="http://www.open-open.com/doc/view/9cedc384c41842aa990a903f9f3adee0" rel="nofollow" target="_blank" title="Android Studio使用指南v0.1.pdf">Android Studio使用指南v0.1.pdf</a></li>
+						
+							<li><a href="http://www.open-open.com/doc/view/01da38aa65dc4d2ea53b05e95a5c8c78" rel="nofollow" target="_blank" title="Android Studio 使用指南v0.1.pdf">Android Studio 使用指南v0.1.pdf</a></li>
+						
+							<li><a href="http://www.open-open.com/doc/view/1c7f7b5dc07f41d39bb9d976ebdcc0df" rel="nofollow" target="_blank" title="Gradle Plugin 用户指南.pdf">Gradle Plugin 用户指南.pdf</a></li>
+						
+							<li><a href="http://www.open-open.com/doc/view/037eb14cda3e47ea80f6068cabe37792" rel="nofollow" target="_blank" title="Android编程实战.pdf">Android编程实战.pdf</a></li>
+						
+							<li><a href="http://www.open-open.com/doc/view/db3e041cc65c4a2d98dae06e4669ea3e" rel="nofollow" target="_blank" title="Android Studio 入门指南 .pdf">Android Studio 入门指南 .pdf</a></li>
+						
+							<li><a href="http://www.open-open.com/doc/view/ce09772ebf154cb8a1384ca210839728" rel="nofollow" target="_blank" title="Android Studio入门指南.doc">Android Studio入门指南.doc</a></li>
+						
+							<li><a href="http://www.open-open.com/doc/view/9aa5ce9995be47f1bc77cc588db7dc6e" rel="nofollow" target="_blank" title="Android Studio 使用指南.pdf">Android Studio 使用指南.pdf</a></li>
+						
+							<li><a href="http://www.open-open.com/doc/view/96a12850816a450fb87c84a4d78860bc" rel="nofollow" target="_blank" title="Android Studio 使用手册.pdf">Android Studio 使用手册.pdf</a></li>
+						
+							<li><a href="http://www.open-open.com/doc/view/7eabc92c04d64fe4b2cbe6735c4bb874" rel="nofollow" target="_blank" title="Android Studio 使用指南(v0.2).pdf">Android Studio 使用指南(v0.2).pdf</a></li>
+						
+							<li><a href="http://www.open-open.com/doc/view/fa50871cd56f4e478b9c8d2bd45d18f2" rel="nofollow" target="_blank" title="Android Studio 使用手册.pdf">Android Studio 使用手册.pdf</a></li>
+						
+							<li><a href="http://www.open-open.com/doc/view/06cf2299b2de4cd7a8eceac56e268163" rel="nofollow" target="_blank" title="深入理解 android 之 gradle - v1.0.pdf">深入理解 android 之 gradle - v1.0.pdf</a></li>
+						
+							<li><a href="http://www.open-open.com/doc/view/afe72b7eef574bfc9226198684e53e44" rel="nofollow" target="_blank" title="gradle_recipes_for_android.pdf">gradle_recipes_for_android.pdf</a></li>
+						
+							<li><a href="http://www.open-open.com/doc/view/ca468917e1944cbfa5d84bd2fda82984" rel="nofollow" target="_blank" title="gradle for android - 2015.pdf">gradle for android - 2015.pdf</a></li>
+						
+							<li><a href="http://www.open-open.com/doc/view/36d55dda12df4d5cb6fdc9bf7b1360ad" rel="nofollow" target="_blank" title="Gradle for Android 使用手册.pdf">Gradle for Android 使用手册.pdf</a></li>
+						
+							<li><a href="http://www.open-open.com/doc/view/18fb420c55f24634a613bb208403e961" rel="nofollow" target="_blank" title="android gradle 用户指南 - v1.0 (1).pdf">android gradle 用户指南 - v1.0 (1).pdf</a></li>
+						
+							<li><a href="http://www.open-open.com/doc/view/f8fbb874aee147a6abe849c1c71b2e36" rel="nofollow" target="_blank" title="深入理解Android之Gradle.pdf">深入理解Android之Gradle.pdf</a></li>
+						
+							<li><a href="http://www.open-open.com/doc/view/88235bf4325849789cbc46dffeafeebd" rel="nofollow" target="_blank" title="Gradle-for-Android 使用手册.pdf">Gradle-for-Android 使用手册.pdf</a></li>
+						
+							<li><a href="http://www.open-open.com/doc/view/db8b73b5b8074605b25137cf052c4ee9" rel="nofollow" target="_blank" title="Android Studio 游戏开发理念与设计.pdf">Android Studio 游戏开发理念与设计.pdf</a></li>
+						
+							<li><a href="http://www.open-open.com/doc/view/53903e5360ba44f2998544b393060ef5" rel="nofollow" target="_blank" title="Android Studio开发精要 .pdf">Android Studio开发精要 .pdf</a></li>
+						
+							<li><a href="http://www.open-open.com/doc/view/a6284b5644ac48f2bdd0b40735de088d" rel="nofollow" target="_blank" title="Gradle脚本的整洁之道--编写高质量的Gradle脚本.pdf">Gradle脚本的整洁之道--编写高质量的Gradle脚本.pdf</a></li>
+						
+					</ul>
+				</td>
+				<td valign="top" width="33%" class="Relatedb">
+					<div style="border-bottom: 1px #ccc solid;margin-top: 5px"><strong>相关经验</strong> 　—　<a href="http://www.open-open.com/lib" rel="nofollow" target="_blank">更多</a></div>
+					<ul>
+						
+							<li>
+								<a title="手把手教你AndroidStudio多渠道打包" href="http://www.open-open.com/lib/view/open1467205662702.html" target="_blank"><span class="title">手把手教你AndroidStudio多渠道打包</span></a>
+
+							</li>
+						
+							<li>
+								<a title="Android开源工具项目集合" href="http://www.open-open.com/lib/view/open1465722194733.html" target="_blank"><span class="title">Android开源工具项目集合</span></a>
+
+							</li>
+						
+							<li>
+								<a title="将Eclipse代码导入到AndroidStudio的两种方式" href="http://www.open-open.com/lib/view/open1419597450031.html" target="_blank"><span class="title"> 将Eclipse代码导入到AndroidStudio的两种方式 </span></a>
+
+							</li>
+						
+							<li>
+								<a title="新的构建工具！Gradle的使用教程" href="http://www.open-open.com/lib/view/open1454288077026.html" target="_blank"><span class="title">新的构建工具！Gradle的使用教程</span></a>
+
+							</li>
+						
+							<li>
+								<a title="细谈Android应用架构" href="http://www.open-open.com/lib/view/open1452134619136.html" target="_blank"><span class="title">细谈Android应用架构 </span></a>
+
+							</li>
+						
+							<li>
+								<a title="使用Android" studio构建cordova项目="" href="http://www.open-open.com/lib/view/open1452337922011.html" target="_blank"><span class="title">使用Android Studio构建Cordova项目</span></a>
+
+							</li>
+						
+							<li>
+								<a title="一个异常与Android" studio系列教程参考="" href="http://www.open-open.com/lib/view/open1437923010763.html" target="_blank"><span class="title">一个异常与Android Studio系列教程参考</span></a>
+
+							</li>
+						
+							<li>
+								<a title="关于Android" studio项目的gradle构建="" href="http://www.open-open.com/lib/view/open1455504152730.html" target="_blank"><span class="title">关于Android Studio项目的Gradle构建 </span></a>
+
+							</li>
+						
+							<li>
+								<a title="Android" studio安装、配置="" href="http://www.open-open.com/lib/view/open1421074214468.html" target="_blank"><span class="title">Android Studio安装、配置</span></a>
+
+							</li>
+						
+							<li>
+								<a title="Android" 开发小贴士="" href="http://www.open-open.com/lib/view/open1453898074230.html" target="_blank"><span class="title">Android 开发小贴士</span></a>
+
+							</li>
+						
+							<li>
+								<a title="关于Android" studio项目的gradle构建="" href="http://www.open-open.com/lib/view/open1455598654730.html" target="_blank"><span class="title">关于Android Studio项目的Gradle构建 </span></a>
+
+							</li>
+						
+							<li>
+								<a title="导入开源库到基于Android" studio构建的项目中="" href="http://www.open-open.com/lib/view/open1418522315448.html" target="_blank"><span class="title">导入开源库到基于Android Studio构建的项目中</span></a>
+
+							</li>
+						
+							<li>
+								<a title="Android" studio分模块自动化构建实战="" href="http://www.open-open.com/lib/view/open1434789508770.html" target="_blank"><span class="title">Android Studio分模块自动化构建实战</span></a>
+
+							</li>
+						
+							<li>
+								<a title="Android" gradle实战中遇到的问题与经验="" href="http://www.open-open.com/lib/view/open1439216256770.html" target="_blank"><span class="title">Android Gradle实战中遇到的问题与经验</span></a>
+
+							</li>
+						
+					</ul>
+				</td>
+				<td valign="top" width="33%" class="Relatedb">
+					<div style="border-bottom: 1px #ccc solid;margin-top: 5px"><strong>相关讨论</strong> 　—　<a href="http://www.open-open.com/solution" rel="nofollow" target="_blank">更多</a></div>
+					<ul>
+						
+							<li>
+								<a title="Android" studio="" 快捷键使用总结="" href="http://www.open-open.com/solution/view/1420701888328" rel="nofollow" target="_blank"><span class="title">Android Studio 快捷键使用总结</span></a>
+							</li>
+						
+							<li>
+								<a title="介绍几款比较新颖的移动开发调试工具，支持android" studio,eclipse="" href="http://www.open-open.com/solution/view/1450947761417" rel="nofollow" target="_blank"><span class="title">介绍几款比较新颖的移动开发调试工具，支持android studio,eclipse</span></a>
+							</li>
+						
+							<li>
+								<a title="Android" studio快捷键="" href="http://www.open-open.com/solution/view/1409715785963" rel="nofollow" target="_blank"><span class="title">Android studio快捷键 </span></a>
+							</li>
+						
+							<li>
+								<a title="Android" studio常用快捷键="" href="http://www.open-open.com/solution/view/1434186708442" rel="nofollow" target="_blank"><span class="title">Android Studio常用快捷键 </span></a>
+							</li>
+						
+							<li>
+								<a title="Android" 简介="" href="http://www.open-open.com/solution/view/1318854628046" rel="nofollow" target="_blank"><span class="title">Android 简介</span></a>
+							</li>
+						
+							<li>
+								<a title="Visual" studio="" 11抛弃宏="" href="http://www.open-open.com/solution/view/1318331576484" rel="nofollow" target="_blank"><span class="title">Visual Studio 11抛弃宏 </span></a>
+							</li>
+						
+							<li>
+								<a title="Android的类库Picasso有哪些特性？" href="http://www.open-open.com/solution/view/1436521317380" rel="nofollow" target="_blank"><span class="title">Android的类库Picasso有哪些特性？</span></a>
+							</li>
+						
+					</ul>
+				</td>
+			</tr></tbody></table>
+		</div>
+
+	</div>
+
+</div>
+
+
+
+
+
+<style>
+	footer{background-color: #fff;
+		border-top: 1px solid rgba(230, 230, 230, 0.75);
+		margin-top: 20px;
+		padding: 20px 0;}
+</style>
+<footer>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4 col-xs-4" style="line-height: 60px;">
+				<span>©2006-2016 深度开源 </span>
+			</div>
+			<div class="col-md-4 col-xs-4 text-center"><span>
+				<a rel="nofollow" href="http://www.open-open.com/" class="brightbox-logo"><img src="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/logo-icon.png"></a>
+			</span></div>
+			<div class="col-md-4 col-xs-4" style="line-height: 60px;">
+				 <a target="_blank" href="http://www.miibeian.gov.cn/">浙ICP备09019653号-31</a>
+				<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1257892335'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1257892335' type='text/javascript'%3E%3C/script%3E"));</script><span id="cnzz_stat_icon_1257892335"></span><script src="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/z_stat.php" type="text/javascript"></script>
+			</div>
+		</div>
+	</div>
+</footer>
+
+<script src="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/jquery.min.js.下载"></script>
+<script type="text/javascript" src="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/jquery-confirm.js.下载"></script>
+<script type="text/javascript" src="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/app.js.下载"></script>
+<script type="text/javascript" src="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/scrolltopcontrol.js.下载"></script>
+<!-- the jScrollPane script -->
+<script type="text/javascript" src="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/jquery.contentcarousel.js.下载"></script>
+
+<script type="text/javascript">
+	var rooturl="/lib";
+	var tb_pathToImage = "/lib/images/loadingAnimation.gif";
+	var jc = {};
+	$(function (){
+		$('#ca-container').contentcarousel();
+		$('.login').on('click', function () {
+			jc = $.dialog({
+				title: '&nbsp;',
+				content: '<iframe id="dialog" scrolling="no" style="width:100%;border:none;height:300px;" src="/lib/members/login?keepThis=true&TB_iframe=true&height=177&width=280"></iframe>',
+				animation: 'top',
+				columnClass: 'col-md-5 col-md-offset-3',
+				closeAnimation: 'top',
+				backgroundDismiss: true
+			});
+		});
+		$('.register').on('click', function () {
+			jc = $.dialog({
+				title: '&nbsp;',
+				content: '<iframe id="dialog" scrolling="no" style="width:100%;border:none;height:460px;" src="/lib/members/register?keepThis=true&TB_iframe=true&height=460&width=460"></iframe>',
+				animation: 'top',
+				columnClass: 'col-md-6 col-md-offset-3',
+				closeAnimation: 'top',
+				backgroundDismiss: true
+			});
+		});
+
+
+	});
+
+
+</script>
+
+<script src="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/jquery-ui.min.js.下载"></script>
+<script type="text/javascript" src="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/scrolltopcontrol.js.下载"></script>
+<script type="text/javascript" src="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/view.js.下载"></script>
+
+<script type="text/javascript" src="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/jquery.jgrowl_minimized.js.下载"></script>
+
+<script type="text/javascript">
+	scrolltotop.offset(95,165);
+	scrolltotop.init();
+</script>
+<script src="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/highlight.min.js.下载"></script>
+<script>hljs.initHighlightingOnLoad();
+
+	(function(){
+		var c = new contentIndex();
+		c("article", ".articleIndex");
+		setAIActive();
+
+
+		$(window).scroll(function () {
+			if ($(window).scrollTop() > $(".aiBar").offset().top) {
+				$(".post-nav").addClass("aside-fixed");
+//          console.log($(window).scrollTop());
+			} else {
+//           console.log($(window).scrollTop());
+				$(".post-nav").removeClass("aside-fixed");
+			}
+		});
+		$("#readercontainer img").each(function(index, element) {
+			var $width=$("#readercontainer article").width();
+			if ( this.width>$width) {
+
+				this.height = this.height*$width/this.width;
+				this.width=$width;
+			}
+		});
+
+	})();
+</script>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		bp.src = '//push.zhanzhang.baidu.com/push.js';
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+</script>
+
+
+
+<div class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-dialog-buttons ui-draggable" tabindex="-1" role="dialog" aria-describedby="favorite-box" aria-labelledby="ui-id-1" style="display: none;"><div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix ui-draggable-handle"><span id="ui-id-1" class="ui-dialog-title">收藏提示</span><button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close" role="button" title="Close"><span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span><span class="ui-button-text">Close</span></button></div><div id="favorite-box" class="ui-dialog-content ui-widget-content" style="display: block;">
+						<table>
+							<tbody>
+							<tr>
+								<td width="70" align="right">文件夹</td>
+								<td><select id="fav_folderlist" name="folder">
+									<option selected="" value="0">请选择...</option>
+									<option id="newfolder-sp" disabled="" value="">-------------</option>
+									<option value="-1">新增文件夹...</option>
+								</select></td>
+							</tr>
+							<tr style="display: none" id="newfolder-input">
+								<td align="right">新增文件夹</td>
+								<td><input id="fav_newfolder" maxlength="50" type="text" name="newfolder"></td>
+							</tr>
+							<tr>
+								<td align="right">标签</td>
+								<td><input id="fav_tags" maxlength="135" size="20" type="text" name="tags"></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td colspan="2">(多个标签用逗号分隔)</td>
+							</tr>
+							</tbody>
+						</table>
+					</div><div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix"><div class="ui-dialog-buttonset"><button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button"><span class="ui-button-text">取消</span></button><button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button"><span class="ui-button-text">确认</span></button></div></div></div><div id="topcontrol" title="回到顶部" style="position: fixed; bottom: 165px; right: 95px; cursor: pointer;"><img src="./用AndroidStudio开发自定义 Gradle plugin - OPEN 开发经验库_files/gotop.gif" style="width:35px; height:35px;"></div></body></html>

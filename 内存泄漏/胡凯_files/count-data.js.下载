@@ -1,5 +1,0 @@
-var DISQUSWIDGETS;
-
-if (typeof DISQUSWIDGETS != 'undefined') {
-    DISQUSWIDGETS.displayCount({"text":{"and":"\u53ca","comments":{"zero":"0 Comments","multiple":"{num} Comments","one":"1 Comment"}},"counts":[{"id":"http:\/\/hukai.me\/android-performance-patterns-season-5\/","comments":2},{"id":"http:\/\/hukai.me\/android-performance-patterns-season-6\/","comments":0},{"id":"http:\/\/hukai.me\/android-performance-patterns-season-4\/","comments":13},{"id":"http:\/\/hukai.me\/google-io-2016\/","comments":2}]});
-}
