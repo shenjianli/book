@@ -1,0 +1,48 @@
+
+.dnd_follow_us{
+	font-size: 16px;
+}
+
+.dnd_follow_us a{
+	margin-right: 10px;
+	text-decoration: none;
+	display: inline-block;
+	background: #f5f6f8;
+	width: 36px;
+	height: 36px;
+	line-height: 36px;
+	text-align: center;
+	-webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	border-radius: 50%;
+	color:#9fa4af;
+	margin-bottom: 20px;
+	font-size: 13px;
+}
+
+.dnd_follow_us a:last-child{
+	margin-right: 0;
+}
+
+#ABdev_main_footer .dnd_socialicon_facebook:hover i{color: #3B5998;}
+#ABdev_main_footer .dnd_socialicon_twitter:hover i{color: #4099FF;}
+#ABdev_main_footer .dnd_socialicon_googleplus:hover i{color: #d34836;}
+#ABdev_main_footer .dnd_socialicon_linkedin:hover i{color: #0e76a8;}
+#ABdev_main_footer .dnd_socialicon_pinterest:hover i{color: #c8232c;}
+
+
+.dnd_follow_us a:hover{
+	text-decoration: none;
+	background: #999;
+	color:#fff;
+}
+
+.dnd_follow_us .dnd_socialicon_facebook:hover{background: #3B5998;}
+.dnd_follow_us .dnd_socialicon_twitter:hover{background: #4099FF;}
+.dnd_follow_us .dnd_socialicon_googleplus:hover{background: #d34836;}
+.dnd_follow_us .dnd_socialicon_linkedin:hover{background: #0e76a8;}
+.dnd_follow_us .dnd_socialicon_pinterest:hover{background: #c8232c;}
+
+.dnd_tooltip{
+	cursor: pointer;
+}
