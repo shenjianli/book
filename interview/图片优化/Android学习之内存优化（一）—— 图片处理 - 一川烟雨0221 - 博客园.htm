@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<!-- saved from url=(0048)http://www.cnblogs.com/mafangfang/p/5434668.html -->
+<html lang="zh-cn"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Android学习之内存优化（一）——  图片处理 - 一川烟雨0221 - 博客园</title>
+<link type="text/css" rel="stylesheet" href="./Android学习之内存优化（一）—— 图片处理 - 一川烟雨0221 - 博客园_files/blog-common.css">
+<link id="MainCss" type="text/css" rel="stylesheet" href="./Android学习之内存优化（一）—— 图片处理 - 一川烟雨0221 - 博客园_files/bundle-clover.css">
+<link id="mobile-style" media="only screen and (max-width: 768px)" type="text/css" rel="stylesheet" href="./Android学习之内存优化（一）—— 图片处理 - 一川烟雨0221 - 博客园_files/bundle-clover-mobile.css">
+<link title="RSS" type="application/rss+xml" rel="alternate" href="http://www.cnblogs.com/mafangfang/rss">
+<link title="RSD" type="application/rsd+xml" rel="EditURI" href="http://www.cnblogs.com/mafangfang/rsd.xml">
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="http://www.cnblogs.com/mafangfang/wlwmanifest.xml">
+<script async="" src="./Android学习之内存优化（一）—— 图片处理 - 一川烟雨0221 - 博客园_files/analytics.js"></script><script type="text/javascript" src="./Android学习之内存优化（一）—— 图片处理 - 一川烟雨0221 - 博客园_files/encoder.js"></script><script src="./Android学习之内存优化（一）—— 图片处理 - 一川烟雨0221 - 博客园_files/jquery.js" type="text/javascript"></script>  
+<script type="text/javascript">var currentBlogApp = 'mafangfang', cb_enable_mathjax=false;var isLogined=false;</script>
+<script src="./Android学习之内存优化（一）—— 图片处理 - 一川烟雨0221 - 博客园_files/blog-common.js" type="text/javascript"></script>
+</head>
+<body>
+<a name="top"></a>
+
+<!--done-->
+<table cellpadding="0" cellspacing="0" border="0" align="center" width="100%">
+<tbody><tr>
+	<td width="299" background="./Android学习之内存优化（一）—— 图片处理 - 一川烟雨0221 - 博客园_files/banner1.jpg"></td>
+	<td background="./Android学习之内存优化（一）—— 图片处理 - 一川烟雨0221 - 博客园_files/banner.jpg">
+<!--done-->
+<div class="header">
+	<div class="headerText">
+		<a id="Header1_HeaderTitle" class="headermaintitle" href="http://www.cnblogs.com/mafangfang/">晴雨悠悠</a><br>
+		
+	</div>
+</div>
+</td>
+	<td width="296" background="./Android学习之内存优化（一）—— 图片处理 - 一川烟雨0221 - 博客园_files/banner2.jpg"></td>
+</tr>
+</tbody></table>
+<div id="mylinks"><a id="blog_nav_sitehome" class="menu" href="http://www.cnblogs.com/">博客园</a>&nbsp; &nbsp;
+<a id="blog_nav_myhome" class="menu" href="http://www.cnblogs.com/mafangfang/">首页</a>&nbsp; &nbsp;
+<a href="http://q.cnblogs.com/" class="menu" target="_blank">博问</a>&nbsp; &nbsp;
+<a href="http://home.cnblogs.com/ing/" class="menu" target="_blank">闪存</a>&nbsp; &nbsp;
+<a id="blog_nav_newpost" class="menu" rel="nofollow" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">新随笔</a>&nbsp; &nbsp;
+<a id="blog_nav_rss" class="menu" href="http://www.cnblogs.com/mafangfang/rss">订阅</a>
+<a id="blog_nav_rss_image" href="http://www.cnblogs.com/mafangfang/rss"><img src="./Android学习之内存优化（一）—— 图片处理 - 一川烟雨0221 - 博客园_files/xml.gif" alt="订阅"></a>&nbsp; &nbsp;
+<a id="blog_nav_admin" class="menu" rel="nofollow" href="https://i.cnblogs.com/">管理</a>
+<!-- <a id="blog_nav_contact" accesskey="9" class="menu" rel="nofollow" href="https://msg.cnblogs.com/send/%E4%B8%80%E5%B7%9D%E7%83%9F%E9%9B%A80221">联系</a>&nbsp;&nbsp;&nbsp; -->
+</div>
+<div id="mytopmenu">
+	
+		<div id="mystats">
+			<div id="blog_stats">
+<!--done-->
+<div class="blogStats">
+posts - 50,&nbsp;
+comments - 1,&nbsp;
+trackbacks - 0
+
+</div></div></div>
+	
+</div>
+<div id="centercontent">
+	
+<div id="post_detail">
+<!--done-->
+<div class="post">
+	<div class="postTitle">
+		<a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/mafangfang/p/5434668.html">Android学习之内存优化（一）——  图片处理</a>
+	</div>
+	<div id="cnblogs_post_body"><div class="column"><span style="font-size: 16px;">在Android应用里，最耗费内存的就是图片资源。而且在Android系统中，读取位图Bitmap时，分给虚拟机中的图片的堆栈大小只有8M，如果超出了，就会出现OutOfMemory异常。所以，对于图片的内存优化，是Android应用开发中比较重要的内容。</span></div>
+<div class="column">&nbsp;</div>
+<div class="column"><span style="font-size: 16px;"><strong>Bitmap类的构造方法都是私有的，所以开发者不能直接new出一个Bitmap对象，只能通过BitmapFactory类的各种静态方法来实例化一个Bitmap。</strong></span></div>
+<div class="column">&nbsp;</div>
+<div class="column"><span style="font-size: 16px;"><strong>对于图片，内存优化中有两个手段，一是减少图片本身所占的内存、二是缓存经常使用的图片，避免重复创建Bitmap文件，增加内存的开支。</strong></span></div>
+<div class="column"><span style="font-size: 16px;"><strong>&nbsp;一、减少</strong></span></div>
+<div class="column"><span style="font-size: 16px;">&nbsp;&nbsp; 下面来看看几个处理图片的方法：</span></div>
+<div class="column">
+<p><span style="font-size: 16px;">&nbsp;</span></p>
+<p><span style="font-size: 16px;"><strong>　　图片显示：</strong></span></p>
+<p><span style="font-size: 16px;">　　我们需要根据需求去加载图片的大小。</span></p>
+<p><span style="font-size: 16px;">　　例如在列表中仅用于预览时加载缩略图（thumbnails&nbsp;）。</span></p>
+<p><span style="font-size: 16px;">　　只有当用户点击具体条目想看详细信息的时候，这时另启动一个fragment／activity／对话框等等，去显示整个图片</span></p>
+<p><span style="font-size: 16px;">&nbsp;</span></p>
+<p><span style="font-size: 16px;"><strong>　　图片大小：</strong></span></p>
+<div class="page" title="Page 19">
+<div class="layoutArea">
+<div class="column">
+<p><span style="font-size: 16px;">　　直接使用ImageView显示bitmap会占用较多资源，特别是图片较大的时候，可能导致崩溃。&nbsp;</span><br><span style="font-size: 16px;">　　使用<strong>BitmapFactory.Options</strong>设置inSampleSize, 这样做可以减少对系统资源的要求。&nbsp;</span><br><span style="font-size: 16px;">　　属性值inSampleSize表示缩略图大小为原始图片大小的几分之一，即如果这个值为2，则取出的缩略图的宽和高都是原始图片的1/2，图片大小就为原始大小的1/4。&nbsp;</span></p>
+<p><span style="font-size: 16px;">&nbsp;</span></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./Android学习之内存优化（一）—— 图片处理 - 一川烟雨0221 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="font-size: 16px;">        BitmapFactory.Options bitmapFactoryOptions = <span style="color: #0000ff;">new</span><span style="color: #000000;"> BitmapFactory.Options();
+        bitmapFactoryOptions.inJustDecodeBounds </span>= <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+        bitmapFactoryOptions.inSampleSize </span>= <span style="color: #800080;">2</span><span style="color: #000000;">;
+        </span><span style="color: #008000;">//</span><span style="color: #008000;"> 这里一定要将其设置回false，因为之前我们将其设置成了true  
+        </span><span style="color: #008000;">//</span><span style="color: #008000;"> 设置inJustDecodeBounds为true后，decodeFile并不分配空间，即，BitmapFactory解码出来的Bitmap为Null,但可计算出原始图片的长度和宽度  </span>
+        options.inJustDecodeBounds = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+        Bitmap bmp </span>=<span style="color: #000000;"> BitmapFactory.decodeFile(sourceBitmap, options);
+
+ </span></span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./Android学习之内存优化（一）—— 图片处理 - 一川烟雨0221 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<p>&nbsp;</p>
+<p><span style="font-size: 16px;"><strong>　　图片像素：</strong></span></p>
+<div class="page" title="Page 20">
+<div class="layoutArea">
+<div class="column"><span style="font-size: 16px;">　　Android中图片有四种属性，分别是：</span><br><span style="font-size: 16px;"><strong>　　ALPHA_8：</strong>每个像素占用1byte内存&nbsp;</span><br><span style="font-size: 16px;"><strong>　　ARGB_4444：</strong>每个像素占用2byte内存&nbsp;</span><br><span style="font-size: 16px;"><strong>　　ARGB_8888：</strong>每个像素占用4byte内存 （默认）</span><br><span style="font-size: 16px;"><strong>　　RGB_565：</strong>每个像素占用2byte内存&nbsp;</span></div>
+<div class="column"><span style="font-size: 16px;">&nbsp;</span></div>
+<div class="column"><span style="font-size: 16px;">　　Android默认的颜色模式为ARGB_8888，这个颜色模式色彩最细腻，显示质量最高。但同样的，占用的内存也最大。 所以在对图片效果不是特别高的情况下使用　　RGB_565（565没有透明度属性），如下：</span></div>
+<div class="column">
+<pre name="code" class="java"></pre>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./Android学习之内存优化（一）—— 图片处理 - 一川烟雨0221 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="font-size: 16px;"><span style="color: #000000;">   publicstaticBitmapreadBitMap(Contextcontext, intresId) {
+            BitmapFactory.Optionsopt </span>=<span style="color: #000000;"> newBitmapFactory.Options();
+            opt.inPreferredConfig </span>=<span style="color: #000000;"> Bitmap.Config.RGB_565;
+            opt.inPurgeable </span>= <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+            opt.inInputShareable </span>= <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+            </span><span style="color: #008000;">//</span><span style="color: #008000;">获取资源图片 </span>
+            InputStreamis =<span style="color: #000000;"> context.getResources().openRawResource(resId);
+            returnBitmapFactory.decodeStream(</span><span style="color: #0000ff;">is</span>, <span style="color: #0000ff;">null</span><span style="color: #000000;">, opt);
+        }</span></span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./Android学习之内存优化（一）—— 图片处理 - 一川烟雨0221 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<pre name="code" class="java"></pre>
+<p>&nbsp;</p>
+<pre name="code" class="java"></pre>
+</div>
+<div class="column">
+<div class="page" title="Page 20">
+<div class="layoutArea">
+<div class="column"><br>
+<p><span style="font-size: 16px;"><strong>　　图片回收：</strong></span></p>
+<p><span style="font-size: 16px;">　　使用Bitmap过后，就需要及时的调用<strong>Bitmap.recycle()</strong>方法来释放Bitmap占用的内存空间，而不要等Android系统来进行释放。</span></p>
+<p><span style="font-size: 16px;">　　下面是释放Bitmap的示例代码片段。</span></p>
+<pre name="code" class="java"><span style="font-size: 16px;">        // 先判断是否已经回收
+        if(bitmap != null &amp;&amp; !bitmap.isRecycled()){
+            // 回收并且置为null
+            bitmap.recycle();
+            bitmap = null;
+        }
+        System.gc();</span></pre>
+</div>
+<div class="column">
+<p><span style="font-size: 16px;"><strong>　　捕获异常：</strong></span></p>
+<p><span style="font-size: 16px;">　　经过上面这些优化后还会存在报OOM的风险，所以下面需要一道最后的关卡——捕获OOM异常：</span></p>
+<pre name="code" class="java"><span style="font-size: 16px;">        Bitmap bitmap = null;
+        try {
+            // 实例化Bitmap
+            bitmap = BitmapFactory.decodeFile(path);
+        } catch (OutOfMemoryError e) {
+            // 捕获OutOfMemoryError，避免直接崩溃
+        }
+        if (bitmap == null) {
+            // 如果实例化失败 返回默认的Bitmap对象
+            return defaultBitmapMap;
+        }<br><br><br></span><strong><span style="font-size: 18px;">二、缓存<br></span></strong></pre>
+<p>　　Bitmap缓存分为两种：</p>
+<p>　　一种是内存缓存，一种是硬盘缓存。</p>
+<p>&nbsp;</p>
+<p><strong>　　内存缓存（LruCache）：</strong></p>
+<p>　　以牺牲宝贵的应用内存为代价，内存缓存提供了快速的Bitmap访问方式。系统提供的LruCache类是非常适合用作缓存Bitmap任务的，它将最近被引用到的对象存储在一个强引用的LinkedHashMap中，并且在缓存超过了指定大小之后将最近不常使用的对象释放掉。</p>
+<p>　　<span style="color: #ff00ff;">注意：以前有一个非常流行的内存缓存实现是SoftReference(软引用)或者WeakReference(弱引用)的Bitmap缓存方案，然而现在已经不推荐使用了。自Android2.3版本(API Level 9)开始，垃圾回收器更着重于对软/弱引用的回收，这使得上述的方案无效。</span></p>
+<p>&nbsp;</p>
+<p><strong>　　硬盘缓存（DiskLruCache）：</strong></p>
+<p>　　一个内存缓存对加速访问最近浏览过的Bitmap非常有帮助，但是你不能 局限于内存中的可用图片。GridView这样有着更大的数据集的组件可以很轻易消耗掉内存缓存。你的应用有可能在执行其他任务(如打电话)的时候被打 断，并且在后台的任务有可能被杀死或者缓存被释放。一旦用户重新聚焦(resume)到你的应用，你得再次处理每一张图片。</p>
+<p>在这种情况下，硬盘缓存可以用来存储Bitmap并在图片被内存缓存释放后减小图片加载的时间(次数)。当然，从硬盘加载图片比内存要慢，并且应该在后台线程进行，因为硬盘读取的时间是不可预知的。</p>
+<p>　<span style="color: #ff00ff;">　注意：如果访问图片的次数非常频繁，那么ContentProvider可能更适合用来存储缓存图片，例如Image Gallery这样的应用程序。</span></p>
+<p><strong><span style="color: #000000; font-size: 18px;"> 三、一些好用的开源框架</span></strong></p>
+<p><strong><span style="color: #000000; font-size: 18px;">&nbsp; 1、<strong> Android-Universal-Image-Loader 图片缓存（Git地址：https://github.com/nostra13/Android-Universal-Image-Loader）</strong></span></strong></p>
+<p><span style="color: #ff00ff;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000;"> 这个开源库存在的特征：</span></span></p>
+<ol>
+<li>多线程下载图片，图片可以来源于网络，文件系统，项目文件夹assets中以及drawable中等</li>
+<li>支持随意的配置ImageLoader，例如线程池，图片下载器，内存缓存策略，硬盘缓存策略，图片显示选项以及其他的一些配置</li>
+<li>支持图片的内存缓存，文件系统缓存或者SD卡缓存</li>
+<li>支持图片下载过程的监听</li>
+<li>根据控件(ImageView)的大小对Bitmap进行裁剪，减少Bitmap占用过多的内存</li>
+<li><span style="text-align: center;">较好的控制图片的加载过程，例如暂停图片加载，重新开始加载图片，一般使用在ListView,GridView中，滑动过程中暂停加载图片，停止滑动的时候去加载图片</span></li>
+<li>提供在较慢的网络下对图片进行加载</li>
+</ol>
+<p>&nbsp;&nbsp;&nbsp; 在使用之前，我们先来了解一下<strong><span style="color: #000000; font-size: 18px;"><strong>Android-Universal-Image-Loader</strong></span></strong>中的三大组件：<strong>ImageLoaderConfiguration</strong>、<strong>ImageLoader、<strong>DisplayImageOptions</strong>。</strong></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff00ff;">博客（http://www.cnblogs.com/kissazi2/p/3886563.html）中有对这三者的详细解读。</span></p>
+<p><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ImageLoaderConfiguration</strong>是针对图片缓存的全局配置，主要有线程类、缓存大小、磁盘大小、图片下载与解析、日志方面的配置。</p>
+<p><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ImageLoader</strong>是具体下载图片，缓存图片，显示图片的具体执行类，它有两个具体的方法displayImage(...)、loadImage(...)，但是其实最终他们的实现都是displayImage(...)。</p>
+<p><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DisplayImageOptions</strong>用于指导每一个Imageloader根据网络图片的状态（空白、下载错误、正在下载）显示对应的图片，是否将缓存加载到磁盘上，下载完后对图片进行怎么样的处理。</p>
+<p>&nbsp;&nbsp; 下面是我的项目中实际使用到的例子：</p>
+<pre><span style="color: #000000;">ImgConfig </span>.java（在这个文件中对img加载属性进行了统一的配置）</pre>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./Android学习之内存优化（一）—— 图片处理 - 一川烟雨0221 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: #0000ff;">/**<br>图片配置文件<br><br><br>*/<br>public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> ImgConfig {
+    </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> initImgConfig(Context context) {
+        File cacheDir </span>=<span style="color: #0000ff;">new</span><span style="color: #000000;"> File(StorageUtil.getDirByType(context, StorageUtil.TYPE_IMG_CACHE_DIR));<br><span style="color: #339966;">       //<strong>ImageLoaderConfiguration</strong>是针对图片缓存的全局配置，主要有线程类、缓存大小、磁盘大小、图片下载与解析、日志方面的配置。</span>
+        ImageLoaderConfiguration config </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> ImageLoaderConfiguration.Builder(
+                context)
+                .memoryCacheExtraOptions(</span><span style="color: #800080;">480</span>, <span style="color: #800080;">800</span><span style="color: #000000;">)
+                </span><span style="color: #008000;">//</span><span style="color: #008000;"> max width, max height，即保存的每个缓存文件的最大长宽</span>
+                .threadPoolSize(<span style="color: #800080;">3</span><span style="color: #000000;">)
+                </span><span style="color: #008000;">//</span><span style="color: #008000;"> 线程池内加载的数量</span>
+                .threadPriority(Thread.NORM_PRIORITY - <span style="color: #800080;">2</span><span style="color: #000000;">)
+                .denyCacheImageMultipleSizesInMemory()
+                .memoryCache(</span><span style="color: #0000ff;">new</span> UsingFreqLimitedMemoryCache(<span style="color: #800080;">2</span> * <span style="color: #800080;">1024</span> * <span style="color: #800080;">1024</span><span style="color: #000000;">))
+                </span><span style="color: #008000;">//</span><span style="color: #008000;"> You can pass your own memory cache
+                </span><span style="color: #008000;">//</span><span style="color: #008000;"> 将保存的时候的URI名称用MD5 加密</span>
+<span style="color: #000000;">                .tasksProcessingOrder(QueueProcessingType.LIFO)
+                </span><span style="color: #008000;">//</span><span style="color: #008000;"> 缓存的文件数量</span>
+                .diskCache(<span style="color: #0000ff;">new</span><span style="color: #000000;"> UnlimitedDiskCache(cacheDir))
+                </span><span style="color: #008000;">//</span><span style="color: #008000;"> 自定义缓存路径</span>
+<span style="color: #000000;">                .defaultDisplayImageOptions(DisplayImageOptions.createSimple())
+                .imageDownloader(
+                        </span><span style="color: #0000ff;">new</span> BaseImageDownloader(context, <span style="color: #800080;">5</span> * <span style="color: #800080;">1000</span>, <span style="color: #800080;">30</span> * <span style="color: #800080;">1000</span><span style="color: #000000;">))
+                .writeDebugLogs() </span><span style="color: #008000;">//</span><span style="color: #008000;"> Remove for release app</span>
+                .build();<span style="color: #008000;">//</span><span style="color: #008000;"> 开始构建</span>
+<span style="color: #000000;">        ImageLoader.getInstance().init(config);
+    }
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">人物头像的加载<br><strong>    //DisplayImageOptions</strong>用于指导每一个Imageloader根据网络图片的状态（空白、下载错误、正在下载）显示对应的图片，是否将缓存加载到磁盘上，下载完后对图片进行怎么样的处理。<br></span>
+    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span><span style="color: #000000;"> DisplayImageOptions getPortraitOption(){
+        DisplayImageOptions options </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> DisplayImageOptions.Builder()  
+        .showImageOnLoading(R.drawable.default_portrait_female_little)            </span><span style="color: #008000;">//</span><span style="color: #008000;">加载图片时的图片  </span>
+        .showImageForEmptyUri(R.drawable.default_portrait_female_little)         <span style="color: #008000;">//</span><span style="color: #008000;">没有图片资源时的默认图片  </span>
+        .showImageOnFail(R.drawable.default_portrait_female_little)              <span style="color: #008000;">//</span><span style="color: #008000;">加载失败时的图片  </span>
+        .cacheInMemory(<span style="color: #0000ff;">true</span>)                               <span style="color: #008000;">//</span><span style="color: #008000;">启用内存缓存  </span>
+        .cacheOnDisk(<span style="color: #0000ff;">true</span>)                                 <span style="color: #008000;">//</span><span style="color: #008000;">启用外存缓存  </span>
+        .considerExifParams(<span style="color: #0000ff;">true</span>)                          <span style="color: #008000;">//</span><span style="color: #008000;">启用EXIF和JPEG图像格式  </span>
+<span style="color: #000000;">        .build();
+        </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> options;
+    }
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">人物头像的加载</span>
+    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span><span style="color: #000000;"> DisplayImageOptions getPortraitLargeOption(){
+        DisplayImageOptions options </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> DisplayImageOptions.Builder()  
+        .showImageOnLoading(R.drawable.default_portrait_fmale_large)            </span><span style="color: #008000;">//</span><span style="color: #008000;">加载图片时的图片  </span>
+        .showImageForEmptyUri(R.drawable.default_portrait_fmale_large)         <span style="color: #008000;">//</span><span style="color: #008000;">没有图片资源时的默认图片  </span>
+        .showImageOnFail(R.drawable.default_portrait_fmale_large)              <span style="color: #008000;">//</span><span style="color: #008000;">加载失败时的图片  </span>
+        .cacheInMemory(<span style="color: #0000ff;">true</span>)                               <span style="color: #008000;">//</span><span style="color: #008000;">启用内存缓存  </span>
+        .cacheOnDisk(<span style="color: #0000ff;">true</span>)                                 <span style="color: #008000;">//</span><span style="color: #008000;">启用外存缓存  </span>
+        .considerExifParams(<span style="color: #0000ff;">true</span>)                          <span style="color: #008000;">//</span><span style="color: #008000;">启用EXIF和JPEG图像格式  </span>
+<span style="color: #000000;">        .build();
+        </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> options;
+    }
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">大图的加载</span>
+    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span><span style="color: #000000;"> DisplayImageOptions getBigImgOption(){
+        DisplayImageOptions options </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> DisplayImageOptions.Builder()  
+        .showImageOnLoading(R.drawable.default_big_img)            </span><span style="color: #008000;">//</span><span style="color: #008000;">加载图片时的图片  </span>
+        .showImageForEmptyUri(R.drawable.default_big_img)         <span style="color: #008000;">//</span><span style="color: #008000;">没有图片资源时的默认图片  </span>
+        .showImageOnFail(R.drawable.default_big_img)              <span style="color: #008000;">//</span><span style="color: #008000;">加载失败时的图片  </span>
+        .cacheInMemory(<span style="color: #0000ff;">true</span>)                               <span style="color: #008000;">//</span><span style="color: #008000;">启用内存缓存  </span>
+        .cacheOnDisk(<span style="color: #0000ff;">true</span>)                                 <span style="color: #008000;">//</span><span style="color: #008000;">启用外存缓存  </span>
+        .considerExifParams(<span style="color: #0000ff;">true</span>)                          <span style="color: #008000;">//</span><span style="color: #008000;">启用EXIF和JPEG图像格式  </span>
+        .displayer(<span style="color: #0000ff;">new</span> RoundedBitmapDisplayer(<span style="color: #800080;">20</span>))         <span style="color: #008000;">//</span><span style="color: #008000;">设置显示风格这里是圆角矩形  </span>
+<span style="color: #000000;">        .build();
+        </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> options;
+    }
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">相册的加载</span>
+    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span><span style="color: #000000;"> DisplayImageOptions getAlbumImgOption(){
+        DisplayImageOptions options </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> DisplayImageOptions.Builder()  
+        .showImageOnLoading(R.drawable.default_album)            </span><span style="color: #008000;">//</span><span style="color: #008000;">加载图片时的图片  </span>
+        .showImageForEmptyUri(R.drawable.default_album)         <span style="color: #008000;">//</span><span style="color: #008000;">没有图片资源时的默认图片  </span>
+        .showImageOnFail(R.drawable.default_album)              <span style="color: #008000;">//</span><span style="color: #008000;">加载失败时的图片  </span>
+        .cacheInMemory(<span style="color: #0000ff;">true</span>)                               <span style="color: #008000;">//</span><span style="color: #008000;">启用内存缓存  </span>
+        .cacheOnDisk(<span style="color: #0000ff;">true</span>)                                 <span style="color: #008000;">//</span><span style="color: #008000;">启用外存缓存  </span>
+        .considerExifParams(<span style="color: #0000ff;">true</span>)                          <span style="color: #008000;">//</span><span style="color: #008000;">启用EXIF和JPEG图像格式  </span>
+<span style="color: #000000;">        .bitmapConfig(Config.RGB_565)                <span style="color: #339966;"> //设置图片编码格式</span>
+        .build();
+        </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> options;
+    }
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">相册的加载</span>
+    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span><span style="color: #000000;"> DisplayImageOptions getAlbumImgDefOption(){
+        DisplayImageOptions options </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> DisplayImageOptions.Builder()  
+        .showImageOnLoading(R.drawable.default_album)            </span><span style="color: #008000;">//</span><span style="color: #008000;">加载图片时的图片  </span>
+        .showImageForEmptyUri(R.drawable.default_album)         <span style="color: #008000;">//</span><span style="color: #008000;">没有图片资源时的默认图片  </span>
+        .showImageOnFail(R.drawable.default_album)              <span style="color: #008000;">//</span><span style="color: #008000;">加载失败时的图片  </span>
+        .cacheInMemory(<span style="color: #0000ff;">false</span>)                               <span style="color: #008000;">//</span><span style="color: #008000;">启用内存缓存  </span>
+        .cacheOnDisk(<span style="color: #0000ff;">false</span>)                                 <span style="color: #008000;">//</span><span style="color: #008000;">启用外存缓存  </span>
+        .considerExifParams(<span style="color: #0000ff;">true</span>)                          <span style="color: #008000;">//</span><span style="color: #008000;">启用EXIF和JPEG图像格式  </span>
+<span style="color: #000000;">        .bitmapConfig(Config.RGB_565)
+        .build();
+        </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> options;
+    }
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Card图片的加载</span>
+    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span><span style="color: #000000;"> DisplayImageOptions getCardImgOption(){
+        DisplayImageOptions options </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> DisplayImageOptions.Builder()  
+        .showImageOnLoading(R.drawable.default_big_img)            </span><span style="color: #008000;">//</span><span style="color: #008000;">加载图片时的图片  </span>
+        .showImageForEmptyUri(R.drawable.default_big_img)         <span style="color: #008000;">//</span><span style="color: #008000;">没有图片资源时的默认图片  </span>
+        .showImageOnFail(R.drawable.default_big_img)              <span style="color: #008000;">//</span><span style="color: #008000;">加载失败时的图片  </span>
+        .cacheInMemory(<span style="color: #0000ff;">false</span>)                               <span style="color: #008000;">//</span><span style="color: #008000;">启用内存缓存  </span>
+        .cacheOnDisk(<span style="color: #0000ff;">true</span>)                                 <span style="color: #008000;">//</span><span style="color: #008000;">启用外存缓存  </span>
+        .considerExifParams(<span style="color: #0000ff;">true</span>)                          <span style="color: #008000;">//</span><span style="color: #008000;">启用EXIF和JPEG图像格式  </span>
+<span style="color: #000000;">        .bitmapConfig(Config.ARGB_8888)
+        .build();
+        </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> options;
+    }
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">BannerCard图片的加载</span>
+    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span><span style="color: #000000;"> DisplayImageOptions getBannerImgOption(){
+        DisplayImageOptions options </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> DisplayImageOptions.Builder()  
+        .showImageOnLoading(R.drawable.default_banner_img)            </span><span style="color: #008000;">//</span><span style="color: #008000;">加载图片时的图片  </span>
+        .showImageForEmptyUri(R.drawable.default_banner_img)         <span style="color: #008000;">//</span><span style="color: #008000;">没有图片资源时的默认图片  </span>
+        .showImageOnFail(R.drawable.default_banner_img)              <span style="color: #008000;">//</span><span style="color: #008000;">加载失败时的图片  </span>
+        .cacheInMemory(<span style="color: #0000ff;">true</span>)                               <span style="color: #008000;">//</span><span style="color: #008000;">启用内存缓存  </span>
+        .cacheOnDisk(<span style="color: #0000ff;">true</span>)                                 <span style="color: #008000;">//</span><span style="color: #008000;">启用外存缓存  </span>
+        .considerExifParams(<span style="color: #0000ff;">true</span>)                          <span style="color: #008000;">//</span><span style="color: #008000;">启用EXIF和JPEG图像格式  </span>
+<span style="color: #000000;">        .build();
+        </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> options;
+    }
+}</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./Android学习之内存优化（一）—— 图片处理 - 一川烟雨0221 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<p>&nbsp;</p>
+<p>使用：</p>
+<p>&nbsp;</p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./Android学习之内存优化（一）—— 图片处理 - 一川烟雨0221 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: #0000ff;">//配置<span style="color: #000000;">application</span><br><br>public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> initConfig(BeautyDiaryApplication application) {
+        synchronized (sLock) {
+            </span><span style="color: #0000ff;">this</span>.application =<span style="color: #000000;"> application;
+            context </span>=<span style="color: #000000;"> application.getBaseContext();
+            packageName </span>=<span style="color: #000000;"> context.getPackageName();
+            versionCode </span>= getVersionCode(context, BeautyDiaryApplication.<span style="color: #0000ff;">class</span><span style="color: #000000;">);
+            versionName </span>= getVersionName(context, BeautyDiaryApplication.<span style="color: #0000ff;">class</span><span style="color: #000000;">);
+            imei </span>=<span style="color: #000000;"> Util.getImei(getBaseContext());
+            </span><span style="color: #0000ff;">try</span><span style="color: #000000;"> {
+                sLock.notifyAll();
+            } </span><span style="color: #0000ff;">catch</span><span style="color: #000000;"> (Exception e) {
+            }
+           <span style="color: #ff0000;"> ImgConfig.initImgConfig(application);</span>
+        }
+    }</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./Android学习之内存优化（一）—— 图片处理 - 一川烟雨0221 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<div class="cnblogs_code">
+<pre><span style="color: #339966;">//加载、展示图片<br>//第一个参数： 图片url<br>//第二个参数： 要设置在哪个view上<br>//第三个参数： 加载图片配置（imgconfig中的方法）</span><br>ImageLoader.getInstance().displayImage(StorageUtil.getPid2Url(entity.getPortrait(), StorageUtil.PIC_TYPE_LARGE),<br>                                             portraitIv,<span style="color: #ff0000;">ImgConfig.getPortraitLargeOption()</span>);</pre>
+</div>
+<p>2、<strong> Android 网络通信框架Volley</strong></p>
+<div class="column">项目地址：https://android.googlesource.com/platform/frameworks/volley</div>
+<div class="column">我们在程序中需要和网络通信的时候，大体使用的东西莫过于AsyncTaskLoader，HttpURLConnection，AsyncTask，HTTPClient（Apache）等，在2013年的Google I/O发布了Volley。Volley是Android平台上的网络通信库，能使网络通信更快，更简单，更健壮。</div>
+<div class="column">特点：</div>
+<div class="column">(1)JSON，图像等的异步下载；</div>
+<div class="column">(2)网络请求的排序（scheduling）</div>
+<div class="column">(3)网络请求的优先级处理</div>
+<div class="column">(4)缓存</div>
+<div class="column">(5)多级别取消请求</div>
+<div class="column">(6)和Activity和生命周期的联动（Activity结束时同时取消所有网络请求）</div>
+<pre name="code" class="java"><span style="color: #ff00ff;"><strong><span style="font-size: 16px;">&nbsp;</span></strong></span></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></div><div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="BlogPostCategory">分类: <a href="http://www.cnblogs.com/mafangfang/category/743606.html" target="_blank">Android学习</a></div>
+<div id="EntryTag"></div>
+<div id="blog_post_info"><div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(5434668,cb_blogId,1);green_channel_success(this,&#39;谢谢推荐！&#39;);">好文要顶</a>
+            <a id="green_channel_follow" onclick="follow(&#39;91fc241e-7c89-e211-90a7-f6db9189f8ef&#39;);" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="./Android学习之内存优化（一）—— 图片处理 - 一川烟雨0221 - 博客园_files/icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="./Android学习之内存优化（一）—— 图片处理 - 一川烟雨0221 - 博客园_files/wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/mafangfang/" target="_blank"><img src="./Android学习之内存优化（一）—— 图片处理 - 一川烟雨0221 - 博客园_files/20130316192838.png" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/mafangfang/">一川烟雨0221</a><br>
+            <a href="http://home.cnblogs.com/u/mafangfang/followees">关注 - 24</a><br>
+            <a href="http://home.cnblogs.com/u/mafangfang/followers">粉丝 - 16</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow(&#39;91fc241e-7c89-e211-90a7-f6db9189f8ef&#39;);return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(5434668,&#39;Digg&#39;)">
+        <span class="diggnum" id="digg_count">0</span>
+    </div>
+    <div class="buryit" onclick="votePost(5434668,&#39;Bury&#39;)">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+</div>
+<div class="clear"></div>
+<div id="post_next_prev"><a href="http://www.cnblogs.com/mafangfang/p/5432258.html" class="p_n_p_prefix">« </a> 上一篇：<a href="http://www.cnblogs.com/mafangfang/p/5432258.html" title="发布于2016-04-25 18:37">Android学习之内存优化</a><br><a href="http://www.cnblogs.com/mafangfang/p/5435313.html" class="p_n_p_prefix">» </a> 下一篇：<a href="http://www.cnblogs.com/mafangfang/p/5435313.html" title="发布于2016-04-26 15:34">Android学习之事件分发机制</a><br></div>
+</div>
+
+
+	<div class="postDesc">posted on <span id="post-date">2016-04-26 12:55</span> <a href="http://www.cnblogs.com/mafangfang/">一川烟雨0221</a> 阅读(<span id="post_view_count">1021</span>) 评论(<span id="post_comment_count">0</span>)  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=5434668" rel="nofollow">编辑</a> <a href="http://www.cnblogs.com/mafangfang/p/5434668.html#" onclick="AddToWz(5434668);return false;">收藏</a></div>
+</div>
+<script type="text/javascript">var allowComments=true,cb_blogId=144616,cb_entryId=5434668,cb_blogApp=currentBlogApp,cb_blogUserGuid='91fc241e-7c89-e211-90a7-f6db9189f8ef',cb_entryCreatedDate='2016/4/26 12:55:00';loadViewCount(cb_entryId);</script>
+
+</div><a name="!comments"></a><div id="blog-comments-placeholder"></div><script type="text/javascript">var commentManager = new blogCommentManager();commentManager.renderComments(0);</script>
+<div id="comment_form" class="commentform">
+<a name="commentform"></a>
+<div id="divCommentShow"></div>
+<div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="http://www.cnblogs.com/mafangfang/p/5434668.html#" onclick="return RefreshPage();">刷新页面</a><a href="http://www.cnblogs.com/mafangfang/p/5434668.html#top">返回顶部</a></div>
+<div id="comment_form_container"><div class="login_tips">注册用户登录后才能发表评论，请 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login(&#39;commentform&#39;);">登录</a> 或 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，<a href="http://www.cnblogs.com/">访问</a>网站首页。</div></div>
+<div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+<div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_blank">【推荐】50万行VC++源码: 大型组态工控、电力仿真CAD与GIS源码库</a><br><a href="https://cloud.tencent.com/developer/labs?fromSource=gwzcw.241259.241259.241259" target="_blank">【免费】从零开始学编程，开发者专属实验平台免费实践！</a><br></div>
+<div id="opt_under_post"></div>
+<div id="cnblogs_c1" class="c_ad_block"><a href="https://cn.udacity.com/course/front-end-web-developer-nanodegree--nd001-cn-advanced/?utm_source=cnblogs&amp;utm_medium=referral&amp;utm_campaign=FEND04" target="_blank"><img width="300" height="250" src="./Android学习之内存优化（一）—— 图片处理 - 一川烟雨0221 - 博客园_files/24442-20170629184920789-1740545267.png" alt="Udacity_前端_06290712"></a></div>
+<div id="under_post_news"><div class="itnews c_ad_block"><b>最新IT新闻</b>:<br> ·  <a href="http://news.cnblogs.com/n/572904/" target="_blank">阿里无人超市很黑科技，但要开到家门口还略早</a><br> ·  <a href="http://news.cnblogs.com/n/572903/" target="_blank">微信“机场延误险”小程序：延误1分钟就能拿红包</a><br> ·  <a href="http://news.cnblogs.com/n/572901/" target="_blank">马斯克：本周日公布特斯拉Model 3发布日期</a><br> ·  <a href="http://news.cnblogs.com/n/572900/" target="_blank">iPhone十年 iOS也经历漫长进化史</a><br> ·  <a href="http://news.cnblogs.com/n/572899/" target="_blank">馒头商学院创始人王欣：我和雷军一起推销的日子</a><br>» <a href="http://news.cnblogs.com/" title="IT新闻" target="_blank">更多新闻...</a></div></div>
+<div id="cnblogs_c2" class="c_ad_block"><a href="https://www.jiguang.cn/devservice?source=bky" target="_blank"><img width="468" height="60" src="./Android学习之内存优化（一）—— 图片处理 - 一川烟雨0221 - 博客园_files/24442-20170629165247758-2056260207.png" alt="极光推广_0701"></a></div>
+<div id="under_post_kb"><div class="itnews c_ad_block" id="kb_block"><b>最新知识库文章</b>:<br><div id="kb_recent"> ·  <a href="http://kb.cnblogs.com/page/570194/" target="_blank">小printf的故事：什么是真正的程序员？</a><br> ·  <a href="http://kb.cnblogs.com/page/569992/" target="_blank">程序员的工作、学习与绩效</a><br> ·  <a href="http://kb.cnblogs.com/page/569056/" target="_blank">软件开发为什么很难</a><br> ·  <a href="http://kb.cnblogs.com/page/565901/" target="_blank">唱吧DevOps的落地，微服务CI/CD的范本技术解读</a><br> ·  <a href="http://kb.cnblogs.com/page/566523/" target="_blank">程序员，如何从平庸走向理想？</a><br></div>» <a href="http://kb.cnblogs.com/" target="_blank">更多知识库文章...</a></div></div>
+<div id="HistoryToday" class="c_ad_block"></div>
+<script type="text/javascript">
+    fixPostBody();
+    setTimeout(function () { incrementViewCount(cb_entryId); }, 50);
+    deliverAdT2();
+    deliverAdC1();
+    deliverAdC2();    
+    loadNewsAndKb();
+    loadBlogSignature();
+    LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+    GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate);
+    loadOptUnderPost();
+    GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);   
+</script>
+</div>
+
+
+</div>
+<div id="leftcontent">
+	
+		<div id="leftcontentcontainer">
+			
+<!--done-->
+<div class="newsItem">
+	<div id="blog-news"><div id="profile_block">昵称：<a href="http://home.cnblogs.com/u/mafangfang/">一川烟雨0221</a><br>园龄：<a href="http://home.cnblogs.com/u/mafangfang/" title="入园时间：2013-03-10">4年3个月</a><br>粉丝：<a href="http://home.cnblogs.com/u/mafangfang/followers/">16</a><br>关注：<a href="http://home.cnblogs.com/u/mafangfang/followees/">24</a><div id="p_b_follow"><a href="javascript:void(0);" onclick="follow(&#39;91fc241e-7c89-e211-90a7-f6db9189f8ef&#39;)">+加关注</a></div></div></div><script type="text/javascript">loadBlogNews();</script>
+</div>
+<br>			
+			<div id="blog-calendar" style=""><table id="blogCalendar" class="Cal" cellspacing="0" cellpadding="0" title="Calendar">
+	<tbody><tr><td colspan="7"><table class="CalTitle" cellspacing="0">
+		<tbody><tr><td class="CalNextPrev"><a href="javascript:void(0);" onclick="loadBlogCalendar(&#39;2017/06/01&#39;);return false;">&lt;</a></td><td align="center">2017年7月</td><td class="CalNextPrev" align="right"><a href="javascript:void(0);" onclick="loadBlogCalendar(&#39;2017/08/01&#39;);return false;">&gt;</a></td></tr>
+	</tbody></table></td></tr><tr><th class="CalDayHeader" align="center" abbr="日" scope="col">日</th><th class="CalDayHeader" align="center" abbr="一" scope="col">一</th><th class="CalDayHeader" align="center" abbr="二" scope="col">二</th><th class="CalDayHeader" align="center" abbr="三" scope="col">三</th><th class="CalDayHeader" align="center" abbr="四" scope="col">四</th><th class="CalDayHeader" align="center" abbr="五" scope="col">五</th><th class="CalDayHeader" align="center" abbr="六" scope="col">六</th></tr><tr><td class="CalOtherMonthDay" align="center">25</td><td class="CalOtherMonthDay" align="center">26</td><td class="CalOtherMonthDay" align="center">27</td><td class="CalOtherMonthDay" align="center">28</td><td class="CalOtherMonthDay" align="center">29</td><td class="CalOtherMonthDay" align="center">30</td><td class="CalTodayDay" align="center">1</td></tr><tr><td class="CalWeekendDay" align="center">2</td><td align="center">3</td><td align="center">4</td><td align="center">5</td><td align="center">6</td><td align="center">7</td><td class="CalWeekendDay" align="center">8</td></tr><tr><td class="CalWeekendDay" align="center">9</td><td align="center">10</td><td align="center">11</td><td align="center">12</td><td align="center">13</td><td align="center">14</td><td class="CalWeekendDay" align="center">15</td></tr><tr><td class="CalWeekendDay" align="center">16</td><td align="center">17</td><td align="center">18</td><td align="center">19</td><td align="center">20</td><td align="center">21</td><td class="CalWeekendDay" align="center">22</td></tr><tr><td class="CalWeekendDay" align="center">23</td><td align="center">24</td><td align="center">25</td><td align="center">26</td><td align="center">27</td><td align="center">28</td><td class="CalWeekendDay" align="center">29</td></tr><tr><td class="CalWeekendDay" align="center">30</td><td align="center">31</td><td class="CalOtherMonthDay" align="center">1</td><td class="CalOtherMonthDay" align="center">2</td><td class="CalOtherMonthDay" align="center">3</td><td class="CalOtherMonthDay" align="center">4</td><td class="CalOtherMonthDay" align="center">5</td></tr>
+</tbody></table></div><script type="text/javascript">loadBlogDefaultCalendar();</script>
+			<div id="blog-sidecolumn"><div id="sidebar_search" class="sidebar-block">
+<div id="sidebar_search" class="mySearch">
+<h3 class="catListTitle">搜索</h3>
+<div id="sidebar_search_box">
+<div id="widget_my_zzk" class="div_my_zzk"><input type="text" id="q" onkeydown="return zzk_go_enter(event);" class="input_my_zzk">&nbsp;<input onclick="zzk_go()" type="button" value="找找看" id="btnZzk" class="btn_my_zzk"></div>
+<div id="widget_my_google" class="div_my_zzk"><input type="text" name="google_q" id="google_q" onkeydown="return google_go_enter(event)" class="input_my_zzk">&nbsp;<input onclick="google_go()" type="button" value="谷歌搜索" class="btn_my_zzk"></div>
+</div>
+</div>
+
+</div><div id="sidebar_shortcut" class="sidebar-block">
+<h3 class="catListTitle">常用链接</h3>
+<ul>
+<li><a href="http://www.cnblogs.com/mafangfang/p/" title="我的博客的随笔列表">我的随笔</a></li><li><a href="http://www.cnblogs.com/mafangfang/MyComments.html" title="我发表过的评论列表">我的评论</a></li><li><a href="http://www.cnblogs.com/mafangfang/OtherPosts.html" title="我评论过的随笔列表">我的参与</a></li><li><a href="http://www.cnblogs.com/mafangfang/RecentComments.html" title="我的博客的评论列表">最新评论</a></li><li><a href="http://www.cnblogs.com/mafangfang/tag/" title="我的博客的标签列表">我的标签</a></li>
+</ul>
+<div id="itemListLin_con" style="display:none;">
+
+</div></div><div id="sidebar_toptags" class="sidebar-block">
+<h3 class="catListTitle">我的标签</h3>
+<div id="MyTag">
+<ul>
+<li><a href="http://www.cnblogs.com/mafangfang/tag/Android%20%20%20%E5%AE%9E%E6%88%98/">Android   实战</a>(1)</li><li><a href="http://www.cnblogs.com/mafangfang/tag/PHP/">PHP</a>(1)</li>
+</ul>
+</div></div><div id="sidebar_categories">
+<!--done-->
+
+		<h1 class="catListTitle">随笔分类</h1>
+		
+				<ul class="catList">
+			
+				<li class="catListItem"> <a id="CatList_LinkList_0_Link_0" class="listitem" href="http://www.cnblogs.com/mafangfang/category/743607.html">Android复习(2)</a></li>
+			
+				<li class="catListItem"> <a id="CatList_LinkList_0_Link_1" class="listitem" href="http://www.cnblogs.com/mafangfang/category/743606.html">Android学习(10)</a></li>
+			
+				<li class="catListItem"> <a id="CatList_LinkList_0_Link_2" class="listitem" href="http://www.cnblogs.com/mafangfang/category/743608.html">Java复习(2)</a></li>
+			
+				<li class="catListItem"> <a id="CatList_LinkList_0_Link_3" class="listitem" href="http://www.cnblogs.com/mafangfang/category/856068.html">Mongoldb(1)</a></li>
+			
+				<li class="catListItem"> <a id="CatList_LinkList_0_Link_4" class="listitem" href="http://www.cnblogs.com/mafangfang/category/511231.html">poj  题目(12)</a></li>
+			
+				<li class="catListItem"> <a id="CatList_LinkList_0_Link_5" class="listitem" href="http://www.cnblogs.com/mafangfang/category/743970.html">编程随手记(14)</a></li>
+			
+				<li class="catListItem"> <a id="CatList_LinkList_0_Link_6" class="listitem" href="http://www.cnblogs.com/mafangfang/category/743969.html">生活随笔</a></li>
+			
+				</ul>
+			
+	
+		<h1 class="catListTitle">随笔档案</h1>
+		
+				<ul class="catList">
+			
+				<li class="catListItem"> <a id="CatList_LinkList_1_Link_0" class="listitem" href="http://www.cnblogs.com/mafangfang/archive/2017/06.html">2017年6月 (1)</a></li>
+			
+				<li class="catListItem"> <a id="CatList_LinkList_1_Link_1" class="listitem" href="http://www.cnblogs.com/mafangfang/archive/2017/04.html">2017年4月 (1)</a></li>
+			
+				<li class="catListItem"> <a id="CatList_LinkList_1_Link_2" class="listitem" href="http://www.cnblogs.com/mafangfang/archive/2017/03.html">2017年3月 (1)</a></li>
+			
+				<li class="catListItem"> <a id="CatList_LinkList_1_Link_3" class="listitem" href="http://www.cnblogs.com/mafangfang/archive/2016/09.html">2016年9月 (2)</a></li>
+			
+				<li class="catListItem"> <a id="CatList_LinkList_1_Link_4" class="listitem" href="http://www.cnblogs.com/mafangfang/archive/2016/08.html">2016年8月 (4)</a></li>
+			
+				<li class="catListItem"> <a id="CatList_LinkList_1_Link_5" class="listitem" href="http://www.cnblogs.com/mafangfang/archive/2016/07.html">2016年7月 (3)</a></li>
+			
+				<li class="catListItem"> <a id="CatList_LinkList_1_Link_6" class="listitem" href="http://www.cnblogs.com/mafangfang/archive/2016/04.html">2016年4月 (4)</a></li>
+			
+				<li class="catListItem"> <a id="CatList_LinkList_1_Link_7" class="listitem" href="http://www.cnblogs.com/mafangfang/archive/2016/01.html">2016年1月 (1)</a></li>
+			
+				<li class="catListItem"> <a id="CatList_LinkList_1_Link_8" class="listitem" href="http://www.cnblogs.com/mafangfang/archive/2015/11.html">2015年11月 (1)</a></li>
+			
+				<li class="catListItem"> <a id="CatList_LinkList_1_Link_9" class="listitem" href="http://www.cnblogs.com/mafangfang/archive/2015/10.html">2015年10月 (7)</a></li>
+			
+				<li class="catListItem"> <a id="CatList_LinkList_1_Link_10" class="listitem" href="http://www.cnblogs.com/mafangfang/archive/2014/03.html">2014年3月 (2)</a></li>
+			
+				<li class="catListItem"> <a id="CatList_LinkList_1_Link_11" class="listitem" href="http://www.cnblogs.com/mafangfang/archive/2013/11.html">2013年11月 (1)</a></li>
+			
+				<li class="catListItem"> <a id="CatList_LinkList_1_Link_12" class="listitem" href="http://www.cnblogs.com/mafangfang/archive/2013/08.html">2013年8月 (10)</a></li>
+			
+				<li class="catListItem"> <a id="CatList_LinkList_1_Link_13" class="listitem" href="http://www.cnblogs.com/mafangfang/archive/2013/07.html">2013年7月 (1)</a></li>
+			
+				<li class="catListItem"> <a id="CatList_LinkList_1_Link_14" class="listitem" href="http://www.cnblogs.com/mafangfang/archive/2013/06.html">2013年6月 (4)</a></li>
+			
+				<li class="catListItem"> <a id="CatList_LinkList_1_Link_15" class="listitem" href="http://www.cnblogs.com/mafangfang/archive/2013/05.html">2013年5月 (1)</a></li>
+			
+				<li class="catListItem"> <a id="CatList_LinkList_1_Link_16" class="listitem" href="http://www.cnblogs.com/mafangfang/archive/2013/04.html">2013年4月 (2)</a></li>
+			
+				<li class="catListItem"> <a id="CatList_LinkList_1_Link_17" class="listitem" href="http://www.cnblogs.com/mafangfang/archive/2013/03.html">2013年3月 (4)</a></li>
+			
+				</ul>
+			
+	
+</div><div id="sidebar_recentcomments" class="sidebar-block"><div id="recent_comments_wrap">
+<h3 class="catListTitle">最新评论</h3>
+<div class="RecentComment" id="RecentComments">
+	<div id="RecentCommentsBlock"><ul>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/mafangfang/p/5131030.html#3361367">1. Re:类似小红书标签效果（补间动画）</a></li>
+        <li class="recent_comment_body">写个demo出来啊  楼主</li>
+        <li class="recent_comment_author">--jianhp123</li>
+</ul>
+</div>
+</div>
+</div></div><div id="sidebar_topviewedposts" class="sidebar-block"><div id="topview_posts_wrap">
+<h3 class="catListTitle">阅读排行榜</h3>
+<div class="RecentComment" id="TopViewPosts"> 
+	<div id="TopViewPostsBlock"><ul><li><a href="http://www.cnblogs.com/mafangfang/p/5848876.html">1. maven中使用jstl(2649)</a></li><li><a href="http://www.cnblogs.com/mafangfang/p/5434668.html">2. Android学习之内存优化（一）——  图片处理(1022)</a></li><li><a href="http://www.cnblogs.com/mafangfang/p/5131030.html">3. 类似小红书标签效果（补间动画）(864)</a></li><li><a href="http://www.cnblogs.com/mafangfang/p/4926238.html">4. Android学习之xUtils --- HttpUtils模块(657)</a></li><li><a href="http://www.cnblogs.com/mafangfang/p/3228596.html">5. 中缀式转换为后缀式（逆波兰式）方法(357)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topcommentedposts" class="sidebar-block"><div id="topfeedback_posts_wrap">
+<h3 class="catListTitle">评论排行榜</h3>
+<div class="RecentComment" id="TopCommentsPosts">
+	<div id="TopFeedbackPostsBlock"><ul><li><a href="http://www.cnblogs.com/mafangfang/p/5131030.html">1. 类似小红书标签效果（补间动画）(1)</a></li></ul></div>
+</div></div></div><div id="sidebar_topdiggedposts" class="sidebar-block"><div id="topdigg_posts_wrap">
+<h3 class="catListTitle">推荐排行榜</h3>
+<div class="RecentComment">
+	<div id="TopDiggPostsBlock"><ul><li><a href="http://www.cnblogs.com/mafangfang/p/3246494.html">1. 优先队列(1)</a></li><li><a href="http://www.cnblogs.com/mafangfang/p/5825349.html">2. 错误笔记（一）－ XXX is not mapped [from XXX]（ssh框架下，使用strust2标签显示数据库数据）(1)</a></li></ul></div>
+</div></div></div></div><script type="text/javascript">loadBlogSideColumn();</script></div>
+	
+</div>
+
+
+<!--done-->
+<div class="footer">
+	
+	Copyright ©2017 一川烟雨0221 Powered By<a href="http://www.cnblogs.com/">博客园</a> 模板提供：<a href="http://blog.hjenglish.com/">沪江博客</a>
+</div>
+
+
+</body></html>

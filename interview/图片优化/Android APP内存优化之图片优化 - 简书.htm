@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<!-- saved from url=(0037)http://www.jianshu.com/p/5bb8c01e2bc7 -->
+<html><!--<![endif]--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+
+  <!-- Start of Baidu Transcode -->
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta name="applicable-device" content="pc,mobile">
+  <meta name="MobileOptimized" content="width">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="mobile-agent" content="format=html5;url=http://www.jianshu.com/p/5bb8c01e2bc7">
+  <!-- End of Baidu Transcode -->
+
+    <meta name="description" content="  网上有很多大拿分享的关于Android性能优化的文章，主要是通过各种工具分析，使用合理的技巧优化APP的体验，提升APP的流畅度，但关于内存优化的文章很少有看到。在Android设备内存动不动就上G的情况下，的确没有必要去太在意APP对Android系统内存的消耗，但在实际工作中我做的是教...">
+
+  <meta name="360-site-verification" content="604a14b53c6b871206001285921e81d8">
+  <meta property="wb:webmaster" content="294ec9de89e7fadb">
+  <meta property="qc:admins" content="104102651453316562112116375">
+  <meta property="qc:admins" content="11635613706305617">
+  <meta property="qc:admins" content="1163561616621163056375">
+  <meta name="google-site-verification" content="cV4-qkUJZR6gmFeajx_UyPe47GW9vY6cnCrYtCHYNh4">
+  <meta name="google-site-verification" content="HF7lfF8YEGs1qtCE-kPml8Z469e2RHhGajy6JPVy5XI">
+  <meta http-equiv="mobile-agent" content="format=html5; url=http://www.jianshu.com/p/5bb8c01e2bc7">
+
+  <!-- Apple -->
+  <meta name="apple-mobile-web-app-title" content="简书">
+
+    <!--  Meta for Smart App Banner -->
+  <meta name="apple-itunes-app" content="app-id=888237539, app-argument=jianshu://notes/1608420">
+  <!-- End -->
+
+  <!--  Meta for Twitter Card -->
+  <meta content="summary" property="twitter:card">
+  <meta content="@jianshucom" property="twitter:site">
+  <meta content="Android APP内存优化之图片优化" property="twitter:title">
+  <meta content="  网上有很多大拿分享的关于Android性能优化的文章，主要是通过各种工具分析，使用合理的技巧优化APP的体验，提升APP的流畅度，但关于内存优化的文章很少有看到。在Android设备内存动不动就上G的情况下，的确没有必要去太在意APP对Android系统内存的消耗，但在实际工作中我做的是教..." property="twitter:description">
+  <meta content="http://www.jianshu.com/p/5bb8c01e2bc7" property="twitter:url">
+  <!-- End -->
+
+  <!--  Meta for OpenGraph -->
+  <meta property="fb:app_id" content="865829053512461">
+  <meta property="og:site_name" content="简书">
+  <meta property="og:title" content="Android APP内存优化之图片优化">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="http://www.jianshu.com/p/5bb8c01e2bc7">
+  <meta property="og:description" content="  网上有很多大拿分享的关于Android性能优化的文章，主要是通过各种工具分析，使用合理的技巧优化APP的体验，提升APP的流畅度，但关于内存优化的文章很少有看到。在Android设备内存动不...">
+  <!-- End -->
+
+  <!--  Meta for Facebook Applinks -->
+  <meta property="al:ios:url" content="jianshu://notes/1608420">
+  <meta property="al:ios:app_store_id" content="888237539">
+  <meta property="al:ios:app_name" content="简书">
+
+  <meta property="al:android:url" content="jianshu://notes/1608420">
+  <meta property="al:android:package" content="com.jianshu.haruki">
+  <meta property="al:android:app_name" content="简书">
+  <!-- End -->
+
+
+    <title>Android APP内存优化之图片优化 - 简书</title>
+
+  <meta name="csrf-param" content="authenticity_token">
+<meta name="csrf-token" content="VFUmvGuoReteHCKRlBcrUOsYvycMsj6OMBzqPr+8fLLcQBur4eS8NFQ0UPZCZHwqqLdlq/t94CqxeS1XoLy+Cw==">
+
+  <link rel="stylesheet" media="all" href="./Android APP内存优化之图片优化 - 简书_files/web-e8a43ba5f34b145002ba.css">
+  
+  <link rel="stylesheet" media="all" href="./Android APP内存优化之图片优化 - 简书_files/entry-e8a43ba5f34b145002ba.css">
+
+  <link href="http://cdn2.jianshu.io/assets/favicons/favicon-783beb88ed621ceab614de960376ac0c.ico" rel="icon">
+      <link rel="apple-touch-icon-precomposed" href="http://cdn2.jianshu.io/assets/apple-touch-icons/57-47624b2e2161e8eb144462c85db0a5ff.png" sizes="57x57">
+      <link rel="apple-touch-icon-precomposed" href="http://cdn2.jianshu.io/assets/apple-touch-icons/72-c00cde7cf98fc49e50cbb3ee1dcd5804.png" sizes="72x72">
+      <link rel="apple-touch-icon-precomposed" href="http://cdn2.jianshu.io/assets/apple-touch-icons/76-e8af0bdeaf1ba31e303b1fde8b5e66c4.png" sizes="76x76">
+      <link rel="apple-touch-icon-precomposed" href="http://cdn2.jianshu.io/assets/apple-touch-icons/114-f4c78569bbf1977e8382a5fd90c9237a.png" sizes="114x114">
+      <link rel="apple-touch-icon-precomposed" href="http://cdn2.jianshu.io/assets/apple-touch-icons/120-cf10c3711dba269522743729efe66bbc.png" sizes="120x120">
+      <link rel="apple-touch-icon-precomposed" href="http://cdn2.jianshu.io/assets/apple-touch-icons/152-7bd60457b5f3ecbf1343f0e6241be4f8.png" sizes="152x152">
+<link rel="stylesheet" href="blob:http://www.jianshu.com/059d4c18-70d8-48a2-a366-ec0722d40fe8"><link rel="stylesheet" href="blob:http://www.jianshu.com/4668001f-d1dc-4a2d-a886-84f44ec5a39a"></head>
+
+  <body lang="zh-CN" class="reader-black-font">
+    <!-- 全局顶部导航栏 -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="width-limit">
+    <!-- 左上方 Logo -->
+    <a class="logo" href="http://www.jianshu.com/"><img src="./Android APP内存优化之图片优化 - 简书_files/logo-58fd04f6f0de908401aa561cda6a0688.png" alt="Logo"></a>
+
+    <!-- 右上角 -->
+      <!-- 未登录显示登录/注册/写文章 -->
+      <a class="btn write-btn" target="_blank" href="http://www.jianshu.com/writer#/">
+        <i class="iconfont ic-write"></i>写文章
+</a>      <a class="btn sign-up" href="http://www.jianshu.com/sign_up">注册</a>
+      <a class="btn log-in" href="http://www.jianshu.com/sign_in">登录</a>
+
+    <!-- 如果用户登录，显示下拉菜单 -->
+
+    <div class="style-mode"><a class="style-mode-btn"><i class="iconfont ic-navigation-mode"></i></a> <div class="popover-modal" style="left: 0px; display: none;"><div class="meta"><i class="iconfont ic-navigation-night"></i><span>夜间模式</span></div> <div class="switch day-night-group"><a class="switch-btn">开</a> <a class="switch-btn active">关</a></div> <hr> <div class="switch font-family-group"><a class="switch-btn font-song">宋体</a> <a class="switch-btn font-hei active">黑体</a></div> <div class="switch"><a class="switch-btn active">简</a> <a class="switch-btn">繁</a></div></div></div>
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu" aria-expanded="false">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse" id="menu">
+        <ul class="nav navbar-nav">
+            <li class="">
+              <a href="http://www.jianshu.com/">
+                <span class="menu-text">首页</span><i class="iconfont ic-navigation-discover menu-icon"></i>
+</a>            </li>
+            <li class="">
+              <a class="app-download-btn" href="http://www.jianshu.com/apps"><span class="menu-text">下载App</span><i class="iconfont ic-navigation-download menu-icon"></i></a>
+            </li>
+          <li class="search">
+            <form target="_blank" action="http://www.jianshu.com/search" accept-charset="UTF-8" method="get"><input name="utf8" type="hidden" value="✓">
+              <input type="text" name="q" id="q" value="" placeholder="搜索" class="search-input">
+              <a class="search-btn" href="javascript:void(null)"><i class="iconfont ic-search"></i></a>
+              <!-- <div id="navbar-trending-search"></div> -->
+</form>          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+    
+<div class="note">
+  <div class="post">
+    <div class="article">
+        <h1 class="title">Android APP内存优化之图片优化</h1>
+
+        <!-- 作者区域 -->
+        <div class="author">
+          <a class="avatar" href="http://www.jianshu.com/u/e6885381f7d4">
+            <img src="./Android APP内存优化之图片优化 - 简书_files/369c175de186.jpg" alt="144">
+</a>          <div class="info">
+            <span class="tag">作者</span>
+            <span class="name"><a href="http://www.jianshu.com/u/e6885381f7d4">张明云</a></span>
+            <!-- 关注用户按钮 -->
+            <a class="btn btn-success follow"><i class="iconfont ic-follow"></i><span>关注</span></a>
+            <!-- 文章数据信息 -->
+            <div class="meta">
+              <!-- 如果文章更新时间大于发布时间，那么使用 tooltip 显示更新时间 -->
+                <span class="publish-time" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="最后编辑于 2015.07.05 16:14">2015.07.05 16:13*</span>
+              <span class="wordage">字数 2719</span>
+            <span class="views-count">阅读 8345</span><span class="comments-count">评论 7</span><span class="likes-count">喜欢 56</span></div>
+          </div>
+          <!-- 如果是当前作者，加入编辑按钮 -->
+        </div>
+        <!-- -->
+
+        <!-- 文章内容 -->
+        <div class="show-content">
+          <p>  网上有很多大拿分享的关于Android性能优化的文章，主要是通过各种工具分析，使用合理的技巧优化APP的体验，提升APP的流畅度，但关于内存优化的文章很少有看到。在Android设备内存动不动就上G的情况下，的确没有必要去太在意APP对Android系统内存的消耗，但在实际工作中我做的是教育类的小学APP，APP中的按钮、背景、动画变换基本上全是图片，在2K屏上（分辨率2048*1536）一张背景图片就会占用内存12M，来回切换几次内存占用就会增涨到上百兆，为了在不影响APP的视觉效果的前提下，有必要通过各种手段来降低APP对内存的消耗，下面是我在实践过程中使用的一些方法，很多都是不太成熟的项目，也不够深入，只是将其作为一种处理方式分享给大家。</p>
+<p>  通过DDMS的APP内存占用查看工具分析发现，APP中占用内存最多的是图片，每个Activity中图片占用内存占大半，本文重点分享对图片的内存优化。</p>
+<h3>不要将Button的背景设置为selector</h3>
+<p>  在布局文件和代码中，都可以为Button设置background为selector，这样方便实现按钮的正反选效果，但实际跟踪发现，如果是将Button的背景设置为selector，在初始化Button的时候会将正反选图片都加载在内存中（具体可以查看Android源码，在类Drawable.java的createFromXmlInner方法中对图片进行解析，最终调用Drawable的inflate方法），相当于一个按钮占用了两张相同大小图片所使用的内存，如果一个界面上按钮很多或者是按钮很大，光是按钮占用的内存就会很大，可以通过在布局文件中给按钮只设置正常状态下的背景图片，然后在代码中监听按钮的点击状态，当按下按钮时为按钮设置反选效果的图片，抬起时重新设置为正常状态下的背景，具体实现方式如下：</p>
+<pre class="hljs java"><code class="java">    <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageButtonClickUtils</span> </span>{
+        <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">ImageButtonClickUtils</span><span class="hljs-params">()</span></span>{
+
+        }
+
+        <span class="hljs-comment">/**
+         * 设置按钮的正反选效果
+         * 
+         * */</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setClickState</span><span class="hljs-params">(View view, <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> normalResId, <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> pressResId)</span></span>{
+            view.setOnTouchListener(<span class="hljs-keyword">new</span> OnTouchListener() {
+                <span class="hljs-meta">@Override</span>
+                <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">onTouch</span><span class="hljs-params">(View v, MotionEvent event)</span> </span>{
+                    <span class="hljs-keyword">switch</span>(event.getAction()){
+                    <span class="hljs-keyword">case</span> MotionEvent.ACTION_DOWN:{
+                        v.setBackgroundResource(pressResId);
+                    }
+                    <span class="hljs-keyword">break</span>;
+                    <span class="hljs-keyword">case</span> MotionEvent.ACTION_MOVE:{
+                        v.setBackgroundResource(pressResId);
+                    }
+                    <span class="hljs-keyword">break</span>;
+                    <span class="hljs-keyword">case</span> MotionEvent.ACTION_UP:{
+                        v.setBackgroundResource(normalResId);
+                    }
+                    <span class="hljs-keyword">break</span>;
+                    <span class="hljs-keyword">default</span>:{
+
+                    }
+                    <span class="hljs-keyword">break</span>;
+                    }
+
+                    <span class="hljs-comment">// 为了不影响监听按钮的onClick回调，返回值应为false</span>
+                    <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
+                }
+            });
+        }
+}</code></pre>
+<p>  通过上面这种方式就可以解决同一个按钮占用两倍内存的问题，如果你觉得为一个按钮提供正反选两张图片会导致APK的体积变大，可以通过如下方式实现按钮点击的反选效果，这种方式既不会存在Button占用两倍内存的情况，又减小了APK的体积（Android 5.0中的tintColor也可以实现类似的效果）：</p>
+<pre class="hljs aspectj"><code class="aspectj">    ImageButton personalInfoBtn = (ImageButton)findViewById(R.id.personalBtnId);
+    personalInfoBtn.setOnTouchListener(<span class="hljs-keyword">new</span> OnTouchListener() {
+        <span class="hljs-meta">@SuppressLint</span>(<span class="hljs-string">"ClickableViewAccessibility"</span>)
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">boolean</span> <span class="hljs-title">onTouch</span><span class="hljs-params">(View v, MotionEvent event)</span> </span>{
+            <span class="hljs-keyword">int</span> action = event.getAction();
+
+            <span class="hljs-keyword">if</span>(action == MotionEvent.ACTION_DOWN){
+                ((ImageButton)v).setColorFilter(getResources().getColor(<span class="hljs-number">0X50000000</span>));
+            }<span class="hljs-function"><span class="hljs-keyword">else</span> <span class="hljs-title">if</span><span class="hljs-params">(action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL)</span></span>{
+                ((ImageButton)v).clearColorFilter();
+            }
+
+            <span class="hljs-comment">// 为了不影响监听按钮的onClick回调，返回值应为false</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
+        }
+    });</code></pre>
+<h3>将背景图片放在非UI线程绘制，提升APP的效率</h3>
+<p>  在高分辨率的平板设备上，绘制大背景的图片会影响程序的运行效率，严重情况下就和没有开硬件加速的时候使用手写功能一样，相当地卡，最后我们的解决方案是将背景图片通过SurfaceView来绘制，这样相当于是在非UI线程绘制，不会影响到UI线程做其它事情：</p>
+<pre class="hljs java"><code class="java"><span class="hljs-keyword">import</span> android.content.Context;
+<span class="hljs-keyword">import</span> android.content.res.TypedArray;
+<span class="hljs-keyword">import</span> android.graphics.Bitmap;
+<span class="hljs-keyword">import</span> android.graphics.BitmapFactory;
+<span class="hljs-keyword">import</span> android.graphics.Canvas;
+<span class="hljs-keyword">import</span> android.graphics.Matrix;
+<span class="hljs-keyword">import</span> android.graphics.PixelFormat;
+<span class="hljs-keyword">import</span> android.util.AttributeSet;
+<span class="hljs-keyword">import</span> android.util.DisplayMetrics;
+<span class="hljs-keyword">import</span> android.view.SurfaceHolder;
+<span class="hljs-keyword">import</span> android.view.SurfaceView;
+
+<span class="hljs-keyword">import</span> com.eebbk.hanziLearning.activity.R;
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RootSurfaceView</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">SurfaceView</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">SurfaceHolder</span>.<span class="hljs-title">Callback</span>, <span class="hljs-title">Runnable</span></span>{
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">float</span> mViewWidth = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">float</span> mViewHeight = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> mResourceId = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">private</span> Context mContext = <span class="hljs-keyword">null</span>;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">boolean</span> isRunning = <span class="hljs-keyword">false</span>;
+    <span class="hljs-keyword">private</span> SurfaceHolder mSurfaceHolder = <span class="hljs-keyword">null</span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">RootSurfaceView</span><span class="hljs-params">(Context context, AttributeSet attrs, <span class="hljs-keyword">int</span> defStyleAttr)</span> </span>{
+        <span class="hljs-keyword">super</span>(context, attrs, defStyleAttr);
+        initRootSurfaceView(context, attrs, defStyleAttr, <span class="hljs-number">0</span>);
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">RootSurfaceView</span><span class="hljs-params">(Context context, AttributeSet attrs)</span> </span>{
+        <span class="hljs-keyword">super</span>(context, attrs);
+        initRootSurfaceView(context, attrs, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">initRootSurfaceView</span><span class="hljs-params">(Context context, AttributeSet attrs, <span class="hljs-keyword">int</span> defStyleAttr, <span class="hljs-keyword">int</span> defStyleRes)</span></span>{
+        mContext = context;
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.RootSurfaceView, defStyleAttr, defStyleRes);
+        <span class="hljs-keyword">int</span> n = a.getIndexCount();
+        mViewWidth = displayMetrics.widthPixels;
+        mViewHeight = displayMetrics.heightPixels;
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> index=<span class="hljs-number">0</span>; index&lt;n; index++){
+            <span class="hljs-keyword">int</span> attr = a.getIndex(index);
+            <span class="hljs-keyword">switch</span>(attr){
+            <span class="hljs-keyword">case</span> R.styleable.RootSurfaceView_background:{
+                mResourceId = a.getResourceId(attr, <span class="hljs-number">0</span>);
+            }
+            <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> R.styleable.RootSurfaceView_view_width:{
+                mViewWidth = a.getDimension(attr, displayMetrics.widthPixels);
+            }
+            <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> R.styleable.RootSurfaceView_view_height:{
+                mViewHeight = a.getDimension(attr, displayMetrics.heightPixels);
+            }
+            <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">default</span>:{
+
+            }
+            <span class="hljs-keyword">break</span>;
+            }
+        }
+        a.recycle();
+        mSurfaceHolder = getHolder();
+        mSurfaceHolder.addCallback(<span class="hljs-keyword">this</span>);
+        mSurfaceHolder.setFormat(PixelFormat.TRANSLUCENT);
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> Bitmap <span class="hljs-title">getDrawBitmap</span><span class="hljs-params">(Context context, <span class="hljs-keyword">float</span> width, <span class="hljs-keyword">float</span> height)</span> </span>{
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), mResourceId);
+        Bitmap resultBitmap = zoomImage(bitmap, width, height);
+        <span class="hljs-keyword">return</span> resultBitmap;
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">surfaceChanged</span><span class="hljs-params">(SurfaceHolder arg0, <span class="hljs-keyword">int</span> arg1, <span class="hljs-keyword">int</span> arg2, <span class="hljs-keyword">int</span> arg3)</span> </span>{
+        System.out.println(<span class="hljs-string">"RootSurfaceView surfaceChanged"</span>);
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">surfaceCreated</span><span class="hljs-params">(SurfaceHolder holder)</span> </span>{
+        drawBackGround(holder);
+        System.out.println(<span class="hljs-string">"RootSurfaceView surfaceCreated"</span>);
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">surfaceDestroyed</span><span class="hljs-params">(SurfaceHolder holder)</span> </span>{
+        isRunning = <span class="hljs-keyword">false</span>;
+        System.out.println(<span class="hljs-string">"RootSurfaceView surfaceDestroyed"</span>);
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onAttachedToWindow</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">super</span>.onAttachedToWindow();
+        System.out.println(<span class="hljs-string">"RootSurfaceView onAttachedToWindow"</span>);
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onDetachedFromWindow</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">super</span>.onDetachedFromWindow();
+        System.out.println(<span class="hljs-string">"RootSurfaceView onDetachedFromWindow"</span>);
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span></span>{  
+        <span class="hljs-keyword">while</span>(isRunning){  
+            <span class="hljs-keyword">synchronized</span> (mSurfaceHolder) { 
+                <span class="hljs-keyword">if</span>(!mSurfaceHolder.getSurface().isValid()){
+                    <span class="hljs-keyword">continue</span>;
+                }
+                drawBackGround(mSurfaceHolder);
+            }
+            isRunning = <span class="hljs-keyword">false</span>;
+            <span class="hljs-keyword">break</span>;
+        }  
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">drawBackGround</span><span class="hljs-params">(SurfaceHolder holder)</span> </span>{
+        Canvas canvas = holder.lockCanvas();
+        Bitmap bitmap = getDrawBitmap(mContext, mViewWidth, mViewHeight);
+        canvas.drawBitmap(bitmap, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-keyword">null</span>);
+        bitmap.recycle();
+        holder.unlockCanvasAndPost(canvas);
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Bitmap <span class="hljs-title">zoomImage</span><span class="hljs-params">( Bitmap bgimage , <span class="hljs-keyword">float</span> newWidth , <span class="hljs-keyword">float</span> newHeight )</span> </span>{
+        <span class="hljs-keyword">float</span> width = bgimage.getWidth( );
+        <span class="hljs-keyword">float</span> height = bgimage.getHeight( );
+        Matrix matrix = <span class="hljs-keyword">new</span> Matrix();
+        <span class="hljs-keyword">float</span> scaleWidth = newWidth/width;
+        <span class="hljs-keyword">float</span> scaleHeight = newHeight/height;
+        matrix.postScale( scaleWidth, scaleHeight );
+        Bitmap bitmap = Bitmap.createBitmap( bgimage, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, ( <span class="hljs-keyword">int</span> ) width , ( <span class="hljs-keyword">int</span> ) height, matrix, <span class="hljs-keyword">true</span> );
+        <span class="hljs-keyword">if</span>( bitmap != bgimage ){
+            bgimage.recycle();
+            bgimage = <span class="hljs-keyword">null</span>;
+        }
+        <span class="hljs-keyword">return</span> bitmap;
+    }
+}</code></pre>
+<p>  在res/values/attr.xml文件中定义自定义View的自定义属性：</p>
+<pre class="hljs sqf"><code class="sqf">&lt;declare-styleable <span class="hljs-built_in">name</span>=<span class="hljs-string">"RootSurfaceView"</span>&gt;
+    &lt;attr <span class="hljs-built_in">name</span>=<span class="hljs-string">"background"</span> <span class="hljs-built_in">format</span>=<span class="hljs-string">"reference"</span> /&gt;
+    &lt;attr <span class="hljs-built_in">name</span>=<span class="hljs-string">"view_width"</span> <span class="hljs-built_in">format</span>=<span class="hljs-string">"dimension"</span> /&gt;
+    &lt;attr <span class="hljs-built_in">name</span>=<span class="hljs-string">"view_height"</span> <span class="hljs-built_in">format</span>=<span class="hljs-string">"dimension"</span> /&gt;
+&lt;/declare-styleable&gt;</code></pre>
+<h3>没有必要使用硬件加速的界面建议关掉硬件加速</h3>
+<p>  通过DDMS的heap跟踪发现，相比于关闭硬件加速，在打开硬件加速的情况下会消耗更多的内存，但有的界面打开或者关闭硬件加速对程序的运行效率并没有太大的影响，此种情况下可以考虑在AndroidManifest.xml文件中关闭掉对应Activity的硬件加速，like this：</p>
+<pre class="hljs xml"><code class="xml"><span class="hljs-comment">&lt;!-- 设置界面 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">activity</span>
+    <span class="hljs-attr">android:name</span>=<span class="hljs-string">".SettingActivity"</span>
+    <span class="hljs-attr">android:hardwareAccelerated</span>=<span class="hljs-string">"false"</span>
+    <span class="hljs-attr">android:screenOrientation</span>=<span class="hljs-string">"sensorLandscape"</span>
+    <span class="hljs-attr">android:theme</span>=<span class="hljs-string">"@style/Translucent_NoTitle"</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">activity</span>&gt;</span></code></pre>
+<p><strong>注意：</strong>如果使用到WebView、视频播放、手写、动画等功能时，关掉硬件加速会严重音效程序的运行效率，这种情况可以只关闭掉Activity中某些view的硬件加速，整个Activity的硬件加速不关闭。</p>
+<p>  如果Activity中某个View需要关闭硬件加速，但整个Activity不能关闭，可以调用view层级关闭硬件加速的方法：</p>
+<pre class="hljs gauss"><code class="gauss"><span class="hljs-comment">// view.setLayerType || 在定义view的构造方法中调用该方法</span>
+setLayerType(<span class="hljs-built_in">View</span>.LAYER_TYPE_SOFTWARE, <span class="hljs-built_in">null</span>);</code></pre>
+<h3>尽量少用AnimationDrawable，如果必须要可以自定义图片切换器代替AnimationDrawable</h3>
+<p>  AnimationDrawable也是一个耗内存大户，图片帧数越多耗内存越大，具体可以查看AnimationDrawable的源码，在AnimationDrawable实例化的时候，Drawable的createFromXmlInner方法会调用AnimationDrawable的inflate方法，该方法里面有一个while循环去一次性将所有帧都读取出来，也就是在初始化的时候就将所有的帧读在内存中了，有多少张图片，它就要消耗对应大小的内存。</p>
+<p>  虽然可以通过如下方式释放AnimationDrawable占用的内存，但是当退出使用AnimationDrawable的界面，再次进入使用其播放动画时，会报使用已经回收了的图片的异常，这个应该是Android对图片的处理机制导致的，虽然Activity被finish掉了，但是这个Activity中使用到的图片还是在内存中，如果被回收，下次进入时就会报异常信息：</p>
+<pre class="hljs aspectj"><code class="aspectj"><span class="hljs-comment">/**
+ * 释放AnimationDrawable占用的内存
+ * 
+ * 
+ * */</span>
+<span class="hljs-meta">@SuppressWarnings</span>(<span class="hljs-string">"unused"</span>)
+<span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">freeAnimationDrawable</span><span class="hljs-params">(AnimationDrawable animationDrawable)</span> </span>{
+    animationDrawable.stop(); 
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; animationDrawable.getNumberOfFrames(); ++i){
+        Drawable frame = animationDrawable.getFrame(i);
+        <span class="hljs-keyword">if</span> (frame <span class="hljs-keyword">instanceof</span> BitmapDrawable) {
+            ((BitmapDrawable)frame).getBitmap().recycle();
+        } 
+        frame.setCallback(<span class="hljs-keyword">null</span>);
+    } 
+
+    animationDrawable.setCallback(<span class="hljs-keyword">null</span>);
+}</code></pre>
+<p>  通常情况下我会自定义一个ImageView来实现AnimationDrawable的功能，根据图片之间切换的时间间隔来定时设置ImageView的背景图片，这样始终只是一个ImageView实例，更换的只是其背景，占用内存会比AnimationDrawable小很多：</p>
+<pre class="hljs java"><code class="java"><span class="hljs-comment">/**
+ * 图片动态切换器
+ * 
+ * */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AnimImageView</span> </span>{
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> MSG_START = <span class="hljs-number">0xf1</span>;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> MSG_STOP  = <span class="hljs-number">0xf2</span>;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> STATE_STOP = <span class="hljs-number">0xf3</span>;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> STATE_RUNNING = <span class="hljs-number">0xf4</span>;
+
+    <span class="hljs-comment">/* 运行状态*/</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> mState = STATE_RUNNING;
+    <span class="hljs-keyword">private</span> ImageView mImageView;
+    <span class="hljs-comment">/* 图片资源ID列表*/</span>
+    <span class="hljs-keyword">private</span> List&lt;Integer&gt; mResourceIdList = <span class="hljs-keyword">null</span>;
+    <span class="hljs-comment">/* 定时任务*/</span>
+    <span class="hljs-keyword">private</span> Timer mTimer = <span class="hljs-keyword">null</span>;
+    <span class="hljs-keyword">private</span> AnimTimerTask mTimeTask = <span class="hljs-keyword">null</span>;
+    <span class="hljs-comment">/* 记录播放位置*/</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> mFrameIndex = <span class="hljs-number">0</span>;
+    <span class="hljs-comment">/* 播放形式*/</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">boolean</span> isLooping = <span class="hljs-keyword">false</span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">AnimImageView</span><span class="hljs-params">( )</span></span>{
+        mTimer = <span class="hljs-keyword">new</span> Timer();
+    }
+
+    <span class="hljs-comment">/**
+     * 设置动画播放资源
+     * 
+     * */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setAnimation</span><span class="hljs-params">( HanziImageView imageview, List&lt;Integer&gt; resourceIdList )</span></span>{
+        mImageView = imageview;
+        mResourceIdList = resourceIdList;
+    }
+
+    <span class="hljs-comment">/**
+     *  开始播放动画
+     *  <span class="hljs-doctag">@param</span> loop 时候循环播放
+     *  <span class="hljs-doctag">@param</span> duration 动画播放时间间隔
+     * */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">start</span><span class="hljs-params">(<span class="hljs-keyword">boolean</span> loop, <span class="hljs-keyword">int</span> duration)</span></span>{
+        stop();
+        isLooping = loop;
+        mFrameIndex = <span class="hljs-number">0</span>;
+        mState = STATE_RUNNING;
+        mTimeTask = <span class="hljs-keyword">new</span> AnimTimerTask( );
+        mTimer.schedule(mTimeTask, <span class="hljs-number">0</span>, duration);
+    }
+
+    <span class="hljs-comment">/**
+     * 停止动画播放
+     * 
+     * */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">stop</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">if</span> (mTimeTask != <span class="hljs-keyword">null</span>) {
+            mFrameIndex = <span class="hljs-number">0</span>;
+            mState = STATE_STOP;
+            mTimer.purge();
+            mTimeTask.cancel();
+            mTimeTask = <span class="hljs-keyword">null</span>;
+            mImageView.setBackgroundResource(<span class="hljs-number">0</span>);
+        }
+    }
+
+    <span class="hljs-comment">/**
+     * 定时器任务
+     * 
+     * 
+     */</span>
+    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AnimTimerTask</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">TimerTask</span> </span>{
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>{
+            <span class="hljs-keyword">if</span>(mFrameIndex &lt; <span class="hljs-number">0</span> || mState == STATE_STOP){
+                <span class="hljs-keyword">return</span>;
+            }
+
+            <span class="hljs-keyword">if</span>( mFrameIndex &lt; mResourceIdList.size() ){
+                Message msg = AnimHanlder.obtainMessage(MSG_START,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-keyword">null</span>);
+                msg.sendToTarget();
+            }<span class="hljs-keyword">else</span>{
+                mFrameIndex = <span class="hljs-number">0</span>;
+                <span class="hljs-keyword">if</span>(!isLooping){
+                    Message msg = AnimHanlder.obtainMessage(MSG_STOP,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-keyword">null</span>);
+                    msg.sendToTarget();
+                }
+            }
+        }
+    }
+
+    <span class="hljs-keyword">private</span> Handler AnimHanlder = <span class="hljs-keyword">new</span> Handler(){
+         <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">handleMessage</span><span class="hljs-params">(android.os.Message msg)</span> </span>{
+                <span class="hljs-keyword">switch</span> (msg.what) {
+                <span class="hljs-keyword">case</span> MSG_START:{
+                    <span class="hljs-keyword">if</span>(mFrameIndex &gt;=<span class="hljs-number">0</span> &amp;&amp; mFrameIndex &lt; mResourceIdList.size() &amp;&amp; mState == STATE_RUNNING){
+                        mImageView.setImageResource(mResourceIdList.get(mFrameIndex));
+                        mFrameIndex++;
+                    }
+                }
+                    <span class="hljs-keyword">break</span>;
+                <span class="hljs-keyword">case</span> MSG_STOP:{
+                    <span class="hljs-keyword">if</span> (mTimeTask != <span class="hljs-keyword">null</span>) {
+                        mFrameIndex = <span class="hljs-number">0</span>;
+                        mTimer.purge();
+                        mTimeTask.cancel();
+                        mState = STATE_STOP;
+                        mTimeTask = <span class="hljs-keyword">null</span>;
+                        mImageView.setImageResource(<span class="hljs-number">0</span>);
+                    }
+                }
+                    <span class="hljs-keyword">break</span>;
+                <span class="hljs-keyword">default</span>:
+                    <span class="hljs-keyword">break</span>;
+                }
+         }
+    };
+}</code></pre>
+<h3>其它优化方式</h3>
+<ul>
+<li>
+<p>尽量将Activity中的小图片和背景合并，一张小图片既浪费布局的时间，又平白地增加了内存占用；</p>
+</li>
+<li>
+<p>不要在Activity的主题中为Activity设置默认的背景图片，这样会导致Activity占用的内存翻倍：</p>
+<p>  &lt;!--千万不要在主题中为Activity设置默认背景</p>
+<p>  &lt;style name="Activity_Style" parent="@android:Theme.Holo.Light.NoActionBar"&gt;<br>      &lt;item name="android:background"&gt;@drawable/<em>*</em>&lt;/item&gt;<br>  &lt;/style&gt;
+</p>
+</li>
+<li>
+<p>对于在需要时才显示的图片或者布局，可以使用ViewStub标签，通过sdk/tools目录下的hierarchyviewer.bat查看布局文件会发现，使用viewstub标签的组件几乎不消耗布局的时间，在代码中当需要显示时再去实例化有助于提高Activity的布局效率和节省Activity消耗的内存。</p>
+</li>
+</ul>
+
+        </div>
+        <!--  -->
+
+        <div class="show-foot">
+          <a class="notebook" href="http://www.jianshu.com/nb/87034">
+            <i class="iconfont ic-search-notebook"></i> <span>日记本</span>
+</a>          <div class="copyright" data-toggle="tooltip" data-html="true" data-original-title="转载请联系作者获得授权，并标注“简书作者”。">
+            © 著作权归作者所有
+          </div>
+          <div class="modal-wrap" data-report-note="">
+            <a id="report-modal">举报文章</a>
+          </div>
+        </div>
+    </div>
+
+    <!-- 文章底部作者信息 -->
+      <div class="follow-detail">
+        <div class="info">
+          <a class="avatar" href="http://www.jianshu.com/u/e6885381f7d4">
+            <img src="./Android APP内存优化之图片优化 - 简书_files/369c175de186.jpg" alt="144">
+</a>          <a class="btn btn-success follow"><i class="iconfont ic-follow"></i><span>关注</span></a>
+          <a class="title" href="http://www.jianshu.com/u/e6885381f7d4">张明云</a>
+        <p>写了 99601 字，被 2336 人关注，获得了 3271 个喜欢</p></div>
+          <div class="signature">博客：http://zmywly8866.github.io/
+Github：https://github.com/zmywly8866
+知乎：http://www.zhihu.com/people/zhang-ming-yun-97</div>
+      </div>
+
+      <div class="support-author"><p>如果觉得我的文章对您有用，请随意赞赏。您的支持将鼓励我继续创作！</p> <div class="btn btn-pay">赞赏支持</div> <!----> <!----> <!----></div>
+
+    <div class="meta-bottom">
+      <div class="like"><div class="btn like-group"><div class="btn-like"><a href="http://www.jianshu.com/sign_in"><i class="iconfont ic-like"></i>喜欢</a></div> <div class="modal-wrap"><a>56</a></div></div> <!----></div>
+      <div class="share-group">
+        <a class="share-circle" data-action="weixin-share" data-toggle="tooltip" data-original-title="分享到微信">
+          <i class="iconfont ic-wechat"></i>
+        </a>
+        <a class="share-circle" data-toggle="tooltip" href="javascript:void((function(s,d,e,r,l,p,t,z,c){var%20f=&#39;http://v.t.sina.com.cn/share/share.php?appkey=1881139527&#39;,u=z||d.location,p=[&#39;&amp;url=&#39;,e(u),&#39;&amp;title=&#39;,e(t||d.title),&#39;&amp;source=&#39;,e(r),&#39;&amp;sourceUrl=&#39;,e(l),&#39;&amp;content=&#39;,c||&#39;gb2312&#39;,&#39;&amp;pic=&#39;,e(p||&#39;&#39;)].join(&#39;&#39;);function%20a(){if(!window.open([f,p].join(&#39;&#39;),&#39;mb&#39;,[&#39;toolbar=0,status=0,resizable=1,width=440,height=430,left=&#39;,(s.width-440)/2,&#39;,top=&#39;,(s.height-430)/2].join(&#39;&#39;)))u.href=[f,p].join(&#39;&#39;);};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();})(screen,document,encodeURIComponent,&#39;&#39;,&#39;&#39;,&#39;http://cwb.assets.jianshu.io/notes/images/1608420/weibo/image_ab80d317dde4.jpg&#39;, &#39;推荐 @UperOne 的文章《Android APP内存优化之图片优化》（ 分享自 @简书 ）&#39;,&#39;http://www.jianshu.com/p/5bb8c01e2bc7?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=weibo&#39;,&#39;页面编码gb2312|utf-8默认gb2312&#39;));" data-original-title="分享到微博">
+          <i class="iconfont ic-weibo"></i>
+        </a>
+          <a class="share-circle" data-toggle="tooltip" href="http://cwb.assets.jianshu.io/notes/images/1608420/weibo/image_ab80d317dde4.jpg" target="_blank" data-original-title="下载长微博图片">
+            <i class="iconfont ic-picture"></i>
+          </a>
+        <a class="share-circle more-share" tabindex="0" data-toggle="popover" data-placement="top" data-html="true" data-trigger="focus" href="javascript:void(0);" data-content="
+          &lt;ul class=&quot;share-list&quot;&gt;
+            &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=&#39;+e(&#39;http://www.jianshu.com/p/5bb8c01e2bc7?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=qzone&#39;)+&#39;&amp;title=&#39;+e(&#39;推荐 张明云 的文章《Android APP内存优化之图片优化》&#39;),x=function(){if(!window.open(r,&#39;qzone&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=600,height=600&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-zone&quot;&gt;&lt;/i&gt;&lt;span&gt;分享到QQ空间&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;https://twitter.com/share?url=&#39;+e(&#39;http://www.jianshu.com/p/5bb8c01e2bc7?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=twitter&#39;)+&#39;&amp;text=&#39;+e(&#39;推荐 张明云 的文章《Android APP内存优化之图片优化》（ 分享自 @jianshucom ）&#39;)+&#39;&amp;related=&#39;+e(&#39;jianshucom&#39;),x=function(){if(!window.open(r,&#39;twitter&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=600,height=600&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-twitter&quot;&gt;&lt;/i&gt;&lt;span&gt;分享到Twitter&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;https://www.facebook.com/dialog/share?app_id=483126645039390&amp;display=popup&amp;href=http://www.jianshu.com/p/5bb8c01e2bc7?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=facebook&#39;,x=function(){if(!window.open(r,&#39;facebook&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-facebook&quot;&gt;&lt;/i&gt;&lt;span&gt;分享到Facebook&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;https://plus.google.com/share?url=&#39;+e(&#39;http://www.jianshu.com/p/5bb8c01e2bc7?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=google_plus&#39;),x=function(){if(!window.open(r,&#39;google_plus&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-google&quot;&gt;&lt;/i&gt;&lt;span&gt;分享到Google+&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,s1=window.getSelection,s2=d.getSelection,s3=d.selection,s=s1?s1():s2?s2():s3?s3.createRange().text:&#39;&#39;,r=&#39;http://www.douban.com/recommend/?url=&#39;+e(&#39;http://www.jianshu.com/p/5bb8c01e2bc7?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=douban&#39;)+&#39;&amp;title=&#39;+e(&#39;Android APP内存优化之图片优化&#39;)+&#39;&amp;sel=&#39;+e(s)+&#39;&amp;v=1&#39;,x=function(){if(!window.open(r,&#39;douban&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330&#39;))location.href=r+&#39;&amp;r=1&#39;};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})()&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-douban&quot;&gt;&lt;/i&gt;&lt;span&gt;分享到豆瓣&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+          &lt;/ul&gt;
+        " data-original-title="" title="">更多分享</a>
+      </div>
+    </div>
+    <div><div id="comment-list" class="comment-list"><div><form class="new-comment"><a class="avatar"><img src="./Android APP内存优化之图片优化 - 简书_files/avatar_default-78d4d1f68984cd6d4379508dd94b4210.png"></a> <div class="sign-container"><a href="http://www.jianshu.com/sign_in" class="btn btn-sign">登录</a> <span>后发表评论</span></div></form></div> <div id="normal-comment-list" class="normal-comment-list"><div><div><div class="top"><span>7条评论</span> <a class="author-only">只看作者</a> <a class="close-btn" style="display: none;">关闭评论</a> <div class="pull-right"><a class="active">按喜欢排序</a><a class="">按时间正序</a><a class="">按时间倒序</a></div></div></div> <!----> <!----> <div class="comments-placeholder" style="display: none;"><div class="author"><div class="avatar"></div> <div class="info"><div class="name"></div> <div class="meta"></div></div></div> <div class="text"></div> <div class="text animation-delay"></div> <div class="tool-group"><i class="iconfont ic-zan-active"></i><div class="zan"></div> <i class="iconfont ic-list-comments"></i><div class="zan"></div></div></div> <div id="comment-419537" class="comment"><div><div class="author"><a href="http://www.jianshu.com/u/a260651bee80" target="_blank" class="avatar"><img src="./Android APP内存优化之图片优化 - 简书_files/10abd7108961.png"></a> <div class="info"><a href="http://www.jianshu.com/u/a260651bee80" target="_blank" class="name">Trity</a> <!----> <div class="meta"><span>2楼 · 2015.07.06 09:47</span></div></div></div> <div class="comment-wrap"><p>学习了</p> <div class="tool-group"><a><i class="iconfont ic-zan"></i> <span>赞</span></a> <a><i class="iconfont ic-comment"></i> <span>回复</span></a> <!----> <!----></div></div></div> <div class="sub-comment-list hide"><!----> <!----></div></div><div id="comment-432809" class="comment"><div><div class="author"><a href="http://www.jianshu.com/u/91ddc2a94c93" target="_blank" class="avatar"><img src="./Android APP内存优化之图片优化 - 简书_files/46898b40aa2b"></a> <div class="info"><a href="http://www.jianshu.com/u/91ddc2a94c93" target="_blank" class="name">fwg</a> <!----> <div class="meta"><span>3楼 · 2015.07.14 23:10</span></div></div></div> <div class="comment-wrap"><p>不错呀😄</p> <div class="tool-group"><a><i class="iconfont ic-zan"></i> <span>赞</span></a> <a><i class="iconfont ic-comment"></i> <span>回复</span></a> <!----> <!----></div></div></div> <div class="sub-comment-list hide"><!----> <!----></div></div><div id="comment-621068" class="comment"><div><div class="author"><a href="http://www.jianshu.com/u/bc50b39a0dbf" target="_blank" class="avatar"><img src="./Android APP内存优化之图片优化 - 简书_files/c53f9b75269c.jpeg"></a> <div class="info"><a href="http://www.jianshu.com/u/bc50b39a0dbf" target="_blank" class="name">史琪锴</a> <!----> <div class="meta"><span>4楼 · 2015.09.18 10:05</span></div></div></div> <div class="comment-wrap"><p>可是感觉不实用啊。。 一个selector就要弄这么复杂  那代码怎么看</p> <div class="tool-group"><a><i class="iconfont ic-zan"></i> <span>赞</span></a> <a><i class="iconfont ic-comment"></i> <span>回复</span></a> <!----> <!----></div></div></div> <div class="sub-comment-list"><div id="comment-625715" class="sub-comment"><p><a href="http://www.jianshu.com/u/e6885381f7d4" target="_blank">张明云</a>：
+          <span><a href="http://www.jianshu.com/users/bc50b39a0dbf" class="maleskine-author" target="_blank" data-user-slug="bc50b39a0dbf">@象山炎亚纶</a> 封装一下不就行了</span></p> <div class="sub-tool-group"><span>2015.09.19 08:49</span> <a><i class="iconfont ic-comment"></i> <span>回复</span></a> <!----> <!----></div></div> <div class="sub-comment more-comment"><a class="add-comment-btn"><i class="iconfont ic-subcomment"></i> <span>添加新评论</span></a> <!----> <!----> <!----></div> <!----></div></div><div id="comment-1772327" class="comment"><div><div class="author"><a href="http://www.jianshu.com/u/15333c978553" target="_blank" class="avatar"><img src="./Android APP内存优化之图片优化 - 简书_files/ad7fee5892d5.jpeg"></a> <div class="info"><a href="http://www.jianshu.com/u/15333c978553" target="_blank" class="name">fix扣子</a> <!----> <div class="meta"><span>5楼 · 2016.03.20 11:46</span></div></div></div> <div class="comment-wrap"><p>学习</p> <div class="tool-group"><a><i class="iconfont ic-zan"></i> <span>赞</span></a> <a><i class="iconfont ic-comment"></i> <span>回复</span></a> <!----> <!----></div></div></div> <div class="sub-comment-list hide"><!----> <!----></div></div><div id="comment-5398828" class="comment"><div><div class="author"><a href="http://www.jianshu.com/u/4399ee0d4e24" target="_blank" class="avatar"><img src="./Android APP内存优化之图片优化 - 简书_files/50a87f73b13c.png"></a> <div class="info"><a href="http://www.jianshu.com/u/4399ee0d4e24" target="_blank" class="name">_夜雨</a> <!----> <div class="meta"><span>6楼 · 2016.11.06 15:19</span></div></div></div> <div class="comment-wrap"><p>请问上面那个0X50000000是什么呢？<br>还有就是getColor(0X50000000)过期了，得改成ContextCompat.getColor(context, 0X50000000)</p> <div class="tool-group"><a><i class="iconfont ic-zan"></i> <span>赞</span></a> <a><i class="iconfont ic-comment"></i> <span>回复</span></a> <!----> <!----></div></div></div> <div class="sub-comment-list hide"><!----> <!----></div></div><div id="comment-10266163" class="comment"><div><div class="author"><a href="http://www.jianshu.com/u/10316e327516" target="_blank" class="avatar"><img src="./Android APP内存优化之图片优化 - 简书_files/4e84119d-1c54-4f99-8a4a-720fad90440d"></a> <div class="info"><a href="http://www.jianshu.com/u/10316e327516" target="_blank" class="name">jjc6</a> <!----> <div class="meta"><span>7楼 · 2017.04.23 07:48</span></div></div></div> <div class="comment-wrap"><p>谢谢楼主分享</p> <div class="tool-group"><a><i class="iconfont ic-zan"></i> <span>赞</span></a> <a><i class="iconfont ic-comment"></i> <span>回复</span></a> <!----> <!----></div></div></div> <div class="sub-comment-list hide"><!----> <!----></div></div></div></div> <!----> <!----></div></div>
+  </div>
+
+  <div class="side-tool"><ul><li data-placement="left" data-toggle="tooltip" data-container="body" data-original-title="回到顶部"><a class="function-button"><i class="iconfont ic-backtop"></i></a></li> <!----> <!----> <li data-placement="left" data-toggle="tooltip" data-container="body" data-original-title="分享文章"><a tabindex="0" role="button" data-toggle="popover" data-placement="left" data-html="true" data-trigger="focus" href="javascript:void(0);" data-content="&lt;ul class=&#39;share-list&#39;&gt;
+                &lt;li&gt;&lt;a class=&quot;weixin-share&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-weixin&quot;&gt;&lt;/i&gt;&lt;span&gt;分享到微信&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;javascript:void((function(s,d,e,r,l,p,t,z,c){var%20f=&#39;http://v.t.sina.com.cn/share/share.php?appkey=1881139527&#39;,u=z||d.location,p=[&#39;&amp;url=&#39;,e(u),&#39;&amp;title=&#39;,e(t||d.title),&#39;&amp;source=&#39;,e(r),&#39;&amp;sourceUrl=&#39;,e(l),&#39;&amp;content=&#39;,c||&#39;gb2312&#39;,&#39;&amp;pic=&#39;,e(p||&#39;&#39;)].join(&#39;&#39;);function%20a(){if(!window.open([f,p].join(&#39;&#39;),&#39;mb&#39;,[&#39;toolbar=0,status=0,resizable=1,width=440,height=430,left=&#39;,(s.width-440)/2,&#39;,top=&#39;,(s.height-430)/2].join(&#39;&#39;)))u.href=[f,p].join(&#39;&#39;);};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();})(screen,document,encodeURIComponent,&#39;&#39;,&#39;&#39;,&#39;http://cwb.assets.jianshu.io/notes/images/1608420/weibo/image_ab80d317dde4.jpg&#39;, &#39;推荐 @UperOne 的文章《Android APP内存优化之图片优化》（ 分享自 @简书 ）&#39;,&#39;http://www.jianshu.com/p/5bb8c01e2bc7?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=weibo&#39;,&#39;页面编码gb2312|utf-8默认gb2312&#39;));&quot;&gt;&lt;i class=&#39;social-icon-sprite social-icon-weibo&#39;&gt;&lt;/i&gt;&lt;span&gt;分享到微博&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;http://cwb.assets.jianshu.io/notes/images/1608420/weibo/image_ab80d317dde4.jpg&quot; target=&quot;_blank&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-picture&quot;&gt;&lt;/i&gt;&lt;span&gt;下载长微博图片&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=&#39;+e(&#39;http://www.jianshu.com/p/5bb8c01e2bc7?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=qzone&#39;)+&#39;&amp;title=&#39;+e(&#39;推荐 张明云 的文章《Android APP内存优化之图片优化》&#39;),x=function(){if(!window.open(r,&#39;qzone&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=600,height=600&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&#39;social-icon-sprite social-icon-zone&#39;&gt;&lt;/i&gt;&lt;span&gt;分享到QQ空间&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;https://twitter.com/share?url=&#39;+e(&#39;http://www.jianshu.com/p/5bb8c01e2bc7?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=twitter&#39;)+&#39;&amp;text=&#39;+e(&#39;推荐 张明云 的文章《Android APP内存优化之图片优化》（ 分享自 @jianshucom ）&#39;)+&#39;&amp;related=&#39;+e(&#39;jianshucom&#39;),x=function(){if(!window.open(r,&#39;twitter&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=600,height=600&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&#39;social-icon-sprite social-icon-twitter&#39;&gt;&lt;/i&gt;&lt;span&gt;分享到Twitter&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;https://www.facebook.com/dialog/share?app_id=483126645039390&amp;display=popup&amp;href=http://www.jianshu.com/p/5bb8c01e2bc7?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=facebook&#39;,x=function(){if(!window.open(r,&#39;facebook&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&#39;social-icon-sprite social-icon-facebook&#39;&gt;&lt;/i&gt;&lt;span&gt;分享到Facebook&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;https://plus.google.com/share?url=&#39;+e(&#39;http://www.jianshu.com/p/5bb8c01e2bc7?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=google_plus&#39;),x=function(){if(!window.open(r,&#39;google_plus&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&#39;social-icon-sprite social-icon-google&#39;&gt;&lt;/i&gt;&lt;span&gt;分享到Google+&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,s1=window.getSelection,s2=d.getSelection,s3=d.selection,s=s1?s1():s2?s2():s3?s3.createRange().text:&#39;&#39;,r=&#39;http://www.douban.com/recommend/?url=&#39;+e(&#39;http://www.jianshu.com/p/5bb8c01e2bc7?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=douban&#39;)+&#39;&amp;title=&#39;+e(&#39;Android APP内存优化之图片优化&#39;)+&#39;&amp;sel=&#39;+e(s)+&#39;&amp;v=1&#39;,x=function(){if(!window.open(r,&#39;douban&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330&#39;))location.href=r+&#39;&amp;r=1&#39;};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})()&quot;&gt;&lt;i class=&#39;social-icon-sprite social-icon-douban&#39;&gt;&lt;/i&gt;&lt;span&gt;分享到豆瓣&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+              &lt;/ul&gt;" data-original-title="" title="" class="function-button"><i class="iconfont ic-share"></i></a> <!----></li></ul></div>
+</div>
+<div class="note-bottom">
+  <div><div class="main"><div class="title">被以下专题收入，发现更多相似内容</div> <!----> <div class="include-collection"><!----> <a href="http://www.jianshu.com/c/5139d555c94d?utm_source=desktop&amp;utm_medium=notes-included-collection" target="_blank" class="item"><img src="./Android APP内存优化之图片优化 - 简书_files/1416528891_3612.png"><div class="name">Android...</div></a><a href="http://www.jianshu.com/c/249eb2b371e7?utm_source=desktop&amp;utm_medium=notes-included-collection" target="_blank" class="item"><img src="./Android APP内存优化之图片优化 - 简书_files/t0120311eeb35833a77.jpg"><div class="name">程序猿葵花宝典</div></a><a href="http://www.jianshu.com/c/eb2ecd303163?utm_source=desktop&amp;utm_medium=notes-included-collection" target="_blank" class="item"><img src="./Android APP内存优化之图片优化 - 简书_files/android.graphics.Bitmap_15797b10.jpeg"><div class="name">Android控件</div></a><a href="http://www.jianshu.com/c/0d0d07f9c405?utm_source=desktop&amp;utm_medium=notes-included-collection" target="_blank" class="item"><img src="./Android APP内存优化之图片优化 - 简书_files/android.graphics.Bitmap_f73fe88.jpeg"><div class="name">Android...</div></a><a href="http://www.jianshu.com/c/4e32382f585d?utm_source=desktop&amp;utm_medium=notes-included-collection" target="_blank" class="item"><img src="./Android APP内存优化之图片优化 - 简书_files/android.graphics.Bitmap_423b90a8.jpeg"><div class="name">Android...</div></a><a href="http://www.jianshu.com/c/b1fa46ec3b08?utm_source=desktop&amp;utm_medium=notes-included-collection" target="_blank" class="item"><img src="./Android APP内存优化之图片优化 - 简书_files/android.graphics.Bitmap_20c9506b.jpeg"><div class="name">Android...</div></a><a href="http://www.jianshu.com/c/69643cae145c?utm_source=desktop&amp;utm_medium=notes-included-collection" target="_blank" class="item"><img src="./Android APP内存优化之图片优化 - 简书_files/android.graphics.Bitmap_e7521ca.jpeg"><div class="name">优化</div></a> <a class="show-more">
+        展开更多
+        <i class="iconfont ic-show"></i></a></div></div> <!----> <!----></div>
+  <div class="recommend-note"><div class="meta"><div class="title">更多精彩内容</div> <div class="roll"></div></div> <div class="list"><a target="_blank" href="http://www.jianshu.com/p/69a6d1d32581?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=pc_all_hots&amp;utm_source=recommendation" class="note"><div class="mask" style="background-image: url(&quot;//cdn2.jianshu.io/assets/web/03-f755ca1e6e09752f87cc2e4d2f68af64.png&quot;);"></div> <p class="title">使用FreeMarker模板引擎自定义Android工程模板</p> <div class="author"><div class="avatar" style="background-image: url(&quot;http://upload.jianshu.io/users/upload_avatars/44804/369c175de186.jpg&quot;);"></div> <span class="name">张明云</span></div></a><a target="_blank" href="http://www.jianshu.com/p/5db744d8fcd0?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=pc_all_hots&amp;utm_source=recommendation" class="note"><div class="mask" style="background-image: url(&quot;//upload-images.jianshu.io/upload_images/44804-6564e9dc8fb5004f.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/400/h/320&quot;);"></div> <p class="title">深入浅出反射</p> <div class="author"><div class="avatar" style="background-image: url(&quot;http://upload.jianshu.io/users/upload_avatars/44804/369c175de186.jpg&quot;);"></div> <span class="name">张明云</span></div></a><a target="_blank" href="http://www.jianshu.com/p/87c0a2366f37?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=pc_all_hots&amp;utm_source=recommendation" class="note"><div class="mask" style="background-image: url(&quot;//upload-images.jianshu.io/upload_images/1797623-64092336fd748a0e.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/400/h/320&quot;);"></div> <p class="title">20岁以后，要尽可能不被自己嫌弃</p> <div class="author"><div class="avatar" style="background-image: url(&quot;http://upload.jianshu.io/users/upload_avatars/1797623/b449c80a-c49d-4402-ab1c-9973d8cd2d74.jpg&quot;);"></div> <span class="name">希尤秦</span></div></a></div></div>
+</div>
+
+    <script src="./Android APP内存优化之图片优化 - 简书_files/push.js"></script><script src="./Android APP内存优化之图片优化 - 简书_files/hm.js"></script><script async="" src="./Android APP内存优化之图片优化 - 简书_files/analytics.js"></script><script type="application/json" data-name="page-data">{"user_signed_in":false,"locale":"zh-CN","os":"mac","read_mode":"day","read_font":"font2","note_show":{"is_author":false,"is_following_author":false,"is_liked_note":false,"uuid":"a4bc8845-cc23-4836-96d7-865d44a6bda2"},"note":{"id":1608420,"slug":"5bb8c01e2bc7","user_id":44804,"notebook_id":87034,"commentable":true,"likes_count":56,"views_count":8345,"public_wordage":2719,"comments_count":7,"author":{"total_wordage":99601,"followers_count":2336,"total_likes_count":3271}}}</script>
+    
+    <script src="./Android APP内存优化之图片优化 - 简书_files/babel-polyfill-2ed143970f255bea51ea.js"></script>
+    <script src="./Android APP内存优化之图片优化 - 简书_files/web-base-e8a43ba5f34b145002ba.js"></script>
+<script src="./Android APP内存优化之图片优化 - 简书_files/web-c45aa922693fce1968f9.js"></script>
+    
+    <script src="./Android APP内存优化之图片优化 - 简书_files/entry-baf4ba9b49cd181058e4.js"></script>
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-35169517-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0c0e9d9b1e7d617b3e6842e85b9fb068";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script>
+  (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      }
+      else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+  
+
+<!----><!----></body></html>
