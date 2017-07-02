@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<!-- saved from url=(0037)http://www.jianshu.com/p/d4c2c62ffc35 -->
+<html><!--<![endif]--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+
+  <!-- Start of Baidu Transcode -->
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta name="applicable-device" content="pc,mobile">
+  <meta name="MobileOptimized" content="width">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="mobile-agent" content="format=html5;url=http://www.jianshu.com/p/d4c2c62ffc35">
+  <!-- End of Baidu Transcode -->
+
+    <meta name="description" content="引言 背景:Android App优化, 要怎么做? Android App优化之性能分析工具 Android App优化之提升你的App启动速度之理论基础 Android App优化之提升你的App启动速度之实例挑战 Android App优化之Layout怎么摆 Android App优化之ANR详解 Android App优化之消除卡顿 Android App优化之内存优化 Andro...">
+
+  <meta name="360-site-verification" content="604a14b53c6b871206001285921e81d8">
+  <meta property="wb:webmaster" content="294ec9de89e7fadb">
+  <meta property="qc:admins" content="104102651453316562112116375">
+  <meta property="qc:admins" content="11635613706305617">
+  <meta property="qc:admins" content="1163561616621163056375">
+  <meta name="google-site-verification" content="cV4-qkUJZR6gmFeajx_UyPe47GW9vY6cnCrYtCHYNh4">
+  <meta name="google-site-verification" content="HF7lfF8YEGs1qtCE-kPml8Z469e2RHhGajy6JPVy5XI">
+  <meta http-equiv="mobile-agent" content="format=html5; url=http://www.jianshu.com/p/d4c2c62ffc35">
+
+  <!-- Apple -->
+  <meta name="apple-mobile-web-app-title" content="简书">
+
+    <!--  Meta for Smart App Banner -->
+  <meta name="apple-itunes-app" content="app-id=888237539, app-argument=jianshu://notes/6229979">
+  <!-- End -->
+
+  <!--  Meta for Twitter Card -->
+  <meta content="summary" property="twitter:card">
+  <meta content="@jianshucom" property="twitter:site">
+  <meta content="Android App优化之网络优化" property="twitter:title">
+  <meta content="引言 背景:Android App优化, 要怎么做? Android App优化之性能分析工具 Android App优化之提升你的App启动速度之理论基础 Android App优化之提升你的App启动速度之实例挑战 Android App优化之Layout怎么摆 Android App优化之ANR详解 Android App优化之消除卡顿 Android App优化之内存优化 Android App优化之持久电量 Android App优化之如何高效网络请求 互联网时代, App作为于用户交互的端, 可以说实际上是一个界面, 产品的业务, 服务都是由Server提供的. 而App与S..." property="twitter:description">
+  <meta content="http://www.jianshu.com/p/d4c2c62ffc35" property="twitter:url">
+  <!-- End -->
+
+  <!--  Meta for OpenGraph -->
+  <meta property="fb:app_id" content="865829053512461">
+  <meta property="og:site_name" content="简书">
+  <meta property="og:title" content="Android App优化之网络优化">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="http://www.jianshu.com/p/d4c2c62ffc35">
+  <meta property="og:description" content="引言 背景:Android App优化, 要怎么做? Android App优化之性能分析工具 Android App优化之提升你的App启动速度之理论基础 Android App优化之提升你的...">
+  <!-- End -->
+
+  <!--  Meta for Facebook Applinks -->
+  <meta property="al:ios:url" content="jianshu://notes/6229979">
+  <meta property="al:ios:app_store_id" content="888237539">
+  <meta property="al:ios:app_name" content="简书">
+
+  <meta property="al:android:url" content="jianshu://notes/6229979">
+  <meta property="al:android:package" content="com.jianshu.haruki">
+  <meta property="al:android:app_name" content="简书">
+  <!-- End -->
+
+
+    <title>Android App优化之网络优化 - 简书</title>
+
+  <meta name="csrf-param" content="authenticity_token">
+<meta name="csrf-token" content="rldjE3sKv9JcbylPcrsgHizx6b1ynsRHEvi/sE/mK0MmQl4E8UZGDVZHWyikyHdkb14zMYVRGuOTnXjZUObp+g==">
+
+  <link rel="stylesheet" media="all" href="./Android App优化之网络优化 - 简书_files/web-e8a43ba5f34b145002ba.css">
+  
+  <link rel="stylesheet" media="all" href="./Android App优化之网络优化 - 简书_files/entry-e8a43ba5f34b145002ba.css">
+
+  <link href="http://cdn2.jianshu.io/assets/favicons/favicon-783beb88ed621ceab614de960376ac0c.ico" rel="icon">
+      <link rel="apple-touch-icon-precomposed" href="http://cdn2.jianshu.io/assets/apple-touch-icons/57-47624b2e2161e8eb144462c85db0a5ff.png" sizes="57x57">
+      <link rel="apple-touch-icon-precomposed" href="http://cdn2.jianshu.io/assets/apple-touch-icons/72-c00cde7cf98fc49e50cbb3ee1dcd5804.png" sizes="72x72">
+      <link rel="apple-touch-icon-precomposed" href="http://cdn2.jianshu.io/assets/apple-touch-icons/76-e8af0bdeaf1ba31e303b1fde8b5e66c4.png" sizes="76x76">
+      <link rel="apple-touch-icon-precomposed" href="http://cdn2.jianshu.io/assets/apple-touch-icons/114-f4c78569bbf1977e8382a5fd90c9237a.png" sizes="114x114">
+      <link rel="apple-touch-icon-precomposed" href="http://cdn2.jianshu.io/assets/apple-touch-icons/120-cf10c3711dba269522743729efe66bbc.png" sizes="120x120">
+      <link rel="apple-touch-icon-precomposed" href="http://cdn2.jianshu.io/assets/apple-touch-icons/152-7bd60457b5f3ecbf1343f0e6241be4f8.png" sizes="152x152">
+<link rel="stylesheet" href="blob:http://www.jianshu.com/b88374b4-3931-4785-b4cd-10f4716f631e"><link rel="stylesheet" href="blob:http://www.jianshu.com/1212eb5b-1443-4e93-a215-9c232fc6466f"></head>
+
+  <body lang="zh-CN" class="reader-black-font">
+    <!-- 全局顶部导航栏 -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="width-limit">
+    <!-- 左上方 Logo -->
+    <a class="logo" href="http://www.jianshu.com/"><img src="./Android App优化之网络优化 - 简书_files/logo-58fd04f6f0de908401aa561cda6a0688.png" alt="Logo"></a>
+
+    <!-- 右上角 -->
+      <!-- 未登录显示登录/注册/写文章 -->
+      <a class="btn write-btn" target="_blank" href="http://www.jianshu.com/writer#/">
+        <i class="iconfont ic-write"></i>写文章
+</a>      <a class="btn sign-up" href="http://www.jianshu.com/sign_up">注册</a>
+      <a class="btn log-in" href="http://www.jianshu.com/sign_in">登录</a>
+
+    <!-- 如果用户登录，显示下拉菜单 -->
+
+    <div class="style-mode"><a class="style-mode-btn"><i class="iconfont ic-navigation-mode"></i></a> <div class="popover-modal" style="left: 0px; display: none;"><div class="meta"><i class="iconfont ic-navigation-night"></i><span>夜间模式</span></div> <div class="switch day-night-group"><a class="switch-btn">开</a> <a class="switch-btn active">关</a></div> <hr> <div class="switch font-family-group"><a class="switch-btn font-song">宋体</a> <a class="switch-btn font-hei active">黑体</a></div> <div class="switch"><a class="switch-btn active">简</a> <a class="switch-btn">繁</a></div></div></div>
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu" aria-expanded="false">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse" id="menu">
+        <ul class="nav navbar-nav">
+            <li class="">
+              <a href="http://www.jianshu.com/">
+                <span class="menu-text">首页</span><i class="iconfont ic-navigation-discover menu-icon"></i>
+</a>            </li>
+            <li class="">
+              <a class="app-download-btn" href="http://www.jianshu.com/apps"><span class="menu-text">下载App</span><i class="iconfont ic-navigation-download menu-icon"></i></a>
+            </li>
+          <li class="search">
+            <form target="_blank" action="http://www.jianshu.com/search" accept-charset="UTF-8" method="get"><input name="utf8" type="hidden" value="✓">
+              <input type="text" name="q" id="q" value="" placeholder="搜索" class="search-input">
+              <a class="search-btn" href="javascript:void(null)"><i class="iconfont ic-search"></i></a>
+              <!-- <div id="navbar-trending-search"></div> -->
+</form>          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+    
+<div class="note">
+  <div class="post">
+    <div class="article">
+        <h1 class="title">Android App优化之网络优化</h1>
+
+        <!-- 作者区域 -->
+        <div class="author">
+          <a class="avatar" href="http://www.jianshu.com/u/bc1dacc65fae">
+            <img src="./Android App优化之网络优化 - 简书_files/e2599a8c087e.png" alt="144">
+</a>          <div class="info">
+            <span class="tag">作者</span>
+            <span class="name"><a href="http://www.jianshu.com/u/bc1dacc65fae">anly_jun</a></span>
+            <!-- 关注用户按钮 -->
+            <a class="btn btn-success follow"><i class="iconfont ic-follow"></i><span>关注</span></a>
+            <!-- 文章数据信息 -->
+            <div class="meta">
+              <!-- 如果文章更新时间大于发布时间，那么使用 tooltip 显示更新时间 -->
+                <span class="publish-time" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="最后编辑于 2016.10.11 17:08">2016.10.11 17:06*</span>
+              <span class="wordage">字数 2613</span>
+            <span class="views-count">阅读 6576</span><span class="comments-count">评论 7</span><span class="likes-count">喜欢 77</span></div>
+          </div>
+          <!-- 如果是当前作者，加入编辑按钮 -->
+        </div>
+        <!-- -->
+
+        <!-- 文章内容 -->
+        <div class="show-content">
+          <div class="image-package">
+<img src="./Android App优化之网络优化 - 简书_files/851999-4f1cdee0869455b4.png" data-original-src="http://upload-images.jianshu.io/upload_images/851999-4f1cdee0869455b4.png?imageMogr2/auto-orient/strip%7CimageView2/2" style="cursor: zoom-in;"><br><div class="image-caption">internet</div>
+</div>
+<h2>引言</h2>
+<ol>
+<li><a href="http://www.jianshu.com/p/f7006ab64da7" target="_blank">背景:Android App优化, 要怎么做?</a></li>
+<li><a href="http://www.jianshu.com/p/da2a4bfcba68" target="_blank">Android App优化之性能分析工具</a></li>
+<li><a href="http://www.jianshu.com/p/98c1656a357a" target="_blank">Android App优化之提升你的App启动速度之理论基础</a></li>
+<li><a href="http://www.jianshu.com/p/4f10c9a10ac9" target="_blank">Android App优化之提升你的App启动速度之实例挑战</a></li>
+<li><a href="http://www.jianshu.com/p/4943dae4c333" target="_blank">Android App优化之Layout怎么摆</a></li>
+<li><a href="http://www.jianshu.com/p/6d855e984b99" target="_blank">Android App优化之ANR详解</a></li>
+<li><a href="http://www.jianshu.com/p/1fb065c806e6" target="_blank">Android App优化之消除卡顿</a></li>
+<li><a href="http://www.jianshu.com/p/48475df838d9" target="_blank">Android App优化之内存优化</a></li>
+<li><a href="http://www.jianshu.com/p/c55ef05c0047" target="_blank">Android App优化之持久电量</a></li>
+<li><a href="http://www.jianshu.com/p/d4c2c62ffc35" target="_blank">Android App优化之如何高效网络请求</a></li>
+</ol>
+<p>互联网时代, App作为于用户交互的端, 可以说实际上是一个界面, 产品的业务, 服务都是由Server提供的. 而App与Server的交互依赖于网络, 故而网络优化, 也是我们的App优化中不可缺少的一个优化项.</p>
+<h2>1, 网络连接对用户的影响</h2>
+<p>App的网络连接对于用户来说, 影响很多, 且多数情况下都很直观, 直接影响用户对这个App的使用体验. 其中较为重要的几点:</p>
+<ul>
+<li>
+<p><strong>流量</strong><br>  App的流量消耗对用户来说是比较敏感的, 毕竟流量是花钱的嘛. 现在大部分人的手机上都有安装流量监控的工具App, 用来监控App的流量使用. 如果我们的App这方面没有控制好, 会给用户不好的使用体验.</p>
+</li>
+<li>
+<p><strong>电量</strong><br>  电量相对于用户来说, 没有那么明显. 一般用户可能不会太注意. 但是如<a href="http://www.jianshu.com/p/c55ef05c0047" target="_blank">前文电量优化</a>中说的那样, 网络连接(radio)是对电量影响很大的一个因素. 所以我们也要加以注意.</p>
+</li>
+<li>
+<p><strong>用户等待</strong><br>  也就是用户体验, 良好的用户体验, 才是我们留住用户的第一步. 如果App请求等待时间长, 会给用户网络卡, 应用反应慢的感觉, 如果有对比, 有替代品, 我们的App很可能就会被用户无情抛弃.</p>
+</li>
+</ul>
+<h2>2, 分析网络连接的工具</h2>
+<h3>2.1 Network Monitor</h3>
+<p>Android Studio内置的Monitor工具中就有一个Network Monitor:<br></p><div class="image-package">
+<img src="./Android App优化之网络优化 - 简书_files/851999-15e7840ec312268e.png" data-original-src="http://upload-images.jianshu.io/upload_images/851999-15e7840ec312268e.png?imageMogr2/auto-orient/strip%7CimageView2/2" style="cursor: zoom-in;"><br><div class="image-caption">Network Monitor</div>
+</div>
+<p>其中: </p>
+<ul>
+<li>Rx --- R(ecive) 表示下行流量, 即下载接收.</li>
+<li>Tx --- T(ransmit) 表示上行流量, 即上传发送. </li>
+</ul>
+<p><strong>怎么使用Network Monitor?</strong></p>
+<p>Network monitor实时跟踪选定应用的数据请求情况. 我们可以连上手机, 选定调试应用进程, 然后在App上操作我们需要分析的页面请求.</p>
+<p>例如, 上图就是以<a href="https://github.com/mingjunli/GithubApp" target="_blank">CoderPub</a>为例, 针对从repo列表界面进入repo详情界面的监控数据.</p>
+<p>可以看到从10s到30s之间, 20s时间内发生了多次数据请求, 且22s到27s之间的请求数据量还很大.</p>
+<p>分析代码可以看到, 在请求repo详情的时候是打包了很多请求的:</p>
+<pre class="hljs java"><code class="java"><span class="hljs-meta">@Override</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> Observable&lt;RepoDetail&gt; <span class="hljs-title">getRepoDetail</span><span class="hljs-params">(String owner, String name)</span> </span>{
+    <span class="hljs-keyword">return</span> Observable.zip(mRepoService.get(owner, name),
+            mRepoService.contributors(owner, name),
+            mRepoService.listForks(owner, name, <span class="hljs-string">"newest"</span>),
+            mRepoService.readme(owner, name),
+            isStarred(owner, name),
+            <span class="hljs-keyword">new</span> Func5&lt;Repo, ArrayList&lt;User&gt;, ArrayList&lt;Repo&gt;, Content, Boolean, RepoDetail&gt;() {
+                <span class="hljs-meta">@Override</span>
+                <span class="hljs-function"><span class="hljs-keyword">public</span> RepoDetail <span class="hljs-title">call</span><span class="hljs-params">(Repo repo, ArrayList&lt;User&gt; users, ArrayList&lt;Repo&gt; forks, Content readme, Boolean isStarred)</span> </span>{
+                    RepoDetail detail = <span class="hljs-keyword">new</span> RepoDetail();
+
+                    repo.setStarred(isStarred);
+                    detail.setBaseRepo(repo);
+                    detail.setForks(forks);
+
+                    <span class="hljs-comment">// because the readme content is encode with Base64 by github.</span>
+                    readme.content = StringUtil.base64Decode(readme.content);
+                    detail.setReadme(readme);
+
+                    detail.setContributors(users);
+                    <span class="hljs-keyword">return</span> detail;
+                }
+            });
+}</code></pre>
+<p>这也验证了14s到20s间的四次数据请求, 另外由于repo详情界面会显示作者以及贡献者的图片, 而图片的数据量相对大, 故而23s到27s间有多次数据量很大的请求发生.</p>
+<blockquote><p>这个实际是有很多优化空间的, 我们稍后再说.</p></blockquote>
+<h3>2.2 网络代理工具</h3>
+<p>一般来说, 网络代理工具有两个作用:</p>
+<ol>
+<li>截获网络请求响应包, 分析网络请求</li>
+<li>设置代理网络, 移动App开发中一般用来做不同网络环境的测试, 例如Wifi/4G/3G/弱网等.</li>
+</ol>
+<p>代理工具很多, 诸如<a href="https://www.wireshark.org/" target="_blank">Wireshark</a>, <a href="http://www.telerik.com/fiddler" target="_blank">Fiddler</a>, <a href="https://www.charlesproxy.com/" target="_blank">Charles</a>等, 在此不一一细说了, 使用方法自行问谷歌度娘. :)</p>
+<h2>3, 哪些方面取优化网络连接</h2>
+<p>第一节说到了网络请求对App和用户的影响, 那么我们怎么从哪些方面去优化网络进而减少甚至消灭这些影响呢?</p>
+<p>简单来说, 两个方面:</p>
+<ul>
+<li>
+<p><strong>减少Radio活跃时间</strong></p>
+<ul>
+<li>也就是减少网络数据获取的频次.</li>
+<li>这就减少了radio的电量消耗, 控制电量使用.</li>
+</ul>
+</li>
+<li>
+<p><strong>减少获取数据包的大小</strong></p>
+<ul>
+<li>可以减少流量消耗</li>
+<li>也可以让每次请求更快, 在网络情况不好的情况下也有良好表现, 提升用户体验.</li>
+</ul>
+</li>
+</ul>
+<p><strong>那么, 具体应该从哪些方面着手呢?</strong></p>
+<h3>3.1 接口设计</h3>
+<h4>API设计</h4>
+<p>App与Server之间的API设计要考虑网络请求的频次, 资源的状态等. 以便App可以以较少的请求来完成业务需求和界面的展示.</p>
+<p>例如, 注册登录. 正常会有两个API, 注册和登录, 但是设计API时我们应该给注册接口包含一个隐式的登录. 来避免App在注册后还得请求一次登录接口(有可能失败, 从而导致业务流程失败).</p>
+<p>再例如, 上文提到的获取repo详情, 实际上请求了4个接口, 请求了repo的信息, forks列表, contributors列表, readme, 这是因为github提供的接口是尽量单一职责的. 然而在我们的实际开发中, 我们的Server除了提供这些单一职责的小接口外, 最好还能组合一个满足客户端业务需求的repo详情接口出来.</p>
+<h4>Gzip压缩</h4>
+<p>使用Gzip来压缩request和response, 减少传输数据量, 从而减少流量消耗.</p>
+<h4>考虑使用Protocol Buffer代替JSON</h4>
+<p>从前我们传输数据使用XML, 后来使用JSON代替了XML, 很大程度上也是为了可读性和减少数据量(当然还有映射成POJO的方便程度).</p>
+<p><a href="https://github.com/google/protobuf/" target="_blank">Protocol Buffer</a>是Google推出的一种数据交换格式. </p>
+<p>如果我们的接口每次传输的数据量很大的话, 可以考虑下protobuf, 会比JSON数据量小很多. </p>
+<p>当然相比来说, JSON也有其优势, 可读性更高.</p>
+<blockquote><p>本文以网络流量优化的角度推荐protobuf作为一个选择, 具体还需更具实际情况考虑.</p></blockquote>
+<h4>图片的Size</h4>
+<p>上面Network Monitor中看到的22s到27s之间的有多次请求, 且数据量还很大. 就是在获取图片资源.</p>
+<p>图片相对于接口请求来说, 数据量要大得多. 故而也是我们需要优化的一个点.</p>
+<p>我们可以在获取图片时告知服务器需要的图片的宽高, 以便服务器给出合适的图片, 避免浪费. </p>
+<p>我们现在很多公司的图片资源都是使用第三方的云存储服务的(七牛, 阿里云存储之类的).</p>
+<p>以七牛为例, 可以在请求图片的url中添加诸如质量, 格式, width, height等path来获取合适的图片资源:</p>
+<pre class="hljs dts"><code class="dts">imageView2/<span class="hljs-params">&lt;mode&gt;</span><span class="hljs-meta-keyword">/w/</span><span class="hljs-params">&lt;LongEdge&gt;</span>
+                 <span class="hljs-meta-keyword">/h/</span><span class="hljs-params">&lt;ShortEdge&gt;</span>
+                 <span class="hljs-meta-keyword">/format/</span><span class="hljs-params">&lt;Format&gt;</span>
+                 <span class="hljs-meta-keyword">/interlace/</span><span class="hljs-params">&lt;Interlace&gt;</span>
+                 <span class="hljs-meta-keyword">/q/</span><span class="hljs-params">&lt;Quality&gt;</span>
+                 <span class="hljs-meta-keyword">/ignore-error/</span><span class="hljs-params">&lt;ignoreError&gt;</span></code></pre>
+<blockquote><p>参考<a href="http://developer.qiniu.com/code/v6/api/kodo-api/image/imageview2.html" target="_blank">七牛官方文档</a>.</p></blockquote>
+<h3>3.2 网络缓存</h3>
+<p>适当的缓存, 既可以让我们的应用看起来更快, 也能避免一些不必要的流量消耗.</p>
+<p>关于Android App的网络缓存, 请参考<a href="http://www.jianshu.com/p/faa46bbe8a2e" target="_blank">MVP架构实现的Github客户端(4-加入网络缓存)</a>一文.</p>
+<h3>3.3 打包网络请求</h3>
+<p>当接口设计不能满足我们的业务需求时. 例如可能一个界面需要请求多个接口, 或是网络良好, 处于Wifi状态下时我们想获取更多的数据等.</p>
+<p>这时就可以打包一些网络请求, 例如请求列表的同时, 获取Header点击率较高的的item项的详情数据.</p>
+<blockquote><p>可以通过一些统计数据来帮助我们定位用户接下来的操作是高概率的, 提前获取这部分的数据.</p></blockquote>
+<h3>3.4 监听相关状态</h3>
+<p>通过监听设备的状态:</p>
+<ul>
+<li>休眠状态</li>
+<li>充电状态</li>
+<li>网络状态</li>
+</ul>
+<p>结合<a href="https://developer.android.com/reference/android/app/job/JobScheduler.html" target="_blank">JobScheduler</a>来根据实际情况做网络请求. 比方说Splash闪屏广告图片, 我们可以在连接到Wifi时下载缓存到本地; 新闻类的App可以在充电, Wifi状态下做离线缓存.</p>
+<h3>3.5 弱网测试&amp;优化</h3>
+<p>除了正常的网络优化, 我们还需考虑到弱网情况下, App的表现.</p>
+<h3>3.5.1 弱网测试</h3>
+<p>有几种方式来模拟弱网进行测试.</p>
+<h4>Android Emulator</h4>
+<p>创建和启动Android模拟器可以设置网络速度和延迟:</p>
+<p><strong>创建时</strong>:</p>
+<div class="image-package">
+<img src="./Android App优化之网络优化 - 简书_files/851999-0062476d94a4a87a.png" data-original-src="http://upload-images.jianshu.io/upload_images/851999-0062476d94a4a87a.png?imageMogr2/auto-orient/strip%7CimageView2/2" style="cursor: zoom-in;"><br><div class="image-caption">create emulator</div>
+</div>
+<p><strong>启动时</strong>, 使用emulator命令:</p>
+<pre class="hljs gams"><code class="gams"><span class="hljs-meta"><span class="hljs-meta-keyword">$emulator</span> -netdelay gprs -netspeed gsm -avd Nexus_5_API_22</span></code></pre>
+<p>具体参数参考<a href="https://developer.android.com/studio/run/emulator-commandline.html#netdelay" target="_blank">这里</a>和<a href="https://developer.android.com/studio/run/emulator-commandline.html#netspeed" target="_blank">这里</a>, 需要翻墙.</p>
+<h4>使用网络代理工具</h4>
+<p>以<a href="https://www.charlesproxy.com/" target="_blank">Charles</a>为例:<br>保持手机和PC处于同一个局域网, 在手机端wifi设置高级设置中设置代理方式为手动, 代理ip填写PC端ip地址, 端口号默认8888.<br></p><div class="image-package">
+<img src="./Android App优化之网络优化 - 简书_files/851999-e5542fd23c2e2350.png" data-original-src="http://upload-images.jianshu.io/upload_images/851999-e5542fd23c2e2350.png?imageMogr2/auto-orient/strip%7CimageView2/2" style="cursor: zoom-in;"><br><div class="image-caption">charles proxy</div>
+</div>
+<div class="image-package">
+<img src="./Android App优化之网络优化 - 简书_files/851999-cae8443f32c04b30.png" data-original-src="http://upload-images.jianshu.io/upload_images/851999-cae8443f32c04b30.png?imageMogr2/auto-orient/strip%7CimageView2/2" style="cursor: zoom-in;"><br><div class="image-caption">charles throttling</div>
+</div>
+<h4>其他模拟弱网方式</h4>
+<p>如果你恰好也是iOS的开发者, Apple提供了<a href="http://nshipster.cn/network-link-conditioner/" target="_blank">Network Link Conditioner</a>, 非常好用.</p>
+<p>可以模拟的网络情况与上述类似:</p>
+<div class="image-package">
+<img src="./Android App优化之网络优化 - 简书_files/851999-d4fdd5270af8537d.png" data-original-src="http://upload-images.jianshu.io/upload_images/851999-d4fdd5270af8537d.png?imageMogr2/auto-orient/strip%7CimageView2/2" style="cursor: zoom-in;"><br><div class="image-caption">ios_network</div>
+</div>
+<p>如果你使用Linux环境开发, 还可以试下facebook出的<a href="http://facebook.github.io/augmented-traffic-control/" target="_blank">ATC</a>.</p>
+<h3>3.5.2 弱网优化</h3>
+<p>利用上述工具模拟弱网, 在弱网情况下体验我们的App. 一般来说, 网络延迟在60ms内, 是OK的, 超过200ms就比较糟糕了. 我们需要做的是在比较糟糕的网络环境下还能给用户较好的体验.</p>
+<p>弱网优化, 本质上是在弱网的情况下能让用户流畅的使用我们的App. 我们要做的就是结合上述的优化项:</p>
+<ul>
+<li>压缩/减少数据传输量</li>
+<li>利用缓存减少网络传输</li>
+<li>针对弱网(移动网络), 不自动加载图片</li>
+<li>界面先反馈, 请求延迟提交<br>  例如, 用户点赞操作, 可以直接给出界面的点赞成功的反馈, 使用<a href="https://developer.android.com/reference/android/app/job/JobScheduler.html" target="_blank"><strong>JobScheduler</strong></a>在网络情况较好的时候打包请求.</li>
+</ul>
+<h2>结语</h2>
+<p>网络优化, 是App优化中相当重要的一项优化. 除了客户端, 接口的优化外, 很多一部分优化还依赖于服务器端, 包括服务器端的代码开发, 部署方式等. 跟你的服务器开发/运维工程师一起聊聊这个话题吧:)</p>
+<p>理论上这个应该是<a href="http://www.jianshu.com/p/f7006ab64da7" target="_blank">App优化系列</a>的最后一篇, 惯例得做些总结啊. 但是如前面<a href="http://www.jianshu.com/p/48475df838d9" target="_blank">内存优化</a>所言, 内存优化的相关东西将单拎出来, 但是还是会作为本系列的延续. 到时再总结吧.</p>
+<hr>
+<blockquote><p>转载请注明出处, 欢迎大家分享到朋友圈, 微博~</p></blockquote>
+
+        </div>
+        <!--  -->
+
+        <div class="show-foot">
+          <a class="notebook" href="http://www.jianshu.com/nb/2866991">
+            <i class="iconfont ic-search-notebook"></i> <span>Android经验谈</span>
+</a>          <div class="copyright" data-toggle="tooltip" data-html="true" data-original-title="转载请联系作者获得授权，并标注“简书作者”。">
+            © 著作权归作者所有
+          </div>
+          <div class="modal-wrap" data-report-note="">
+            <a id="report-modal">举报文章</a>
+          </div>
+        </div>
+    </div>
+
+    <!-- 文章底部作者信息 -->
+      <div class="follow-detail">
+        <div class="info">
+          <a class="avatar" href="http://www.jianshu.com/u/bc1dacc65fae">
+            <img src="./Android App优化之网络优化 - 简书_files/e2599a8c087e.png" alt="144">
+</a>          <a class="btn btn-success follow"><i class="iconfont ic-follow"></i><span>关注</span></a>
+          <a class="title" href="http://www.jianshu.com/u/bc1dacc65fae">anly_jun</a>
+        <p>写了 68811 字，被 1542 人关注，获得了 1858 个喜欢</p></div>
+          <div class="signature">看看书, 写写字; 捣鼓捣鼓小技术.
+个人博客: http://blog.lmj.wiki</div>
+      </div>
+
+      <div class="support-author"><p>如果觉得我的文章对您有用，请随意赞赏。您的支持将鼓励我继续创作！</p> <div class="btn btn-pay">赞赏支持</div> <!----> <!----> <!----></div>
+
+    <div class="meta-bottom">
+      <div class="like"><div class="btn like-group"><div class="btn-like"><a href="http://www.jianshu.com/sign_in"><i class="iconfont ic-like"></i>喜欢</a></div> <div class="modal-wrap"><a>77</a></div></div> <!----></div>
+      <div class="share-group">
+        <a class="share-circle" data-action="weixin-share" data-toggle="tooltip" data-original-title="分享到微信">
+          <i class="iconfont ic-wechat"></i>
+        </a>
+        <a class="share-circle" data-toggle="tooltip" href="javascript:void((function(s,d,e,r,l,p,t,z,c){var%20f=&#39;http://v.t.sina.com.cn/share/share.php?appkey=1881139527&#39;,u=z||d.location,p=[&#39;&amp;url=&#39;,e(u),&#39;&amp;title=&#39;,e(t||d.title),&#39;&amp;source=&#39;,e(r),&#39;&amp;sourceUrl=&#39;,e(l),&#39;&amp;content=&#39;,c||&#39;gb2312&#39;,&#39;&amp;pic=&#39;,e(p||&#39;&#39;)].join(&#39;&#39;);function%20a(){if(!window.open([f,p].join(&#39;&#39;),&#39;mb&#39;,[&#39;toolbar=0,status=0,resizable=1,width=440,height=430,left=&#39;,(s.width-440)/2,&#39;,top=&#39;,(s.height-430)/2].join(&#39;&#39;)))u.href=[f,p].join(&#39;&#39;);};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();})(screen,document,encodeURIComponent,&#39;&#39;,&#39;&#39;,&#39;http://cwb.assets.jianshu.io/notes/images/6229979/weibo/image_fef4dd5fab95.jpg&#39;, &#39;推荐 @anly-jun 的文章《Android App优化之网络优化》（ 分享自 @简书 ）&#39;,&#39;http://www.jianshu.com/p/d4c2c62ffc35?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=weibo&#39;,&#39;页面编码gb2312|utf-8默认gb2312&#39;));" data-original-title="分享到微博">
+          <i class="iconfont ic-weibo"></i>
+        </a>
+          <a class="share-circle" data-toggle="tooltip" href="http://cwb.assets.jianshu.io/notes/images/6229979/weibo/image_fef4dd5fab95.jpg" target="_blank" data-original-title="下载长微博图片">
+            <i class="iconfont ic-picture"></i>
+          </a>
+        <a class="share-circle more-share" tabindex="0" data-toggle="popover" data-placement="top" data-html="true" data-trigger="focus" href="javascript:void(0);" data-content="
+          &lt;ul class=&quot;share-list&quot;&gt;
+            &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=&#39;+e(&#39;http://www.jianshu.com/p/d4c2c62ffc35?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=qzone&#39;)+&#39;&amp;title=&#39;+e(&#39;推荐 anly_jun 的文章《Android App优化之网络优化》&#39;),x=function(){if(!window.open(r,&#39;qzone&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=600,height=600&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-zone&quot;&gt;&lt;/i&gt;&lt;span&gt;分享到QQ空间&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;https://twitter.com/share?url=&#39;+e(&#39;http://www.jianshu.com/p/d4c2c62ffc35?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=twitter&#39;)+&#39;&amp;text=&#39;+e(&#39;推荐 anly_jun 的文章《Android App优化之网络优化》（ 分享自 @jianshucom ）&#39;)+&#39;&amp;related=&#39;+e(&#39;jianshucom&#39;),x=function(){if(!window.open(r,&#39;twitter&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=600,height=600&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-twitter&quot;&gt;&lt;/i&gt;&lt;span&gt;分享到Twitter&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;https://www.facebook.com/dialog/share?app_id=483126645039390&amp;display=popup&amp;href=http://www.jianshu.com/p/d4c2c62ffc35?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=facebook&#39;,x=function(){if(!window.open(r,&#39;facebook&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-facebook&quot;&gt;&lt;/i&gt;&lt;span&gt;分享到Facebook&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;https://plus.google.com/share?url=&#39;+e(&#39;http://www.jianshu.com/p/d4c2c62ffc35?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=google_plus&#39;),x=function(){if(!window.open(r,&#39;google_plus&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-google&quot;&gt;&lt;/i&gt;&lt;span&gt;分享到Google+&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,s1=window.getSelection,s2=d.getSelection,s3=d.selection,s=s1?s1():s2?s2():s3?s3.createRange().text:&#39;&#39;,r=&#39;http://www.douban.com/recommend/?url=&#39;+e(&#39;http://www.jianshu.com/p/d4c2c62ffc35?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=douban&#39;)+&#39;&amp;title=&#39;+e(&#39;Android App优化之网络优化&#39;)+&#39;&amp;sel=&#39;+e(s)+&#39;&amp;v=1&#39;,x=function(){if(!window.open(r,&#39;douban&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330&#39;))location.href=r+&#39;&amp;r=1&#39;};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})()&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-douban&quot;&gt;&lt;/i&gt;&lt;span&gt;分享到豆瓣&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+          &lt;/ul&gt;
+        " data-original-title="" title="">更多分享</a>
+      </div>
+    </div>
+    <div><div id="comment-list" class="comment-list"><div><form class="new-comment"><a class="avatar"><img src="./Android App优化之网络优化 - 简书_files/avatar_default-78d4d1f68984cd6d4379508dd94b4210.png"></a> <div class="sign-container"><a href="http://www.jianshu.com/sign_in" class="btn btn-sign">登录</a> <span>后发表评论</span></div></form></div> <div id="normal-comment-list" class="normal-comment-list"><div><div><div class="top"><span>7条评论</span> <a class="author-only">只看作者</a> <a class="close-btn" style="display: none;">关闭评论</a> <div class="pull-right"><a class="active">按喜欢排序</a><a class="">按时间正序</a><a class="">按时间倒序</a></div></div></div> <!----> <!----> <div class="comments-placeholder" style="display: none;"><div class="author"><div class="avatar"></div> <div class="info"><div class="name"></div> <div class="meta"></div></div></div> <div class="text"></div> <div class="text animation-delay"></div> <div class="tool-group"><i class="iconfont ic-zan-active"></i><div class="zan"></div> <i class="iconfont ic-list-comments"></i><div class="zan"></div></div></div> <div id="comment-10316573" class="comment"><div><div class="author"><a href="http://www.jianshu.com/u/b117295bb8a7" target="_blank" class="avatar"><img src="./Android App优化之网络优化 - 简书_files/708b6f81-4286-4808-9516-7bc5eaad3c16"></a> <div class="info"><a href="http://www.jianshu.com/u/b117295bb8a7" target="_blank" class="name">natural_story</a> <!----> <div class="meta"><span>6楼 · 2017.04.24 22:51</span></div></div></div> <div class="comment-wrap"><p>一个字 太厉害</p> <div class="tool-group"><a><i class="iconfont ic-zan"></i> <span>1人赞</span></a> <a><i class="iconfont ic-comment"></i> <span>回复</span></a> <!----> <!----></div></div></div> <div class="sub-comment-list hide"><!----> <!----></div></div><div id="comment-4779498" class="comment"><div><div class="author"><a href="http://www.jianshu.com/u/96b6ca892def" target="_blank" class="avatar"><img src="./Android App优化之网络优化 - 简书_files/d0f6d27bab6c.jpg"></a> <div class="info"><a href="http://www.jianshu.com/u/96b6ca892def" target="_blank" class="name">巴图鲁</a> <!----> <div class="meta"><span>2楼 · 2016.10.12 19:17</span></div></div></div> <div class="comment-wrap"><p>膜拜</p> <div class="tool-group"><a><i class="iconfont ic-zan"></i> <span>赞</span></a> <a><i class="iconfont ic-comment"></i> <span>回复</span></a> <!----> <!----></div></div></div> <div class="sub-comment-list"><div id="comment-5008283" class="sub-comment"><p><a href="http://www.jianshu.com/u/bc1dacc65fae" target="_blank">anly_jun</a>：
+          <span><a href="http://www.jianshu.com/users/96b6ca892def" class="maleskine-author" target="_blank" data-user-slug="96b6ca892def">@巴图鲁</a> 谬赞了~</span></p> <div class="sub-tool-group"><span>2016.10.21 21:28</span> <a><i class="iconfont ic-comment"></i> <span>回复</span></a> <!----> <!----></div></div> <div class="sub-comment more-comment"><a class="add-comment-btn"><i class="iconfont ic-subcomment"></i> <span>添加新评论</span></a> <!----> <!----> <!----></div> <!----></div></div><div id="comment-4985231" class="comment"><div><div class="author"><a href="http://www.jianshu.com/u/c723d6253864" target="_blank" class="avatar"><img src="./Android App优化之网络优化 - 简书_files/14-0651acff782e7a18653d7530d6b27661.jpg"></a> <div class="info"><a href="http://www.jianshu.com/u/c723d6253864" target="_blank" class="name">砸破</a> <!----> <div class="meta"><span>3楼 · 2016.10.20 21:04</span></div></div></div> <div class="comment-wrap"><p>请问一下，怎么判断当前是否是弱联网状态呢？</p> <div class="tool-group"><a><i class="iconfont ic-zan"></i> <span>赞</span></a> <a><i class="iconfont ic-comment"></i> <span>回复</span></a> <!----> <!----></div></div></div> <div class="sub-comment-list"><div id="comment-5007995" class="sub-comment"><p><a href="http://www.jianshu.com/u/bc1dacc65fae" target="_blank">anly_jun</a>：
+          <span> <a href="http://www.jianshu.com/users/c723d6253864" class="maleskine-author" target="_blank" data-user-slug="c723d6253864">@砸破</a> 无法直接判断弱网，如果有此需求，可以通过判断网络类型，2g，3g，4g或是wifi～ 供参考，毕竟wifi也不能保证网络就好.</span></p> <div class="sub-tool-group"><span>2016.10.21 21:18</span> <a><i class="iconfont ic-comment"></i> <span>回复</span></a> <!----> <!----></div></div> <div class="sub-comment more-comment"><a class="add-comment-btn"><i class="iconfont ic-subcomment"></i> <span>添加新评论</span></a> <!----> <!----> <!----></div> <!----></div></div><div id="comment-5604444" class="comment"><div><div class="author"><a href="http://www.jianshu.com/u/ce54e5c21032" target="_blank" class="avatar"><img src="./Android App优化之网络优化 - 简书_files/2da3252f-deb6-471a-bb04-8a9c3b2f6fbb.jpg"></a> <div class="info"><a href="http://www.jianshu.com/u/ce54e5c21032" target="_blank" class="name">LooperJing</a> <!----> <div class="meta"><span>4楼 · 2016.11.13 10:50</span></div></div></div> <div class="comment-wrap"><p>写的好！</p> <div class="tool-group"><a><i class="iconfont ic-zan"></i> <span>赞</span></a> <a><i class="iconfont ic-comment"></i> <span>回复</span></a> <!----> <!----></div></div></div> <div class="sub-comment-list hide"><!----> <!----></div></div><div id="comment-7303131" class="comment"><div><div class="author"><a href="http://www.jianshu.com/u/527c780818be" target="_blank" class="avatar"><img src="./Android App优化之网络优化 - 简书_files/5-33d2da32c552b8be9a0548c7a4576607.jpg"></a> <div class="info"><a href="http://www.jianshu.com/u/527c780818be" target="_blank" class="name">andyhaha007</a> <!----> <div class="meta"><span>5楼 · 2017.01.18 16:30</span></div></div></div> <div class="comment-wrap"><p>不错</p> <div class="tool-group"><a><i class="iconfont ic-zan"></i> <span>赞</span></a> <a><i class="iconfont ic-comment"></i> <span>回复</span></a> <!----> <!----></div></div></div> <div class="sub-comment-list hide"><!----> <!----></div></div></div></div> <!----> <!----></div></div>
+  </div>
+
+  <div class="side-tool"><ul><li data-placement="left" data-toggle="tooltip" data-container="body" data-original-title="回到顶部"><a class="function-button"><i class="iconfont ic-backtop"></i></a></li> <!----> <!----> <li data-placement="left" data-toggle="tooltip" data-container="body" data-original-title="分享文章"><a tabindex="0" role="button" data-toggle="popover" data-placement="left" data-html="true" data-trigger="focus" href="javascript:void(0);" data-content="&lt;ul class=&#39;share-list&#39;&gt;
+                &lt;li&gt;&lt;a class=&quot;weixin-share&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-weixin&quot;&gt;&lt;/i&gt;&lt;span&gt;分享到微信&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;javascript:void((function(s,d,e,r,l,p,t,z,c){var%20f=&#39;http://v.t.sina.com.cn/share/share.php?appkey=1881139527&#39;,u=z||d.location,p=[&#39;&amp;url=&#39;,e(u),&#39;&amp;title=&#39;,e(t||d.title),&#39;&amp;source=&#39;,e(r),&#39;&amp;sourceUrl=&#39;,e(l),&#39;&amp;content=&#39;,c||&#39;gb2312&#39;,&#39;&amp;pic=&#39;,e(p||&#39;&#39;)].join(&#39;&#39;);function%20a(){if(!window.open([f,p].join(&#39;&#39;),&#39;mb&#39;,[&#39;toolbar=0,status=0,resizable=1,width=440,height=430,left=&#39;,(s.width-440)/2,&#39;,top=&#39;,(s.height-430)/2].join(&#39;&#39;)))u.href=[f,p].join(&#39;&#39;);};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();})(screen,document,encodeURIComponent,&#39;&#39;,&#39;&#39;,&#39;http://cwb.assets.jianshu.io/notes/images/6229979/weibo/image_fef4dd5fab95.jpg&#39;, &#39;推荐 @anly-jun 的文章《Android App优化之网络优化》（ 分享自 @简书 ）&#39;,&#39;http://www.jianshu.com/p/d4c2c62ffc35?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=weibo&#39;,&#39;页面编码gb2312|utf-8默认gb2312&#39;));&quot;&gt;&lt;i class=&#39;social-icon-sprite social-icon-weibo&#39;&gt;&lt;/i&gt;&lt;span&gt;分享到微博&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;http://cwb.assets.jianshu.io/notes/images/6229979/weibo/image_fef4dd5fab95.jpg&quot; target=&quot;_blank&quot;&gt;&lt;i class=&quot;social-icon-sprite social-icon-picture&quot;&gt;&lt;/i&gt;&lt;span&gt;下载长微博图片&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=&#39;+e(&#39;http://www.jianshu.com/p/d4c2c62ffc35?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=qzone&#39;)+&#39;&amp;title=&#39;+e(&#39;推荐 anly_jun 的文章《Android App优化之网络优化》&#39;),x=function(){if(!window.open(r,&#39;qzone&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=600,height=600&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&#39;social-icon-sprite social-icon-zone&#39;&gt;&lt;/i&gt;&lt;span&gt;分享到QQ空间&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;https://twitter.com/share?url=&#39;+e(&#39;http://www.jianshu.com/p/d4c2c62ffc35?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=twitter&#39;)+&#39;&amp;text=&#39;+e(&#39;推荐 anly_jun 的文章《Android App优化之网络优化》（ 分享自 @jianshucom ）&#39;)+&#39;&amp;related=&#39;+e(&#39;jianshucom&#39;),x=function(){if(!window.open(r,&#39;twitter&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=600,height=600&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&#39;social-icon-sprite social-icon-twitter&#39;&gt;&lt;/i&gt;&lt;span&gt;分享到Twitter&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;https://www.facebook.com/dialog/share?app_id=483126645039390&amp;display=popup&amp;href=http://www.jianshu.com/p/d4c2c62ffc35?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=facebook&#39;,x=function(){if(!window.open(r,&#39;facebook&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&#39;social-icon-sprite social-icon-facebook&#39;&gt;&lt;/i&gt;&lt;span&gt;分享到Facebook&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,r=&#39;https://plus.google.com/share?url=&#39;+e(&#39;http://www.jianshu.com/p/d4c2c62ffc35?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=google_plus&#39;),x=function(){if(!window.open(r,&#39;google_plus&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330&#39;))location.href=r};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})();&quot;&gt;&lt;i class=&#39;social-icon-sprite social-icon-google&#39;&gt;&lt;/i&gt;&lt;span&gt;分享到Google+&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;javascript:void(function(){var d=document,e=encodeURIComponent,s1=window.getSelection,s2=d.getSelection,s3=d.selection,s=s1?s1():s2?s2():s3?s3.createRange().text:&#39;&#39;,r=&#39;http://www.douban.com/recommend/?url=&#39;+e(&#39;http://www.jianshu.com/p/d4c2c62ffc35?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=reader_share&amp;utm_source=douban&#39;)+&#39;&amp;title=&#39;+e(&#39;Android App优化之网络优化&#39;)+&#39;&amp;sel=&#39;+e(s)+&#39;&amp;v=1&#39;,x=function(){if(!window.open(r,&#39;douban&#39;,&#39;toolbar=0,resizable=1,scrollbars=yes,status=1,width=450,height=330&#39;))location.href=r+&#39;&amp;r=1&#39;};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})()&quot;&gt;&lt;i class=&#39;social-icon-sprite social-icon-douban&#39;&gt;&lt;/i&gt;&lt;span&gt;分享到豆瓣&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+              &lt;/ul&gt;" data-original-title="" title="" class="function-button"><i class="iconfont ic-share"></i></a> <!----></li></ul></div>
+</div>
+<div class="note-bottom">
+  <div><div class="main"><div class="title">被以下专题收入，发现更多相似内容</div> <!----> <div class="include-collection"><!----> <a href="http://www.jianshu.com/c/a073adae7153?utm_source=desktop&amp;utm_medium=notes-included-collection" target="_blank" class="item"><img src="./Android App优化之网络优化 - 简书_files/等等.jpg"><div class="name">Android...</div></a><a href="http://www.jianshu.com/c/3fde3b545a35?utm_source=desktop&amp;utm_medium=notes-included-collection" target="_blank" class="item"><img src="./Android App优化之网络优化 - 简书_files/android.graphics.Bitmap_3d178cba.jpeg"><div class="name">Android知识</div></a><a href="http://www.jianshu.com/c/d1591c322c89?utm_source=desktop&amp;utm_medium=notes-included-collection" target="_blank" class="item"><img src="./Android App优化之网络优化 - 简书_files/android.graphics.Bitmap_15f127c2.jpeg"><div class="name">Android开发</div></a><a href="http://www.jianshu.com/c/bDHhpK?utm_source=desktop&amp;utm_medium=notes-included-collection" target="_blank" class="item"><img src="./Android App优化之网络优化 - 简书_files/首页投稿.png"><div class="name">首页投稿</div></a><a href="http://www.jianshu.com/c/2ac262be8a53?utm_source=desktop&amp;utm_medium=notes-included-collection" target="_blank" class="item"><img src="./Android App优化之网络优化 - 简书_files/1454540897.jpg"><div class="name">iOS入的那些坑</div></a><a href="http://www.jianshu.com/c/b1fa46ec3b08?utm_source=desktop&amp;utm_medium=notes-included-collection" target="_blank" class="item"><img src="./Android App优化之网络优化 - 简书_files/android.graphics.Bitmap_20c9506b.jpeg"><div class="name">Android...</div></a><a href="http://www.jianshu.com/c/3dc8fb20c41e?utm_source=desktop&amp;utm_medium=notes-included-collection" target="_blank" class="item"><img src="./Android App优化之网络优化 - 简书_files/android.graphics.Bitmap_e8b97e.jpeg"><div class="name">studio</div></a> <a class="show-more">
+        展开更多
+        <i class="iconfont ic-show"></i></a></div></div> <!----> <!----></div>
+  <div class="recommend-note"><div class="meta"><div class="title">更多精彩内容</div> <div class="roll"></div></div> <div class="list"><a target="_blank" href="http://www.jianshu.com/p/1125f4be4cc3?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=pc_all_hots&amp;utm_source=recommendation" class="note"><div class="mask" style="background-image: url(&quot;//upload-images.jianshu.io/upload_images/851999-f480d4bd95083409.png?imageMogr2/auto-orient/strip|imageView2/1/w/400/h/320&quot;);"></div> <p class="title">关于App重构的几个方面</p> <div class="author"><div class="avatar" style="background-image: url(&quot;http://upload.jianshu.io/users/upload_avatars/851999/e2599a8c087e.png&quot;);"></div> <span class="name">anly_jun</span></div></a><a target="_blank" href="http://www.jianshu.com/p/d4c2c62ffc35?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=pc_all_hots&amp;utm_source=recommendation" class="note"><div class="mask" style="background-image: url(&quot;//upload-images.jianshu.io/upload_images/851999-15e7840ec312268e.png?imageMogr2/auto-orient/strip|imageView2/1/w/400/h/320&quot;);"></div> <p class="title">Android App优化之网络优化</p> <div class="author"><div class="avatar" style="background-image: url(&quot;http://upload.jianshu.io/users/upload_avatars/851999/e2599a8c087e.png&quot;);"></div> <span class="name">anly_jun</span></div></a><a target="_blank" href="http://www.jianshu.com/p/1b61d1dcd1ef?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=pc_all_hots&amp;utm_source=recommendation" class="note"><div class="mask" style="background-image: url(&quot;//upload-images.jianshu.io/upload_images/1669869-0e9e0efc4f4f3991.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/400/h/320&quot;);"></div> <p class="title">你努力合群的样子好孤独</p> <div class="author"><div class="avatar" style="background-image: url(&quot;http://upload.jianshu.io/users/upload_avatars/1669869/21cc1916b6a4.jpg&quot;);"></div> <span class="name">顾一宸</span></div></a></div></div>
+</div>
+
+    <script src="./Android App优化之网络优化 - 简书_files/push.js"></script><script src="./Android App优化之网络优化 - 简书_files/hm.js"></script><script async="" src="./Android App优化之网络优化 - 简书_files/analytics.js"></script><script type="application/json" data-name="page-data">{"user_signed_in":false,"locale":"zh-CN","os":"mac","read_mode":"day","read_font":"font2","note_show":{"is_author":false,"is_following_author":false,"is_liked_note":false,"uuid":"fb2b638f-789d-49a6-b8ee-17e5c10a3cab"},"note":{"id":6229979,"slug":"d4c2c62ffc35","user_id":851999,"notebook_id":2866991,"commentable":true,"likes_count":77,"views_count":6576,"public_wordage":2613,"comments_count":7,"author":{"total_wordage":68811,"followers_count":1542,"total_likes_count":1858}}}</script>
+    
+    <script src="./Android App优化之网络优化 - 简书_files/babel-polyfill-2ed143970f255bea51ea.js"></script>
+    <script src="./Android App优化之网络优化 - 简书_files/web-base-e8a43ba5f34b145002ba.js"></script>
+<script src="./Android App优化之网络优化 - 简书_files/web-c45aa922693fce1968f9.js"></script>
+    
+    <script src="./Android App优化之网络优化 - 简书_files/entry-baf4ba9b49cd181058e4.js"></script>
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-35169517-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?0c0e9d9b1e7d617b3e6842e85b9fb068";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script>
+  (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      }
+      else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+  
+
+<!----><!----></body></html>

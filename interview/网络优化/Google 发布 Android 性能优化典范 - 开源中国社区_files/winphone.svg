@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="50px" height="50px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 41.2 (35397) - http://www.bohemiancoding.com/sketch -->
+    <title>winphone</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard" transform="translate(-1069.000000, -269.000000)" fill="#0078D7">
+            <g id="winphone" transform="translate(1069.000000, 269.000000)">
+                <g id="Group">
+                    <g id="Page-1">
+                        <g id="Group">
+                            <polygon id="Shape" points="22.1428571 24.6774194 49.8617512 24.6774194 49.8617512 0.184331797 22.1428571 4.05529954"></polygon>
+                            <polygon id="Shape" points="21.3133641 24.6774194 21.3133641 4.17050691 0.0921658986 7.14285714 0.0921658986 24.6774194"></polygon>
+                            <polygon id="Shape" points="21.3133641 25.5069124 0.0921658986 25.5069124 0.0921658986 43.0184332 21.3133641 45.9677419"></polygon>
+                            <polygon id="Shape" points="22.1428571 25.5069124 22.1428571 46.0829493 49.8617512 49.9539171 49.8617512 25.5069124"></polygon>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
