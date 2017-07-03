@@ -39,3 +39,5 @@ captures/
 *.jks
 
 interview/.DS_Store
+
+.DS_Store
