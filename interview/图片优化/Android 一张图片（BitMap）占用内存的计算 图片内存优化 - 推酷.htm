@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<!-- saved from url=(0038)http://www.tuicool.com/articles/JBVVVb -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta content="authenticity_token" name="csrf-param">
+<meta content="w7vgSVzncgcLrH8n+b6QspgvffCiFFb7zD2vve1WG2E=" name="csrf-token">
+    <title>
+            Android 一张图片（BitMap）占用内存的计算 图片内存优化 - 推酷
+   </title>
+    <meta name="description" content="Android 一张图片（BitMap）占用内存的计算 图片内存优化">
+  <link rel="shortcut icon" href="http://static0.tuicool.com/favicon.ico" type="image/x-icon">
+  <link href="http://static0.tuicool.com/images/icon114.png" rel="Bookmark">
+  <link rel="apple-touch-icon" sizes="57x57" href="http://static1.tuicool.com/images/icon57.png"> 
+  <link rel="apple-touch-icon" sizes="72x72" href="http://static2.tuicool.com/images/icon72.png">  
+  <link rel="apple-touch-icon" sizes="114x114" href="http://static0.tuicool.com/images/icon114.png">    
+  <link rel="apple-touch-icon" sizes="144x144" href="http://static1.tuicool.com/images/icon144.png">
+  <link href="./Android 一张图片（BitMap）占用内存的计算 图片内存优化 - 推酷_files/pub.css" rel="stylesheet">
+  <link href="./Android 一张图片（BitMap）占用内存的计算 图片内存优化 - 推酷_files/application-e90ef7ce56579081ef4f956c640f005f.css" media="screen" rel="stylesheet" type="text/css">
+  <link href="./Android 一张图片（BitMap）占用内存的计算 图片内存优化 - 推酷_files/font-awesome.min.css" rel="stylesheet">
+  <script type="text/javascript" src="./Android 一张图片（BitMap）占用内存的计算 图片内存优化 - 推酷_files/pub.js"></script>
+  <script src="./Android 一张图片（BitMap）占用内存的计算 图片内存优化 - 推酷_files/application-f8dd22e38da72b470d036c6151afa4cc.js" type="text/javascript"></script>
+  
+      <style type="text/css">
+      .btn-large {
+        padding: 0;
+      }
+      .load-fail {
+        display: none;
+      }
+    </style>
+
+<style type="text/css">
+:root #header + #content > #left > #rlblock_left,
+:root .adsbygoogle
+{ display: none !important; }
+:root *[alvy8l4][hidden] { display: none !important; }</style></head>
+<body class="  pace-done"><div class="pace  pace-inactive"><div class="pace-progress" data-progress-text="100%" data-progress="99" style="transform: translate3d(100%, 0px, 0px);">
+  <div class="pace-progress-inner"></div>
+</div>
+<div class="pace-activity"></div></div>
+  
+  <div id="header" class="navbar-fixed-top">
+    <div class="container">
+      <div class="navbar">
+        <div class="navbar-inner">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> 
+            <span class="icon-bar"></span> 
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span> 
+          </a>
+          <a href="http://www.tuicool.com/" class="brand">推酷</a>        
+        <nav class="nav-collapse collapse">
+            <ul class="nav navbar primary-nav">                            
+              <li class="active">
+                <a href="http://www.tuicool.com/ah">
+                  文章
+                </a>
+              </li>              
+              <li class="">
+                <a href="http://www.tuicool.com/sites/hot">
+                  站点
+                </a>
+              </li>
+              <li class="">
+                <a href="http://www.tuicool.com/topics">
+                  主题
+                </a>
+              </li>
+              <li class="">
+                <a href="http://huodong.tuicool.com/">
+                  活动
+                </a>
+              </li>
+              <li class="">
+                <a href="http://www.tuicool.com/mobile">
+                  APP
+                    <sup style="font-size:0.8em;color: #16A085;">荐</sup>
+                </a>
+              </li>
+              <li class="dropdown  ">
+                <a href="http://www.tuicool.com/articles/JBVVVb#" class="dropdown-toggle" data-toggle="dropdown">周刊 <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="http://www.tuicool.com/mags">编程狂人</a></li>
+                  <li><a href="http://www.tuicool.com/mags/design">设计匠艺</a></li> 
+                  <li><a href="http://www.tuicool.com/mags/startup">创业周刊</a></li> 
+                  <li><a href="http://www.tuicool.com/mags/tech">科技周刊</a></li>      
+                  <li><a href="http://www.tuicool.com/articles/weekly">一周拾遗</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="http://www.tuicool.com/articles/JBVVVb#" class="dropdown-toggle" data-toggle="dropdown">更多 <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="http://course.tuicool.com/">
+                    公开课
+                  </a>
+                  </li>
+                  <li><a href="http://www.tuicool.com/daily_news">今日酷闻</a></li>
+                  <li><a href="http://www.tuicool.com/bbs/go/issues">意见反馈</a></li>
+                </ul>
+              </li>
+              </ul>
+            <form class="navbar-search pull-left" action="http://www.tuicool.com/search">
+              <input type="text" class="search-query span2" name="kw" placeholder="搜索">
+            </form>
+            <ul class="nav pull-right">
+                <li><a href="http://www.tuicool.com/login">登录</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+  </div>   
+</div>
+  <div id="flash_container" class="noPrint">    
+  </div>
+  
+  <div class="container-fluid">  
+      
+<div class="row-fluid article_row_fluid">
+    <div class="span8 contant article_detail_bg">
+        <h1>Android 一张图片（BitMap）占用内存的计算 图片内存优化</h1>
+        <div class="article_meta">
+            <div style="margin-bottom: 5px;">
+            <span class="timestamp">时间&nbsp;2014-09-25 11:11:02
+            </span>
+            <span class="from">
+                <i class="icon-globe"></i>
+                    <a class="cut cut28 from" href="http://www.tuicool.com/sites/ueAjumq" target="_blank">我是程序猿，我为自己代言
+                    </a>
+            </span>
+            </div>
+            <div class="source">
+                <i style="float:left;">原文</i>&nbsp; 
+                <a class="cut cut70" href="http://blog.csdn.net/caoyouxing/article/details/39547893?utm_source=tuicool&amp;utm_medium=referral" style="display:inline-block;">http://blog.csdn.net/caoyouxing/article/details/39547893</a>
+            </div>
+            <div>
+                <span>主题</span>
+                <a href="http://www.tuicool.com/topics/11140065" target="_blank">
+                    <span class="new-label">Bitmap</span>
+                </a>
+                <a href="http://www.tuicool.com/topics/11080010" target="_blank">
+                    <span class="new-label">安卓开发</span>
+                </a>
+            </div>
+        </div>
+        <div class="article_body" id="nei">
+            <div>
+  <p>
+    <span>
+      <strong>
+        <span>在Android开发中，我现在发现很多人还不会对图片占用内存进行很好的计算。</span>
+      </strong>
+    </span>
+  </p>
+  <p>
+    <span>
+      <strong>
+        <span>因此撰写该博文来做介绍，期望达到抛砖引玉的作用。</span>
+      </strong>
+    </span>
+  </p>
+  <div>
+    <p>
+      <span>Android中一张图片（BitMap）占用的内存主要和以下几个因数有关：图片长度，图片宽度，单位像素占用的字节数。</span>
+    </p>
+    <p>
+      <span>
+        <span>一张图片（BitMap）占用的</span>
+        <span>
+          <span>内存</span>
+        </span>
+        <span>=</span>
+        <span>
+          <span>图片长度</span>
+          <span>*</span>
+          <span>图片宽度</span>
+          <span>*</span>
+          <span>单位</span>
+        </span>
+        <span>
+          <span>像素占用的字节数</span>
+        </span>
+      </span>
+    </p>
+    <p>
+      <span>
+        <span>
+          <span>注</span>
+          <span>：</span>
+        </span>
+        <span>图片长度和</span>
+        <span>图片宽度的单位是像素。</span>
+      </span>
+    </p>
+    <p>
+      <span>
+        <span>图片（BitMap）占用的内存应该和</span>
+        屏幕密度(Density)无关，虽然我暂时还拿不出直接证据。      </span>
+    </p>
+    <p>
+      <span>
+        <span>创建一个BitMap时，其单位像素占用的字节数由其参数</span>
+        <a target="_blank" href="http://developer.android.com/reference/android/graphics/BitmapFactory.Options.html#inScaled" rel="nofollow,noindex">BitmapFactory.Options</a>
+        <span>的</span>
+        <span>inPreferredConfig</span>
+        <span>变量决定。</span>
+      </span>
+    </p>
+    <p>
+      <span>
+        <span>inPreferredConfig为</span>
+        <a target="_blank" href="http://developer.android.com/reference/android/graphics/Bitmap.Config.html" rel="nofollow,noindex">Bitmap.Config</a>
+        <span>类型，</span>
+        <a target="_blank" href="http://developer.android.com/reference/android/graphics/Bitmap.Config.html" rel="nofollow,noindex">Bitmap.Config</a>
+        <span>类</span>
+        <span>是个枚举类型，它可以为以下值</span>
+      </span>
+    </p>
+
+      <table class="table table-bordered">
+        <tbody>
+          <tr>
+            <th colspan="12">Enum Values</th>
+          </tr>
+          <tr>
+            <td>
+              <a target="_blank" href="http://developer.android.com/reference/android/graphics/Bitmap.Config.html" rel="nofollow,noindex">Bitmap.Config</a>
+            </td>
+            <td>ALPHA_8</td>
+            <td>
+              Each pixel is stored as a single translucency (alpha) channel.              <br>
+              This is very useful to efficiently store masks for instance. No color information is stored.              <br>
+              With this configuration, each pixel requires 1 byte of memory.              <br>
+              此时图片只有alpha值，没有RGB值，              <br>
+              一个像素占用一个字节            </td>
+          </tr>
+          <tr>
+            <td>
+              <a target="_blank" href="http://developer.android.com/reference/android/graphics/Bitmap.Config.html" rel="nofollow,noindex">Bitmap.Config</a>
+            </td>
+            <td>ARGB_4444</td>
+            <td>
+              <em>
+                <p>This field is deprecated. Because of the poor quality of this configuration,</p>
+                <p>
+                  it is advised to use&nbsp;                  <code class="prettyprint"><a target="_blank" href="http://developer.android.com/reference/android/graphics/Bitmap.Config.html#ARGB_8888" style="text-decoration:none; color:rgb(0,142,142)">ARGB_8888</a></code>
+                  instead.&nbsp;                </p>
+              </em>
+              <br>
+              这种格式的图片，看起来质量太差，已经不推荐使用。              <br>
+              Each pixel is stored on 2 bytes. The three RGB color channels and the alpha channel (translucency)              <br>
+              are stored with a 4 bits precision (16 possible values.)              <br>
+              This configuration is mostly useful if the application needs to store translucency information              <br>
+              but also needs to save memory. It is recommended to use ARGB_8888 instead of this configuration.              <br>
+              <span>
+                <p>一个像素占用2个字节，alpha(A)值，Red（R）值，Green(G)值，Blue（B）值各占4个bites</p>
+                <p>共16bites,即2个字节</p>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <a target="_blank" href="http://developer.android.com/reference/android/graphics/Bitmap.Config.html" rel="nofollow,noindex">Bitmap.Config</a>
+            </td>
+            <td>ARGB_8888</td>
+            <td>
+              Each pixel is stored on 4 bytes. Each channel (RGB and alpha for translucency)              <br>
+              is stored with 8 bits of precision (256 possible values.) This configuration              <br>
+              is very flexible and offers the best quality. It should be used whenever possible              <br>
+              <span>
+                <p>一个像素占用4个字节，alpha(A)值，Red（R）值，Green(G)值，Blue（B）值各占8个bites</p>
+                <p>共32bites,即4个字节</p>
+                <p>这是一种高质量的图片格式，电脑上普通采用的格式。它也是Android手机上一个BitMap的</p>
+              </span>
+              默认格式。            </td>
+          </tr>
+          <tr>
+            <td>
+              <a target="_blank" href="http://developer.android.com/reference/android/graphics/Bitmap.Config.html" rel="nofollow,noindex">Bitmap.Config</a>
+            </td>
+            <td>RGB_565</td>
+            <td>
+              Each pixel is stored on 2 bytes and only the RGB channels are encoded:              <br>
+              red is stored with 5 bits of precision (32 possible values),              <br>
+              green is stored with 6 bits of precision (64 possible values) and blue              <br>
+              is stored with 5 bits of precision. This configuration can produce slight visual              <br>
+              artifacts depending on the configuration of the source. For instance,              <br>
+              without dithering, the result might show a greenish tint.              <br>
+              To get better results dithering should be applied.              <br>
+              This configuration may be useful when using opaque bitmaps that do not require high color fidelity.              <br>
+              <span>
+                <p>一个像素占用2个字节，没有alpha(A)值，即不支持透明和半透明，</p>
+                <p>Red（R）值</p>
+              </span>
+              <span>占5个bites&nbsp;</span>
+              <span>，Green(G)值</span>
+              <span>占6个bites&nbsp;</span>
+              <span>
+                <p>，Blue（B）值占5个bites,共16bites,即2个字节.</p>
+                <p>对于没有</p>
+              </span>
+              透明和半透明颜色的图片来说，该格式的图片能够达到比较的呈现效果，              <br>
+              相对于ARGB_8888              <span>
+                <p>来说也能减少一半的内存开销。因此它是一个不错的选择。</p>
+                <p>另外我们通过</p>
+              </span>
+              android.content.res.Resources来取得一个张图片时，它也是以该格式来构建BitMap的              <br>
+              从              <span>Android4.0</span>
+              开始，该选项无效。即使设置为该值，系统任然会采用&nbsp;              <span>ARGB_8888</span>
+              <span>来构造图片</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+        <p>
+      <span>
+        <strong>注</strong>
+        <span>：A</span>
+        <span>RGB指的是一种色彩模式，里面A代表Alpha，</span>
+        <span>R</span>
+        <span>表示</span>
+        <span>red</span>
+        <span>，</span>
+        <span>G</span>
+        <span>表示</span>
+        <span>green</span>
+        <span>，</span>
+        <span>B</span>
+        <span>表示</span>
+        <span>blue</span>
+        <span>，其实所有的可见色都是红绿蓝组成的，所以红绿蓝又称为三原色。</span>
+      </span>
+    </p>
+    <p>
+      <span>
+        </span></p><p>A &nbsp; &nbsp; R &nbsp; &nbsp; &nbsp; &nbsp;G B</p>
+        <span>透明度</span>
+        <span>红色</span>
+        <span>绿色</span>
+        <p>蓝色</p>
+      
+    <p></p>
+    <p>
+      <span>简单点说</span>
+    </p>
+
+      <table border="1" cellspacing="0" cellpadding="0" class="table table-bordered">
+        <tbody>
+          <tr>
+            <td width="189" valign="top">
+              <p>
+                <span lang="EN-US">图片格式（</span>
+                <a target="_blank" href="http://developer.android.com/reference/android/graphics/Bitmap.Config.html" rel="nofollow,noindex">Bitmap.Config</a>
+                ）              </p>
+            </td>
+            <td width="189" valign="top">
+              <p>
+                <span lang="EN-US">占用内存的计算方向</span>
+              </p>
+            </td>
+            <td width="189" valign="top">
+              <p>
+                <span lang="EN-US">一张100*100的图片占用内存的大小</span>
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td width="189" valign="top">
+              <p>
+                <span lang="EN-US"></span>
+                <span>ALPHA_8</span>
+              </p>
+            </td>
+            <td width="189" valign="top">
+              <p>
+                <span lang="EN-US">图片长度*图片宽度</span>
+              </p>
+            </td>
+            <td width="189" valign="top">
+              <p>
+                <span lang="EN-US">100*100=10000字节</span>
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td width="189" valign="top">
+              <p>
+                <span lang="EN-US"></span>
+                <span>ARGB_4444</span>
+              </p>
+            </td>
+            <td width="189" valign="top">
+              <p>
+                <span lang="EN-US">图片长度*图片宽度*2</span>
+              </p>
+            </td>
+            <td width="189" valign="top">
+              <p>
+                <span lang="EN-US">100*100*2=20000字节</span>
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td width="189" valign="top">
+              <p>
+                <span lang="EN-US"></span>
+                <span>ARGB_8888</span>
+              </p>
+            </td>
+            <td width="189" valign="top">
+              <p>
+                <span lang="EN-US">图片长度*图片宽度*4</span>
+              </p>
+            </td>
+            <td width="189" valign="top">
+              <p>
+                <span lang="EN-US"></span>
+                <span>100*100*4=40000字节</span>
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td width="189" valign="top">
+              <p>
+                <span lang="EN-US"></span>
+                <span>RGB_565&nbsp;</span>
+              </p>
+            </td>
+            <td width="189" valign="top">
+              <p>
+                <span lang="EN-US">图片长度*图片宽度*2</span>
+              </p>
+            </td>
+            <td width="189" valign="top">
+              <p>
+                <span lang="EN-US"></span>
+                <span>100*100*2=20000字节</span>
+              </p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+        <p>
+      <span>
+        <span>另外，需要注意</span>
+        <span>这里的图片占用内存是指在Navtive中占用的内存，当然BitMap使用的绝大多数内存就是该内存。</span>
+      </span>
+    </p>
+    <p>
+      <span>因为我们可以简单的认为它就是BitMap所占用的内存。</span>
+    </p>
+    <div>
+      <p>
+        <span>
+          Bitmap对象在不使用时,我们应该先调用          <span>recycle()</span>
+          ，然后才它设置为null.        </span>
+      </p>
+      <p>
+        <span>虽然Bitmap在被回收时可以通过BitmapFinalizer来回收内存。但是调用recycle()是一个良好的习惯</span>
+      </p>
+      <p>
+        <span>在Android4.0之前，Bitmap的内存是分配在Native堆中，调用recycle()可以立即释放Native内存。</span>
+      </p>
+      <p>
+        <span>从Android4.0开始，Bitmap的内存就是分配在dalvik堆中，即JAVA堆中的，调用recycle()并不能立即释放Native内存。但是调用recycle()也是一个良好的习惯。</span>
+      </p>
+      <p>
+        <span>通过dumpsys meminfo命令可以查看一个进程的内存使用情况，</span>
+      </p>
+      <p>
+        <span>当然也可以通过它来观察我们创建或销毁一张BitMap图片内存的变化，从而推断出图片占用内存的大小。</span>
+      </p>
+      <p>
+        <span>
+          <span>
+            <strong>示例</strong>
+            ：          </span>
+          <span>adb shell</span>
+          <span>&nbsp;"</span>
+          <span>dumpsys</span>
+          <span>meminfo</span>
+          <span>&nbsp;</span>
+          <span>com.lenovo.robin</span>
+          <span>"</span>
+        </span>
+      </p>
+      <p>
+        <span>运行结果。</span>
+      </p>
+      <p>Applications Memory Usage (kB):</p>
+      <p>Uptime: 18696550 Realtime: 18696541</p>
+      <p>** MEMINFO in pid 7985 [com.lenovo.robin] **</p>
+      <p>
+        <span>native&nbsp;</span>
+        dalvik &nbsp;        other &nbsp;        total      </p>
+      <p>size: &nbsp;4828 &nbsp;5379 &nbsp;N/A &nbsp;10207</p>
+      <p>allocated: &nbsp;4073 &nbsp;2852 &nbsp;N/A &nbsp;6925</p>
+      <p>free: &nbsp;10 &nbsp;2527 &nbsp;N/A &nbsp;2537</p>
+      <p>(Pss): &nbsp;608 &nbsp;317 &nbsp;1603 &nbsp;2528</p>
+      <p>(shared dirty):2240 &nbsp;1896 &nbsp;6056 &nbsp;10192</p>
+      <p>(priv dirty): &nbsp;548 &nbsp;36 &nbsp;1276 &nbsp;1860</p>
+      <p>Objects</p>
+      <p>Views: &nbsp;0 &nbsp;ViewRoots: &nbsp;0</p>
+      <p>AppContexts: &nbsp;0 &nbsp;Activities: &nbsp;0</p>
+      <p>Assets: &nbsp;2 &nbsp;AssetManagers: &nbsp;2</p>
+      <p>Local Binders: &nbsp;5 &nbsp;Proxy Binders: &nbsp;11</p>
+      <p>Death Recipients:1</p>
+      <p>OpenSSL Sockets:0</p>
+      <p>SQL</p>
+      <p>heap: &nbsp;0 &nbsp;MEMORY_USED: &nbsp;0</p>
+      <p>PAGECACHE_OVERFLOW: &nbsp;0 &nbsp;MALLOC_SIZE: &nbsp;0</p>
+    </div>
+  </div>
+</div>
+
+        </div>
+        <div class="article_social">
+         <div class="article_like">
+    <div class="circle circle-like" id="my_zan" data_id="JBVVVb">  </div>
+
+</div>
+        <div id="share_weixin_image">
+            <img width="100px" height="100px" src="./Android 一张图片（BitMap）占用内存的计算 图片内存优化 - 推酷_files/qrcode.php">
+        </div>
+<div class="article_share_fav">
+    <div class="share" id="ckepop">
+        <span>分享</span>
+        <button class="share_weibo" id="share_weibo_id" title="分享到新浪微博"></button>
+        <button class="share_qq" id="share_qq_id" title="分享到QQ空间"></button>
+        <button class="share_weixin" id="share_weixin_id"></button>
+    </div>
+    <div class="fav_correct">
+        <button id="my_fav" data_id="JBVVVb">
+            <i class="icon icon-star-empty"></i> <span id="fav_tip">收藏</span>
+        </button>
+        <button id="article-correct" data_id="JBVVVb" uid="0">
+            <i class="icon icon-warning-sign"></i>
+            <span>纠错</span>
+        </button>
+    </div>
+</div>
+<script type="text/javascript">
+$("#share_weibo_id").click( function() {
+   window.open("http://share.baidu.com/s?type=text&searchPic=0&sign=on&to=tsina&url=http://www.tuicool.com/articles/JBVVVb&title=Android+%E4%B8%80%E5%BC%A0%E5%9B%BE%E7%89%87%EF%BC%88BitMap%EF%BC%89%E5%8D%A0%E7%94%A8%E5%86%85%E5%AD%98%E7%9A%84%E8%AE%A1%E7%AE%97+%E5%9B%BE%E7%89%87%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96++%28%E5%88%86%E4%BA%AB%E8%87%AA+%40%E6%8E%A8%E9%85%B7%E7%BD%91%29&key=3113829255");
+});
+$("#share_qq_id").click( function() {
+   window.open("http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://www.tuicool.com/articles/JBVVVb&title=Android+%E4%B8%80%E5%BC%A0%E5%9B%BE%E7%89%87%EF%BC%88BitMap%EF%BC%89%E5%8D%A0%E7%94%A8%E5%86%85%E5%AD%98%E7%9A%84%E8%AE%A1%E7%AE%97+%E5%9B%BE%E7%89%87%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96&desc=&summary=&site=");
+});
+$("#share_weixin_id").click( function() {
+  $("#share_weixin_image").toggle();
+});
+</script>
+
+
+            <div class="bottom_plink huodong-detail-plink-banner clearfix">
+                    <a href="http://click.aliyun.com/m/22453/" target="_blank"><img src="./Android 一张图片（BitMap）占用内存的计算 图片内存优化 - 推酷_files/aliyun720.jpg"></a>
+
+            </div>
+        </div>
+        <div id="site_articles" style="clear:both;">
+              <div class="article-part-title">
+                <span>推荐文章</span>
+              </div>
+          <ul class="side_article_list">
+                <li class="side_article_list_item">
+                    1.<a href="http://www.tuicool.com/articles/ZveaeqI" target="_blank" title="OpenGL渲染管线">
+                    OpenGL渲染管线
+                    </a>
+                </li>
+                <li class="side_article_list_item">
+                    2.<a href="http://www.tuicool.com/articles/A7j6JzV" target="_blank" title="在 ECharts GL 中绘制三维地图">
+                    在 ECharts GL 中绘制三维地图
+                    </a>
+                </li>
+                <li class="side_article_list_item">
+                    3.<a href="http://www.tuicool.com/articles/INRz2uM" target="_blank" title="神奇的深度图：复杂的效果，不复杂的原理">
+                    神奇的深度图：复杂的效果，不复杂的原理
+                    </a>
+                </li>
+                <li class="side_article_list_item">
+                    4.<a href="http://www.tuicool.com/articles/JZ3Yvee" target="_blank" title="浅谈《守望先锋》中的 ECS 构架">
+                    浅谈《守望先锋》中的 ECS 构架
+                    </a>
+                </li>
+                <li class="side_article_list_item">
+                    5.<a href="http://www.tuicool.com/articles/URvUnan" target="_blank" title="初识Three.js">
+                    初识Three.js
+                    </a>
+                </li>
+                <li class="side_article_list_item">
+                    6.<a href="http://www.tuicool.com/articles/nyQVjy6" target="_blank" title="【《Real-Time Rendering 3rd》 提炼总结】(五) 第六章 · 纹理贴图及相关技术 The Texturing">
+                    【《Real-Time Rendering 3rd》 提炼总结】(五) 第六章 · 纹理贴图..
+                    </a>
+                </li>
+          </ul>
+        </div>
+        <div id="kan_articles"> <div class="article-part-title"> <span>相关推刊</span></div><div class="kan-list-container"><ul class="kan-list clearfix">          <li class="kan-item">            <a href="http://www.tuicool.com/kans/1433210770" target="_blank" class="kan-item-head">              <small>by 彼岸_未来</small>              <img class="kan-cover" src="./Android 一张图片（BitMap）占用内存的计算 图片内存优化 - 推酷_files/zEf6NfE.jpg!kan">            </a>            <span class="kan-detail">              <a href="http://www.tuicool.com/kans/1433210770" target="_blank">《移动开发》</a>              <i class="kan-num">186</i>            </span>          </li>        </ul></div><i class="clearfix"></i></div>
+        <div id="article_weibo" style="display:none;">
+            <div class="article-part-title">
+                <span>相关微博</span>
+                <sub>
+                    <a href="http://www.tuicool.com/articles/weibo_list/JBVVVb" target="_blank">(<i id="weibo_num"></i>)</a> 
+               </sub>
+            </div>
+            <div class="related-weibo-list"></div>
+        </div>
+        <div class="comments">
+    <div class="comments-area">
+    <div class="comments-header">
+        <h5>我来评几句</h5>
+        <div class="alert comment-alert alert-error" style="display:none;">
+            错误
+        </div>
+            <textarea cols="60" rows="5" id="comment-body" placeholder="请输入评论内容..." style="resize: none;"></textarea>
+            <span class="btn btn-medium btn-submit" id="comment-submit">登录后评论</span>
+        <p style="margin-top: 5px;margin-left:10px;">
+            已发表评论数(<span class="comment_cnt">0</span>)
+        </p>
+    </div>
+    <div class="comments-list">
+        <div class="empty-cmts alert alert-success" style="display:none;">
+            没有更多评论了^^
+        </div>
+    </div>
+    <div class="more-comments" style="display:none;">
+        <a href="http://www.tuicool.com/articles/JBVVVb">更多评论</a>
+    </div>
+    <div class="load-fail" style="display:none;">
+        评论加载失败，<a href="javascript:reload_comments(&#39;JBVVVb&#39;,1,0,-1);">重新加载</a>
+    </div>
+    </div>
+</div>
+
+    </div>
+        <div class="span4 article_right_side">
+            <div class="right_top">
+    <div class="article_related_site article_detail_bg">
+    <h4 class="article-part-title">相关站点</h4>
+    <div class="article_related_site_body clearfix">
+        <div class="logo">
+            <img src="./Android 一张图片（BitMap）占用内存的计算 图片内存优化 - 推酷_files/ueAjumq.png">
+        </div>
+        <div class="name">
+            <div>
+                <a href="http://www.tuicool.com/sites/ueAjumq" target="_blank"> 我是程序猿，我为自己代言</a>
+            </div>
+            <div>
+                <div class="btn btn-success right_site_follow" id="my_follow" data_id="ueAjumq">＋订阅</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="right_site_articles" class="article_detail_bg">
+    <div class="article-part-title">
+        <span>热门文章</span>
+    </div>
+    <ul class="side_article_list">
+        <li class="side_article_list_item">
+            1.<a href="http://www.tuicool.com/articles/A7j6JzV" target="_blank" title="在 ECharts GL 中绘制三维地图"> 在 ECharts GL 中绘制三维地图 </a>
+        </li>
+        <li class="side_article_list_item">
+            2.<a href="http://www.tuicool.com/articles/INRz2uM" target="_blank" title="神奇的深度图：复杂的效果，不复杂的原理"> 神奇的深度图：复杂的效果，不复杂的原理 </a>
+        </li>
+        <li class="side_article_list_item">
+            3.<a href="http://www.tuicool.com/articles/JZ3Yvee" target="_blank" title="浅谈《守望先锋》中的 ECS 构架"> 浅谈《守望先锋》中的 ECS 构架 </a>
+        </li>
+        <li class="side_article_list_item">
+            4.<a href="http://www.tuicool.com/articles/URvUnan" target="_blank" title="初识Three.js"> 初识Three.js </a>
+        </li>
+        <li class="side_article_list_item">
+            5.<a href="http://www.tuicool.com/articles/nyQVjy6" target="_blank" title="【《Real-Time Rendering 3rd》 提炼总结】(五) 第六章 · 纹理贴图及相关技术 The Texturing"> 【《Real-Time Rendering 3rd》 提炼总结】(五) 第六章 · 纹理贴图及相关技术.. </a>
+        </li>
+    </ul>
+</div>
+
+
+      <div class="right-link">
+                <a href="http://click.aliyun.com/m/17039/" target="_blank"><img src="./Android 一张图片（BitMap）占用内存的计算 图片内存优化 - 推酷_files/aliyun311.jpg"></a>
+
+      </div>
+      <div class="right-link" style="margin-top: 5px">
+                <a href="http://bird.so/" target="_blank"><img src="./Android 一张图片（BitMap）占用内存的计算 图片内存优化 - 推酷_files/bird300.jpg"></a>
+
+      </div>
+      <div class="right-link" style="margin-top: 5px">
+                <a href="https://dami.ksyun.com/?ch=00033.00018" target="_blank"><img src="./Android 一张图片（BitMap）占用内存的计算 图片内存优化 - 推酷_files/ksyun335.jpg"></a>
+
+      </div>
+<div class="right-link" style="margin-top: 5px">
+        <a href="https://www.mtyun.com/activity-anniversary?site=tuicool&amp;campaign=20170601sales" target="_blank"><img src="./Android 一张图片（BitMap）占用内存的计算 图片内存优化 - 推酷_files/meituan308.jpg"></a>
+
+</div>
+      <div class="right-link" style="margin-top: 5px">
+                <a href="http://www.yomail.com/?f=tuicool" target="_blank"><img src="./Android 一张图片（BitMap）占用内存的计算 图片内存优化 - 推酷_files/yomail300.jpg"></a>
+
+      </div>
+</div>
+<div class="operate_zone" style="position: fixed; top: 50px;">
+      <div class="right-link" style="margin-top: 0px">
+                <a href="http://www.w3cschool.cn/welcome?tnid=1002" target="_blank"><img src="./Android 一张图片（BitMap）占用内存的计算 图片内存优化 - 推酷_files/w3cschool302.jpg"></a>
+
+      </div>
+        <div class="frd_pos">
+        <script async="" src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px; display: none !important;" data-ad-client="ca-pub-7054762349007490" data-ad-slot="5705695566" alvy8l4="" hidden=""></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+</div>
+         </div>
+</div>
+
+<div>
+   <!-- add_article to kan -->
+<div id="add-article-to-kan" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <span class="add-title">收藏到推刊</span>
+    <a href="http://www.tuicool.com/articles/JBVVVb#new-kan" class="btn pull-right" data-toggle="modal">创建推刊</a>
+    <i class="clearfix"></i>
+  </div>
+  <div class="modal-body">
+    <ul id="add-kan-list">
+    </ul>
+  </div>
+  <div class="modal-footer">
+    <input type="hidden" value="JBVVVb" class="article-id"> 
+    <button class="btn btn-primary pull-left add-to-btn">  收 藏  </button>
+    <button class="btn" data-dismiss="modal" aria-hidden="true" style="margin-right: 15px">取消</button>
+  </div>
+</div>
+
+   <div id="new-kan" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-body">
+    <input type="text" name="name" id="new-kan-name" placeholder="推刊名(必填)" required="" data-validation-required-message="请填写推刊名">
+    <span class="new-ness-name">请填写推刊名</span>
+    <br>
+    <textarea name="desc" id="desc" rows="6" placeholder="推刊描述"></textarea>
+    <span class="new-ness-desc">描述不能大于100个字符!</span>
+    <br>
+    权限设置：<input type="radio" name="type" value="1" checked="checked"> 公开
+    <input type="radio" name="type" value="0"> 仅自己可见
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary pull-left create-kan-btn" disabled="">创建</button>
+    <button class="btn dismiss-new-kan" data-dismiss="modal" aria-hidden="true">取消</button>
+  </div>
+</div>
+
+
+</div>
+<div id="article-correct-modal" class="modal hide fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+            ×
+        </button>
+        <h3>文章纠错</h3>
+    </div>
+    <div class="modal-body">
+        <input type="hidden" value="JBVVVb" id="article-correct-source">
+        <div>
+            <label for="article-correct-email">
+                邮箱地址
+            </label>
+            <input type="email" id="article-correct-email" class="input-large">
+        </div>
+        <div>
+            <label for="article-correct-select">
+                错误类型
+            </label>
+            <select id="article-correct-select">
+                <option value="正文不准确">正文不准确</option>
+                <option value="标题不准确">标题不准确</option>
+                <option value="排版有问题">排版有问题</option>
+                <option value="排版有问题">主题不准确</option>
+                <option value="没有分页内容">没有分页内容</option>
+                <option value="图片无法显示">图片无法显示</option>
+                <option value="视频无法显示">视频无法显示</option>
+                <option value="与原文不一致">与原文不一致</option>
+            </select>
+        </div>
+        <div>
+            <label for="article-correct-other">
+                补充信息
+            </label>
+            <textarea id="article-correct-other" class="span4"></textarea>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary pull-right huodong_correct_submit" id="article-correct-submit">
+            &nbsp;&nbsp;提交&nbsp;&nbsp;
+        </button>
+    </div>
+</div>
+<script type="text/javascript">
+    $('table').each(function(i) {
+        var size = $(this).children().size();
+        if (size > 1) {
+            $(this).attr('class',"table table-bordered");
+        } else if (size == 1) {
+            var e11 = $(this).children(":first");
+            var e1 = e11[0];
+            var name = e1.nodeName.toLowerCase();
+            if ("tbody" == name) {
+                if (e1.children.length > 1) {
+                    $(this).attr('class',"table table-bordered");
+                } else if (e1.children.length == 1){
+                    var e12 = e1.children[0];
+                    var name2 = e12.nodeName.toLowerCase();
+                    if ("tr" == name2) {
+                       if (e12.children.length > 1) {
+                         $(this).attr('class',"table table-bordered");
+                       }
+                    }
+                }
+            }
+        }
+    });
+            related_kan("JBVVVb");
+        window.page = 0;
+        window.last = 0;    
+        window.first = true;
+        resize_article_image('#nei', 550);
+                load_comments("JBVVVb",1,0,-1);
+                window.uid = -1;
+        open_add_article_to_kan("false");
+        async_do_zan_article();
+          
+       handle_follow_site("#my_follow","已订阅","+ 订阅");
+</script>
+
+
+    <div class="loader-inner ball-pulse ball-loading-center" id="page-loading" style="display: none">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <div class="read-later-alert"></div>
+  </div>
+
+        <div class="footer">
+      <div class="footer-inner" style="padding-top: 50px;padding-bottom: 50px">
+        <a href="http://www.tuicool.com/about" target="_blank">关于我们</a>
+        <a href="http://www.tuicool.com/mobile" target="_blank">移动应用</a>
+        <a href="http://www.tuicool.com/bbs/go/issues" target="_blank">意见反馈</a>
+        <a target="_blank" href="http://e.weibo.com/tuicool2012">官方微博</a>
+      </div>
+    </div>
+    <div style="display:none;">
+      <script src="./Android 一张图片（BitMap）占用内存的计算 图片内存优化 - 推酷_files/stat.php" language="JavaScript"></script><script src="./Android 一张图片（BitMap）占用内存的计算 图片内存优化 - 推酷_files/core.php" charset="utf-8" type="text/javascript"></script><a href="http://www.cnzz.com/stat/website.php?web_id=5541078" target="_blank" title="站长统计"><img border="0" hspace="0" vspace="0" src="./Android 一张图片（BitMap）占用内存的计算 图片内存优化 - 推酷_files/pic.gif"></a>
+    </div>
+
+    <script type="text/javascript" src="./Android 一张图片（BitMap）占用内存的计算 图片内存优化 - 推酷_files/tip.js" async=""></script>
+
+
+<div class="return" title="返回顶部" style="display: block;"></div></body></html>
