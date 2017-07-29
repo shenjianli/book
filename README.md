@@ -12,3 +12,10 @@ http://blog.lmj.wiki/2016/08/18/app-opti/app_opt/
 http://www.jianshu.com/p/e8ac0c284601
 
 ## 3.将来会学的东西
+
+
+http://www.jianshu.com/p/356619fe64d5
+http://blog.csdn.net/fancylovejava/article/details/45787729
+http://www.apkbus.com/forum.php?mod=viewthread&tid=246664&_dsign=5825cda9
+http://blog.csdn.net/sahadev_/article/details/48813399
+
