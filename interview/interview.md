@@ -197,3 +197,6 @@ d1=d2   false
 10. 请使用Profiler和Heap dump分析工具来查看Java堆空间，可以查看给每个对象分配了多少内存。
 
 
+
+http://www.jianshu.com/p/251b1bf72cd8
+
